@@ -1,36 +1,191 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Todo Spike Application
 
-## Getting Started
+A simple Todo application built with Next.js and Appwrite.
 
-First, run the development server:
+## Getting Started for Beginners
+
+This guide will walk you through setting up and running this project, even if you have no prior development experience.
+
+### Prerequisites
+
+- Node.js (v14 or later)
+- npm or yarn
+- Git
+- Code editor (we recommend Visual Studio Code)
+- Appwrite account and project
+
+### Environment Setup
+
+#### Install Required Software
+
+1. **Install Node.js**
+
+- Go to [nodejs.org](https://nodejs.org/)
+- Download and install the LTS (Long Term Support) version
+- This includes npm (Node Package Manager)
+
+2. **Install Git**
+
+- Go to [git-scm.com](https://git-scm.com/downloads)
+- Download and install the version for your operating system
+
+3. **Install a Code Editor**
+
+- We recommend [Visual Studio Code](https://code.visualstudio.com/)
+- Download and install it on your system
+
+### Get the Project
+
+1. Open Terminal (Mac/Linux) or Command Prompt (Windows)
+2. Navigate to your preferred directory:
+
+```bash
+cd /path/to/your/preferred/directory
+```
+
+3. Clone the repository:
+
+```bash
+git clone https://github.com/your-repository-url.git
+```
+
+4. Navigate into the project directory:
+
+```bash
+cd todo_spike
+```
+
+### Project Setup
+
+1. **Install Dependencies**
+
+```bash
+npm install
+# or
+yarn install
+```
+
+2. **Set Up Appwrite**
+
+- Create an account on [Appwrite](https://appwrite.io/)
+- Create a new project in Appwrite console
+- Create a database with collection for todos
+- Set up authentication in Appwrite
+
+3. **Configure Environment Variables**
+
+- Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+NEXT_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=your_database_id
+NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID=your_collection_id
+NEXT_PUBLIC_APPWRITE_STORAGE_ID=your_storage_id
+```
+
+### Running the Project
+
+1. **Start the Development Server**
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Access the Application**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Open your browser and go to [http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Appwrite Setup
 
-## Learn More
+1. Create an Appwrite project
+2. Create a database with the following structure:
 
-To learn more about Next.js, take a look at the following resources:
+- Collection: todos
+- Fields:
+  - title (string)
+  - description (string)
+  - is_done (boolean)
+  - author_email (string)
+  - created_at (datetime)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Set up authentication with email/password
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Using the Application
 
-## Deploy on Vercel
+1. **Register an Account**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Create a new user account
+- Fill in the required information and submit
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Login**
+
+- Use your credentials to log in
+
+3. **Manage Todos**
+
+- Create, read, update, and delete todo items
+- Mark todos as complete/incomplete
+
+## Project Structure Overview
+
+- `app/` - Contains the main application pages
+- `components/` - Reusable UI components
+- `config/` - Configuration files (like Appwrite setup)
+- `lib/` - Utility functions and helpers
+- `app/store/` - State management using Redux
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. **Server Won't Start**
+
+- Make sure you've installed all dependencies with `npm install`
+- Check that the correct version of Node.js is installed
+
+2. **Authentication Issues**
+
+- Verify your Appwrite configuration in `.env.local`
+- Check the console for error messages
+
+## Tech Stack
+
+This project is built with the following technologies:
+
+- **[Next.js](https://nextjs.org/)**: A React framework that enables server-side rendering, static site generation, and efficient routing for web applications.
+
+- **[React](https://reactjs.org/)**: A JavaScript library for building user interfaces with reusable components and efficient DOM manipulation.
+
+- **[Appwrite](https://appwrite.io/)**: An open-source backend server that provides authentication, database, storage, and other backend services via a simple API.
+
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapidly building custom user interfaces without writing custom CSS.
+
+- **[Redux Toolkit](https://redux-toolkit.js.org/)**: The official, opinionated toolset for efficient Redux development, simplifying state management in React applications.
+
+## Learning Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Appwrite Documentation](https://appwrite.io/docs)
+- [React Documentation](https://reactjs.org/docs/getting-started.html)
+
+## Some Extra Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run linting
+npm run lint
+```

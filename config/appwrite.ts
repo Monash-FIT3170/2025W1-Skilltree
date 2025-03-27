@@ -1,15 +1,18 @@
-import { Client, Account, Databases } from "appwrite";
+import { Account, Client, Databases, ID } from "appwrite";
 
 const appwrite = new Client();
-const conf = {
-	projectId: "67e4a1b600216c92061b",
-	databaseId: "67e4a24f0020c7c392a0",
-	todosCollId: "67e4a2b500187aad4e3a",
-	storageId: "67e4a26f001d120cd54c",
+
+export const appwriteConfig = {
+	projectId: process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!,
+	databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+	todosCollId: process.env.NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID!,
+	storageId: process.env.NEXT_PUBLIC_APPWRITE_STORAGE_ID!,
 };
 
-appwrite.setEndpoint("https://cloud.appwrite.io/v1").setProject(conf.projectId);
-const account = new Account(appwrite);
-const database = new Databases(appwrite);
+appwrite
+	.setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+	.setProject(appwriteConfig.projectId);
 
-export { account, database, conf as appwriteConfig };
+export const account = new Account(appwrite);
+export const database = new Databases(appwrite);
+export { ID };
