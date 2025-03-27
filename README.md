@@ -46,13 +46,13 @@ cd /path/to/your/preferred/directory
 3. Clone the repository:
 
 ```bash
-git clone https://github.com/your-repository-url.git
+git clone https://github.com/Monash-FIT3170/2025W1-Skilltree
 ```
 
 4. Navigate into the project directory:
 
 ```bash
-cd todo_spike
+cd 2025W1-Skilltree
 ```
 
 ### Project Setup
