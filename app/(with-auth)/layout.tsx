@@ -7,10 +7,12 @@ const WithAuthLayout = ({
 	children: React.ReactNode;
 }>) => {
 	return (
-		<div className="max-w-screen">
+		<div className="min-h-screen max-w-screen">
 			<Navbar />
 
-			{children}
+			<div className="absolute top-20 left-0 right-0 min-h-[calc(100vh-5rem)]">
+				{children}
+			</div>
 		</div>
 	);
 };

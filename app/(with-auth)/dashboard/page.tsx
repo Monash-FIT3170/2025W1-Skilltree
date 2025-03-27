@@ -1,69 +1,104 @@
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+"use client";
+
+import TodoCards from "@/components/TodoCards";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, Trash2 } from "lucide-react";
-import React from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { account, appwriteConfig, database } from "@/config/appwrite";
+import { ID, Query } from "appwrite";
+import { toast } from "sonner";
+import React, { useEffect, useState } from "react";
+import withAuth from "@/components/withAuth";
 
 const DashboardPage = () => {
+	const [todo, setTodo] = React.useState("");
+	const [description, setDescription] = React.useState("");
+	const [todos, setTodos] = useState<any[] | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const fetchTodos = async () => {
+		setRefreshing(true);
+		try {
+			const user = await account.get();
+			const todos = await database.listDocuments(
+				appwriteConfig.databaseId,
+				appwriteConfig.todosCollId,
+				[Query.equal("author_email", user.email)]
+			);
+			console.log(todos.documents);
+			setTodos(todos.documents);
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setLoading(false);
+			setRefreshing(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchTodos();
+	}, []);
+
+	const handleAddTodo = async () => {
+		console.log({ todo, description });
+
+		try {
+			const user = await account.get();
+			await database.createDocument(
+				appwriteConfig.databaseId,
+				appwriteConfig.todosCollId,
+				ID.unique(),
+				{
+					todo,
+					description,
+					author_email: user.email,
+					author_name: user.name,
+					added_on: new Date().toISOString(),
+					is_done: false,
+				}
+			);
+
+			toast.success("Todo added successfully");
+			setTodo("");
+			setDescription("");
+			// Refresh todos after adding a new one
+			fetchTodos();
+		} catch (error) {
+			// @ts-expect-error message is defined
+			toast.error(error.message);
+			console.error(error);
+		}
+	};
+
 	return (
-		<div className="w-full h-full flex justify-between items-center">
-			<div className="flex flex-col gap-5 fixed p-5 pr-0 bottom-0 top-20 left-0 w-1/3">
-				<Input placeholder="Enter your todo..." />
-				<Textarea
-					placeholder="Enter your todo description..."
-					className="h-24"
-				/>
-				<Button>Add todo</Button>
+		<div className="w-full h-full flex flex-col md:flex-row">
+			<div className="top-20 w-full md:w-1/3 p-4 md:p-5 md:pr-0 md:fixed md:bottom-0 md:left-0">
+				<div className="flex flex-col gap-4">
+					<Input
+						value={todo}
+						onChange={(e) => setTodo(e.target.value)}
+						placeholder="Enter your todo..."
+					/>
+					<Textarea
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+						placeholder="Enter your todo description..."
+						className="h-24"
+					/>
+					<Button onClick={handleAddTodo} className="w-full md:w-auto">
+						Add todo
+					</Button>
+				</div>
 			</div>
-			<ScrollArea className="p-5 fixed top-20 right-0 bottom-0 left-1/3 w-2/3 h-full max-h-[calc(100vh-5rem)]">
-				{Array.from({ length: 10 }).map((_, i) => (
-					<Card className="mb-5" key={i}>
-						<CardHeader>
-							<CardTitle>Walk the dog</CardTitle>
-							<CardDescription>
-								Added by <span className="text-blue-500">Aditya Tripathi</span>{" "}
-								on{" "}
-								<span className="text-blue-500">
-									{new Date().toLocaleDateString()}
-								</span>
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<p>
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-								vel at soluta praesentium repellendus in, corrupti quam, cum
-								placeat, itaque expedita. Adipisci illo beatae ex, laudantium
-								molestiae ipsum ut perferendis exercitationem modi, odit, ullam
-								libero aliquid dolorum sint. Repellendus aperiam unde excepturi
-								odit incidunt facilis dignissimos, ipsa voluptatum. Aliquid,
-								sunt.
-							</p>
-						</CardContent>
-						<CardFooter className="flex justify-end gap-5">
-							<Button className="aspect-square min-w-36">
-								Mark as done <Check />
-							</Button>
-							<Button
-								className="aspect-square min-w-36"
-								variant={"destructive"}
-							>
-								Delete the todo <Trash2 />
-							</Button>
-						</CardFooter>
-					</Card>
-				))}
+
+			{/* Todo cards section - below input on mobile, right side on larger screens */}
+			<ScrollArea className="top-0 w-full md:w-2/3 md:ml-auto mt-4 md:mt-0 p-4 md:p-5 md:fixed md:right-0 md:bottom-0">
+				<TodoCards todos={todos} loading={loading} refreshTodos={fetchTodos} />
 			</ScrollArea>
 		</div>
 	);
 };
 
-export default DashboardPage;
+export default withAuth(DashboardPage);
