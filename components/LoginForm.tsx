@@ -18,7 +18,7 @@ const LoginForm = () => {
 	const [loading, setLoading] = React.useState(false);
 	const router = useRouter();
 	const dispatch = useAppDispatch();
-	const { isAuthenticated, name } = useAppSelector((state) => state.user);
+	const { isAuthenticated } = useAppSelector((state) => state.user);
 
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -38,10 +38,7 @@ const LoginForm = () => {
 
 		setLoading(true);
 		try {
-			const session = await account.createEmailPasswordSession(
-				form.email,
-				form.password
-			);
+			await account.createEmailPasswordSession(form.email, form.password);
 
 			const user = await account.get();
 			dispatch(

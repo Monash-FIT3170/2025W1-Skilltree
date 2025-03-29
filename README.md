@@ -9,7 +9,7 @@ This guide will walk you through setting up and running this project, even if yo
 ### Prerequisites
 
 - Node.js (v14 or later)
-- npm or yarn
+- npm
 - Git
 - Code editor (we recommend Visual Studio Code)
 - Appwrite account and project
@@ -61,8 +61,6 @@ cd 2025W1-Skilltree
 
 ```bash
 npm install
-# or
-yarn install
 ```
 
 2. **Set Up Appwrite**
@@ -71,6 +69,18 @@ yarn install
 - Create a new project in Appwrite console
 - Create a database with collection for todos
 - Set up authentication in Appwrite
+- Collection: todos
+
+  - Fields:
+    - title (string)
+    - description (string)
+    - is_done (boolean)
+    - author_email (string)
+    - created_at (datetime)
+
+- Set up authentication with email/password
+
+- **OR** Move to the next step to use pre-configured AppWrite
 
 3. **Configure Environment Variables**
 
@@ -78,40 +88,54 @@ yarn install
 
 ```bash
 NEXT_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
-NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_APPWRITE_DATABASE_ID=your_database_id
-NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID=your_collection_id
-NEXT_PUBLIC_APPWRITE_STORAGE_ID=your_storage_id
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=67e4a24f0020c7c392a0
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=67e4a24f0020c7c392a0
+NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID=67e4a2b500187aad4e3a
+NEXT_PUBLIC_APPWRITE_STORAGE_ID=67e4a26f001d120cd54c
+```
+
+- Edit your `next.config.ts`
+
+```js
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+	images: {
+		remotePatterns: [{ hostname: "picsum.photos" }],
+	},
+	env: {
+		NEXT_PUBLIC_APPWRITE_ENDPOINT: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
+		NEXT_PUBLIC_APPWRITE_PROJECT_ID:
+			process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID,
+		NEXT_PUBLIC_APPWRITE_DATABASE_ID:
+			process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+		NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID:
+			process.env.NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID,
+		NEXT_PUBLIC_APPWRITE_STORAGE_ID:
+			process.env.NEXT_PUBLIC_APPWRITE_STORAGE_ID,
+	},
+};
+
+export default nextConfig;
 ```
 
 ### Running the Project
 
-1. **Start the Development Server**
+1. **Build the app**
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm run build
+```
+
+Then run the app
+
+```bash
+npm start
 ```
 
 2. **Access the Application**
 
 - Open your browser and go to [http://localhost:3000](http://localhost:3000)
-
-## Appwrite Setup
-
-1. Create an Appwrite project
-2. Create a database with the following structure:
-
-- Collection: todos
-- Fields:
-  - title (string)
-  - description (string)
-  - is_done (boolean)
-  - author_email (string)
-  - created_at (datetime)
-
-3. Set up authentication with email/password
 
 ## Using the Application
 
