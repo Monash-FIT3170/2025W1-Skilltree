@@ -11,13 +11,16 @@ This guide will help you set up and run the project.
 - **Docker**: Install Docker by following the [official installation guide](https://docs.docker.com/get-docker/) for your operating system.
 
 - **Docker Compose**: Docker Compose is included with Docker Desktop for Windows and macOS. For Linux, follow the [official installation instructions](https://docs.docker.com/compose/install/).
+  - MacOS
+    - `brew install docker`
+    - `brew install docker-compose`
 
 ### Setup and Run
 
 1. **Clone the Repository**
 
 ```bash
-git clone -b spike_mongo_express https://github.com/Monash-FIT3170/2025W1-Skilltree
+git clone -b docker_spike https://github.com/Monash-FIT3170/2025W1-Skilltree
 cd 2025W1-Skilltree
 ```
 
