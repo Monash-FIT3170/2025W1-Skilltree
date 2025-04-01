@@ -10,3 +10,5 @@
 - [ ] Jaques Fatmajaya
 - [ ] Winston Padaiyatchiyar
 - [ ] Anuj Ranjan
+- [ ] Stenven Wenas
+- [ ] Siddheshwar
