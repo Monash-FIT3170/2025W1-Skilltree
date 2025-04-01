@@ -78,7 +78,7 @@ cd ..
 
 3. **Configure Environment Variables**
 
-- Create a `.env.local` file in the root directory with the following variables:
+- Create a `.env` file in the root directory with the following variables:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:6969
