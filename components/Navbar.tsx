@@ -29,7 +29,8 @@ const Navbar = () => {
 				onClick={handleSignOut}
 				variant={"destructive"}
 			>
-				Sign out as <span className="font-bold underline">{user.name}</span>
+				Sign out as{" "}
+				<span className="font-bold underline">{user!.user?.name}</span>
 			</Button>
 
 			<Button
