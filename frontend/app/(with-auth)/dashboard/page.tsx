@@ -17,7 +17,6 @@ const DashboardPage = () => {
 	const [description, setDescription] = React.useState("");
 	const [todos, setTodos] = useState<any[] | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [refreshing, setRefreshing] = useState(false);
 
 	const user = useAppSelector((state) => state.user.user);
 
@@ -29,7 +28,6 @@ const DashboardPage = () => {
 	}, [todoData]);
 
 	const fetchTodos = async () => {
-		setRefreshing(true);
 		try {
 			await refetch();
 			if (todoData?.data) {
@@ -39,7 +37,6 @@ const DashboardPage = () => {
 			console.error(error);
 		} finally {
 			setLoading(false);
-			setRefreshing(false);
 		}
 	};
 

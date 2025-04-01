@@ -1,5 +1,5 @@
 import { Todo } from "@/types";
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TodoState {
 	todos: Todo[];
