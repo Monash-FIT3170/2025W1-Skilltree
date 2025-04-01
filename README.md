@@ -37,7 +37,7 @@ This guide will walk you through setting up and running this project, even if yo
 4. **Set up MongoDB**
 
 - Option 1: Install MongoDB locally from [mongodb.com](https://www.mongodb.com/try/download/community)
-- Option 2: Create a free MongoDB Atlas account at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+  - Keep all the default options.
 
 ### Get the Project
 
@@ -51,7 +51,7 @@ cd /path/to/your/preferred/directory
 3. Clone the repository:
 
 ```bash
-git clone https://github.com/Monash-FIT3170/2025W1-Skilltree
+git clone -b spike_mongo_express https://github.com/Monash-FIT3170/2025W1-Skilltree
 ```
 
 4. Navigate into the project directory:
@@ -80,18 +80,15 @@ cd ..
 
 - Create a `.env.local` file in the root directory with the following variables:
 
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```env
+NEXT_PUBLIC_API_URL=http://localhost:6969
 ```
 
 - Create a `.env` file in the server directory with the following variables:
 
-```bash
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/todo-app
-# Or if using MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/todo-app
-JWT_SECRET=your_jwt_secret_key
+```env
+MONGODB_URI=mongodb://localhost:27017/todo_spike
+PORT=6969
 ```
 
 ### Running the Project
@@ -106,7 +103,6 @@ npm start
 2. **In a new terminal, build and start the Frontend**
 
 ```bash
-# From the project root directory
 npm run build
 npm start
 ```
@@ -180,7 +176,10 @@ This project is built with the following technologies:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Express.js Documentation](https://expressjs.com/)
 - [MongoDB Documentation](https://docs.mongodb.com/)
-- [React Documentation](https://reactjs.org/docs/getting-started.html)
+- [Node.js Documentation](https://nodejs.org/docs/latest/api)
+- [Mongoose Documentation](https://mongoosejs.com/docs)
+- [Tailwind Documentation](https://tailwindcss.com/docs/styling-with-utility-classes)
+- [Redux Toolkit Documentation](https://redux-toolkit.js.org/introduction/getting-started)
 
 ## Some Extra Commands
 
@@ -199,8 +198,10 @@ npm start
 
 # Run linting
 npm run lint
+```
 
-# Run server in development mode
+```bash
 cd server
-npm run dev
+
+npm run start
 ```

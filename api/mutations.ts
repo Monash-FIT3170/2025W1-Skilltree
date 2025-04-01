@@ -14,7 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
 const baseAxios = axios.create({
-	baseURL: "http://localhost:6969",
+	baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 export const useRegister = () => {
