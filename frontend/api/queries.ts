@@ -1,10 +1,6 @@
 import { GetTodoRequest, GetTodoResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-
-const baseAxios = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL,
-});
+import baseAxios from "./axiosConfig";
 
 export const useGetTodo = (data: GetTodoRequest) => {
 	return useQuery({

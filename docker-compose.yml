@@ -6,9 +6,12 @@ services:
     ports:
       - "3000:3000"
     environment:
+      # When in Docker, frontend will access the backend via the service name
       - NEXT_PUBLIC_API_URL=http://backend:6969
     depends_on:
       - backend
+    networks:
+      - app-network
 
   backend:
     build:
@@ -21,6 +24,8 @@ services:
       - PORT=6969
     depends_on:
       - mongo
+    networks:
+      - app-network
 
   mongo:
     image: mongo:latest
@@ -28,6 +33,12 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mongo_data:

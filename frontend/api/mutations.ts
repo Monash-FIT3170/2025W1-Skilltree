@@ -11,11 +11,7 @@ import {
 	RegisterUserResponse,
 } from "@/types";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-
-const baseAxios = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL,
-});
+import baseAxios from "./axiosConfig";
 
 export const useRegister = () => {
 	return useMutation({
