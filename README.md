@@ -8,8 +8,9 @@ This guide will help you set up and run the project.
 
 ### Prerequisites
 
-- Docker
-- Docker Compose
+- **Docker**: Install Docker by following the [official installation guide](https://docs.docker.com/get-docker/) for your operating system.
+
+- **Docker Compose**: Docker Compose is included with Docker Desktop for Windows and macOS. For Linux, follow the [official installation instructions](https://docs.docker.com/compose/install/).
 
 ### Setup and Run
 
