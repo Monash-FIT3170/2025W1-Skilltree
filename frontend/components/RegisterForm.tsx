@@ -63,18 +63,21 @@ const RegisterForm = () => {
 			<div className="my-10 flex flex-col gap-2.5">
 				<Input
 					value={form.name}
+					type="text"
 					onChange={handleChange}
 					name="name"
 					placeholder="Enter your name"
 				/>
 				<Input
 					value={form.email}
+					type="email"
 					onChange={handleChange}
 					name="email"
 					placeholder="Enter your email"
 				/>
 				<Input
 					value={form.password}
+					type="password"
 					onChange={handleChange}
 					name="password"
 					placeholder="Enter your password"
