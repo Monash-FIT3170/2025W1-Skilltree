@@ -27,7 +27,7 @@ cd 2025W1-Skilltree
 2. **Build and Start the Application**
 
 ```bash
-docker-compose -f 'docker-compose.yml' up -d --build
+docker-compose -f docker-compose.yml up -d --build
 ```
 
 3. **Access the Application**
