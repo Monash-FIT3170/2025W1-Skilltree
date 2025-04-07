@@ -4,3 +4,4 @@
 - Aditya Tripathi
 - Rithik Reddy
 - Steven Wenas
+- Nicholas McPhee
