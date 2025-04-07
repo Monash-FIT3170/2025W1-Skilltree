@@ -3,3 +3,4 @@
 - Nilly Hamidi
 - Aditya Tripathi
 - Rithik Reddy
+- Steven Wenas
