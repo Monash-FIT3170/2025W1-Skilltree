@@ -11,3 +11,4 @@
 - Arsh Bansal
 - Winston Padaiyatchiyar
 - Avanta Jain
+- Ansh Kapoor
