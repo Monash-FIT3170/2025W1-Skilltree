@@ -1,13 +1,36 @@
-# 2025W1-Skilltree
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-1. Nick Mcphee - nmcp0006@student.monash.edu
-2. Aditya Tripathi - atri0048@student.monash.edu
-3. Arsh  Bansal - aban0052@student.monash.edu
-4. Nilly Hamidi - nham0019@student.monash.edu
-5. Jaques Fatmajaya - jaqu0004@student.monash.edu
-6. Rithik Reddy - rsin0080@student.monash.edu
-7. Anuj Ranjan - aran0048@student.monash.edu
-8. Winston Padaiyatchiyar - wpad0001@student.monash.edu
-9. Avanta Jain - ajai0052@student.monash.edu
-10. Ansh Kapoor- akap0025@student.monash.edu
-11. Steven Wenas - swen0019@student.monash.edu
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
