@@ -1,5 +1,5 @@
 export default function IndexPage() {
   return <div>
-    Index Page
+    Index Page (edited from dev branch)
   </div>
 }
