@@ -2,10 +2,11 @@ import { Schema, model , models} from "mongoose";
 
 const userSchema = new Schema(
 	{
-		name: {
-			type: String,
-			required: true,
-		},
+		// commented out as it is unused for now
+		// name: {
+		// 	type: String,
+		// 	required: true,
+		// },
 		email: {
 			type: String,
 			required: true,
