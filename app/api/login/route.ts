@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDb } from "@/lib/connectToDb";
 import User from "@/server/models/user";
-// import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"; // ensure you run "npm install bcryptjs"
 
 export async function POST(req: Request) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 401 });
     }
 
-    const isMatch = password === user.password; // use bcrypt here instead when hashing passwords
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 401 });
     }
