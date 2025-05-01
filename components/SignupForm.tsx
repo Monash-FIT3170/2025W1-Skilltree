@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 
 const SignupForm = () => {
@@ -56,7 +57,7 @@ const SignupForm = () => {
             onChange={handleChange}
             name="username"
             type="text"
-            placeholder="Enter your email"
+            placeholder="Enter your username"
             className="w-full px-4 py-2 bg-white/20 rounded"
             required
           />
@@ -78,7 +79,16 @@ const SignupForm = () => {
         >
           {loading ? "Signing up..." : "Submit"}
         </button>
+
         {message && <p className="text-center mt-4">{message}</p>}
+
+        {/* Link to the login page */}
+        <div className="text-center mt-4">
+          <span>Already have an account? </span>
+          <Link href="/login" className="text-blue-500 hover:underline">
+            Log In
+          </Link>
+        </div>
       </form>
     </div>
   );
