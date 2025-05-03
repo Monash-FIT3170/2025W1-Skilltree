@@ -12,6 +12,7 @@ body {
     height: 100vh;
     box-sizing: border-box;
 }
+
 .top-section {
     width: 100%;
     display: flex;
@@ -26,6 +27,7 @@ body {
 
 .search-bar {
     display: flex;
+    margin : 20px 0;
     align-items: center; /* Align items vertically */
     justify-content: center;
     background-color: #ddd;
@@ -50,12 +52,19 @@ body {
 .input::placeholder {
     color: #000000;
 }
+
 .search-bar::before {
-    content: 'O'; /* Unicode for magnifying glass */
-    font-size: 18px;
+    content: '';
+    display: inline-block;
+    width: 20px; /* Set image width */
+    height: 20px; /* Set image height */
     margin-right: 10px;
-    color: #666;
+    background-image: url('https://www.freeiconspng.com/thumbs/search-icon-png/search-icon-png-5.png'); /* Path to the image */
+    background-size: contain; /* Ensure the image fits within the dimensions */
+    background-repeat: no-repeat; /* Prevent repeating */
+    background-position: center; /* Center the image */
 }
+
 .profile-section {
     display: flex;
     align-items: center;
