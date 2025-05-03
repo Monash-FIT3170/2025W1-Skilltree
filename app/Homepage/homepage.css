@@ -48,7 +48,7 @@ body {
 }
 
 .input::placeholder {
-    color: #888;
+    color: #000000;
 }
 .search-bar::before {
     content: 'O'; /* Unicode for magnifying glass */
