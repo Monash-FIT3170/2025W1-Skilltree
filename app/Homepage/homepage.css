@@ -18,6 +18,11 @@ body {
     align-items: center;
     padding: 10px 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Make the navigation bar fixed */
+    height: 100%; /* Full height */
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .nav-item {
@@ -36,12 +41,14 @@ body {
 }
 
 .main-content {
+    margin-left: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     height: 100vh;
     box-sizing: border-box;
+    padding: 20px;
 }
 
 .top-section {
@@ -116,4 +123,40 @@ body {
     margin-left: 10px;
     font-size: 16px;
     font-weight: bold;
+}
+/* Community section */
+.community-section {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.community-section h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.community-grid, .event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.community-tile, .event-tile {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.community-tile:hover, .event-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
