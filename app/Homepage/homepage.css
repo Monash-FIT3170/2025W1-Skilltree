@@ -7,14 +7,21 @@ body {
 .main-content {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box;
+}
+.top-section {
+    width: 100%;
+    display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .search-bar {
@@ -22,8 +29,12 @@ body {
     align-items: center;
     background-color: #ddd;
     border-radius: 20px;
-    padding: 10px 20px;
+    padding: 5px 15px;
+    width: 60%; /* Adjust width as needed */
+    max-width: 800px; /* Optional: Limit the maximum width */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 
 .input {
     flex: 1;
@@ -37,9 +48,14 @@ body {
 }
 
 .input::placeholder {
-    color: #888;
+    color: #000000;
 }
-
+.search-bar::before {
+    content: 'O'; /* Unicode for magnifying glass */
+    font-size: 18px;
+    margin-right: 10px;
+    color: #666;
+}
 .profile-section {
     display: flex;
     align-items: center;
