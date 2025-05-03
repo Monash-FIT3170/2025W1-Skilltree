@@ -1,5 +1,9 @@
+import Homepage from './Homepage/homepage';
+
 export default function IndexPage() {
-  return <div>
-    Index Page (edited from homepage branch)
-  </div>
+  return (
+    <div>
+      <Homepage />
+    </div>
+  );
 }
