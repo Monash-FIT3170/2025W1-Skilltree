@@ -5,7 +5,6 @@ const Homepage: React.FC = () => {
     return (
         <div className="main-content">
             <div className="search-bar">
-                <img src="/app/Homepage/image.png" alt="Search Icon" /> 
                 <input type="text" placeholder="Search Your Communities" className="input" />
             </div>
             <div className="community-section">
