@@ -19,25 +19,32 @@ body {
 
 .search-bar {
     display: flex;
-    align-items: center;
+    align-items: center; /* Align items vertically */
+    justify-content: center;
     background-color: #ddd;
     border-radius: 20px;
     padding: 10px 20px;
 }
 
+.search-bar img {
+    width: 20px; /* Set image width */
+    height: 20px; /* Set image height */
+    margin-right: 10px; /* Add space between image and input */
+}
+
 .input {
     flex: 1;
     border: none;
-    background: #ffffff;
+    background: #ddd;
     outline: none;
     margin-left: 10px;
     font-size: 16px;
-    color: #333;
+    color: #ffffff;
     padding: 5px;
 }
 
 .input::placeholder {
-    color: #888;
+    color: #000; /* Change placeholder text color to white */
 }
 
 .profile-section {
@@ -56,6 +63,7 @@ body {
 }
 
 .profile-name {
+    color: #000;
     margin-left: 10px;
     font-size: 16px;
     font-weight: bold;
