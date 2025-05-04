@@ -31,7 +31,7 @@ const Homepage: React.FC = () => {
                         <h2>Recent events:</h2>
                     <div className="event-grid">
                         <div className="event-tile">Event 1</div>
- 
+                        <div className="event-tile">Event 2</div>
                     </div>
                     </div>
             </div>
