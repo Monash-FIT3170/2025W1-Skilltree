@@ -7,6 +7,8 @@ const Homepage: React.FC = () => {
             <div className="left-nav">
                 <button className="nav-item">X</button>
                 <button className="nav-item">Y</button>
+                <button className="nav-item">A</button>
+                <button className="nav-item">B</button>
             </div>
         
         <div className="main-content">
