@@ -24,14 +24,14 @@ const Homepage: React.FC = () => {
                 <div className="community-section">
                     <h2>Subscribed communities:</h2>
                     <div className="community-grid">
-                        <div className="community-tile">Community 1</div>
-                        <div className="community-tile">Community 2</div>
-                        <div className="community-tile">Community 3</div>
+                        <div className="community-tile"></div>
+                        <div className="community-tile"></div>
+                        <div className="community-tile"></div>
                         
                         <h2>Recent events:</h2>
                     <div className="event-grid">
-                        <div className="event-tile">Event 1</div>
-                        <div className="event-tile">Event 2</div>
+                        <div className="event-tile"></div>
+                        <div className="event-tile"></div>
                     </div>
                     </div>
             </div>
