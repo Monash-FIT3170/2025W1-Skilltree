@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { connectToDb } from "@/lib/connectToDb";
 import User from "@/server/models/user";
-import bcrypt from "bcryptjs"; // ensure you run "npm install bcryptjs"
+import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-
     await connectToDb();
-    
+
     const body = await req.json();
     const { username, password } = body;
 
@@ -22,7 +21,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 401 });
     }
 
-    return NextResponse.json({ success: true, message: "Login successful" });
+    //Create a response and set cookie
+    const response = NextResponse.json({
+      success: true,
+      message: "Login successful",
+    });
+
+    //Set cookie (basic example, ideally use JWT later)
+    response.cookies.set("token", "sample-auth-token", {
+      httpOnly: true,
+      path: "/",
+      maxAge: 60 * 60 * 24, // 1 day
+    });
+
+    return response;
   } catch (err) {
     console.error(err);
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
