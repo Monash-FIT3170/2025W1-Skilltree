@@ -71,6 +71,13 @@ const LoginForm = () => {
 				required
 			  />
 			</div>
+
+			{/* Link to the forget password page */}
+			<div className="text-left mt-4">
+			  <Link href="/forgetpass" className="text-blue-500 hover:underline">
+				Forget Password?
+			  </Link>
+			</div>
 	
 			<button
 			  type="submit"
