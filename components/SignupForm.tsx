@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+import "../app/styles/styles.css";
 
 const SignupForm = () => {
   const [form, setForm] = useState({

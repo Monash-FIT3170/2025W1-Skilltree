@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+import "../app/styles/styles.css";
 
 const LoginForm = () => {
 	const [form, setForm] = useState({
@@ -49,16 +50,16 @@ const LoginForm = () => {
 	};
 
 	return (
-		<div className="w-full max-w-md mx-auto my-10">
-		  <form onSubmit={handleSubmit} className="space-y-6">
-			<div className="flex flex-col gap-3">
+		<div className="form-container">
+		  <form onSubmit={handleSubmit} className="form">
+			<div className="form-input-group">
 			  <input
 				value={form.username}
 				onChange={handleChange}
 				name="username"
 				type="text"
 				placeholder="Enter your username"
-				className="w-full px-4 py-2 bg-white/20 rounded"
+				className="form-input"
 				required
 			  />
 			  <input
@@ -67,32 +68,30 @@ const LoginForm = () => {
 				name="password"
 				type="password"
 				placeholder="Enter your password"
-				className="w-full px-4 py-2 bg-white/20 rounded"
+				className="form-input"
 				required
 			  />
 			</div>
-
-			{/* Link to the forget password page */}
-			<div className="text-left mt-4">
-			  <Link href="/forgetpass" className="text-blue-500 hover:underline">
+	
+			<div className="forgot-password-link">
+			  <Link href="/forgetpass" className="link">
 				Forget Password?
 			  </Link>
 			</div>
 	
 			<button
 			  type="submit"
-			  className="w-1/2 py-2 bg-white/20 rounded mx-auto block"
+			  className="form-submit-button"
 			  disabled={loading}
 			>
 			  {loading ? "Logging in..." : "Submit"}
 			</button>
 	
-			{message && <p className="text-center mt-4">{message}</p>}
+			{message && <p className="message">{message}</p>}
 	
-			{/* Link to the signup page */}
-			<div className="text-center mt-4">
+			<div className="signup-link">
 			  <span>Don't have an account? </span>
-			  <Link href="/signup" className="text-blue-500 hover:underline">
+			  <Link href="/signup" className="link">
 				Sign Up
 			  </Link>
 			</div>
@@ -100,5 +99,5 @@ const LoginForm = () => {
 		</div>
 	  );
 	};
-
+	
 export default LoginForm;

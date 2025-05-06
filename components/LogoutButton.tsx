@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import "../app/styles/styles.css";
 
 const LogoutButton = () => {
   const router = useRouter();
