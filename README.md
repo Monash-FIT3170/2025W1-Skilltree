@@ -12,6 +12,7 @@ The project follows a standard Next.js application structure with additional org
 - `/components`: UI components organized by category
 - `/hooks`: Custom React hooks
 - `/lib`: Utility functions and shared code
+- `/models`: Database models using Mongoose
 
 ### Component Structure
 
@@ -19,6 +20,38 @@ Components are organized into logical groups:
 
 - `/components/ui`: Reusable UI components based on Radix UI primitives
 - `/components/shared`: Shared components used across different parts of the application
+
+### Models Structure
+
+The application uses MongoDB with Mongoose for data modeling. Models are organized in the `/models` directory:
+
+- `User.ts`: User account information
+- `SkillForest.ts`: A user's collection of communities and followers
+- `Experience.ts`: Experience points for users in communities
+- `Community.ts`: Community information including skill type and members
+- `SkillTreeNode.ts`: Nodes in a community's skill tree
+- `Leaderboard.ts`: Community leaderboards tracking user progress
+- `Post.ts`: User posts within communities
+- `Feedback.ts`: User feedback on posts
+- `Verification.ts`: Verification requests for community skill validation
+- `Event.ts`: Community events with experience rewards
+
+Models follow a consistent pattern with Mongoose schemas and TypeScript types exported:
+
+```typescript
+// Schema definition
+const modelSchema = new Schema({
+  // Schema fields
+});
+
+// Export the model and its TypeScript type
+export const Model = models.Model || model("Model", modelSchema);
+export type ModelType = {
+  // TypeScript type definition
+};
+```
+
+All models are re-exported from an index file for convenient importing throughout the application.
 
 ### Import/Export Patterns
 
