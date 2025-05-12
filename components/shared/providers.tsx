@@ -98,25 +98,6 @@ function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <div className="flex items-center justify-start gap-2">
-          <Avatar className="size-[48px]">
-            <AvatarImage
-              height={48}
-              width={48}
-              src="/images/avatar.png"
-              alt="Avatar"
-            />
-            <AvatarFallback className="bg-primary text-primary-foreground">
-              U
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col items-start justify-center">
-            <p className="text-xl font-bold">User</p>
-            <p className="text-sm text-muted-foreground">user@domain.com</p>
-          </div>
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }
