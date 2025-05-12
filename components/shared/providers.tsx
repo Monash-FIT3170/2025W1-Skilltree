@@ -68,6 +68,10 @@ export const Providers = ({
 };
 
 function AppSidebar() {
+  "use client";
+
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
@@ -76,15 +80,15 @@ function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Home">
-                  <a href="/">
+                  <Link href="/">
                     <HomeIcon size={48} />
                     <span>Home</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
-                <SidebarMenuButton asChild tooltip="Add Community">
+                <SidebarMenuButton asChild tooltip="Add a Community">
                   <Link href="/communities/add">
-                    <PlusIcon size={48} />
-                    <span>Add Community</span>
+                    <AwardIcon size={48} />
+                    <span>Add a Community</span>
                   </Link>
                 </SidebarMenuButton>
                 <SidebarMenuButton asChild tooltip="Achievements">
