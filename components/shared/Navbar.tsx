@@ -1,8 +1,3 @@
-import { Input } from "../ui/input";
-import { SidebarTrigger } from "../ui/sidebar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-
 export const Navbar = () => {
   return (
     <header className="border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
