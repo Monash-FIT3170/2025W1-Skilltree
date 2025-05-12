@@ -7,7 +7,7 @@ export const Navbar = () => {
   return (
     <header className="border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
       <div className="w-full flex items-center justify-between gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
+        <SidebarTrigger className="text-foreground cursor-pointer" />
 
         <Input
           className="w-[300px] md:w-[400px] lg:w-[500px]"
