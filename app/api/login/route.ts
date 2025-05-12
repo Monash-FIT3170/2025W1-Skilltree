@@ -2,16 +2,16 @@ import { NextResponse } from "next/server";
 import { connectToDb } from "@/lib/connectToDb";
 import User from "@/server/models/user";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET!; // Add to .env
 
 export async function POST(req: Request) {
   try {
     await connectToDb();
-
-    const body = await req.json();
-    const { username, password } = body;
+    const { username, password } = await req.json();
 
     const user = await User.findOne({ email: username });
-
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 401 });
     }
@@ -21,17 +21,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 401 });
     }
 
-    //Create a response and set cookie
-    const response = NextResponse.json({
-      success: true,
-      message: "Login successful",
-    });
+    // generate a token for user session 
+    const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: "1d" });
 
-    //Set cookie (basic example, ideally use JWT later)
-    response.cookies.set("token", "sample-auth-token", {
+    const response = NextResponse.json({ success: true, message: "Login successful" });
+
+    response.cookies.set("token", token, {
       httpOnly: true,
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 60 * 60 * 24,
     });
 
     return response;

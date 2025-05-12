@@ -23,6 +23,19 @@ h1, h2, h3, h4, h5 {
     padding-bottom: 2.5rem;
 }
 
+/* Styling for the logged-in status text */
+.user-info-container {
+  width: 100%;              /* Ensures the text container takes full width */
+  text-align: center;       /* Centers the text horizontally */
+  margin-bottom: 20px;      /* Space between user info and the form */
+}
+
+.user-info {
+  font-size: 18px;          /* You can adjust the font size */
+  color: #f6f7fa;            /* Text color */
+  font-weight: bold;        /* Optional: make the text bold */
+}
+
 .form {
     display: flex;
     flex-direction: column;
