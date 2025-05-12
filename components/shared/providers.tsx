@@ -21,6 +21,7 @@ import { HomeIcon, AwardIcon, PlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useState } from "react";
 
 export const Providers = ({
   children,
