@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/shared";
 import { Providers } from "@/components/shared/providers";
 
 const geistSans = Montserrat({
