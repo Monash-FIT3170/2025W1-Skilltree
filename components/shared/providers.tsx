@@ -62,7 +62,7 @@ export const Providers = ({
             </div>
           </div>
         </header>
-        <main className="p-5">{children}</main>
+        <main className="p-5 flex items-center justify-center min-h-[calc(100vh-4rem)]">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

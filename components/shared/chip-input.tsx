@@ -57,7 +57,7 @@ export function ChipInput({
             onClick={() => removeChip(chip)}
             key={chip}
             variant="outline"
-            className="z-0 gap-1 px-3 py-1 bg-white hover:bg-destructive/10 transition-colors cursor-pointer"
+            className="z-0 gap-1 text-primary-foreground px-3 py-1 bg-primary hover:bg-destructive/10 transition-colors cursor-pointer"
           >
             {chip}
           </Badge>

@@ -1,11 +1,11 @@
-import LoginForm from "@/components/LoginForm";
+import SignupForm from "@/components/SignupForm";
 
-export default function LogInPage() {
+export default function SignupPage() {
   return (
     <div className="flex justify-center flex-col items-center w-full">
-      <h1 className="text-center text-2xl mb-5">Login</h1>
+      <h1 className="text-center text-2xl mb-5">Sign Up</h1>
       <div className="flex items-center justify-center max-w-2xl mx-auto w-full">
-        <LoginForm />
+        <SignupForm />
       </div>
     </div>
   );
