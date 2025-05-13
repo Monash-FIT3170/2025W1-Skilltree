@@ -1,7 +1,3 @@
-export default function LogInPage() {
-  return <div>Log In Page</div>;
-}
-
 import LoginForm from "@/components/LoginForm";
 
 export default function LogInPage() {
