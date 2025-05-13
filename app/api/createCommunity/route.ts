@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDb } from "@/lib/connectToDb";
-import Community from "@/server/models/community";
+import { Community } from "@/models/Community";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
