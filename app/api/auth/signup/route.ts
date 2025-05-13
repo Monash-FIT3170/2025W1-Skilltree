@@ -8,20 +8,21 @@ export async function POST(req: Request) {
   try {
     await connectToDb();
 
-    const { username, password } = await req.json();
+    const { name, email, password } = await req.json();
 
     // check if the user already exists
-    const existingUser = await User.findOne({ email: username });
+    const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       return NextResponse.json({ success: false, message: "User already exists" }, { status: 400 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     //if the user doesn't already exist, create one
     const newUser = new User({
-      email: username,
-      password: hashedPassword,
+      name: name,
+      email: email,
+      password: password,
     });
 
     await newUser.save();

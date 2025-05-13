@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDb } from "@/lib/connectToDb";
 import { User } from "@/models/User";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET!; // Add to .env
@@ -9,14 +8,14 @@ const JWT_SECRET = process.env.JWT_SECRET!; // Add to .env
 export async function POST(req: Request) {
   try {
     await connectToDb();
-    const { username, password } = await req.json();
+    const { email, password } = await req.json();
 
-    const user = await User.findOne({ email: username });
+    const user = await User.findOne({ email: email }).select("+password");
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 401 });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 401 });
     }

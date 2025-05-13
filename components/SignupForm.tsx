@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import "../app/styles/styles.css";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
+  const router = useRouter();
+  
   const [form, setForm] = useState({
-    username: "",
+    name: "",
+    email: "",
     password: "",
   });
 
@@ -31,7 +36,8 @@ const SignupForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: form.username,
+          name: form.name,
+          email: form.email,
           password: form.password,
         }),
       });
@@ -53,43 +59,46 @@ const SignupForm = () => {
     <div className="w-full max-w-md mx-auto my-10">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col gap-3">
-          <input
-            value={form.username}
+          <Input
+            value={form.name}
             onChange={handleChange}
-            name="username"
+            name="name"
             type="text"
-            placeholder="Enter your username"
-            className="w-full px-4 py-2 bg-white/20 rounded"
+            placeholder="Enter your name"
             required
           />
-          <input
+          <Input
+            value={form.email}
+            onChange={handleChange}
+            name="email"
+            type="text"
+            placeholder="Enter your email"
+            required
+          />
+          <Input
             value={form.password}
             onChange={handleChange}
             name="password"
             type="password"
             placeholder="Enter your password"
-            className="w-full px-4 py-2 bg-white/20 rounded"
             required
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-1/2 py-2 bg-white/20 rounded mx-auto block"
-          disabled={loading}
-        >
-          {loading ? "Signing up..." : "Submit"}
-        </button>
+        <Button className="flex-1" type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Submit"}
+        </Button>
 
         {message && <p className="text-center mt-4">{message}</p>}
 
-        {/* Link to the login page */}
-        <div className="text-center mt-4">
-          <span>Already have an account? </span>
-          <Link href="/login" className="text-blue-500 hover:underline">
-            Log In
-          </Link>
-        </div>
+        <Button
+          type="button"
+          onClick={() => router.push("/login")}
+          className="w-full"
+          variant="link"
+        >
+          Already have an account? Log in
+        </Button>
       </form>
     </div>
   );

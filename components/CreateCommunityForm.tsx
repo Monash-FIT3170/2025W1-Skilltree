@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import "../app/styles/styles.css";
 
 const CreateCommunityForm = () => {
   const [form, setForm] = useState({
