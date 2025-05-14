@@ -1,0 +1,51 @@
+### Get the current user
+GET http://localhost:6969/user/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+
+### Login the user
+POST http://localhost:6969/auth/signin
+Content-Type: application/json
+
+{
+  "email": "john@doe.com",
+  "password": "John@Doe@New@123"
+}
+
+### Register the user
+POST http://localhost:6969/auth/signup
+Content-Type: application/json
+
+{
+  "email": "john@doe.com",
+  "password": "John@Doe@123"
+}
+
+### Forgot password
+PATCH http://localhost:6969/auth/forgot-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+
+{
+  "password": "John@Doe@New@123"
+}
+
+### Create community
+POST http://localhost:6969/community
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+
+{
+  "name": "Comm1",
+  "skill": "Web Development",
+  "tags": [
+    "react",
+    "next"
+  ]
+}
+
+### Get all communities
+GET http://localhost:6969/community
+
+### Create community
+GET http://localhost:6969/community?id=cman5tblx000277m7c8w7q3nu
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
