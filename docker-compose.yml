@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  dev-db:
+    image: postgres:latest
+    container_name: template-db
+    ports:
+      - '5431:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: template_db
+    networks:
+      - dev-network
+
+networks:
+  dev-network:
+    driver: bridge

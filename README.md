@@ -6,6 +6,21 @@ Skill Tree is a web application that helps users build their skills and excel in
 
 The project follows a standard Next.js application structure with additional organization for components and utilities.
 
+## Before Running
+
+1. Setup the PostgreSQL container
+
+   ```bash
+   npm run setup:postgres
+   ```
+
+2. Run the server
+   ```bash
+   npm run server
+   ```
+
+## Directory Structure
+
 ### Root Directories
 
 - `/app`: Contains Next.js application routes and layouts
