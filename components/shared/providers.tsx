@@ -21,7 +21,8 @@ import { HomeIcon, AwardIcon, PlusIcon } from "lucide-react";
 import { Navbar } from "./Navbar";
 import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useState } from "react";
-import { useState } from "react";
+import { Input } from "../ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
 
 export const Providers = ({
   children,
