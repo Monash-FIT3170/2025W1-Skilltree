@@ -18,10 +18,9 @@ import {
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { HomeIcon, AwardIcon, PlusIcon } from "lucide-react";
-import { Navbar } from "./Navbar";
-import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useState } from "react";
-import { useState } from "react";
+import { Input } from "../ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export const Providers = ({
   children,
@@ -62,7 +61,9 @@ export const Providers = ({
             </div>
           </div>
         </header>
-        <main className="p-5 flex items-center justify-center min-h-[calc(100vh-4rem)]">{children}</main>
+        <main className="p-5 flex items-center justify-center min-h-[calc(100vh-4rem)]">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
