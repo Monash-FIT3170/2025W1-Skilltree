@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { HomeIcon, AwardIcon, PlusIcon } from "lucide-react";
+import { HomeIcon, AwardIcon, PlusIcon, SlidersHorizontalIcon } from "lucide-react";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -97,6 +97,12 @@ function AppSidebar() {
                   <Link href="/achievements">
                     <AwardIcon size={48} />
                     <span>Achievements</span>
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild tooltip="Manage Communities">
+                  <Link href="/communities/manage">
+                    <SlidersHorizontalIcon size={48} />
+                    <span>Manage Communities</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
