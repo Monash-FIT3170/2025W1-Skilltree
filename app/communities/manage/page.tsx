@@ -32,10 +32,15 @@ type Community = {
 
 export default function ManageCommunities() {
   const [communities] = useState<Community[]>([
-    { id: 1, name: "     " },
-    { id: 2, name: "     " },
-    { id: 3, name: "     " },
+    { id: 1, name: " Community 1    " },
+    { id: 2, name: " Community 2   " },
+    { id: 3, name: " Community 3    " },
   ]);
+    const [currentUser] = useState({
+    id: 1,
+    name: "You" // This should come from your auth system
+  });
+
 
   const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(
     null
@@ -183,14 +188,18 @@ export default function ManageCommunities() {
       setCommunityDescription("");
       setIconFile(null);
       setIconPreview(null);
-      setMembers([]);
+      setMembers([{
+        id: currentUser.id,
+        name: currentUser.name,
+        role: "admin"
+      }]);;
       setNewMemberName("");
       setNewMemberRole("member");
       setIsPrivate(false);
       setAllowPosts(true);
       setPendingProofs([
         { id: 1, user: " ", proofType: "ID Verification" },
-        { id: 2, user: " ", proofType: " " },
+        { id: 2, user: " ", proofType: " Proof" },
       ]);
       setEvents([]);
       setNewEventTitle("");
@@ -201,7 +210,7 @@ export default function ManageCommunities() {
       setAnnouncementPreview(false);
       setAvailableRoles(["admin", "member"]); // reset roles on new community load
     }
-  }, [selectedCommunity]);
+  }, [selectedCommunity,currentUser]);
 
   if (!selectedCommunity) {
     return (
