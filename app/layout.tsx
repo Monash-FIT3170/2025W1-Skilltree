@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/shared/providers";
 
 const geistSans = Montserrat({
   variable: "--font-montserrat",
@@ -25,5 +26,5 @@ export default function RootLayout({
         {children}
       </body>
     </html>
-  );
+  )
 }
