@@ -20,7 +20,11 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "types": [
+      // ...other types if any...
+      // Remove 'bcryptjs' if present, or add only if you have types installed
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
