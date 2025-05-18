@@ -36,18 +36,37 @@ const TextEditor = ({
 type Community = {
   id: number;
   name: string;
+  tags?: string[];
+  description?: string;
+  icon?: string | null;
+  createdAt?: string;
+  creatorId?: number;
 };
 
 export default function ManageCommunities() {
-  const [communities] = useState<Community[]>([
-    { id: 1, name: "   " },
-    { id: 2, name: "   " },
-    { id: 3, name: "   " },
-  ]);
+  const [communities, setCommunities] = useState<Community[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('communities');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
     const [currentUser] = useState({
     id: 1,
     name: "You" // This should come from your auth system
   });
+  useEffect(() => {
+    const loadCommunities = () => {
+      const saved = localStorage.getItem('communities');
+      if (saved) {
+        setCommunities(JSON.parse(saved));
+      }
+    };
+
+    loadCommunities();
+    window.addEventListener('storage', loadCommunities);
+    return () => window.removeEventListener('storage', loadCommunities);
+  }, []);
 
 
   const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(
