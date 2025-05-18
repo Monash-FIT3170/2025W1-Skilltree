@@ -39,13 +39,16 @@ type Community = {
 };
 
 export default function ManageCommunities() {
-  const [communities] = useState<Community[]>(
-    [
-      { id: 1, name: "     " },
-      { id: 2, name: "     " },
-      { id: 3, name: "     " },
-    ]
-  );
+  const [communities] = useState<Community[]>([
+    { id: 1, name: "   " },
+    { id: 2, name: "   " },
+    { id: 3, name: "   " },
+  ]);
+    const [currentUser] = useState({
+    id: 1,
+    name: "You" // This should come from your auth system
+  });
+
 
   const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(
     null
@@ -196,7 +199,11 @@ export default function ManageCommunities() {
       setCommunityDescription("");
       setIconFile(null);
       setIconPreview(null);
-      setMembers([]);
+      setMembers([{
+        id: currentUser.id,
+        name: currentUser.name,
+        role: "admin"
+      }]);;
       setNewMemberName("");
       setNewMemberRole("member");
       setIsPrivate(false);
@@ -214,7 +221,7 @@ export default function ManageCommunities() {
       setAnnouncementPreview(false);
       setAvailableRoles(["admin", "moderator", "member"]); // reset roles on new community load
     }
-  }, [selectedCommunity]);
+  }, [selectedCommunity,currentUser]);
 
   if (!selectedCommunity) {
     return (
