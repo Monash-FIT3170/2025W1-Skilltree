@@ -11,7 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { useRouter } from "next/navigation";
+
 export default function CommunityForm() {
+    const router = useRouter()
   const [communityName, setCommunityName] = useState("");
   const [communityTags, setCommunityTags] = useState<string[]>(["Community"]);
   const [communityDescription, setCommunityDescription] = useState(
@@ -30,12 +33,35 @@ export default function CommunityForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      name: communityName,
+    if (!communityName.trim()) {
+      alert("Community name is required");
+      return;
+    }
+
+    const newCommunity = {
+      id: Date.now(),
+      name: communityName.trim(),
       tags: communityTags,
       description: communityDescription,
-      icon: iconFile,
-    });
+
+      icon: iconPreview,
+      createdAt: new Date().toISOString(),
+      creatorId: 1,
+    };
+        try {
+      const existingCommunities = JSON.parse(localStorage.getItem('communities') || '[]');
+      const updatedCommunities = [...existingCommunities, newCommunity];
+      localStorage.setItem('communities', JSON.stringify(updatedCommunities));
+      router.push('/communities/manage');
+    } catch (error) {
+      console.error('Error saving community:', error);
+      alert('Failed to save community. Please try again.');
+    }
+  }; // Remove the extra '}' and ';' that were here
+
+  // Add the handleCancel function here
+  const handleCancel = () => {
+    router.push('/communities/manage');
   };
 
   return (
@@ -121,7 +147,7 @@ export default function CommunityForm() {
           </div>
         </div>
         <div className="flex justify-end gap-4">
-          <Button variant="destructive" type="button">
+          <Button variant="destructive" type="button" onClick={handleCancel}>
             Cancel
           </Button>
           <Button type="submit" className="hover:bg-[#1e293b]">
