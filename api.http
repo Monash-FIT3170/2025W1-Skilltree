@@ -1,38 +1,38 @@
 ### Get the current user
-GET http://localhost:3000/user/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+GET http://localhost:6969/user/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
 
 ### Login the user
-POST http://localhost:3000/auth/signin
+POST http://localhost:6969/auth/signin
 Content-Type: application/json
 
 {
   "email": "john@doe.com",
-  "password": "John@Doe@New@123"
+  "password": "JohnDoe@123"
 }
 
 ### Register the user
-POST http://localhost:3000/auth/signup
+POST http://localhost:6969/auth/signup
 Content-Type: application/json
 
 {
   "email": "john@doe.com",
-  "password": "John@Doe@123"
+  "password": "JohnDoe@123"
 }
 
 ### Forgot password
-PATCH http://localhost:3000/auth/forgot-password
+PATCH http://localhost:6969/auth/forgot-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
 
 {
   "password": "John@Doe@New@123"
 }
 
 ### Create community
-POST http://localhost:3000/community
+POST http://localhost:6969/community
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
 
 {
   "name": "Comm1",
@@ -44,8 +44,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzd
 }
 
 ### Get all communities
-GET http://localhost:3000/community
+GET http://localhost:6969/community
 
 ### Create community
-GET http://localhost:3000/community?id=cman5tblx000277m7c8w7q3nu
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+GET http://localhost:6969/community?id=cmaukktzd00012oinsqdl9q39
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+
+###
+POST http://localhost:6969/event
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+Content-Type: application/json
+
+{
+  "name": "Event1",
+  "commmunityId": "cmaukktzd00012oinsqdl9q39",
+  "experienceId": "cmauko3ku00002ouymuw73ubv"
+}

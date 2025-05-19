@@ -12,6 +12,7 @@ import { CommunityModule } from './community/community.module';
 import { UserService } from './user/user.service';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     CommunityModule,
     UserModule,
+    EventModule,
   ],
   controllers: [AppController, AuthController, UserController],
   providers: [AppService, AuthService, PrismaService, JwtService, UserService],
