@@ -78,7 +78,7 @@ export class CommunityService {
     await this.prisma.community.update({
       where: { id: communityId },
       data: {
-        verifiedUsers: {
+        users: {
           connect: { id: user.id },
         },
       },
@@ -99,7 +99,7 @@ export class CommunityService {
     await this.prisma.community.update({
       where: { id: communityId },
       data: {
-        verifiedUsers: {
+        users: {
           disconnect: { id: user.id },
         },
       },
@@ -127,7 +127,7 @@ export class CommunityService {
     const community = await this.prisma.community.findUnique({
       where: { id: communityId },
       include: {
-        verifiedUsers: true,
+        users: true,
       },
     });
 
@@ -135,6 +135,6 @@ export class CommunityService {
       throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
     }
 
-    return { message: community.verifiedUsers };
+    return { message: community.users };
   }
 }
