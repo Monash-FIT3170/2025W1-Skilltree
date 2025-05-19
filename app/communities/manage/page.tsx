@@ -219,7 +219,7 @@ export default function ManageCommunities() {
   if (!selectedCommunity) {
     return (
       <div className="max-w-2xl mx-auto  gap-4">
-        <h2 className="text-2xl font-semibold mb-4">Your Communities</h2>
+        <h2 className="2xl font-semibold mb-4">Your Communities</h2>
         <ul className="space-y-3">
           {communities.map((c) => (
             <li key={c.id}>
@@ -239,7 +239,7 @@ export default function ManageCommunities() {
 
   return (
     <div className="min-h-screen min-w-full flex flex-col">
-      <header className="w-full px-8 py-4 bg-white border-b flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+      <header className="w-full px-8 py-4 border-b flex flex-col md:flex-row md:items-center md:justify-between gap-2">
         <Button
           variant="ghost"
           size="sm"
@@ -250,10 +250,10 @@ export default function ManageCommunities() {
           <span>Back to Communities</span>
         </Button>
       </header>
-      
-      <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-10 p-8 bg-gray-50">
+
+      <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-10 p-8">
         <section>
-          <h2 className="text-2xl font-semibold mb-4 flex items-center justify-between">
+          <h2 className="2xl font-semibold mb-4 flex items-center justify-between">
             Community Settings
             {/* Dropdown menu with 3 dots */}
             <DropdownMenu>
@@ -264,20 +264,20 @@ export default function ManageCommunities() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="bg-white border rounded shadow-md min-w-[160px]"
+                className="border rounded shadow-md min-w-[160px]"
               >
                 <DropdownMenuItem
-                  className="cursor-pointer px-4 py-2 hover:bg-gray-100 text-base"
+                  className="cursor-pointer px-4 py-2  "
                   onSelect={(e) => {
                     e.preventDefault();
-                     setDialogOpen(true);
-                     
+                    setDialogOpen(true);
+
                   }}
                 >
                   Add Event
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="cursor-pointer px-4 py-2 hover:bg-gray-50 text-base"
+                  className="cursor-pointer px-4 py-2  "
                   onSelect={(e) => {
                     e.preventDefault();
                     setAnnouncementDialogOpen(true);
@@ -317,19 +317,19 @@ export default function ManageCommunities() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="community-icon" className="text-base font-medium">
+              <Label htmlFor="community-icon" className=" font-medium">
                 Community Icon :
               </Label>
               <div className="flex items-center">
                 <label htmlFor="icon-upload" className="cursor-pointer">
-                  <Avatar className="h-24 w-24 bg-gray-200 hover:opacity-80 transition-opacity">
+                  <Avatar className="h-24 w-24  hover:opacity-80 transition-opacity">
                     {iconPreview ? (
                       <AvatarImage
                         src={iconPreview || "/placeholder.svg"}
                         alt="Community icon"
                       />
                     ) : (
-                      <AvatarFallback className="bg-gray-200 text-gray-500">
+                      <AvatarFallback className=" -500">
                         <Plus className="h-8 w-8" />
                       </AvatarFallback>
                     )}
@@ -369,10 +369,10 @@ export default function ManageCommunities() {
         </section>
         {/* Members & Roles */}
         <section>
-          <h1 className="text-3xl font-bold mb-6">
+          <h1 className="3xl font-bold mb-6">
             Manage: {selectedCommunity.name}
           </h1>
-          <h2 className="text-2xl font-semibold mb-4">Members & Roles</h2>
+          <h2 className="2xl font-semibold mb-4">Members & Roles</h2>
 
           {/* Add new role
         <div className="flex items-center space-x-3 mb-4 max-w-md">
@@ -403,20 +403,19 @@ export default function ManageCommunities() {
                   <div>
                     <p className="font-medium">{member.name}</p>
                     {/* Display email below name (mocked for now) */}
-                    <p className="text-xs text-gray-500">
+                    <p className=" -500">
                       {member.name.toLowerCase().replace(/\s/g, "")}@example.com
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span
-                    className={`text-sm font-semibold px-2 py-1 rounded ${
-                      member.role === "admin"
-                        ? "bg-green-200 text-green-800"
-                        : member.role === "member"
-                        ? "bg-gray-200 text-gray-800"
-                        : "bg-blue-200 text-blue-800"
-                    }`}
+                    className={` font-semibold px-2 py-1 rounded ${member.role === "admin"
+                      ? " -800"
+                      : member.role === "member"
+                        ? " -800"
+                        : " -800"
+                      }`}
                   >
                     {member.role.toUpperCase()}
                   </span>
@@ -459,7 +458,7 @@ export default function ManageCommunities() {
             />
 
             <select
-              className="border rounded px-4 py-2 font-semibold bg-black text-white cursor-pointer hover:bg-gray-700"
+              className="border rounded px-4 py-2 font-semibold   cursor-pointer "
               value={selectedRole}
               onChange={(e) => {
                 const role = e.target.value;
@@ -504,12 +503,8 @@ export default function ManageCommunities() {
               onChange={(e) => setNewEventDescription(e.target.value)}
             />
             {eventErrors && (
-              <p className="text-red-600 font-semibold">{eventErrors}</p>
+              <p className="-600 font-semibold">{eventErrors}</p>
             )}
-            <Button onClick={validateAndAddEvent}>
-              <Plus size={16} className="mr-2" />
-              Create Event
-            </Button>
           </div>
           <div>
             {events.length === 0 && <p>No events created yet.</p>}
@@ -517,13 +512,17 @@ export default function ManageCommunities() {
               {events.map((event) => (
                 <li key={event.id} className="border p-3 rounded">
                   <p className="font-semibold">{event.title}</p>
-                  <p className="text-sm text-gray-600">{event.date}</p>
+                  <p className=" -600">{event.date}</p>
                   <p>{event.description}</p>
                 </li>
               ))}
             </ul>
           </div>
           <DialogFooter>
+            <Button onClick={validateAndAddEvent}>
+              <Plus size={16} className="mr-2" />
+              Create Event
+            </Button>
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>
               Close
             </Button>
@@ -531,47 +530,48 @@ export default function ManageCommunities() {
         </DialogContent>
       </Dialog>
       <Dialog open={announcementDialogOpen} onOpenChange={setAnnouncementDialogOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Announcements</DialogTitle>
-              </DialogHeader>
-              <div className="max-w-lg space-y-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setAnnouncementPreview(!announcementPreview)}
-                >
-                  {announcementPreview ? "Edit" : "Preview"}
-                </Button>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Announcements</DialogTitle>
+          </DialogHeader>
+          <div className="max-w-lg space-y-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAnnouncementPreview(!announcementPreview)}
+            >
+              {announcementPreview ? "Edit" : "Preview"}
+            </Button>
 
-                {!announcementPreview && (
-                  <TextEditor value={announcement} onChange={setAnnouncement} />
-                )}
+            {!announcementPreview && (
+              <TextEditor value={announcement} onChange={setAnnouncement} />
+            )}
 
-                {announcementPreview && (
-                  <div className="border p-4 rounded bg-gray-50 whitespace-pre-wrap">
-                    {announcement || <em>No announcement to preview</em>}
-                  </div>
-                )}
-
-                <Button
-                  onClick={() => {
-                    alert("Announcement saved!");
-                    setAnnouncementDialogOpen(false); // Optionally close dialog on save
-                  }}
-                  disabled={!announcement.trim()}
-                >
-                  Save Announcement
-                </Button>
+            {announcementPreview && (
+              <div className="border p-4 rounded  whitespace-pre-wrap">
+                {announcement || <em>No announcement to preview</em>}
               </div>
-              <DialogFooter>
-                <Button variant="ghost" onClick={() => setAnnouncementDialogOpen(false)}>
-                  Close
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            )}
 
-  </div>
+
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                alert("Announcement saved!");
+                setAnnouncementDialogOpen(false); // Optionally close dialog on save
+              }}
+              disabled={!announcement.trim()}
+            >
+              Save Announcement
+            </Button>
+            <Button variant="ghost" onClick={() => setAnnouncementDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+    </div>
   );
 }
