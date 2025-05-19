@@ -47,5 +47,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzd
 GET http://localhost:3000/community
 
 ### Create community
-GET http://localhost:3000/community?id=cman5tblx000277m7c8w7q3nu
+GET http://localhost:3000/community/cman5tblx000277m7c8w7q3nu
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y

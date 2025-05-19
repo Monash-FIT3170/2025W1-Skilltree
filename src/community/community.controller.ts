@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CommunityService } from './community.service';
 import { CommunuityCreationDto } from './dto';
 import { User } from 'generated/prisma';
@@ -21,8 +29,42 @@ export class CommunityController {
     return this.communityService.getAllCommunities();
   }
 
-  @Get('')
-  getCommunityById(@Query() dto: GetCommunityDto) {
+  @Get(':id')
+  getCommunityById(@Param() dto: GetCommunityDto) {
     return this.communityService.getCommunityById(dto);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtGuard)
+  deleteCommunity(@Param('id') id: string, @GetUser() user: User) {
+    return this.communityService.deleteCommunity(id, user);
+  }
+
+  @Post('/join/:communityId')
+  @UseGuards(JwtGuard)
+  joinCommunity(
+    @Param('communityId') communityId: string,
+    @GetUser() user: User,
+  ) {
+    return this.communityService.joinCommunity(communityId, user);
+  }
+
+  @Post('/leave/:communityId')
+  @UseGuards(JwtGuard)
+  leaveCommunity(
+    @Param('communityId') communityId: string,
+    @GetUser() user: User,
+  ) {
+    return this.communityService.leaveCommunity(communityId, user);
+  }
+
+  @Get('/:communityId/members')
+  getCommunityMembers(@Param('communityId') communityId: string) {
+    return this.communityService.getCommunityMembers(communityId);
+  }
+
+  @Get('/:communityId/admins')
+  getCommunityAdmins(@Param('communityId') communityId: string) {
+    return this.communityService.getCommunityAdmins(communityId);
   }
 }
