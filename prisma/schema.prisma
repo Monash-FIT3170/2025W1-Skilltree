@@ -10,20 +10,19 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @default(cuid())
-  email                 String         @unique
+  id                    String        @id @default(cuid())
+  email                 String        @unique
   hash                  String?
-  createdCommunities    Community[]    @relation("CreatedCommunities")
-  adminOfCommunities    Community[]    @relation("AdminCommunities")
-  verifiedInCommunities Community[]    @relation("VerifiedInCommunities")
-  posts                 Post[]         @relation("UserPosts")
-  skillForests          SkillForest[]  @relation("UserSkillForests")
-  followedSkillForests  SkillForest[]  @relation("UserFollowsSkillForest")
-  experiences           Experience[]   @relation("UserExperiences")
-  leaderboardEntries    Leaderboard[]  @relation("LeaderboardUsers")
-  feedback              Feedback[]     @relation("UserFeedback")
-  verifications         Verification[] @relation("UserVerifications")
-  events                Event[]        @relation("UserEvents")
+  createdCommunities    Community[]   @relation("CreatedCommunities")
+  adminOfCommunities    Community[]   @relation("AdminCommunities")
+  verifiedInCommunities Community[]   @relation("VerifiedInCommunities")
+  posts                 Post[]        @relation("UserPosts")
+  skillForests          SkillForest[] @relation("UserSkillForests")
+  followedSkillForests  SkillForest[] @relation("UserFollowsSkillForest")
+  experiences           Experience[]  @relation("UserExperiences")
+  leaderboardEntries    Leaderboard[] @relation("LeaderboardUsers")
+  feedback              Feedback[]    @relation("UserFeedback")
+  events                Event[]       @relation("UserEvents")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -42,13 +41,12 @@ model Community {
   creatorId           String
   creator             User            @relation("CreatedCommunities", fields: [creatorId], references: [id])
   admins              User[]          @relation("AdminCommunities")
-  verifiedUsers       User[]          @relation("VerifiedInCommunities")
+  users               User[]          @relation("VerifiedInCommunities")
   skillTreeNodes      SkilltreeNode[] @relation("CommunitySkillTreeNodes")
   posts               Post[]          @relation("CommunityPosts")
   skillForests        SkillForest[]   @relation("CommunitySkillForests")
   experiences         Experience[]    @relation("CommunityExperiences")
   leaderboards        Leaderboard[]   @relation("CommunityLeaderboards")
-  verifications       Verification[]  @relation("CommunityVerifications")
   events              Event[]         @relation("CommunityEvents")
 
   createdAt DateTime @default(now())
@@ -76,15 +74,14 @@ model SkilltreeNode {
 }
 
 model Post {
-  id            String         @id @default(cuid())
-  text          String
-  attachment    String?
-  communityId   String
-  community     Community      @relation("CommunityPosts", fields: [communityId], references: [id])
-  authorId      String
-  author        User           @relation("UserPosts", fields: [authorId], references: [id])
-  feedback      Feedback[]     @relation("PostFeedback")
-  verifications Verification[] @relation("PostVerifications")
+  id          String     @id @default(cuid())
+  text        String
+  attachment  String?
+  communityId String
+  community   Community  @relation("CommunityPosts", fields: [communityId], references: [id])
+  authorId    String
+  author      User       @relation("UserPosts", fields: [authorId], references: [id])
+  feedback    Feedback[] @relation("PostFeedback")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -147,23 +144,6 @@ model Feedback {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
-  @@index([postId])
-}
-
-model Verification {
-  id          String    @id @default(cuid())
-  communityId String
-  community   Community @relation("CommunityVerifications", fields: [communityId], references: [id])
-  userId      String
-  user        User      @relation("UserVerifications", fields: [userId], references: [id])
-  postId      String
-  post        Post      @relation("PostVerifications", fields: [postId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([communityId])
   @@index([userId])
   @@index([postId])
 }
