@@ -150,6 +150,7 @@ model Feedback {
 
 model Event {
   id               String     @id @default(cuid())
+  name             String
   rankedStatus     Boolean?
   experiencePayout Int?
   communityId      String
