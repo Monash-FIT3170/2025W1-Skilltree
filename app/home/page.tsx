@@ -2,11 +2,11 @@
 
 export default function Home() {
     return (
-        <div className="min-h-screen bg-gray-100 font-sans">
+        <div className="w-full min-h-screen bg-gray-100 font-sans">
             {/* Main content */}
-            <div className="ml-[60px] min-h-screen flex flex-col px-6 py-8">
+            <div className="w-full min-h-screen flex flex-col px-6 py-8">
                 {/* Communities & Events */}
-                <div className="w-full">
+                <div className="w-full ">
                     {/* Subscribed Communities */}
                     <div className="mb-6">
                         <h2 className="text-lg font-semibold mb-4 text-gray-800">Subscribed communities:</h2>

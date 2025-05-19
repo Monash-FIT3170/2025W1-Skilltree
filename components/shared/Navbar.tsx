@@ -1,3 +1,8 @@
+import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Input } from "../ui/input";
+import { SidebarTrigger } from "../ui/sidebar";
+
 export const Navbar = () => {
   return (
     <header className="border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">

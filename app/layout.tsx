@@ -6,7 +6,7 @@ import { Providers } from "@/components/shared/providers";
 const geistSans = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-});
+}); 
 
 export const metadata: Metadata = {
   title: "Skill Tree",
@@ -23,7 +23,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
