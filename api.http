@@ -1,9 +1,9 @@
 ### Get the current user
-GET http://localhost:3000/user/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+GET http://localhost:6969/user/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
 
 ### Login the user
-POST http://localhost:3000/auth/signin
+POST http://localhost:6969/auth/signin
 Content-Type: application/json
 
 {
@@ -12,27 +12,27 @@ Content-Type: application/json
 }
 
 ### Register the user
-POST http://localhost:3000/auth/signup
+POST http://localhost:6969/auth/signup
 Content-Type: application/json
 
 {
   "email": "john@doe.com",
-  "password": "John@Doe@123"
+  "password": "John@Doe@New@123"
 }
 
 ### Forgot password
-PATCH http://localhost:3000/auth/forgot-password
+PATCH http://localhost:6969/auth/forgot-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
 
 {
   "password": "John@Doe@New@123"
 }
 
 ### Create community
-POST http://localhost:3000/community
+POST http://localhost:6969/community
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
 
 {
   "name": "Comm1",
@@ -44,8 +44,39 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzd
 }
 
 ### Get all communities
-GET http://localhost:3000/community
+GET http://localhost:6969/community
 
-### Create community
-GET http://localhost:3000/community/cman5tblx000277m7c8w7q3nu
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
+### Get community by id
+GET http://localhost:6969/community/cmauney4s00042ozlt1hv7dna
+
+### Get a community
+GET http://localhost:6969/community/cmauney4s00042ozlt1hv7dna
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+
+### Get all events
+GET http://localhost:6969/event
+
+### Get event by id
+GET http://localhost:6969/event/cmaunids300012o610v0130vp
+
+### Create a event
+POST http://localhost:6969/event
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+Content-Type: application/json
+
+{
+  "name": "Event1",
+  "commmunityId": "cmauney4s00042ozlt1hv7dna",
+  "experienceId": "cmauni9ia00002ob63klw26wc"
+}
+
+### Update event
+PATCH http://localhost:6969/event/cmaunids300012o610v0130vp
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+Content-Type: application/json
+
+{
+  "name": "Event 1",
+  "commmunityId": "cmauney4s00042ozlt1hv7dna",
+  "experienceId": "cmauni9ia00002ob63klw26wc"
+}

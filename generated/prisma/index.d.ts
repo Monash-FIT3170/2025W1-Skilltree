@@ -54,11 +54,6 @@ export type Leaderboard = $Result.DefaultSelection<Prisma.$LeaderboardPayload>
  */
 export type Feedback = $Result.DefaultSelection<Prisma.$FeedbackPayload>
 /**
- * Model Verification
- * 
- */
-export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
-/**
  * Model Event
  * 
  */
@@ -268,16 +263,6 @@ export class PrismaClient<
     * ```
     */
   get feedback(): Prisma.FeedbackDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.verification`: Exposes CRUD operations for the **Verification** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Verifications
-    * const verifications = await prisma.verification.findMany()
-    * ```
-    */
-  get verification(): Prisma.VerificationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.event`: Exposes CRUD operations for the **Event** model.
@@ -736,7 +721,6 @@ export namespace Prisma {
     Experience: 'Experience',
     Leaderboard: 'Leaderboard',
     Feedback: 'Feedback',
-    Verification: 'Verification',
     Event: 'Event'
   };
 
@@ -756,7 +740,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "community" | "skilltreeNode" | "post" | "skillForest" | "experience" | "leaderboard" | "feedback" | "verification" | "event"
+      modelProps: "user" | "community" | "skilltreeNode" | "post" | "skillForest" | "experience" | "leaderboard" | "feedback" | "event"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1352,80 +1336,6 @@ export namespace Prisma {
           }
         }
       }
-      Verification: {
-        payload: Prisma.$VerificationPayload<ExtArgs>
-        fields: Prisma.VerificationFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.VerificationFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.VerificationFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>
-          }
-          findFirst: {
-            args: Prisma.VerificationFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.VerificationFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>
-          }
-          findMany: {
-            args: Prisma.VerificationFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>[]
-          }
-          create: {
-            args: Prisma.VerificationCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>
-          }
-          createMany: {
-            args: Prisma.VerificationCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.VerificationCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>[]
-          }
-          delete: {
-            args: Prisma.VerificationDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>
-          }
-          update: {
-            args: Prisma.VerificationUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>
-          }
-          deleteMany: {
-            args: Prisma.VerificationDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.VerificationUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.VerificationUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>[]
-          }
-          upsert: {
-            args: Prisma.VerificationUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationPayload>
-          }
-          aggregate: {
-            args: Prisma.VerificationAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateVerification>
-          }
-          groupBy: {
-            args: Prisma.VerificationGroupByArgs<ExtArgs>
-            result: $Utils.Optional<VerificationGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.VerificationCountArgs<ExtArgs>
-            result: $Utils.Optional<VerificationCountAggregateOutputType> | number
-          }
-        }
-      }
       Event: {
         payload: Prisma.$EventPayload<ExtArgs>
         fields: Prisma.EventFieldRefs
@@ -1592,7 +1502,6 @@ export namespace Prisma {
     experience?: ExperienceOmit
     leaderboard?: LeaderboardOmit
     feedback?: FeedbackOmit
-    verification?: VerificationOmit
     event?: EventOmit
   }
 
@@ -1697,7 +1606,6 @@ export namespace Prisma {
     experiences: number
     leaderboardEntries: number
     feedback: number
-    verifications: number
     events: number
   }
 
@@ -1711,7 +1619,6 @@ export namespace Prisma {
     experiences?: boolean | UserCountOutputTypeCountExperiencesArgs
     leaderboardEntries?: boolean | UserCountOutputTypeCountLeaderboardEntriesArgs
     feedback?: boolean | UserCountOutputTypeCountFeedbackArgs
-    verifications?: boolean | UserCountOutputTypeCountVerificationsArgs
     events?: boolean | UserCountOutputTypeCountEventsArgs
   }
 
@@ -1792,13 +1699,6 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VerificationWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
   export type UserCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EventWhereInput
   }
@@ -1810,25 +1710,23 @@ export namespace Prisma {
 
   export type CommunityCountOutputType = {
     admins: number
-    verifiedUsers: number
+    users: number
     skillTreeNodes: number
     posts: number
     skillForests: number
     experiences: number
     leaderboards: number
-    verifications: number
     events: number
   }
 
   export type CommunityCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     admins?: boolean | CommunityCountOutputTypeCountAdminsArgs
-    verifiedUsers?: boolean | CommunityCountOutputTypeCountVerifiedUsersArgs
+    users?: boolean | CommunityCountOutputTypeCountUsersArgs
     skillTreeNodes?: boolean | CommunityCountOutputTypeCountSkillTreeNodesArgs
     posts?: boolean | CommunityCountOutputTypeCountPostsArgs
     skillForests?: boolean | CommunityCountOutputTypeCountSkillForestsArgs
     experiences?: boolean | CommunityCountOutputTypeCountExperiencesArgs
     leaderboards?: boolean | CommunityCountOutputTypeCountLeaderboardsArgs
-    verifications?: boolean | CommunityCountOutputTypeCountVerificationsArgs
     events?: boolean | CommunityCountOutputTypeCountEventsArgs
   }
 
@@ -1853,7 +1751,7 @@ export namespace Prisma {
   /**
    * CommunityCountOutputType without action
    */
-  export type CommunityCountOutputTypeCountVerifiedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CommunityCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
   }
 
@@ -1895,13 +1793,6 @@ export namespace Prisma {
   /**
    * CommunityCountOutputType without action
    */
-  export type CommunityCountOutputTypeCountVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VerificationWhereInput
-  }
-
-  /**
-   * CommunityCountOutputType without action
-   */
   export type CommunityCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EventWhereInput
   }
@@ -1913,12 +1804,10 @@ export namespace Prisma {
 
   export type PostCountOutputType = {
     feedback: number
-    verifications: number
   }
 
   export type PostCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     feedback?: boolean | PostCountOutputTypeCountFeedbackArgs
-    verifications?: boolean | PostCountOutputTypeCountVerificationsArgs
   }
 
   // Custom InputTypes
@@ -1937,13 +1826,6 @@ export namespace Prisma {
    */
   export type PostCountOutputTypeCountFeedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FeedbackWhereInput
-  }
-
-  /**
-   * PostCountOutputType without action
-   */
-  export type PostCountOutputTypeCountVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VerificationWhereInput
   }
 
 
@@ -2253,7 +2135,6 @@ export namespace Prisma {
     experiences?: boolean | User$experiencesArgs<ExtArgs>
     leaderboardEntries?: boolean | User$leaderboardEntriesArgs<ExtArgs>
     feedback?: boolean | User$feedbackArgs<ExtArgs>
-    verifications?: boolean | User$verificationsArgs<ExtArgs>
     events?: boolean | User$eventsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2293,7 +2174,6 @@ export namespace Prisma {
     experiences?: boolean | User$experiencesArgs<ExtArgs>
     leaderboardEntries?: boolean | User$leaderboardEntriesArgs<ExtArgs>
     feedback?: boolean | User$feedbackArgs<ExtArgs>
-    verifications?: boolean | User$verificationsArgs<ExtArgs>
     events?: boolean | User$eventsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2312,7 +2192,6 @@ export namespace Prisma {
       experiences: Prisma.$ExperiencePayload<ExtArgs>[]
       leaderboardEntries: Prisma.$LeaderboardPayload<ExtArgs>[]
       feedback: Prisma.$FeedbackPayload<ExtArgs>[]
-      verifications: Prisma.$VerificationPayload<ExtArgs>[]
       events: Prisma.$EventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2724,7 +2603,6 @@ export namespace Prisma {
     experiences<T extends User$experiencesArgs<ExtArgs> = {}>(args?: Subset<T, User$experiencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     leaderboardEntries<T extends User$leaderboardEntriesArgs<ExtArgs> = {}>(args?: Subset<T, User$leaderboardEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     feedback<T extends User$feedbackArgs<ExtArgs> = {}>(args?: Subset<T, User$feedbackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    verifications<T extends User$verificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends User$eventsArgs<ExtArgs> = {}>(args?: Subset<T, User$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3364,30 +3242,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.verifications
-   */
-  export type User$verificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    where?: VerificationWhereInput
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    cursor?: VerificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
-  }
-
-  /**
    * User.events
    */
   export type User$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3666,13 +3520,12 @@ export namespace Prisma {
     updatedAt?: boolean
     creator?: boolean | UserDefaultArgs<ExtArgs>
     admins?: boolean | Community$adminsArgs<ExtArgs>
-    verifiedUsers?: boolean | Community$verifiedUsersArgs<ExtArgs>
+    users?: boolean | Community$usersArgs<ExtArgs>
     skillTreeNodes?: boolean | Community$skillTreeNodesArgs<ExtArgs>
     posts?: boolean | Community$postsArgs<ExtArgs>
     skillForests?: boolean | Community$skillForestsArgs<ExtArgs>
     experiences?: boolean | Community$experiencesArgs<ExtArgs>
     leaderboards?: boolean | Community$leaderboardsArgs<ExtArgs>
-    verifications?: boolean | Community$verificationsArgs<ExtArgs>
     events?: boolean | Community$eventsArgs<ExtArgs>
     _count?: boolean | CommunityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["community"]>
@@ -3722,13 +3575,12 @@ export namespace Prisma {
   export type CommunityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     creator?: boolean | UserDefaultArgs<ExtArgs>
     admins?: boolean | Community$adminsArgs<ExtArgs>
-    verifiedUsers?: boolean | Community$verifiedUsersArgs<ExtArgs>
+    users?: boolean | Community$usersArgs<ExtArgs>
     skillTreeNodes?: boolean | Community$skillTreeNodesArgs<ExtArgs>
     posts?: boolean | Community$postsArgs<ExtArgs>
     skillForests?: boolean | Community$skillForestsArgs<ExtArgs>
     experiences?: boolean | Community$experiencesArgs<ExtArgs>
     leaderboards?: boolean | Community$leaderboardsArgs<ExtArgs>
-    verifications?: boolean | Community$verificationsArgs<ExtArgs>
     events?: boolean | Community$eventsArgs<ExtArgs>
     _count?: boolean | CommunityCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3744,13 +3596,12 @@ export namespace Prisma {
     objects: {
       creator: Prisma.$UserPayload<ExtArgs>
       admins: Prisma.$UserPayload<ExtArgs>[]
-      verifiedUsers: Prisma.$UserPayload<ExtArgs>[]
+      users: Prisma.$UserPayload<ExtArgs>[]
       skillTreeNodes: Prisma.$SkilltreeNodePayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
       skillForests: Prisma.$SkillForestPayload<ExtArgs>[]
       experiences: Prisma.$ExperiencePayload<ExtArgs>[]
       leaderboards: Prisma.$LeaderboardPayload<ExtArgs>[]
-      verifications: Prisma.$VerificationPayload<ExtArgs>[]
       events: Prisma.$EventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -4160,13 +4011,12 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     creator<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     admins<T extends Community$adminsArgs<ExtArgs> = {}>(args?: Subset<T, Community$adminsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    verifiedUsers<T extends Community$verifiedUsersArgs<ExtArgs> = {}>(args?: Subset<T, Community$verifiedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    users<T extends Community$usersArgs<ExtArgs> = {}>(args?: Subset<T, Community$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     skillTreeNodes<T extends Community$skillTreeNodesArgs<ExtArgs> = {}>(args?: Subset<T, Community$skillTreeNodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkilltreeNodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends Community$postsArgs<ExtArgs> = {}>(args?: Subset<T, Community$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     skillForests<T extends Community$skillForestsArgs<ExtArgs> = {}>(args?: Subset<T, Community$skillForestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillForestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     experiences<T extends Community$experiencesArgs<ExtArgs> = {}>(args?: Subset<T, Community$experiencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     leaderboards<T extends Community$leaderboardsArgs<ExtArgs> = {}>(args?: Subset<T, Community$leaderboardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeaderboardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    verifications<T extends Community$verificationsArgs<ExtArgs> = {}>(args?: Subset<T, Community$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends Community$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Community$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4627,9 +4477,9 @@ export namespace Prisma {
   }
 
   /**
-   * Community.verifiedUsers
+   * Community.users
    */
-  export type Community$verifiedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Community$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the User
      */
@@ -4768,30 +4618,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LeaderboardScalarFieldEnum | LeaderboardScalarFieldEnum[]
-  }
-
-  /**
-   * Community.verifications
-   */
-  export type Community$verificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    where?: VerificationWhereInput
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    cursor?: VerificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
   }
 
   /**
@@ -6162,7 +5988,6 @@ export namespace Prisma {
     community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
     feedback?: boolean | Post$feedbackArgs<ExtArgs>
-    verifications?: boolean | Post$verificationsArgs<ExtArgs>
     _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["post"]>
 
@@ -6205,7 +6030,6 @@ export namespace Prisma {
     community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
     feedback?: boolean | Post$feedbackArgs<ExtArgs>
-    verifications?: boolean | Post$verificationsArgs<ExtArgs>
     _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6223,7 +6047,6 @@ export namespace Prisma {
       community: Prisma.$CommunityPayload<ExtArgs>
       author: Prisma.$UserPayload<ExtArgs>
       feedback: Prisma.$FeedbackPayload<ExtArgs>[]
-      verifications: Prisma.$VerificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6630,7 +6453,6 @@ export namespace Prisma {
     community<T extends CommunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CommunityDefaultArgs<ExtArgs>>): Prisma__CommunityClient<$Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     feedback<T extends Post$feedbackArgs<ExtArgs> = {}>(args?: Subset<T, Post$feedbackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    verifications<T extends Post$verificationsArgs<ExtArgs> = {}>(args?: Subset<T, Post$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7084,30 +6906,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
-  }
-
-  /**
-   * Post.verifications
-   */
-  export type Post$verificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    where?: VerificationWhereInput
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    cursor?: VerificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
   }
 
   /**
@@ -11601,1093 +11399,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Verification
-   */
-
-  export type AggregateVerification = {
-    _count: VerificationCountAggregateOutputType | null
-    _min: VerificationMinAggregateOutputType | null
-    _max: VerificationMaxAggregateOutputType | null
-  }
-
-  export type VerificationMinAggregateOutputType = {
-    id: string | null
-    communityId: string | null
-    userId: string | null
-    postId: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type VerificationMaxAggregateOutputType = {
-    id: string | null
-    communityId: string | null
-    userId: string | null
-    postId: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type VerificationCountAggregateOutputType = {
-    id: number
-    communityId: number
-    userId: number
-    postId: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type VerificationMinAggregateInputType = {
-    id?: true
-    communityId?: true
-    userId?: true
-    postId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type VerificationMaxAggregateInputType = {
-    id?: true
-    communityId?: true
-    userId?: true
-    postId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type VerificationCountAggregateInputType = {
-    id?: true
-    communityId?: true
-    userId?: true
-    postId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type VerificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Verification to aggregate.
-     */
-    where?: VerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Verifications to fetch.
-     */
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: VerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Verifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Verifications.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Verifications
-    **/
-    _count?: true | VerificationCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: VerificationMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: VerificationMaxAggregateInputType
-  }
-
-  export type GetVerificationAggregateType<T extends VerificationAggregateArgs> = {
-        [P in keyof T & keyof AggregateVerification]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateVerification[P]>
-      : GetScalarType<T[P], AggregateVerification[P]>
-  }
-
-
-
-
-  export type VerificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VerificationWhereInput
-    orderBy?: VerificationOrderByWithAggregationInput | VerificationOrderByWithAggregationInput[]
-    by: VerificationScalarFieldEnum[] | VerificationScalarFieldEnum
-    having?: VerificationScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: VerificationCountAggregateInputType | true
-    _min?: VerificationMinAggregateInputType
-    _max?: VerificationMaxAggregateInputType
-  }
-
-  export type VerificationGroupByOutputType = {
-    id: string
-    communityId: string
-    userId: string
-    postId: string
-    createdAt: Date
-    updatedAt: Date
-    _count: VerificationCountAggregateOutputType | null
-    _min: VerificationMinAggregateOutputType | null
-    _max: VerificationMaxAggregateOutputType | null
-  }
-
-  type GetVerificationGroupByPayload<T extends VerificationGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<VerificationGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof VerificationGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], VerificationGroupByOutputType[P]>
-            : GetScalarType<T[P], VerificationGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type VerificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    communityId?: boolean
-    userId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["verification"]>
-
-  export type VerificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    communityId?: boolean
-    userId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["verification"]>
-
-  export type VerificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    communityId?: boolean
-    userId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["verification"]>
-
-  export type VerificationSelectScalar = {
-    id?: boolean
-    communityId?: boolean
-    userId?: boolean
-    postId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type VerificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "communityId" | "userId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["verification"]>
-  export type VerificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
-  }
-  export type VerificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
-  }
-  export type VerificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    post?: boolean | PostDefaultArgs<ExtArgs>
-  }
-
-  export type $VerificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Verification"
-    objects: {
-      community: Prisma.$CommunityPayload<ExtArgs>
-      user: Prisma.$UserPayload<ExtArgs>
-      post: Prisma.$PostPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      communityId: string
-      userId: string
-      postId: string
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["verification"]>
-    composites: {}
-  }
-
-  type VerificationGetPayload<S extends boolean | null | undefined | VerificationDefaultArgs> = $Result.GetResult<Prisma.$VerificationPayload, S>
-
-  type VerificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<VerificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: VerificationCountAggregateInputType | true
-    }
-
-  export interface VerificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Verification'], meta: { name: 'Verification' } }
-    /**
-     * Find zero or one Verification that matches the filter.
-     * @param {VerificationFindUniqueArgs} args - Arguments to find a Verification
-     * @example
-     * // Get one Verification
-     * const verification = await prisma.verification.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends VerificationFindUniqueArgs>(args: SelectSubset<T, VerificationFindUniqueArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Verification that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {VerificationFindUniqueOrThrowArgs} args - Arguments to find a Verification
-     * @example
-     * // Get one Verification
-     * const verification = await prisma.verification.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends VerificationFindUniqueOrThrowArgs>(args: SelectSubset<T, VerificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Verification that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationFindFirstArgs} args - Arguments to find a Verification
-     * @example
-     * // Get one Verification
-     * const verification = await prisma.verification.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends VerificationFindFirstArgs>(args?: SelectSubset<T, VerificationFindFirstArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Verification that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationFindFirstOrThrowArgs} args - Arguments to find a Verification
-     * @example
-     * // Get one Verification
-     * const verification = await prisma.verification.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends VerificationFindFirstOrThrowArgs>(args?: SelectSubset<T, VerificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Verifications that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Verifications
-     * const verifications = await prisma.verification.findMany()
-     * 
-     * // Get first 10 Verifications
-     * const verifications = await prisma.verification.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const verificationWithIdOnly = await prisma.verification.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends VerificationFindManyArgs>(args?: SelectSubset<T, VerificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Verification.
-     * @param {VerificationCreateArgs} args - Arguments to create a Verification.
-     * @example
-     * // Create one Verification
-     * const Verification = await prisma.verification.create({
-     *   data: {
-     *     // ... data to create a Verification
-     *   }
-     * })
-     * 
-     */
-    create<T extends VerificationCreateArgs>(args: SelectSubset<T, VerificationCreateArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Verifications.
-     * @param {VerificationCreateManyArgs} args - Arguments to create many Verifications.
-     * @example
-     * // Create many Verifications
-     * const verification = await prisma.verification.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends VerificationCreateManyArgs>(args?: SelectSubset<T, VerificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Verifications and returns the data saved in the database.
-     * @param {VerificationCreateManyAndReturnArgs} args - Arguments to create many Verifications.
-     * @example
-     * // Create many Verifications
-     * const verification = await prisma.verification.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Verifications and only return the `id`
-     * const verificationWithIdOnly = await prisma.verification.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends VerificationCreateManyAndReturnArgs>(args?: SelectSubset<T, VerificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Verification.
-     * @param {VerificationDeleteArgs} args - Arguments to delete one Verification.
-     * @example
-     * // Delete one Verification
-     * const Verification = await prisma.verification.delete({
-     *   where: {
-     *     // ... filter to delete one Verification
-     *   }
-     * })
-     * 
-     */
-    delete<T extends VerificationDeleteArgs>(args: SelectSubset<T, VerificationDeleteArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Verification.
-     * @param {VerificationUpdateArgs} args - Arguments to update one Verification.
-     * @example
-     * // Update one Verification
-     * const verification = await prisma.verification.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends VerificationUpdateArgs>(args: SelectSubset<T, VerificationUpdateArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Verifications.
-     * @param {VerificationDeleteManyArgs} args - Arguments to filter Verifications to delete.
-     * @example
-     * // Delete a few Verifications
-     * const { count } = await prisma.verification.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends VerificationDeleteManyArgs>(args?: SelectSubset<T, VerificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Verifications.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Verifications
-     * const verification = await prisma.verification.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends VerificationUpdateManyArgs>(args: SelectSubset<T, VerificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Verifications and returns the data updated in the database.
-     * @param {VerificationUpdateManyAndReturnArgs} args - Arguments to update many Verifications.
-     * @example
-     * // Update many Verifications
-     * const verification = await prisma.verification.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Verifications and only return the `id`
-     * const verificationWithIdOnly = await prisma.verification.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends VerificationUpdateManyAndReturnArgs>(args: SelectSubset<T, VerificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Verification.
-     * @param {VerificationUpsertArgs} args - Arguments to update or create a Verification.
-     * @example
-     * // Update or create a Verification
-     * const verification = await prisma.verification.upsert({
-     *   create: {
-     *     // ... data to create a Verification
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Verification we want to update
-     *   }
-     * })
-     */
-    upsert<T extends VerificationUpsertArgs>(args: SelectSubset<T, VerificationUpsertArgs<ExtArgs>>): Prisma__VerificationClient<$Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Verifications.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationCountArgs} args - Arguments to filter Verifications to count.
-     * @example
-     * // Count the number of Verifications
-     * const count = await prisma.verification.count({
-     *   where: {
-     *     // ... the filter for the Verifications we want to count
-     *   }
-     * })
-    **/
-    count<T extends VerificationCountArgs>(
-      args?: Subset<T, VerificationCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], VerificationCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Verification.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends VerificationAggregateArgs>(args: Subset<T, VerificationAggregateArgs>): Prisma.PrismaPromise<GetVerificationAggregateType<T>>
-
-    /**
-     * Group by Verification.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends VerificationGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: VerificationGroupByArgs['orderBy'] }
-        : { orderBy?: VerificationGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, VerificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVerificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Verification model
-   */
-  readonly fields: VerificationFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Verification.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__VerificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    community<T extends CommunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CommunityDefaultArgs<ExtArgs>>): Prisma__CommunityClient<$Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    post<T extends PostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PostDefaultArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Verification model
-   */
-  interface VerificationFieldRefs {
-    readonly id: FieldRef<"Verification", 'String'>
-    readonly communityId: FieldRef<"Verification", 'String'>
-    readonly userId: FieldRef<"Verification", 'String'>
-    readonly postId: FieldRef<"Verification", 'String'>
-    readonly createdAt: FieldRef<"Verification", 'DateTime'>
-    readonly updatedAt: FieldRef<"Verification", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Verification findUnique
-   */
-  export type VerificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which Verification to fetch.
-     */
-    where: VerificationWhereUniqueInput
-  }
-
-  /**
-   * Verification findUniqueOrThrow
-   */
-  export type VerificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which Verification to fetch.
-     */
-    where: VerificationWhereUniqueInput
-  }
-
-  /**
-   * Verification findFirst
-   */
-  export type VerificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which Verification to fetch.
-     */
-    where?: VerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Verifications to fetch.
-     */
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Verifications.
-     */
-    cursor?: VerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Verifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Verifications.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Verifications.
-     */
-    distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
-  }
-
-  /**
-   * Verification findFirstOrThrow
-   */
-  export type VerificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which Verification to fetch.
-     */
-    where?: VerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Verifications to fetch.
-     */
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Verifications.
-     */
-    cursor?: VerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Verifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Verifications.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Verifications.
-     */
-    distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
-  }
-
-  /**
-   * Verification findMany
-   */
-  export type VerificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which Verifications to fetch.
-     */
-    where?: VerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Verifications to fetch.
-     */
-    orderBy?: VerificationOrderByWithRelationInput | VerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Verifications.
-     */
-    cursor?: VerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Verifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Verifications.
-     */
-    skip?: number
-    distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
-  }
-
-  /**
-   * Verification create
-   */
-  export type VerificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Verification.
-     */
-    data: XOR<VerificationCreateInput, VerificationUncheckedCreateInput>
-  }
-
-  /**
-   * Verification createMany
-   */
-  export type VerificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Verifications.
-     */
-    data: VerificationCreateManyInput | VerificationCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Verification createManyAndReturn
-   */
-  export type VerificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * The data used to create many Verifications.
-     */
-    data: VerificationCreateManyInput | VerificationCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Verification update
-   */
-  export type VerificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Verification.
-     */
-    data: XOR<VerificationUpdateInput, VerificationUncheckedUpdateInput>
-    /**
-     * Choose, which Verification to update.
-     */
-    where: VerificationWhereUniqueInput
-  }
-
-  /**
-   * Verification updateMany
-   */
-  export type VerificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Verifications.
-     */
-    data: XOR<VerificationUpdateManyMutationInput, VerificationUncheckedUpdateManyInput>
-    /**
-     * Filter which Verifications to update
-     */
-    where?: VerificationWhereInput
-    /**
-     * Limit how many Verifications to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Verification updateManyAndReturn
-   */
-  export type VerificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * The data used to update Verifications.
-     */
-    data: XOR<VerificationUpdateManyMutationInput, VerificationUncheckedUpdateManyInput>
-    /**
-     * Filter which Verifications to update
-     */
-    where?: VerificationWhereInput
-    /**
-     * Limit how many Verifications to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Verification upsert
-   */
-  export type VerificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Verification to update in case it exists.
-     */
-    where: VerificationWhereUniqueInput
-    /**
-     * In case the Verification found by the `where` argument doesn't exist, create a new Verification with this data.
-     */
-    create: XOR<VerificationCreateInput, VerificationUncheckedCreateInput>
-    /**
-     * In case the Verification was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<VerificationUpdateInput, VerificationUncheckedUpdateInput>
-  }
-
-  /**
-   * Verification delete
-   */
-  export type VerificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-    /**
-     * Filter which Verification to delete.
-     */
-    where: VerificationWhereUniqueInput
-  }
-
-  /**
-   * Verification deleteMany
-   */
-  export type VerificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Verifications to delete
-     */
-    where?: VerificationWhereInput
-    /**
-     * Limit how many Verifications to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Verification without action
-   */
-  export type VerificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Verification
-     */
-    select?: VerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Verification
-     */
-    omit?: VerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Event
    */
 
@@ -12709,6 +11420,7 @@ export namespace Prisma {
 
   export type EventMinAggregateOutputType = {
     id: string | null
+    name: string | null
     rankedStatus: boolean | null
     experiencePayout: number | null
     communityId: string | null
@@ -12720,6 +11432,7 @@ export namespace Prisma {
 
   export type EventMaxAggregateOutputType = {
     id: string | null
+    name: string | null
     rankedStatus: boolean | null
     experiencePayout: number | null
     communityId: string | null
@@ -12731,6 +11444,7 @@ export namespace Prisma {
 
   export type EventCountAggregateOutputType = {
     id: number
+    name: number
     rankedStatus: number
     experiencePayout: number
     communityId: number
@@ -12752,6 +11466,7 @@ export namespace Prisma {
 
   export type EventMinAggregateInputType = {
     id?: true
+    name?: true
     rankedStatus?: true
     experiencePayout?: true
     communityId?: true
@@ -12763,6 +11478,7 @@ export namespace Prisma {
 
   export type EventMaxAggregateInputType = {
     id?: true
+    name?: true
     rankedStatus?: true
     experiencePayout?: true
     communityId?: true
@@ -12774,6 +11490,7 @@ export namespace Prisma {
 
   export type EventCountAggregateInputType = {
     id?: true
+    name?: true
     rankedStatus?: true
     experiencePayout?: true
     communityId?: true
@@ -12872,6 +11589,7 @@ export namespace Prisma {
 
   export type EventGroupByOutputType = {
     id: string
+    name: string
     rankedStatus: boolean | null
     experiencePayout: number | null
     communityId: string
@@ -12902,6 +11620,7 @@ export namespace Prisma {
 
   export type EventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     rankedStatus?: boolean
     experiencePayout?: boolean
     communityId?: boolean
@@ -12916,6 +11635,7 @@ export namespace Prisma {
 
   export type EventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     rankedStatus?: boolean
     experiencePayout?: boolean
     communityId?: boolean
@@ -12930,6 +11650,7 @@ export namespace Prisma {
 
   export type EventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     rankedStatus?: boolean
     experiencePayout?: boolean
     communityId?: boolean
@@ -12944,6 +11665,7 @@ export namespace Prisma {
 
   export type EventSelectScalar = {
     id?: boolean
+    name?: boolean
     rankedStatus?: boolean
     experiencePayout?: boolean
     communityId?: boolean
@@ -12953,7 +11675,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "rankedStatus" | "experiencePayout" | "communityId" | "userId" | "experienceId" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "rankedStatus" | "experiencePayout" | "communityId" | "userId" | "experienceId" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     community?: boolean | CommunityDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -12979,6 +11701,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      name: string
       rankedStatus: boolean | null
       experiencePayout: number | null
       communityId: string
@@ -13413,6 +12136,7 @@ export namespace Prisma {
    */
   interface EventFieldRefs {
     readonly id: FieldRef<"Event", 'String'>
+    readonly name: FieldRef<"Event", 'String'>
     readonly rankedStatus: FieldRef<"Event", 'Boolean'>
     readonly experiencePayout: FieldRef<"Event", 'Int'>
     readonly communityId: FieldRef<"Event", 'String'>
@@ -13944,20 +12668,9 @@ export namespace Prisma {
   export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
 
 
-  export const VerificationScalarFieldEnum: {
-    id: 'id',
-    communityId: 'communityId',
-    userId: 'userId',
-    postId: 'postId',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
-
-
   export const EventScalarFieldEnum: {
     id: 'id',
+    name: 'name',
     rankedStatus: 'rankedStatus',
     experiencePayout: 'experiencePayout',
     communityId: 'communityId',
@@ -14083,7 +12796,6 @@ export namespace Prisma {
     experiences?: ExperienceListRelationFilter
     leaderboardEntries?: LeaderboardListRelationFilter
     feedback?: FeedbackListRelationFilter
-    verifications?: VerificationListRelationFilter
     events?: EventListRelationFilter
   }
 
@@ -14102,7 +12814,6 @@ export namespace Prisma {
     experiences?: ExperienceOrderByRelationAggregateInput
     leaderboardEntries?: LeaderboardOrderByRelationAggregateInput
     feedback?: FeedbackOrderByRelationAggregateInput
-    verifications?: VerificationOrderByRelationAggregateInput
     events?: EventOrderByRelationAggregateInput
   }
 
@@ -14124,7 +12835,6 @@ export namespace Prisma {
     experiences?: ExperienceListRelationFilter
     leaderboardEntries?: LeaderboardListRelationFilter
     feedback?: FeedbackListRelationFilter
-    verifications?: VerificationListRelationFilter
     events?: EventListRelationFilter
   }, "id" | "email">
 
@@ -14166,13 +12876,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Community"> | Date | string
     creator?: XOR<UserScalarRelationFilter, UserWhereInput>
     admins?: UserListRelationFilter
-    verifiedUsers?: UserListRelationFilter
+    users?: UserListRelationFilter
     skillTreeNodes?: SkilltreeNodeListRelationFilter
     posts?: PostListRelationFilter
     skillForests?: SkillForestListRelationFilter
     experiences?: ExperienceListRelationFilter
     leaderboards?: LeaderboardListRelationFilter
-    verifications?: VerificationListRelationFilter
     events?: EventListRelationFilter
   }
 
@@ -14189,13 +12898,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     creator?: UserOrderByWithRelationInput
     admins?: UserOrderByRelationAggregateInput
-    verifiedUsers?: UserOrderByRelationAggregateInput
+    users?: UserOrderByRelationAggregateInput
     skillTreeNodes?: SkilltreeNodeOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
     skillForests?: SkillForestOrderByRelationAggregateInput
     experiences?: ExperienceOrderByRelationAggregateInput
     leaderboards?: LeaderboardOrderByRelationAggregateInput
-    verifications?: VerificationOrderByRelationAggregateInput
     events?: EventOrderByRelationAggregateInput
   }
 
@@ -14215,13 +12923,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Community"> | Date | string
     creator?: XOR<UserScalarRelationFilter, UserWhereInput>
     admins?: UserListRelationFilter
-    verifiedUsers?: UserListRelationFilter
+    users?: UserListRelationFilter
     skillTreeNodes?: SkilltreeNodeListRelationFilter
     posts?: PostListRelationFilter
     skillForests?: SkillForestListRelationFilter
     experiences?: ExperienceListRelationFilter
     leaderboards?: LeaderboardListRelationFilter
-    verifications?: VerificationListRelationFilter
     events?: EventListRelationFilter
   }, "id">
 
@@ -14347,7 +13054,6 @@ export namespace Prisma {
     community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
     feedback?: FeedbackListRelationFilter
-    verifications?: VerificationListRelationFilter
   }
 
   export type PostOrderByWithRelationInput = {
@@ -14361,7 +13067,6 @@ export namespace Prisma {
     community?: CommunityOrderByWithRelationInput
     author?: UserOrderByWithRelationInput
     feedback?: FeedbackOrderByRelationAggregateInput
-    verifications?: VerificationOrderByRelationAggregateInput
   }
 
   export type PostWhereUniqueInput = Prisma.AtLeast<{
@@ -14378,7 +13083,6 @@ export namespace Prisma {
     community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
     feedback?: FeedbackListRelationFilter
-    verifications?: VerificationListRelationFilter
   }, "id">
 
   export type PostOrderByWithAggregationInput = {
@@ -14651,77 +13355,12 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
   }
 
-  export type VerificationWhereInput = {
-    AND?: VerificationWhereInput | VerificationWhereInput[]
-    OR?: VerificationWhereInput[]
-    NOT?: VerificationWhereInput | VerificationWhereInput[]
-    id?: StringFilter<"Verification"> | string
-    communityId?: StringFilter<"Verification"> | string
-    userId?: StringFilter<"Verification"> | string
-    postId?: StringFilter<"Verification"> | string
-    createdAt?: DateTimeFilter<"Verification"> | Date | string
-    updatedAt?: DateTimeFilter<"Verification"> | Date | string
-    community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    post?: XOR<PostScalarRelationFilter, PostWhereInput>
-  }
-
-  export type VerificationOrderByWithRelationInput = {
-    id?: SortOrder
-    communityId?: SortOrder
-    userId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    community?: CommunityOrderByWithRelationInput
-    user?: UserOrderByWithRelationInput
-    post?: PostOrderByWithRelationInput
-  }
-
-  export type VerificationWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: VerificationWhereInput | VerificationWhereInput[]
-    OR?: VerificationWhereInput[]
-    NOT?: VerificationWhereInput | VerificationWhereInput[]
-    communityId?: StringFilter<"Verification"> | string
-    userId?: StringFilter<"Verification"> | string
-    postId?: StringFilter<"Verification"> | string
-    createdAt?: DateTimeFilter<"Verification"> | Date | string
-    updatedAt?: DateTimeFilter<"Verification"> | Date | string
-    community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    post?: XOR<PostScalarRelationFilter, PostWhereInput>
-  }, "id">
-
-  export type VerificationOrderByWithAggregationInput = {
-    id?: SortOrder
-    communityId?: SortOrder
-    userId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: VerificationCountOrderByAggregateInput
-    _max?: VerificationMaxOrderByAggregateInput
-    _min?: VerificationMinOrderByAggregateInput
-  }
-
-  export type VerificationScalarWhereWithAggregatesInput = {
-    AND?: VerificationScalarWhereWithAggregatesInput | VerificationScalarWhereWithAggregatesInput[]
-    OR?: VerificationScalarWhereWithAggregatesInput[]
-    NOT?: VerificationScalarWhereWithAggregatesInput | VerificationScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Verification"> | string
-    communityId?: StringWithAggregatesFilter<"Verification"> | string
-    userId?: StringWithAggregatesFilter<"Verification"> | string
-    postId?: StringWithAggregatesFilter<"Verification"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
-  }
-
   export type EventWhereInput = {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
     NOT?: EventWhereInput | EventWhereInput[]
     id?: StringFilter<"Event"> | string
+    name?: StringFilter<"Event"> | string
     rankedStatus?: BoolNullableFilter<"Event"> | boolean | null
     experiencePayout?: IntNullableFilter<"Event"> | number | null
     communityId?: StringFilter<"Event"> | string
@@ -14736,6 +13375,7 @@ export namespace Prisma {
 
   export type EventOrderByWithRelationInput = {
     id?: SortOrder
+    name?: SortOrder
     rankedStatus?: SortOrderInput | SortOrder
     experiencePayout?: SortOrderInput | SortOrder
     communityId?: SortOrder
@@ -14753,6 +13393,7 @@ export namespace Prisma {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
     NOT?: EventWhereInput | EventWhereInput[]
+    name?: StringFilter<"Event"> | string
     rankedStatus?: BoolNullableFilter<"Event"> | boolean | null
     experiencePayout?: IntNullableFilter<"Event"> | number | null
     communityId?: StringFilter<"Event"> | string
@@ -14767,6 +13408,7 @@ export namespace Prisma {
 
   export type EventOrderByWithAggregationInput = {
     id?: SortOrder
+    name?: SortOrder
     rankedStatus?: SortOrderInput | SortOrder
     experiencePayout?: SortOrderInput | SortOrder
     communityId?: SortOrder
@@ -14786,6 +13428,7 @@ export namespace Prisma {
     OR?: EventScalarWhereWithAggregatesInput[]
     NOT?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Event"> | string
+    name?: StringWithAggregatesFilter<"Event"> | string
     rankedStatus?: BoolNullableWithAggregatesFilter<"Event"> | boolean | null
     experiencePayout?: IntNullableWithAggregatesFilter<"Event"> | number | null
     communityId?: StringWithAggregatesFilter<"Event"> | string
@@ -14803,14 +13446,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -14822,14 +13464,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -14841,14 +13482,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -14860,14 +13500,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -14907,13 +13546,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -14929,13 +13567,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -14951,13 +13588,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -14973,13 +13609,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -15101,7 +13736,6 @@ export namespace Prisma {
     community: CommunityCreateNestedOneWithoutPostsInput
     author: UserCreateNestedOneWithoutPostsInput
     feedback?: FeedbackCreateNestedManyWithoutPostInput
-    verifications?: VerificationCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateInput = {
@@ -15113,7 +13747,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostUpdateInput = {
@@ -15125,7 +13758,6 @@ export namespace Prisma {
     community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
     author?: UserUpdateOneRequiredWithoutPostsNestedInput
     feedback?: FeedbackUpdateManyWithoutPostNestedInput
-    verifications?: VerificationUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateInput = {
@@ -15137,7 +13769,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type PostCreateManyInput = {
@@ -15407,68 +14038,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type VerificationCreateInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    community: CommunityCreateNestedOneWithoutVerificationsInput
-    user: UserCreateNestedOneWithoutVerificationsInput
-    post: PostCreateNestedOneWithoutVerificationsInput
-  }
-
-  export type VerificationUncheckedCreateInput = {
-    id?: string
-    communityId: string
-    userId: string
-    postId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VerificationUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    community?: CommunityUpdateOneRequiredWithoutVerificationsNestedInput
-    user?: UserUpdateOneRequiredWithoutVerificationsNestedInput
-    post?: PostUpdateOneRequiredWithoutVerificationsNestedInput
-  }
-
-  export type VerificationUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    communityId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationCreateManyInput = {
-    id?: string
-    communityId: string
-    userId: string
-    postId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VerificationUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    communityId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type EventCreateInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     createdAt?: Date | string
@@ -15480,6 +14052,7 @@ export namespace Prisma {
 
   export type EventUncheckedCreateInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     communityId: string
@@ -15491,6 +14064,7 @@ export namespace Prisma {
 
   export type EventUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15502,6 +14076,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     communityId?: StringFieldUpdateOperationsInput | string
@@ -15513,6 +14088,7 @@ export namespace Prisma {
 
   export type EventCreateManyInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     communityId: string
@@ -15524,6 +14100,7 @@ export namespace Prisma {
 
   export type EventUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15532,6 +14109,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     communityId?: StringFieldUpdateOperationsInput | string
@@ -15618,12 +14196,6 @@ export namespace Prisma {
     none?: FeedbackWhereInput
   }
 
-  export type VerificationListRelationFilter = {
-    every?: VerificationWhereInput
-    some?: VerificationWhereInput
-    none?: VerificationWhereInput
-  }
-
   export type EventListRelationFilter = {
     every?: EventWhereInput
     some?: EventWhereInput
@@ -15656,10 +14228,6 @@ export namespace Prisma {
   }
 
   export type FeedbackOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type VerificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16054,33 +14622,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type VerificationCountOrderByAggregateInput = {
-    id?: SortOrder
-    communityId?: SortOrder
-    userId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type VerificationMaxOrderByAggregateInput = {
-    id?: SortOrder
-    communityId?: SortOrder
-    userId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type VerificationMinOrderByAggregateInput = {
-    id?: SortOrder
-    communityId?: SortOrder
-    userId?: SortOrder
-    postId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
   export type BoolNullableFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
@@ -16088,6 +14629,7 @@ export namespace Prisma {
 
   export type EventCountOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     rankedStatus?: SortOrder
     experiencePayout?: SortOrder
     communityId?: SortOrder
@@ -16103,6 +14645,7 @@ export namespace Prisma {
 
   export type EventMaxOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     rankedStatus?: SortOrder
     experiencePayout?: SortOrder
     communityId?: SortOrder
@@ -16114,6 +14657,7 @@ export namespace Prisma {
 
   export type EventMinOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     rankedStatus?: SortOrder
     experiencePayout?: SortOrder
     communityId?: SortOrder
@@ -16148,9 +14692,9 @@ export namespace Prisma {
     connect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
   }
 
-  export type CommunityCreateNestedManyWithoutVerifiedUsersInput = {
-    create?: XOR<CommunityCreateWithoutVerifiedUsersInput, CommunityUncheckedCreateWithoutVerifiedUsersInput> | CommunityCreateWithoutVerifiedUsersInput[] | CommunityUncheckedCreateWithoutVerifiedUsersInput[]
-    connectOrCreate?: CommunityCreateOrConnectWithoutVerifiedUsersInput | CommunityCreateOrConnectWithoutVerifiedUsersInput[]
+  export type CommunityCreateNestedManyWithoutUsersInput = {
+    create?: XOR<CommunityCreateWithoutUsersInput, CommunityUncheckedCreateWithoutUsersInput> | CommunityCreateWithoutUsersInput[] | CommunityUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: CommunityCreateOrConnectWithoutUsersInput | CommunityCreateOrConnectWithoutUsersInput[]
     connect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
   }
 
@@ -16194,13 +14738,6 @@ export namespace Prisma {
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
   }
 
-  export type VerificationCreateNestedManyWithoutUserInput = {
-    create?: XOR<VerificationCreateWithoutUserInput, VerificationUncheckedCreateWithoutUserInput> | VerificationCreateWithoutUserInput[] | VerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutUserInput | VerificationCreateOrConnectWithoutUserInput[]
-    createMany?: VerificationCreateManyUserInputEnvelope
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-  }
-
   export type EventCreateNestedManyWithoutUserInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -16221,9 +14758,9 @@ export namespace Prisma {
     connect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
   }
 
-  export type CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput = {
-    create?: XOR<CommunityCreateWithoutVerifiedUsersInput, CommunityUncheckedCreateWithoutVerifiedUsersInput> | CommunityCreateWithoutVerifiedUsersInput[] | CommunityUncheckedCreateWithoutVerifiedUsersInput[]
-    connectOrCreate?: CommunityCreateOrConnectWithoutVerifiedUsersInput | CommunityCreateOrConnectWithoutVerifiedUsersInput[]
+  export type CommunityUncheckedCreateNestedManyWithoutUsersInput = {
+    create?: XOR<CommunityCreateWithoutUsersInput, CommunityUncheckedCreateWithoutUsersInput> | CommunityCreateWithoutUsersInput[] | CommunityUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: CommunityCreateOrConnectWithoutUsersInput | CommunityCreateOrConnectWithoutUsersInput[]
     connect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
   }
 
@@ -16265,13 +14802,6 @@ export namespace Prisma {
     connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
     createMany?: FeedbackCreateManyUserInputEnvelope
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-  }
-
-  export type VerificationUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<VerificationCreateWithoutUserInput, VerificationUncheckedCreateWithoutUserInput> | VerificationCreateWithoutUserInput[] | VerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutUserInput | VerificationCreateOrConnectWithoutUserInput[]
-    createMany?: VerificationCreateManyUserInputEnvelope
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
   }
 
   export type EventUncheckedCreateNestedManyWithoutUserInput = {
@@ -16320,16 +14850,16 @@ export namespace Prisma {
     deleteMany?: CommunityScalarWhereInput | CommunityScalarWhereInput[]
   }
 
-  export type CommunityUpdateManyWithoutVerifiedUsersNestedInput = {
-    create?: XOR<CommunityCreateWithoutVerifiedUsersInput, CommunityUncheckedCreateWithoutVerifiedUsersInput> | CommunityCreateWithoutVerifiedUsersInput[] | CommunityUncheckedCreateWithoutVerifiedUsersInput[]
-    connectOrCreate?: CommunityCreateOrConnectWithoutVerifiedUsersInput | CommunityCreateOrConnectWithoutVerifiedUsersInput[]
-    upsert?: CommunityUpsertWithWhereUniqueWithoutVerifiedUsersInput | CommunityUpsertWithWhereUniqueWithoutVerifiedUsersInput[]
+  export type CommunityUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<CommunityCreateWithoutUsersInput, CommunityUncheckedCreateWithoutUsersInput> | CommunityCreateWithoutUsersInput[] | CommunityUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: CommunityCreateOrConnectWithoutUsersInput | CommunityCreateOrConnectWithoutUsersInput[]
+    upsert?: CommunityUpsertWithWhereUniqueWithoutUsersInput | CommunityUpsertWithWhereUniqueWithoutUsersInput[]
     set?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
     disconnect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
     delete?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
     connect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
-    update?: CommunityUpdateWithWhereUniqueWithoutVerifiedUsersInput | CommunityUpdateWithWhereUniqueWithoutVerifiedUsersInput[]
-    updateMany?: CommunityUpdateManyWithWhereWithoutVerifiedUsersInput | CommunityUpdateManyWithWhereWithoutVerifiedUsersInput[]
+    update?: CommunityUpdateWithWhereUniqueWithoutUsersInput | CommunityUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: CommunityUpdateManyWithWhereWithoutUsersInput | CommunityUpdateManyWithWhereWithoutUsersInput[]
     deleteMany?: CommunityScalarWhereInput | CommunityScalarWhereInput[]
   }
 
@@ -16415,20 +14945,6 @@ export namespace Prisma {
     deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
   }
 
-  export type VerificationUpdateManyWithoutUserNestedInput = {
-    create?: XOR<VerificationCreateWithoutUserInput, VerificationUncheckedCreateWithoutUserInput> | VerificationCreateWithoutUserInput[] | VerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutUserInput | VerificationCreateOrConnectWithoutUserInput[]
-    upsert?: VerificationUpsertWithWhereUniqueWithoutUserInput | VerificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: VerificationCreateManyUserInputEnvelope
-    set?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    disconnect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    delete?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    update?: VerificationUpdateWithWhereUniqueWithoutUserInput | VerificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: VerificationUpdateManyWithWhereWithoutUserInput | VerificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
-  }
-
   export type EventUpdateManyWithoutUserNestedInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -16470,16 +14986,16 @@ export namespace Prisma {
     deleteMany?: CommunityScalarWhereInput | CommunityScalarWhereInput[]
   }
 
-  export type CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput = {
-    create?: XOR<CommunityCreateWithoutVerifiedUsersInput, CommunityUncheckedCreateWithoutVerifiedUsersInput> | CommunityCreateWithoutVerifiedUsersInput[] | CommunityUncheckedCreateWithoutVerifiedUsersInput[]
-    connectOrCreate?: CommunityCreateOrConnectWithoutVerifiedUsersInput | CommunityCreateOrConnectWithoutVerifiedUsersInput[]
-    upsert?: CommunityUpsertWithWhereUniqueWithoutVerifiedUsersInput | CommunityUpsertWithWhereUniqueWithoutVerifiedUsersInput[]
+  export type CommunityUncheckedUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<CommunityCreateWithoutUsersInput, CommunityUncheckedCreateWithoutUsersInput> | CommunityCreateWithoutUsersInput[] | CommunityUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: CommunityCreateOrConnectWithoutUsersInput | CommunityCreateOrConnectWithoutUsersInput[]
+    upsert?: CommunityUpsertWithWhereUniqueWithoutUsersInput | CommunityUpsertWithWhereUniqueWithoutUsersInput[]
     set?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
     disconnect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
     delete?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
     connect?: CommunityWhereUniqueInput | CommunityWhereUniqueInput[]
-    update?: CommunityUpdateWithWhereUniqueWithoutVerifiedUsersInput | CommunityUpdateWithWhereUniqueWithoutVerifiedUsersInput[]
-    updateMany?: CommunityUpdateManyWithWhereWithoutVerifiedUsersInput | CommunityUpdateManyWithWhereWithoutVerifiedUsersInput[]
+    update?: CommunityUpdateWithWhereUniqueWithoutUsersInput | CommunityUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: CommunityUpdateManyWithWhereWithoutUsersInput | CommunityUpdateManyWithWhereWithoutUsersInput[]
     deleteMany?: CommunityScalarWhereInput | CommunityScalarWhereInput[]
   }
 
@@ -16565,20 +15081,6 @@ export namespace Prisma {
     deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
   }
 
-  export type VerificationUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<VerificationCreateWithoutUserInput, VerificationUncheckedCreateWithoutUserInput> | VerificationCreateWithoutUserInput[] | VerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutUserInput | VerificationCreateOrConnectWithoutUserInput[]
-    upsert?: VerificationUpsertWithWhereUniqueWithoutUserInput | VerificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: VerificationCreateManyUserInputEnvelope
-    set?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    disconnect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    delete?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    update?: VerificationUpdateWithWhereUniqueWithoutUserInput | VerificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: VerificationUpdateManyWithWhereWithoutUserInput | VerificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
-  }
-
   export type EventUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -16649,13 +15151,6 @@ export namespace Prisma {
     connect?: LeaderboardWhereUniqueInput | LeaderboardWhereUniqueInput[]
   }
 
-  export type VerificationCreateNestedManyWithoutCommunityInput = {
-    create?: XOR<VerificationCreateWithoutCommunityInput, VerificationUncheckedCreateWithoutCommunityInput> | VerificationCreateWithoutCommunityInput[] | VerificationUncheckedCreateWithoutCommunityInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutCommunityInput | VerificationCreateOrConnectWithoutCommunityInput[]
-    createMany?: VerificationCreateManyCommunityInputEnvelope
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-  }
-
   export type EventCreateNestedManyWithoutCommunityInput = {
     create?: XOR<EventCreateWithoutCommunityInput, EventUncheckedCreateWithoutCommunityInput> | EventCreateWithoutCommunityInput[] | EventUncheckedCreateWithoutCommunityInput[]
     connectOrCreate?: EventCreateOrConnectWithoutCommunityInput | EventCreateOrConnectWithoutCommunityInput[]
@@ -16707,13 +15202,6 @@ export namespace Prisma {
     connectOrCreate?: LeaderboardCreateOrConnectWithoutCommunityInput | LeaderboardCreateOrConnectWithoutCommunityInput[]
     createMany?: LeaderboardCreateManyCommunityInputEnvelope
     connect?: LeaderboardWhereUniqueInput | LeaderboardWhereUniqueInput[]
-  }
-
-  export type VerificationUncheckedCreateNestedManyWithoutCommunityInput = {
-    create?: XOR<VerificationCreateWithoutCommunityInput, VerificationUncheckedCreateWithoutCommunityInput> | VerificationCreateWithoutCommunityInput[] | VerificationUncheckedCreateWithoutCommunityInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutCommunityInput | VerificationCreateOrConnectWithoutCommunityInput[]
-    createMany?: VerificationCreateManyCommunityInputEnvelope
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
   }
 
   export type EventUncheckedCreateNestedManyWithoutCommunityInput = {
@@ -16839,20 +15327,6 @@ export namespace Prisma {
     deleteMany?: LeaderboardScalarWhereInput | LeaderboardScalarWhereInput[]
   }
 
-  export type VerificationUpdateManyWithoutCommunityNestedInput = {
-    create?: XOR<VerificationCreateWithoutCommunityInput, VerificationUncheckedCreateWithoutCommunityInput> | VerificationCreateWithoutCommunityInput[] | VerificationUncheckedCreateWithoutCommunityInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutCommunityInput | VerificationCreateOrConnectWithoutCommunityInput[]
-    upsert?: VerificationUpsertWithWhereUniqueWithoutCommunityInput | VerificationUpsertWithWhereUniqueWithoutCommunityInput[]
-    createMany?: VerificationCreateManyCommunityInputEnvelope
-    set?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    disconnect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    delete?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    update?: VerificationUpdateWithWhereUniqueWithoutCommunityInput | VerificationUpdateWithWhereUniqueWithoutCommunityInput[]
-    updateMany?: VerificationUpdateManyWithWhereWithoutCommunityInput | VerificationUpdateManyWithWhereWithoutCommunityInput[]
-    deleteMany?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
-  }
-
   export type EventUpdateManyWithoutCommunityNestedInput = {
     create?: XOR<EventCreateWithoutCommunityInput, EventUncheckedCreateWithoutCommunityInput> | EventCreateWithoutCommunityInput[] | EventUncheckedCreateWithoutCommunityInput[]
     connectOrCreate?: EventCreateOrConnectWithoutCommunityInput | EventCreateOrConnectWithoutCommunityInput[]
@@ -16960,20 +15434,6 @@ export namespace Prisma {
     update?: LeaderboardUpdateWithWhereUniqueWithoutCommunityInput | LeaderboardUpdateWithWhereUniqueWithoutCommunityInput[]
     updateMany?: LeaderboardUpdateManyWithWhereWithoutCommunityInput | LeaderboardUpdateManyWithWhereWithoutCommunityInput[]
     deleteMany?: LeaderboardScalarWhereInput | LeaderboardScalarWhereInput[]
-  }
-
-  export type VerificationUncheckedUpdateManyWithoutCommunityNestedInput = {
-    create?: XOR<VerificationCreateWithoutCommunityInput, VerificationUncheckedCreateWithoutCommunityInput> | VerificationCreateWithoutCommunityInput[] | VerificationUncheckedCreateWithoutCommunityInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutCommunityInput | VerificationCreateOrConnectWithoutCommunityInput[]
-    upsert?: VerificationUpsertWithWhereUniqueWithoutCommunityInput | VerificationUpsertWithWhereUniqueWithoutCommunityInput[]
-    createMany?: VerificationCreateManyCommunityInputEnvelope
-    set?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    disconnect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    delete?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    update?: VerificationUpdateWithWhereUniqueWithoutCommunityInput | VerificationUpdateWithWhereUniqueWithoutCommunityInput[]
-    updateMany?: VerificationUpdateManyWithWhereWithoutCommunityInput | VerificationUpdateManyWithWhereWithoutCommunityInput[]
-    deleteMany?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
   }
 
   export type EventUncheckedUpdateManyWithoutCommunityNestedInput = {
@@ -17085,25 +15545,11 @@ export namespace Prisma {
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
   }
 
-  export type VerificationCreateNestedManyWithoutPostInput = {
-    create?: XOR<VerificationCreateWithoutPostInput, VerificationUncheckedCreateWithoutPostInput> | VerificationCreateWithoutPostInput[] | VerificationUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutPostInput | VerificationCreateOrConnectWithoutPostInput[]
-    createMany?: VerificationCreateManyPostInputEnvelope
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-  }
-
   export type FeedbackUncheckedCreateNestedManyWithoutPostInput = {
     create?: XOR<FeedbackCreateWithoutPostInput, FeedbackUncheckedCreateWithoutPostInput> | FeedbackCreateWithoutPostInput[] | FeedbackUncheckedCreateWithoutPostInput[]
     connectOrCreate?: FeedbackCreateOrConnectWithoutPostInput | FeedbackCreateOrConnectWithoutPostInput[]
     createMany?: FeedbackCreateManyPostInputEnvelope
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-  }
-
-  export type VerificationUncheckedCreateNestedManyWithoutPostInput = {
-    create?: XOR<VerificationCreateWithoutPostInput, VerificationUncheckedCreateWithoutPostInput> | VerificationCreateWithoutPostInput[] | VerificationUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutPostInput | VerificationCreateOrConnectWithoutPostInput[]
-    createMany?: VerificationCreateManyPostInputEnvelope
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
   }
 
   export type CommunityUpdateOneRequiredWithoutPostsNestedInput = {
@@ -17136,20 +15582,6 @@ export namespace Prisma {
     deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
   }
 
-  export type VerificationUpdateManyWithoutPostNestedInput = {
-    create?: XOR<VerificationCreateWithoutPostInput, VerificationUncheckedCreateWithoutPostInput> | VerificationCreateWithoutPostInput[] | VerificationUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutPostInput | VerificationCreateOrConnectWithoutPostInput[]
-    upsert?: VerificationUpsertWithWhereUniqueWithoutPostInput | VerificationUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: VerificationCreateManyPostInputEnvelope
-    set?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    disconnect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    delete?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    update?: VerificationUpdateWithWhereUniqueWithoutPostInput | VerificationUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: VerificationUpdateManyWithWhereWithoutPostInput | VerificationUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
-  }
-
   export type FeedbackUncheckedUpdateManyWithoutPostNestedInput = {
     create?: XOR<FeedbackCreateWithoutPostInput, FeedbackUncheckedCreateWithoutPostInput> | FeedbackCreateWithoutPostInput[] | FeedbackUncheckedCreateWithoutPostInput[]
     connectOrCreate?: FeedbackCreateOrConnectWithoutPostInput | FeedbackCreateOrConnectWithoutPostInput[]
@@ -17162,20 +15594,6 @@ export namespace Prisma {
     update?: FeedbackUpdateWithWhereUniqueWithoutPostInput | FeedbackUpdateWithWhereUniqueWithoutPostInput[]
     updateMany?: FeedbackUpdateManyWithWhereWithoutPostInput | FeedbackUpdateManyWithWhereWithoutPostInput[]
     deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
-  }
-
-  export type VerificationUncheckedUpdateManyWithoutPostNestedInput = {
-    create?: XOR<VerificationCreateWithoutPostInput, VerificationUncheckedCreateWithoutPostInput> | VerificationCreateWithoutPostInput[] | VerificationUncheckedCreateWithoutPostInput[]
-    connectOrCreate?: VerificationCreateOrConnectWithoutPostInput | VerificationCreateOrConnectWithoutPostInput[]
-    upsert?: VerificationUpsertWithWhereUniqueWithoutPostInput | VerificationUpsertWithWhereUniqueWithoutPostInput[]
-    createMany?: VerificationCreateManyPostInputEnvelope
-    set?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    disconnect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    delete?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    connect?: VerificationWhereUniqueInput | VerificationWhereUniqueInput[]
-    update?: VerificationUpdateWithWhereUniqueWithoutPostInput | VerificationUpdateWithWhereUniqueWithoutPostInput[]
-    updateMany?: VerificationUpdateManyWithWhereWithoutPostInput | VerificationUpdateManyWithWhereWithoutPostInput[]
-    deleteMany?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSkillForestsInput = {
@@ -17544,48 +15962,6 @@ export namespace Prisma {
     update?: XOR<XOR<PostUpdateToOneWithWhereWithoutFeedbackInput, PostUpdateWithoutFeedbackInput>, PostUncheckedUpdateWithoutFeedbackInput>
   }
 
-  export type CommunityCreateNestedOneWithoutVerificationsInput = {
-    create?: XOR<CommunityCreateWithoutVerificationsInput, CommunityUncheckedCreateWithoutVerificationsInput>
-    connectOrCreate?: CommunityCreateOrConnectWithoutVerificationsInput
-    connect?: CommunityWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutVerificationsInput = {
-    create?: XOR<UserCreateWithoutVerificationsInput, UserUncheckedCreateWithoutVerificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerificationsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type PostCreateNestedOneWithoutVerificationsInput = {
-    create?: XOR<PostCreateWithoutVerificationsInput, PostUncheckedCreateWithoutVerificationsInput>
-    connectOrCreate?: PostCreateOrConnectWithoutVerificationsInput
-    connect?: PostWhereUniqueInput
-  }
-
-  export type CommunityUpdateOneRequiredWithoutVerificationsNestedInput = {
-    create?: XOR<CommunityCreateWithoutVerificationsInput, CommunityUncheckedCreateWithoutVerificationsInput>
-    connectOrCreate?: CommunityCreateOrConnectWithoutVerificationsInput
-    upsert?: CommunityUpsertWithoutVerificationsInput
-    connect?: CommunityWhereUniqueInput
-    update?: XOR<XOR<CommunityUpdateToOneWithWhereWithoutVerificationsInput, CommunityUpdateWithoutVerificationsInput>, CommunityUncheckedUpdateWithoutVerificationsInput>
-  }
-
-  export type UserUpdateOneRequiredWithoutVerificationsNestedInput = {
-    create?: XOR<UserCreateWithoutVerificationsInput, UserUncheckedCreateWithoutVerificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerificationsInput
-    upsert?: UserUpsertWithoutVerificationsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVerificationsInput, UserUpdateWithoutVerificationsInput>, UserUncheckedUpdateWithoutVerificationsInput>
-  }
-
-  export type PostUpdateOneRequiredWithoutVerificationsNestedInput = {
-    create?: XOR<PostCreateWithoutVerificationsInput, PostUncheckedCreateWithoutVerificationsInput>
-    connectOrCreate?: PostCreateOrConnectWithoutVerificationsInput
-    upsert?: PostUpsertWithoutVerificationsInput
-    connect?: PostWhereUniqueInput
-    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutVerificationsInput, PostUpdateWithoutVerificationsInput>, PostUncheckedUpdateWithoutVerificationsInput>
-  }
-
   export type CommunityCreateNestedOneWithoutEventsInput = {
     create?: XOR<CommunityCreateWithoutEventsInput, CommunityUncheckedCreateWithoutEventsInput>
     connectOrCreate?: CommunityCreateOrConnectWithoutEventsInput
@@ -17819,13 +16195,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -17840,13 +16215,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -17871,13 +16245,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -17892,13 +16265,12 @@ export namespace Prisma {
     creatorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -17907,7 +16279,7 @@ export namespace Prisma {
     create: XOR<CommunityCreateWithoutAdminsInput, CommunityUncheckedCreateWithoutAdminsInput>
   }
 
-  export type CommunityCreateWithoutVerifiedUsersInput = {
+  export type CommunityCreateWithoutUsersInput = {
     id?: string
     name: string
     skill: string
@@ -17924,11 +16296,10 @@ export namespace Prisma {
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
-  export type CommunityUncheckedCreateWithoutVerifiedUsersInput = {
+  export type CommunityUncheckedCreateWithoutUsersInput = {
     id?: string
     name: string
     skill: string
@@ -17945,13 +16316,12 @@ export namespace Prisma {
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
-  export type CommunityCreateOrConnectWithoutVerifiedUsersInput = {
+  export type CommunityCreateOrConnectWithoutUsersInput = {
     where: CommunityWhereUniqueInput
-    create: XOR<CommunityCreateWithoutVerifiedUsersInput, CommunityUncheckedCreateWithoutVerifiedUsersInput>
+    create: XOR<CommunityCreateWithoutUsersInput, CommunityUncheckedCreateWithoutUsersInput>
   }
 
   export type PostCreateWithoutAuthorInput = {
@@ -17962,7 +16332,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     community: CommunityCreateNestedOneWithoutPostsInput
     feedback?: FeedbackCreateNestedManyWithoutPostInput
-    verifications?: VerificationCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateWithoutAuthorInput = {
@@ -17973,7 +16342,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostCreateOrConnectWithoutAuthorInput = {
@@ -18110,34 +16478,9 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type VerificationCreateWithoutUserInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    community: CommunityCreateNestedOneWithoutVerificationsInput
-    post: PostCreateNestedOneWithoutVerificationsInput
-  }
-
-  export type VerificationUncheckedCreateWithoutUserInput = {
-    id?: string
-    communityId: string
-    postId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VerificationCreateOrConnectWithoutUserInput = {
-    where: VerificationWhereUniqueInput
-    create: XOR<VerificationCreateWithoutUserInput, VerificationUncheckedCreateWithoutUserInput>
-  }
-
-  export type VerificationCreateManyUserInputEnvelope = {
-    data: VerificationCreateManyUserInput | VerificationCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type EventCreateWithoutUserInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     createdAt?: Date | string
@@ -18148,6 +16491,7 @@ export namespace Prisma {
 
   export type EventUncheckedCreateWithoutUserInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     communityId: string
@@ -18214,20 +16558,20 @@ export namespace Prisma {
     data: XOR<CommunityUpdateManyMutationInput, CommunityUncheckedUpdateManyWithoutAdminsInput>
   }
 
-  export type CommunityUpsertWithWhereUniqueWithoutVerifiedUsersInput = {
+  export type CommunityUpsertWithWhereUniqueWithoutUsersInput = {
     where: CommunityWhereUniqueInput
-    update: XOR<CommunityUpdateWithoutVerifiedUsersInput, CommunityUncheckedUpdateWithoutVerifiedUsersInput>
-    create: XOR<CommunityCreateWithoutVerifiedUsersInput, CommunityUncheckedCreateWithoutVerifiedUsersInput>
+    update: XOR<CommunityUpdateWithoutUsersInput, CommunityUncheckedUpdateWithoutUsersInput>
+    create: XOR<CommunityCreateWithoutUsersInput, CommunityUncheckedCreateWithoutUsersInput>
   }
 
-  export type CommunityUpdateWithWhereUniqueWithoutVerifiedUsersInput = {
+  export type CommunityUpdateWithWhereUniqueWithoutUsersInput = {
     where: CommunityWhereUniqueInput
-    data: XOR<CommunityUpdateWithoutVerifiedUsersInput, CommunityUncheckedUpdateWithoutVerifiedUsersInput>
+    data: XOR<CommunityUpdateWithoutUsersInput, CommunityUncheckedUpdateWithoutUsersInput>
   }
 
-  export type CommunityUpdateManyWithWhereWithoutVerifiedUsersInput = {
+  export type CommunityUpdateManyWithWhereWithoutUsersInput = {
     where: CommunityScalarWhereInput
-    data: XOR<CommunityUpdateManyMutationInput, CommunityUncheckedUpdateManyWithoutVerifiedUsersInput>
+    data: XOR<CommunityUpdateManyMutationInput, CommunityUncheckedUpdateManyWithoutUsersInput>
   }
 
   export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -18382,34 +16726,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
   }
 
-  export type VerificationUpsertWithWhereUniqueWithoutUserInput = {
-    where: VerificationWhereUniqueInput
-    update: XOR<VerificationUpdateWithoutUserInput, VerificationUncheckedUpdateWithoutUserInput>
-    create: XOR<VerificationCreateWithoutUserInput, VerificationUncheckedCreateWithoutUserInput>
-  }
-
-  export type VerificationUpdateWithWhereUniqueWithoutUserInput = {
-    where: VerificationWhereUniqueInput
-    data: XOR<VerificationUpdateWithoutUserInput, VerificationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type VerificationUpdateManyWithWhereWithoutUserInput = {
-    where: VerificationScalarWhereInput
-    data: XOR<VerificationUpdateManyMutationInput, VerificationUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type VerificationScalarWhereInput = {
-    AND?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
-    OR?: VerificationScalarWhereInput[]
-    NOT?: VerificationScalarWhereInput | VerificationScalarWhereInput[]
-    id?: StringFilter<"Verification"> | string
-    communityId?: StringFilter<"Verification"> | string
-    userId?: StringFilter<"Verification"> | string
-    postId?: StringFilter<"Verification"> | string
-    createdAt?: DateTimeFilter<"Verification"> | Date | string
-    updatedAt?: DateTimeFilter<"Verification"> | Date | string
-  }
-
   export type EventUpsertWithWhereUniqueWithoutUserInput = {
     where: EventWhereUniqueInput
     update: XOR<EventUpdateWithoutUserInput, EventUncheckedUpdateWithoutUserInput>
@@ -18431,6 +16747,7 @@ export namespace Prisma {
     OR?: EventScalarWhereInput[]
     NOT?: EventScalarWhereInput | EventScalarWhereInput[]
     id?: StringFilter<"Event"> | string
+    name?: StringFilter<"Event"> | string
     rankedStatus?: BoolNullableFilter<"Event"> | boolean | null
     experiencePayout?: IntNullableFilter<"Event"> | number | null
     communityId?: StringFilter<"Event"> | string
@@ -18447,14 +16764,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -18465,14 +16781,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -18488,14 +16803,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -18506,14 +16820,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -18536,7 +16849,6 @@ export namespace Prisma {
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -18554,7 +16866,6 @@ export namespace Prisma {
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -18601,7 +16912,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutPostsInput
     feedback?: FeedbackCreateNestedManyWithoutPostInput
-    verifications?: VerificationCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateWithoutCommunityInput = {
@@ -18612,7 +16922,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostCreateOrConnectWithoutCommunityInput = {
@@ -18704,34 +17013,9 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type VerificationCreateWithoutCommunityInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutVerificationsInput
-    post: PostCreateNestedOneWithoutVerificationsInput
-  }
-
-  export type VerificationUncheckedCreateWithoutCommunityInput = {
-    id?: string
-    userId: string
-    postId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VerificationCreateOrConnectWithoutCommunityInput = {
-    where: VerificationWhereUniqueInput
-    create: XOR<VerificationCreateWithoutCommunityInput, VerificationUncheckedCreateWithoutCommunityInput>
-  }
-
-  export type VerificationCreateManyCommunityInputEnvelope = {
-    data: VerificationCreateManyCommunityInput | VerificationCreateManyCommunityInput[]
-    skipDuplicates?: boolean
-  }
-
   export type EventCreateWithoutCommunityInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     createdAt?: Date | string
@@ -18742,6 +17026,7 @@ export namespace Prisma {
 
   export type EventUncheckedCreateWithoutCommunityInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     userId: string
@@ -18778,14 +17063,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -18796,14 +17080,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -18943,22 +17226,6 @@ export namespace Prisma {
     data: XOR<LeaderboardUpdateManyMutationInput, LeaderboardUncheckedUpdateManyWithoutCommunityInput>
   }
 
-  export type VerificationUpsertWithWhereUniqueWithoutCommunityInput = {
-    where: VerificationWhereUniqueInput
-    update: XOR<VerificationUpdateWithoutCommunityInput, VerificationUncheckedUpdateWithoutCommunityInput>
-    create: XOR<VerificationCreateWithoutCommunityInput, VerificationUncheckedCreateWithoutCommunityInput>
-  }
-
-  export type VerificationUpdateWithWhereUniqueWithoutCommunityInput = {
-    where: VerificationWhereUniqueInput
-    data: XOR<VerificationUpdateWithoutCommunityInput, VerificationUncheckedUpdateWithoutCommunityInput>
-  }
-
-  export type VerificationUpdateManyWithWhereWithoutCommunityInput = {
-    where: VerificationScalarWhereInput
-    data: XOR<VerificationUpdateManyMutationInput, VerificationUncheckedUpdateManyWithoutCommunityInput>
-  }
-
   export type EventUpsertWithWhereUniqueWithoutCommunityInput = {
     where: EventWhereUniqueInput
     update: XOR<EventUpdateWithoutCommunityInput, EventUncheckedUpdateWithoutCommunityInput>
@@ -18987,12 +17254,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -19008,12 +17274,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -19122,12 +17387,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -19143,12 +17407,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -19259,12 +17522,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -19280,12 +17542,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -19302,13 +17563,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -19320,13 +17580,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -19359,32 +17618,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type VerificationCreateWithoutPostInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    community: CommunityCreateNestedOneWithoutVerificationsInput
-    user: UserCreateNestedOneWithoutVerificationsInput
-  }
-
-  export type VerificationUncheckedCreateWithoutPostInput = {
-    id?: string
-    communityId: string
-    userId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VerificationCreateOrConnectWithoutPostInput = {
-    where: VerificationWhereUniqueInput
-    create: XOR<VerificationCreateWithoutPostInput, VerificationUncheckedCreateWithoutPostInput>
-  }
-
-  export type VerificationCreateManyPostInputEnvelope = {
-    data: VerificationCreateManyPostInput | VerificationCreateManyPostInput[]
-    skipDuplicates?: boolean
-  }
-
   export type CommunityUpsertWithoutPostsInput = {
     update: XOR<CommunityUpdateWithoutPostsInput, CommunityUncheckedUpdateWithoutPostsInput>
     create: XOR<CommunityCreateWithoutPostsInput, CommunityUncheckedCreateWithoutPostsInput>
@@ -19408,12 +17641,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -19429,12 +17661,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -19457,13 +17688,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -19475,13 +17705,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -19501,22 +17730,6 @@ export namespace Prisma {
     data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutPostInput>
   }
 
-  export type VerificationUpsertWithWhereUniqueWithoutPostInput = {
-    where: VerificationWhereUniqueInput
-    update: XOR<VerificationUpdateWithoutPostInput, VerificationUncheckedUpdateWithoutPostInput>
-    create: XOR<VerificationCreateWithoutPostInput, VerificationUncheckedCreateWithoutPostInput>
-  }
-
-  export type VerificationUpdateWithWhereUniqueWithoutPostInput = {
-    where: VerificationWhereUniqueInput
-    data: XOR<VerificationUpdateWithoutPostInput, VerificationUncheckedUpdateWithoutPostInput>
-  }
-
-  export type VerificationUpdateManyWithWhereWithoutPostInput = {
-    where: VerificationScalarWhereInput
-    data: XOR<VerificationUpdateManyMutationInput, VerificationUncheckedUpdateManyWithoutPostInput>
-  }
-
   export type UserCreateWithoutSkillForestsInput = {
     id?: string
     email: string
@@ -19525,13 +17738,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -19543,13 +17755,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -19570,12 +17781,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -19591,12 +17801,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -19613,13 +17822,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -19631,13 +17839,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -19665,13 +17872,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -19683,13 +17889,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -19737,12 +17942,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -19758,12 +17962,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -19780,13 +17983,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -19798,13 +18000,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -19866,6 +18067,7 @@ export namespace Prisma {
 
   export type EventCreateWithoutExperienceInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     createdAt?: Date | string
@@ -19876,6 +18078,7 @@ export namespace Prisma {
 
   export type EventUncheckedCreateWithoutExperienceInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     communityId: string
@@ -19917,12 +18120,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -19938,12 +18140,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -19966,13 +18167,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -19984,13 +18184,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -20054,12 +18253,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
     events?: EventCreateNestedManyWithoutCommunityInput
   }
 
@@ -20075,12 +18273,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
     events?: EventUncheckedCreateNestedManyWithoutCommunityInput
   }
 
@@ -20097,13 +18294,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -20115,13 +18311,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -20180,12 +18375,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -20201,12 +18395,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -20250,13 +18443,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
   }
 
@@ -20268,13 +18460,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -20291,7 +18482,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     community: CommunityCreateNestedOneWithoutPostsInput
     author: UserCreateNestedOneWithoutPostsInput
-    verifications?: VerificationCreateNestedManyWithoutPostInput
   }
 
   export type PostUncheckedCreateWithoutFeedbackInput = {
@@ -20302,7 +18492,6 @@ export namespace Prisma {
     authorId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    verifications?: VerificationUncheckedCreateNestedManyWithoutPostInput
   }
 
   export type PostCreateOrConnectWithoutFeedbackInput = {
@@ -20329,13 +18518,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -20347,13 +18535,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -20376,7 +18563,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
     author?: UserUpdateOneRequiredWithoutPostsNestedInput
-    verifications?: VerificationUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateWithoutFeedbackInput = {
@@ -20387,255 +18573,6 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    verifications?: VerificationUncheckedUpdateManyWithoutPostNestedInput
-  }
-
-  export type CommunityCreateWithoutVerificationsInput = {
-    id?: string
-    name: string
-    skill: string
-    icon?: string | null
-    tags?: CommunityCreatetagsInput | string[]
-    description?: string | null
-    communityExperience?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
-    admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
-    skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
-    posts?: PostCreateNestedManyWithoutCommunityInput
-    skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
-    experiences?: ExperienceCreateNestedManyWithoutCommunityInput
-    leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    events?: EventCreateNestedManyWithoutCommunityInput
-  }
-
-  export type CommunityUncheckedCreateWithoutVerificationsInput = {
-    id?: string
-    name: string
-    skill: string
-    icon?: string | null
-    tags?: CommunityCreatetagsInput | string[]
-    description?: string | null
-    communityExperience?: number | null
-    creatorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
-    skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
-    posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
-    skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
-    experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
-    leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    events?: EventUncheckedCreateNestedManyWithoutCommunityInput
-  }
-
-  export type CommunityCreateOrConnectWithoutVerificationsInput = {
-    where: CommunityWhereUniqueInput
-    create: XOR<CommunityCreateWithoutVerificationsInput, CommunityUncheckedCreateWithoutVerificationsInput>
-  }
-
-  export type UserCreateWithoutVerificationsInput = {
-    id?: string
-    email: string
-    hash?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
-    adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
-    posts?: PostCreateNestedManyWithoutAuthorInput
-    skillForests?: SkillForestCreateNestedManyWithoutUserInput
-    followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
-    experiences?: ExperienceCreateNestedManyWithoutUserInput
-    leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
-    feedback?: FeedbackCreateNestedManyWithoutUserInput
-    events?: EventCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutVerificationsInput = {
-    id?: string
-    email: string
-    hash?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
-    adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
-    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
-    skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
-    followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
-    experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
-    leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
-    feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    events?: EventUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutVerificationsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutVerificationsInput, UserUncheckedCreateWithoutVerificationsInput>
-  }
-
-  export type PostCreateWithoutVerificationsInput = {
-    id?: string
-    text: string
-    attachment?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    community: CommunityCreateNestedOneWithoutPostsInput
-    author: UserCreateNestedOneWithoutPostsInput
-    feedback?: FeedbackCreateNestedManyWithoutPostInput
-  }
-
-  export type PostUncheckedCreateWithoutVerificationsInput = {
-    id?: string
-    text: string
-    attachment?: string | null
-    communityId: string
-    authorId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
-  }
-
-  export type PostCreateOrConnectWithoutVerificationsInput = {
-    where: PostWhereUniqueInput
-    create: XOR<PostCreateWithoutVerificationsInput, PostUncheckedCreateWithoutVerificationsInput>
-  }
-
-  export type CommunityUpsertWithoutVerificationsInput = {
-    update: XOR<CommunityUpdateWithoutVerificationsInput, CommunityUncheckedUpdateWithoutVerificationsInput>
-    create: XOR<CommunityCreateWithoutVerificationsInput, CommunityUncheckedCreateWithoutVerificationsInput>
-    where?: CommunityWhereInput
-  }
-
-  export type CommunityUpdateToOneWithWhereWithoutVerificationsInput = {
-    where?: CommunityWhereInput
-    data: XOR<CommunityUpdateWithoutVerificationsInput, CommunityUncheckedUpdateWithoutVerificationsInput>
-  }
-
-  export type CommunityUpdateWithoutVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
-    icon?: NullableStringFieldUpdateOperationsInput | string | null
-    tags?: CommunityUpdatetagsInput | string[]
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    communityExperience?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
-    admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
-    skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
-    posts?: PostUpdateManyWithoutCommunityNestedInput
-    skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
-    experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
-    leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    events?: EventUpdateManyWithoutCommunityNestedInput
-  }
-
-  export type CommunityUncheckedUpdateWithoutVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
-    icon?: NullableStringFieldUpdateOperationsInput | string | null
-    tags?: CommunityUpdatetagsInput | string[]
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    communityExperience?: NullableIntFieldUpdateOperationsInput | number | null
-    creatorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
-    skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
-    posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
-    skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
-    experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
-    leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
-  }
-
-  export type UserUpsertWithoutVerificationsInput = {
-    update: XOR<UserUpdateWithoutVerificationsInput, UserUncheckedUpdateWithoutVerificationsInput>
-    create: XOR<UserCreateWithoutVerificationsInput, UserUncheckedCreateWithoutVerificationsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutVerificationsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutVerificationsInput, UserUncheckedUpdateWithoutVerificationsInput>
-  }
-
-  export type UserUpdateWithoutVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    hash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
-    adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
-    posts?: PostUpdateManyWithoutAuthorNestedInput
-    skillForests?: SkillForestUpdateManyWithoutUserNestedInput
-    followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
-    experiences?: ExperienceUpdateManyWithoutUserNestedInput
-    leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
-    feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    events?: EventUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    hash?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
-    adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
-    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
-    skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
-    followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
-    experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
-    leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
-    feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    events?: EventUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type PostUpsertWithoutVerificationsInput = {
-    update: XOR<PostUpdateWithoutVerificationsInput, PostUncheckedUpdateWithoutVerificationsInput>
-    create: XOR<PostCreateWithoutVerificationsInput, PostUncheckedCreateWithoutVerificationsInput>
-    where?: PostWhereInput
-  }
-
-  export type PostUpdateToOneWithWhereWithoutVerificationsInput = {
-    where?: PostWhereInput
-    data: XOR<PostUpdateWithoutVerificationsInput, PostUncheckedUpdateWithoutVerificationsInput>
-  }
-
-  export type PostUpdateWithoutVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
-    author?: UserUpdateOneRequiredWithoutPostsNestedInput
-    feedback?: FeedbackUpdateManyWithoutPostNestedInput
-  }
-
-  export type PostUncheckedUpdateWithoutVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    text?: StringFieldUpdateOperationsInput | string
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    communityId?: StringFieldUpdateOperationsInput | string
-    authorId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type CommunityCreateWithoutEventsInput = {
@@ -20650,13 +18587,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutCreatedCommunitiesInput
     admins?: UserCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeCreateNestedManyWithoutCommunityInput
     posts?: PostCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationCreateNestedManyWithoutCommunityInput
   }
 
   export type CommunityUncheckedCreateWithoutEventsInput = {
@@ -20671,13 +18607,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     admins?: UserUncheckedCreateNestedManyWithoutAdminOfCommunitiesInput
-    verifiedUsers?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
+    users?: UserUncheckedCreateNestedManyWithoutVerifiedInCommunitiesInput
     skillTreeNodes?: SkilltreeNodeUncheckedCreateNestedManyWithoutCommunityInput
     posts?: PostUncheckedCreateNestedManyWithoutCommunityInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutCommunitiesInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutCommunityInput
     leaderboards?: LeaderboardUncheckedCreateNestedManyWithoutCommunityInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutCommunityInput
   }
 
   export type CommunityCreateOrConnectWithoutEventsInput = {
@@ -20693,14 +18628,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityCreateNestedManyWithoutUsersInput
     posts?: PostCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardCreateNestedManyWithoutUsersInput
     feedback?: FeedbackCreateNestedManyWithoutUserInput
-    verifications?: VerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEventsInput = {
@@ -20711,14 +18645,13 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdCommunities?: CommunityUncheckedCreateNestedManyWithoutCreatorInput
     adminOfCommunities?: CommunityUncheckedCreateNestedManyWithoutAdminsInput
-    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutVerifiedUsersInput
+    verifiedInCommunities?: CommunityUncheckedCreateNestedManyWithoutUsersInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     skillForests?: SkillForestUncheckedCreateNestedManyWithoutUserInput
     followedSkillForests?: SkillForestUncheckedCreateNestedManyWithoutFollowersInput
     experiences?: ExperienceUncheckedCreateNestedManyWithoutUserInput
     leaderboardEntries?: LeaderboardUncheckedCreateNestedManyWithoutUsersInput
     feedback?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    verifications?: VerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEventsInput = {
@@ -20776,13 +18709,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
   }
 
   export type CommunityUncheckedUpdateWithoutEventsInput = {
@@ -20797,13 +18729,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
   export type UserUpsertWithoutEventsInput = {
@@ -20825,14 +18756,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEventsInput = {
@@ -20843,14 +18773,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ExperienceUpsertWithoutEventsInput = {
@@ -20928,16 +18857,9 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type VerificationCreateManyUserInput = {
-    id?: string
-    communityId: string
-    postId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
   export type EventCreateManyUserInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     communityId: string
@@ -20957,13 +18879,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -20978,13 +18899,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -21011,13 +18931,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -21032,13 +18951,12 @@ export namespace Prisma {
     creatorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -21055,7 +18973,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CommunityUpdateWithoutVerifiedUsersInput = {
+  export type CommunityUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     skill?: StringFieldUpdateOperationsInput | string
@@ -21072,11 +18990,10 @@ export namespace Prisma {
     skillForests?: SkillForestUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
-  export type CommunityUncheckedUpdateWithoutVerifiedUsersInput = {
+  export type CommunityUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     skill?: StringFieldUpdateOperationsInput | string
@@ -21093,11 +19010,10 @@ export namespace Prisma {
     skillForests?: SkillForestUncheckedUpdateManyWithoutCommunitiesNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
-  export type CommunityUncheckedUpdateManyWithoutVerifiedUsersInput = {
+  export type CommunityUncheckedUpdateManyWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     skill?: StringFieldUpdateOperationsInput | string
@@ -21118,7 +19034,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
     feedback?: FeedbackUpdateManyWithoutPostNestedInput
-    verifications?: VerificationUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateWithoutAuthorInput = {
@@ -21129,7 +19044,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateManyWithoutAuthorInput = {
@@ -21260,32 +19174,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type VerificationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    community?: CommunityUpdateOneRequiredWithoutVerificationsNestedInput
-    post?: PostUpdateOneRequiredWithoutVerificationsNestedInput
-  }
-
-  export type VerificationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    communityId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    communityId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type EventUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21296,6 +19187,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     communityId?: StringFieldUpdateOperationsInput | string
@@ -21306,6 +19198,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     communityId?: StringFieldUpdateOperationsInput | string
@@ -21346,16 +19239,9 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type VerificationCreateManyCommunityInput = {
-    id?: string
-    userId: string
-    postId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
   export type EventCreateManyCommunityInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     userId: string
@@ -21371,14 +19257,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -21389,14 +19274,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21422,7 +19306,6 @@ export namespace Prisma {
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -21440,7 +19323,6 @@ export namespace Prisma {
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21489,7 +19371,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutPostsNestedInput
     feedback?: FeedbackUpdateManyWithoutPostNestedInput
-    verifications?: VerificationUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateWithoutCommunityInput = {
@@ -21500,7 +19381,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutPostNestedInput
   }
 
   export type PostUncheckedUpdateManyWithoutCommunityInput = {
@@ -21587,32 +19467,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type VerificationUpdateWithoutCommunityInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutVerificationsNestedInput
-    post?: PostUpdateOneRequiredWithoutVerificationsNestedInput
-  }
-
-  export type VerificationUncheckedUpdateWithoutCommunityInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationUncheckedUpdateManyWithoutCommunityInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    postId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type EventUpdateWithoutCommunityInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21623,6 +19480,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateWithoutCommunityInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -21633,6 +19491,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateManyWithoutCommunityInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -21643,14 +19502,6 @@ export namespace Prisma {
 
   export type FeedbackCreateManyPostInput = {
     id?: string
-    userId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VerificationCreateManyPostInput = {
-    id?: string
-    communityId: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21677,30 +19528,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type VerificationUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    community?: CommunityUpdateOneRequiredWithoutVerificationsNestedInput
-    user?: UserUpdateOneRequiredWithoutVerificationsNestedInput
-  }
-
-  export type VerificationUncheckedUpdateWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    communityId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationUncheckedUpdateManyWithoutPostInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    communityId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type CommunityUpdateWithoutSkillForestsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -21713,12 +19540,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutCreatedCommunitiesNestedInput
     admins?: UserUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUpdateManyWithoutCommunityNestedInput
     posts?: PostUpdateManyWithoutCommunityNestedInput
     experiences?: ExperienceUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUpdateManyWithoutCommunityNestedInput
     events?: EventUpdateManyWithoutCommunityNestedInput
   }
 
@@ -21734,12 +19560,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     admins?: UserUncheckedUpdateManyWithoutAdminOfCommunitiesNestedInput
-    verifiedUsers?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
+    users?: UserUncheckedUpdateManyWithoutVerifiedInCommunitiesNestedInput
     skillTreeNodes?: SkilltreeNodeUncheckedUpdateManyWithoutCommunityNestedInput
     posts?: PostUncheckedUpdateManyWithoutCommunityNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutCommunityNestedInput
     leaderboards?: LeaderboardUncheckedUpdateManyWithoutCommunityNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutCommunityNestedInput
     events?: EventUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
@@ -21764,13 +19589,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -21782,13 +19606,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     leaderboardEntries?: LeaderboardUncheckedUpdateManyWithoutUsersNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -21811,6 +19634,7 @@ export namespace Prisma {
 
   export type EventCreateManyExperienceInput = {
     id?: string
+    name: string
     rankedStatus?: boolean | null
     experiencePayout?: number | null
     communityId: string
@@ -21873,6 +19697,7 @@ export namespace Prisma {
 
   export type EventUpdateWithoutExperienceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21883,6 +19708,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateWithoutExperienceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     communityId?: StringFieldUpdateOperationsInput | string
@@ -21893,6 +19719,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateManyWithoutExperienceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     rankedStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
     experiencePayout?: NullableIntFieldUpdateOperationsInput | number | null
     communityId?: StringFieldUpdateOperationsInput | string
@@ -21909,13 +19736,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUpdateManyWithoutUsersNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUpdateManyWithoutUserNestedInput
     feedback?: FeedbackUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
   }
 
@@ -21927,13 +19753,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdCommunities?: CommunityUncheckedUpdateManyWithoutCreatorNestedInput
     adminOfCommunities?: CommunityUncheckedUpdateManyWithoutAdminsNestedInput
-    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutVerifiedUsersNestedInput
+    verifiedInCommunities?: CommunityUncheckedUpdateManyWithoutUsersNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     skillForests?: SkillForestUncheckedUpdateManyWithoutUserNestedInput
     followedSkillForests?: SkillForestUncheckedUpdateManyWithoutFollowersNestedInput
     experiences?: ExperienceUncheckedUpdateManyWithoutUserNestedInput
     feedback?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    verifications?: VerificationUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
   }
 
