@@ -1,6 +1,24 @@
+############################################
+# Variables, change them as per your need
+############################################
+
+@bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bnJodmMwMDAwN2JieDJmaXMyMzRkIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzM2NjQsImV4cCI6MTc0NzYzNzI2NH0.7B9u1WExQtQz6L8QMNUIevhtV-xwKu1G5s4aKI9PRBo
+@communityId = 64b0f3c1d2e4a7f8b8c4e5a1
+@eventId = 64b0f3c1d2e4a7f8b8c4e5a2
+@experienceId = 64b0f3c1d2e4a7f8b8c4e5a3
+
+
+############################################
+# User
+############################################
+
 ### Get the current user
 GET http://localhost:6969/user/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+Authorization: Bearer {{bearerToken}}
+
+############################################
+# Auth
+############################################
 
 ### Login the user
 POST http://localhost:6969/auth/signin
@@ -8,7 +26,7 @@ Content-Type: application/json
 
 {
   "email": "john@doe.com",
-  "password": "John@Doe@New@123"
+  "password": "JohnNew@123"
 }
 
 ### Register the user
@@ -23,16 +41,23 @@ Content-Type: application/json
 ### Forgot password
 PATCH http://localhost:6969/auth/forgot-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+Authorization: Bearer {{bearerToken}}
 
 {
-  "password": "John@Doe@New@123"
+  "password": "JohnNew@123"
 }
+
+############################################
+# Community
+############################################
+
+### Get all communities
+GET http://localhost:6969/community
 
 ### Create community
 POST http://localhost:6969/community
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+Authorization: Bearer {{bearerToken}}
 
 {
   "name": "Comm1",
@@ -43,40 +68,55 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1b
   ]
 }
 
-### Get all communities
-GET http://localhost:6969/community
-
 ### Get community by id
-GET http://localhost:6969/community/cmauney4s00042ozlt1hv7dna
+GET http://localhost:6969/community/{{communityId}}
 
-### Get a community
-GET http://localhost:6969/community/cmauney4s00042ozlt1hv7dna
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+### Delete community by id
+DELETE http://localhost:6969/community/{{communityId}}
+Authorization: Bearer {{bearerToken}}
+
+### Join a community
+POST http://localhost:6969/community/join/{{communityId}}
+Authorization: Bearer {{bearerToken}}
+
+### Leave a community
+POST http://localhost:6969/community/leave/{{communityId}}
+Authorization: Bearer {{bearerToken}}
+
+### Get community members
+GET http://localhost:6969/community/{{communityId}}/members
+
+### Get community admins
+GET http://localhost:6969/community/{{communityId}}/admins
+
+####################
+# Event
+####################
 
 ### Get all events
 GET http://localhost:6969/event
 
 ### Get event by id
-GET http://localhost:6969/event/cmaunids300012o610v0130vp
+GET http://localhost:6969/event/{{eventId}}
 
 ### Create a event
 POST http://localhost:6969/event
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+Authorization: Bearer {{bearerToken}}
 Content-Type: application/json
 
 {
   "name": "Event1",
-  "commmunityId": "cmauney4s00042ozlt1hv7dna",
-  "experienceId": "cmauni9ia00002ob63klw26wc"
+  "commmunityId": "{{communityId}}",
+  "experienceId": "{{experienceId}}"
 }
 
 ### Update event
-PATCH http://localhost:6969/event/cmaunids300012o610v0130vp
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bmR1bG8wMDAwMm96bHdtNHQ1MmN1IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzI3MTYsImV4cCI6MTc0NzYzNjMxNn0.RHm1_uj6FDIAzTSdI9TaWk215MFrRzKjmo4YSsJ77GQ
+PATCH http://localhost:6969/event/{{eventId}}
+Authorization: Bearer {{bearerToken}}
 Content-Type: application/json
 
 {
   "name": "Event 1",
-  "commmunityId": "cmauney4s00042ozlt1hv7dna",
-  "experienceId": "cmauni9ia00002ob63klw26wc"
+  "commmunityId": "{{communityId}}",
+  "experienceId": "{{experienceId}}"
 }
