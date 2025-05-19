@@ -42,4 +42,99 @@ export class CommunityService {
 
     return { message: community };
   }
+
+  async deleteCommunity(id: string, user: User) {
+    const community = await this.prisma.community.findUnique({
+      where: { id },
+    });
+
+    if (!community) {
+      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (community.creatorId !== user.id) {
+      throw new HttpException(
+        'You are not authorized to delete this community',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    await this.prisma.community.delete({
+      where: { id },
+    });
+
+    return { message: 'Community deleted successfully' };
+  }
+
+  async joinCommunity(communityId: string, user: User) {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+    });
+
+    if (!community) {
+      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: {
+        verifiedUsers: {
+          connect: { id: user.id },
+        },
+      },
+    });
+
+    return { message: 'Joined community successfully' };
+  }
+
+  async leaveCommunity(communityId: string, user: User) {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+    });
+
+    if (!community) {
+      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.prisma.community.update({
+      where: { id: communityId },
+      data: {
+        verifiedUsers: {
+          disconnect: { id: user.id },
+        },
+      },
+    });
+
+    return { message: 'Left community successfully' };
+  }
+
+  async getCommunityAdmins(communityId: string) {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      include: {
+        admins: true,
+      },
+    });
+
+    if (!community) {
+      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: community.admins };
+  }
+
+  async getCommunityMembers(communityId: string) {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      include: {
+        verifiedUsers: true,
+      },
+    });
+
+    if (!community) {
+      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: community.verifiedUsers };
+  }
 }

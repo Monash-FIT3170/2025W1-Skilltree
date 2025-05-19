@@ -192,17 +192,9 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.VerificationScalarFieldEnum = {
-  id: 'id',
-  communityId: 'communityId',
-  userId: 'userId',
-  postId: 'postId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   rankedStatus: 'rankedStatus',
   experiencePayout: 'experiencePayout',
   communityId: 'communityId',
@@ -237,7 +229,6 @@ exports.Prisma.ModelName = {
   Experience: 'Experience',
   Leaderboard: 'Leaderboard',
   Feedback: 'Feedback',
-  Verification: 'Verification',
   Event: 'Event'
 };
 
