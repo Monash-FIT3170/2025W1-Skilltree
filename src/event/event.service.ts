@@ -38,8 +38,11 @@ export class EventService {
       );
     }
 
+    console.log('-------------------------', dto.name ?? 'no name');
+
     const event = await this.prismaService.event.create({
       data: {
+        name: dto.name,
         communityId: dto.commmunityId,
         userId: user.id,
         experienceId: dto.experienceId,
@@ -116,6 +119,7 @@ export class EventService {
         id,
       },
       data: {
+        name: dto.name,
         communityId: dto.commmunityId,
         userId: user.id,
         experienceId: dto.experienceId,

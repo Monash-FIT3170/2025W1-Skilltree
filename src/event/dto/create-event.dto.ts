@@ -9,6 +9,10 @@ import {
 export class CreateEventDto {
   @IsString()
   @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
   commmunityId: string;
 
   @IsString()

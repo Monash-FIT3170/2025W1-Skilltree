@@ -1,6 +1,6 @@
 ### Get the current user
 GET http://localhost:6969/user/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bTU4OGcwMDAyMm8zaTRpaTEwa3hqIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzA4NjQsImV4cCI6MTc0NzYzNDQ2NH0.cWuLzfWCcYFlbYmBSx6p-3vSwUs6UPoFIIFtlEjDN10
 
 ### Login the user
 POST http://localhost:6969/auth/signin
@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "email": "john@doe.com",
-  "password": "JohnDoe@123"
+  "password": "John@Doe@New@123"
 }
 
 ### Register the user
@@ -23,7 +23,7 @@ Content-Type: application/json
 ### Forgot password
 PATCH http://localhost:6969/auth/forgot-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bTU4OGcwMDAyMm8zaTRpaTEwa3hqIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzA4NjQsImV4cCI6MTc0NzYzNDQ2NH0.cWuLzfWCcYFlbYmBSx6p-3vSwUs6UPoFIIFtlEjDN10
 
 {
   "password": "John@Doe@New@123"
@@ -32,7 +32,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Y
 ### Create community
 POST http://localhost:6969/community
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bTU4OGcwMDAyMm8zaTRpaTEwa3hqIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzA4NjQsImV4cCI6MTc0NzYzNDQ2NH0.cWuLzfWCcYFlbYmBSx6p-3vSwUs6UPoFIIFtlEjDN10
 
 {
   "name": "Comm1",
@@ -46,17 +46,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Y
 ### Get all communities
 GET http://localhost:6969/community
 
+### Get community by id
+GET http://localhost:6969/community/cmaum63hv00042o3ip2qn8mse
+
 ### Create community
-GET http://localhost:6969/community?id=cmaukktzd00012oinsqdl9q39
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+GET http://localhost:6969/community/cmaum63hv00042o3ip2qn8mse
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bTU4OGcwMDAyMm8zaTRpaTEwa3hqIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzA4NjQsImV4cCI6MTc0NzYzNDQ2NH0.cWuLzfWCcYFlbYmBSx6p-3vSwUs6UPoFIIFtlEjDN10
 
 ###
 POST http://localhost:6969/event
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1a2l2Ym8wMDAwMm9mNzh5NTQwb3o0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2Mjc5MDMsImV4cCI6MTc0NzYzMTUwM30.5CItcXI1sVExUQW-4F4n0zAfSV7q1ISWbZHpp-4GD_0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bTU4OGcwMDAyMm8zaTRpaTEwa3hqIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzA4NjQsImV4cCI6MTc0NzYzNDQ2NH0.cWuLzfWCcYFlbYmBSx6p-3vSwUs6UPoFIIFtlEjDN10
 Content-Type: application/json
 
 {
   "name": "Event1",
-  "commmunityId": "cmaukktzd00012oinsqdl9q39",
-  "experienceId": "cmauko3ku00002ouymuw73ubv"
+  "commmunityId": "cmaum63hv00042o3ip2qn8mse",
+  "experienceId": "cmaum6h5s00002osjtqulan3t"
 }

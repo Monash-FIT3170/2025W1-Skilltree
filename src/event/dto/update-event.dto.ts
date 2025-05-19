@@ -7,11 +7,15 @@ import {
 } from 'class-validator';
 
 export class UpdateEventDto {
+  @IsOptional()
   @IsString()
+  name: string;
+
+  @IsOptional()
   @IsNotEmpty()
   commmunityId: string;
 
-  @IsString()
+  @IsOptional()
   @IsNotEmpty()
   experienceId: string;
 
