@@ -1,9 +1,9 @@
 ### Get the current user
-GET http://localhost:6969/user/me
+GET http://localhost:3000/user/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
 
 ### Login the user
-POST http://localhost:6969/auth/signin
+POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Register the user
-POST http://localhost:6969/auth/signup
+POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### Forgot password
-PATCH http://localhost:6969/auth/forgot-password
+PATCH http://localhost:3000/auth/forgot-password
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
 
@@ -30,7 +30,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzd
 }
 
 ### Create community
-POST http://localhost:6969/community
+POST http://localhost:3000/community
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y
 
@@ -44,8 +44,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzd
 }
 
 ### Get all communities
-GET http://localhost:6969/community
+GET http://localhost:3000/community
 
 ### Create community
-GET http://localhost:6969/community?id=cman5tblx000277m7c8w7q3nu
+GET http://localhost:3000/community?id=cman5tblx000277m7c8w7q3nu
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFuNXQzdmQwMDAwNzdtN2w5MTBiZ2J0IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDcxODAwODksImV4cCI6MTc0NzE4MzY4OX0.MjuLpbyI4fBkVZMeZQIjJ0QvSngfUVbl1S7GLDRGN1Y

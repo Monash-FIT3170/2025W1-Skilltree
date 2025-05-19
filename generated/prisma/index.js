@@ -224,7 +224,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/aditya/Monash/FIT3170_SE_Practice/frontend/backend/generated/prisma",
+      "value": "/Users/aditya/Monash/FIT3170_SE_Practice/backend/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -242,7 +242,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/aditya/Monash/FIT3170_SE_Practice/frontend/backend/prisma/schema.prisma",
+    "sourceFilePath": "/Users/aditya/Monash/FIT3170_SE_Practice/backend/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -256,12 +256,11 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "postgresql://aditya:aditya@localhost:5432/skilltree?schema=public"
       }
     }
   },

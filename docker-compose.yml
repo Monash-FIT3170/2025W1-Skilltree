@@ -1,0 +1,15 @@
+services:
+  dev-db:
+    image: postgres:latest
+    container_name: skilltree
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testuser
+      POSTGRES_DB: skilltree
+    networks:
+      - dev-network
+networks:
+  dev-network:
+    driver: bridge
