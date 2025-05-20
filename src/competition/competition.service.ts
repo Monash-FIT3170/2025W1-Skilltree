@@ -1,15 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCompetitionDto } from './dto/create-competition.dto';
-import { UpdateCompetitionDto } from './dto/update-competition.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'generated/prisma';
 import { GetCompetitionDto } from './dto/get-competition.dto';
+import { CreateCompetitionDto } from './dto/create-competition.dto';
+
 @Injectable()
 export class CompetitionService {
   constructor(private prisma: PrismaService) {}
 
-  async createCommunity(user: User, dto: CreateCompetitionDto) {
+  async createCompetition(dto: CreateCompetitionDto) {
     const competition = await this.prisma.competition.create({
       data: {
         name: dto.name,
@@ -66,5 +65,41 @@ export class CompetitionService {
     });
 
     return { message: 'Competition deleted successfully' };
+  }
+
+  async joinCompetition(competitionId: string, user: User) {
+    const competition = await this.prisma.community.findUnique({
+      where: { id: competitionId },
+    });
+
+    if (!competition) {
+      throw new HttpException('Competition not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.prisma.competition.update({
+      where: { id: competitionId },
+      data: {
+        users: {
+          connect: { id: user.id },
+        },
+      },
+    });
+
+    return { message: 'Joined competition successfully' };
+  }
+
+  async getCompetitionMembers(competitionId: string) {
+    const competition = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      include: {
+        users: true,
+      },
+    });
+
+    if (!competition) {
+      throw new HttpException('Competition not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: competition.users };
   }
 }
