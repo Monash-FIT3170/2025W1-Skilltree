@@ -6,16 +6,16 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateCompetitionDto {
+export class UpdateCompetitionDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   name: string;
 
-  @IsString()
+  @IsOptional()
   @IsNotEmpty()
   communityId: string;
 
-  @IsString()
+  @IsOptional()
   @IsNotEmpty()
   experienceId: string;
 
