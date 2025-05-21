@@ -11,21 +11,24 @@ export class AnnouncementService {
 
   async createAnnouncement(
     user: User,
-    announcementCreationDto: AnnouncementCreationDto,
+    dto: AnnouncementCreationDto,
   ) {
-    // Fetch the community by communityId
-    const community = await this.prisma.community.findUnique({
-      where: { id: announcementCreationDto.communityId },
+    const announcement = await this.prisma.post.create({
+      data: {
+        text: dto.text,
+        communityId: dto.communityId,
+        authorId: user.id,
+      },
     });
-
-    // If the community doesn't exist, throw an error
-    if (!community) {
+    /*
+    // If the announcement doesn't exist, throw an error
+    if (!announcement) {
       throw new BadRequestException('Community not found');
     }
 
-    // throw error if creator of post is not creator of community
-    if (community.creatorId !== user.id) {
-      throw new BadRequestException('User is not the creator of this community');
+    // throw error if creator of post is not creator of announcement
+    if (announcement.creatorId !== user.id) {
+      throw new BadRequestException('User is not the creator of this announcement');
     }
 
     // Create the announcement (Community Leader Post)
@@ -36,7 +39,7 @@ export class AnnouncementService {
         authorId: user.id,  // The user creating the post must be the same as the creator
       },
     });
-
+    */
     return {
       message: announcement,
     };
@@ -80,6 +83,6 @@ export class AnnouncementService {
           where: { id },
         });
     
-        return { message: 'Community deleted successfully' };
+        return { message: 'Announcement deleted successfully' };
       }
 }
