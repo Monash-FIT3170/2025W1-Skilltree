@@ -13,6 +13,10 @@ export class CreateCompetitionDto {
 
   @IsString()
   @IsNotEmpty()
+  competitionId: string;
+
+  @IsString()
+  @IsNotEmpty()
   communityId: string;
 
   @IsString()

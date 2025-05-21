@@ -12,6 +12,7 @@ export class CompetitionService {
     const competition = await this.prisma.competition.create({
       data: {
         name: dto.name,
+        competitionId: dto.competitionId,
         communityId: dto.communityId,
         experienceId: dto.experienceId,
         rankedStatus: dto.rankedStatus,
@@ -101,5 +102,18 @@ export class CompetitionService {
     }
 
     return { message: competition.users };
+  }
+
+  async getCompetitionCommunity(competitionId: string) {
+    const competition = await this.prisma.competition.findUnique({
+      where: { id: competitionId },
+      
+    })
+
+    if (!competition) {
+      throw new HttpException('Competition not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: competition.communityId };
   }
 }

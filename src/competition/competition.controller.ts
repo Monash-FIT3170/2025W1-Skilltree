@@ -47,7 +47,12 @@ export class CompetitionController {
   }
 
   @Get('/:competitionId/members')
-  getCompetitionMembers(@Param('competitionId') communityId: string) {
-    return this.competitionService.getCompetitionMembers(communityId);
+  getCompetitionMembers(@Param('competitionId') competitionId: string) {
+    return this.competitionService.getCompetitionMembers(competitionId);
+  }
+
+  @Get('/:competitionId/communityId')
+  getCompetitionCommunity(@Param('competitionId') competitionId: string) {
+    return this.competitionService.getCompetitionCommunity(competitionId);
   }
 }

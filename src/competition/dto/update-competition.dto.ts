@@ -13,6 +13,10 @@ export class UpdateCompetitionDto {
 
   @IsOptional()
   @IsNotEmpty()
+  competitionId: string;
+
+  @IsString()
+  @IsNotEmpty()
   communityId: string;
 
   @IsOptional()
