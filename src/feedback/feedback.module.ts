@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CompetitionController } from './competition.controller';
-import { CompetitionService } from './competition.service';
+import { CompetitionController } from './feedback.controller';
+import { CompetitionService } from './feedback.service';
 
 @Module({
   controllers: [CompetitionController],

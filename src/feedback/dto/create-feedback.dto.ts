@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class GetCompetitionDto {
-  @IsNotEmpty()
+export class CreateFeedbackDto {
   @IsString()
-  id: string;
+  @IsNotEmpty()
+  postId: string;
 }
