@@ -7,8 +7,6 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getMe(user: User) {
-    console.log(user);
-
     const userData = await this.prisma.user.findFirst({
       where: {
         id: user.id,
@@ -16,9 +14,17 @@ export class UserService {
       select: {
         id: true,
         email: true,
-        createdAt: true,
-        updatedAt: true,
         hash: false,
+        createdCommunities: true,
+        adminOfCommunities: true,
+        verifiedInCommunities: true,
+        posts: true,
+        skillForests: true,
+        followedSkillForests: true,
+        experiences: true,
+        leaderboardEntries: true,
+        feedback: true,
+        events: true,
       },
     });
 

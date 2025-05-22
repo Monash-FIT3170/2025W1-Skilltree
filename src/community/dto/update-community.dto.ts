@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CommunuityCreationDto {
+export class UpdateCommunityDto {
   @IsString()
   @IsNotEmpty()
   profileImage: string;

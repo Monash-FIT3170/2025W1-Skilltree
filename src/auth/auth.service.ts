@@ -46,6 +46,18 @@ export class AuthService {
   async signup(dto: SignUpDto) {
     const hash = await argon.hash(dto.password);
 
+    const userExists = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (userExists) {
+      throw new HttpException(
+        'The user already exists. Please sign in.',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     await this.prisma.user.create({
       data: {
         email: dto.email,
@@ -77,7 +89,6 @@ export class AuthService {
   }
 
   async forgotPassword(user: User, dto: ForgotPasswordDto) {
-    console.log(dto);
     const { id } = user;
 
     const userData = await this.prisma.user.findFirst({
