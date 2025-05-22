@@ -1,10 +1,14 @@
 "use client";
 
 import { Ghost } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import { useRouter } from "next/navigation";
 
-const SignInButton = () => {
+interface SignInButtonProps {
+  label?: string;
+}
+
+const SignInButton = ({ label }: SignInButtonProps) => {
   const router = useRouter();
 
   const handleSignIn = async () => {
@@ -17,7 +21,7 @@ const SignInButton = () => {
      variant={"ghost"}
      onClick={handleSignIn}
     >
-      Sign Up
+      {label}
     </Button>
   );
 };
