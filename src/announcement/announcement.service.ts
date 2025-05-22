@@ -23,7 +23,7 @@ export class AnnouncementService {
     /*
     // If the announcement doesn't exist, throw an error
     if (!announcement) {
-      throw new BadRequestException('Community not found');
+      throw new BadRequestException('announcement not found');
     }
 
     // throw error if creator of post is not creator of announcement
@@ -31,7 +31,7 @@ export class AnnouncementService {
       throw new BadRequestException('User is not the creator of this announcement');
     }
 
-    // Create the announcement (Community Leader Post)
+    // Create the announcement (Announcement Post)
     const announcement = await this.prisma.post.create({
       data: {
         text: announcementCreationDto.text,
@@ -79,7 +79,7 @@ export class AnnouncementService {
           );
         }
     
-        await this.prisma.community.delete({
+        await this.prisma.post.delete({
           where: { id },
         });
     

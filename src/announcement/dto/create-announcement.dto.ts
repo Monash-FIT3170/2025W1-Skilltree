@@ -8,8 +8,4 @@ export class AnnouncementCreationDto {
   @IsUUID()
   @IsNotEmpty()
   communityId: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  authorId: string;
 }
