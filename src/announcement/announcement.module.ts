@@ -6,4 +6,4 @@ import { AnnouncementService } from './announcement.service';
   controllers: [AnnouncementController],
   providers: [AnnouncementService],
 })
-export class CommunityModule {}
+export class AnnouncementModule {}

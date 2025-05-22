@@ -15,6 +15,9 @@ import { UserModule } from './user/user.module';
 import { EventService } from './event/event.service';
 import { EventController } from './event/event.controller';
 import { EventModule } from './event/event.module';
+import { AnnouncementService } from './announcement/announcement.service';
+import { AnnouncementController } from './announcement/announcement.controller';
+import { AnnouncementModule } from './announcement/announcement.module';
 
 @Module({
   imports: [
@@ -26,9 +29,10 @@ import { EventModule } from './event/event.module';
     AuthModule,
     CommunityModule,
     UserModule,
+    AnnouncementModule,
     EventModule,
   ],
-  controllers: [AppController, AuthController, UserController, EventController],
+  controllers: [AppController, AuthController, UserController, EventController, AnnouncementController],
   providers: [
     AppService,
     AuthService,
@@ -36,6 +40,7 @@ import { EventModule } from './event/event.module';
     JwtService,
     UserService,
     EventService,
+    AnnouncementService
   ],
 })
 export class AppModule {}
