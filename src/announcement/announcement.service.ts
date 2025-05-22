@@ -26,19 +26,7 @@ export class AnnouncementService {
       throw new BadRequestException('announcement not found');
     }
 
-    // throw error if creator of post is not creator of announcement
-    if (announcement.creatorId !== user.id) {
-      throw new BadRequestException('User is not the creator of this announcement');
-    }
-
-    // Create the announcement (Announcement Post)
-    const announcement = await this.prisma.post.create({
-      data: {
-        text: announcementCreationDto.text,
-        communityId: announcementCreationDto.communityId,
-        authorId: user.id,  // The user creating the post must be the same as the creator
-      },
-    });
+    // to do: throw error if creator of announcement is not part of the admin list in community
     */
     return {
       message: announcement,
