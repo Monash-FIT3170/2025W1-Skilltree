@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CompetitionController } from './feedback.controller';
-import { CompetitionService } from './feedback.service';
+import { FeedbackController } from './feedback.controller';
+import { FeedbackService } from './feedback.service';
 
 @Module({
-  controllers: [CompetitionController],
-  providers: [CompetitionService]
+  controllers: [FeedbackController],
+  providers: [FeedbackService]
 })
-export class CompetitionModule {}
+export class FeedbackModule {}
