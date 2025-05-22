@@ -14,7 +14,7 @@ import { JwtGuard } from 'src/guards';
 import { GetAnnouncementDto } from './dto/get-announcement.dto';
 import { GetUser } from 'src/decorator';
 
-@Controller('community')
+@Controller('announcement')
 export class AnnouncementController {
   constructor(private announcementService: AnnouncementService) {}
 
