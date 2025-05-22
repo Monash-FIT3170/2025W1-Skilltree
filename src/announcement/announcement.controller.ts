@@ -20,7 +20,7 @@ export class AnnouncementController {
 
   @Post('')
   @UseGuards(JwtGuard)
-  createCommunity(@Body() dto: AnnouncementCreationDto, @GetUser() user: User) {
+  createAnnouncement(@GetUser() user: User, @Body() dto: AnnouncementCreationDto) {
     return this.announcementService.createAnnouncement(user, dto);
   }
 
@@ -36,7 +36,7 @@ export class AnnouncementController {
 
   @Delete(':id')
   @UseGuards(JwtGuard)
-  deleteCommunity(@Param('id') id: string, @GetUser() user: User) {
+  deleteAnnouncement(@Param('id') id: string, @GetUser() user: User) {
     return this.announcementService.deleteAnnouncement(id, user);
   }
 }
