@@ -7,6 +7,26 @@ import { MulterService } from 'src/multer/multer.service';
 import { ConfigService } from '@nestjs/config';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 
+const includeAllFields = {
+  id: true,
+  name: true,
+  skill: true,
+  icon: true,
+  tags: true,
+  description: true,
+  communityExperience: true,
+  creatorId: true,
+  creator: true,
+  admins: true,
+  users: true,
+  skillTreeNodes: true,
+  posts: true,
+  skillForests: true,
+  experiences: true,
+  leaderboards: true,
+  events: true,
+};
+
 @Injectable()
 export class CommunityService {
   constructor(
@@ -51,73 +71,18 @@ export class CommunityService {
 
   async getAllCommunities() {
     const communities = await this.prisma.community.findMany({
-      select: {
-        id: true,
-        name: true,
-        skill: true,
-        icon: true,
-        tags: true,
-        description: true,
-        communityExperience: true,
-        creatorId: true,
-        creator: true,
-        admins: true,
-        users: true,
-        skillTreeNodes: true,
-        posts: true,
-        skillForests: true,
-        experiences: true,
-        leaderboards: true,
-        events: true,
-      },
+      select: includeAllFields,
     });
 
     return {
       message: communities,
-      select: {
-        id: true,
-        name: true,
-        skill: true,
-        icon: true,
-        tags: true,
-        description: true,
-        communityExperience: true,
-        creatorId: true,
-        creator: true,
-        admins: true,
-        users: true,
-        skillTreeNodes: true,
-        posts: true,
-        skillForests: true,
-        experiences: true,
-        leaderboards: true,
-        events: true,
-      },
     };
   }
 
   async getCommunityById(dto: GetCommunityDto) {
     const community = await this.prisma.community.findUnique({
       where: { id: dto.id },
-      select: {
-        id: true,
-        name: true,
-        skill: true,
-        icon: true,
-        tags: true,
-        description: true,
-        communityExperience: true,
-        creatorId: true,
-        creator: true,
-        admins: true,
-        users: true,
-        skillTreeNodes: true,
-        posts: true,
-        skillForests: true,
-        experiences: true,
-        leaderboards: true,
-        events: true,
-      },
+      select: includeAllFields,
     });
 
     if (!community) {
