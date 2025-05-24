@@ -8,19 +8,16 @@ interface SignInButtonProps {
   label?: string;
 }
 
-const SignInButton = ({ label }: SignInButtonProps) => {
+const SignInButton: React.FC<SignInButtonProps> = ({ label = "Sign Up" }) => {
   const router = useRouter();
 
-  const handleSignIn = async () => {
+  const handleSignIn = async () => {    
     await fetch("/api/landing", { method: "POST" });
     router.push("/signup");
   };
 
   return (
-    <Button
-     variant={"ghost"}
-     onClick={handleSignIn}
-    >
+    <Button variant="ghost" onClick={handleSignIn}>
       {label}
     </Button>
   );
