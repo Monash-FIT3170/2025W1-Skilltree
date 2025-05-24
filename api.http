@@ -120,3 +120,23 @@ Content-Type: application/json
   "commmunityId": "{{communityId}}",
   "experienceId": "{{experienceId}}"
 }
+
+####################
+# Announcement
+####################
+
+### Get all announcement
+GET http://localhost:6969/announcement
+
+### Get announcement by id
+GET http://localhost:6969/announcement/{{announcementId}}
+
+### Create a event
+POST http://localhost:6969/announcement
+Authorization: Bearer {{bearerToken}}
+Content-Type: application/json
+
+{
+  "text": "announcement",
+  "commmunityId": "{{communityId}}",
+}
