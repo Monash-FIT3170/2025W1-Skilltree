@@ -11,7 +11,6 @@ import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto';
 import { User } from 'generated/prisma';
 import { JwtGuard } from 'src/guards';
-import { GetFeedbackDto } from './dto/get-feedback.dto';
 import { GetUser } from 'src/decorator';
 
 @Controller('feedback')
@@ -30,8 +29,8 @@ export class FeedbackController {
   }
 
   @Get(':id')
-  getFeedbackById(@Param() dto: GetFeedbackDto) {
-    return this.competitionService.getFeedbackById(dto);
+  getFeedbackById(@Param() id: string) {
+    return this.competitionService.getFeedbackById(id);
   }
 
   @Delete(':id')

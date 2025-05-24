@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'generated/prisma';
-import { GetFeedbackDto } from './dto/get-feedback.dto';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 
 @Injectable()
@@ -22,16 +21,16 @@ export class FeedbackService {
   }
 
   async getAllFeedback() {
-    const competitions = await this.prisma.feedback.findMany();
+    const allFeedback = await this.prisma.feedback.findMany();
 
     return {
-      message: competitions,
+      message: allFeedback,
     };
   }
 
-  async getFeedbackById(dto: GetFeedbackDto) {
+  async getFeedbackById(id: string) {
     const feedback = await this.prisma.feedback.findUnique({
-      where: { id: dto.id },
+      where: { id: id },
     });
 
     if (!feedback) {
