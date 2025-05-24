@@ -6,6 +6,7 @@ import AboutUs from '@/components/landingPage/AboutUs';
 import Features from '@/components/landingPage/Features';
 import NavBar from '@/components/landingPage/NavBar';
 import Communities from '@/components/landingPage/Communities';
+import OurFooter from '@/components/landingPage/OurFooter';
 
 function Section({ id, title, children }) {
   return (
@@ -18,7 +19,7 @@ function Section({ id, title, children }) {
 
 export default function LandingPage() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <NavBar/>
       <main className="mt-16">
         <Section id="home" title="">
@@ -34,6 +35,7 @@ export default function LandingPage() {
           <Communities/>
         </Section>
       </main>
-    </>
+      <OurFooter/>
+    </div>
   );
 }
