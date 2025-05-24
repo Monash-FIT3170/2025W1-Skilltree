@@ -18,17 +18,20 @@ const FEATURE_CARDS = [
 
 const AboutUs = () => {
   return (
-    <div className="grid gap-8 md:grid-cols-3">
-      {FEATURE_CARDS.map(({ img, title, desc }) => (
-        <div key={title} className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
-          <img src={img} alt={title} className="w-full h-80 object-cover" />
-          <div className="p-6 text-center">
-            <h3 className="text-xl font-medium mb-2">{title}</h3>
-            <p className="text-gray-600 text-sm">{desc}</p>
+    <div>
+      <h2 className="text-4xl md:text-5xl font-bold mb-8 ">About Us</h2>
+      <div className="text-4xl md:text-5xl font-bold mb-4 grid gap-8 md:grid-cols-3">
+        {FEATURE_CARDS.map(({ img, title, desc }) => (
+          <div key={title} className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+            <img src={img} alt={title} className="w-full h-80 object-cover" />
+            <div className="p-6 text-center">
+              <h3 className="text-xl font-medium mb-2">{title}</h3>
+              <p className="text-gray-600 text-sm">{desc}</p>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </div> 
   );
 }
 

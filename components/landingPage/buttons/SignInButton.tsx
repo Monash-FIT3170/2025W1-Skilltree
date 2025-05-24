@@ -17,9 +17,15 @@ const SignInButton: React.FC<SignInButtonProps> = ({ label = "Sign Up" }) => {
   };
 
   return (
-    <Button variant="ghost" onClick={handleSignIn}>
-      {label}
-    </Button>
+<button
+  onClick={handleSignIn}
+  className="bg-[#0A1128] text-white font-semibold px-6 py-2 rounded-md 
+             shadow-md transition-all duration-300 ease-in-out 
+             hover:bg-[#0c1533] hover:scale-105 hover:shadow-lg"
+>
+  {label}
+</button>
+
   );
 };
 export default SignInButton;

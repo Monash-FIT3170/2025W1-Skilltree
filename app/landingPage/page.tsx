@@ -24,10 +24,10 @@ export default function LandingPage() {
         <Section id="home" title="">
           <Hero />
         </Section>
-        <Section id="about" title="About Us">
+        <Section id="about" title="">
           <AboutUs/>
         </Section>
-        <Features image="/images/download.png" label="Build Your Communities" text="SkillTree offers you the opportunity to build a community around your uniqueness, joined alongside people just as unique as you."/>
+        <Features image="/images/build-your-communities.jpg" label="Build Your Communities" text="SkillTree offers you the opportunity to build a community around your uniqueness, joined alongside people just as unique as you."/>
         <Features image="/images/download.png" label="Learn From The Experts" text="Have verified people verify you."/>
         <Features image="/images/download.png" label="Compete against others" text="Harness your inner competitiveness."/>
         <Section id="communities" title="Communities">

@@ -1,7 +1,7 @@
 const COMMUNITY_CARDS = [
-  { img: 'https://via.placeholder.com/40', title: 'Community Name 1', posts: 32 },
-  { img: 'https://via.placeholder.com/40', title: 'Community Name 2', posts: 18 },
-  { img: 'https://via.placeholder.com/40', title: 'Community Name 3', posts: 24 },
+  { img: '/images/community1.jpg', title: 'Community Name 1', posts: 32 },
+  { img: '/images/community1.jpg', title: 'Community Name 2', posts: 18 },
+  { img: '/images/community1.jpg', title: 'Community Name 3', posts: 24 },
 ];
 
 const Communities = () => {
@@ -14,7 +14,9 @@ const Communities = () => {
             <h4 className="font-medium">{title}</h4>
             <span className="text-gray-500 text-sm">{posts} Posts</span>
           </div>
-          <button className="bg-blue-600 text-white py-1 px-4 rounded-md hover:bg-blue-700">
+          <button className="bg-[#0A1128] text-white font-semibold px-6 py-2 rounded-md 
+             shadow-md transition-all duration-300 ease-in-out 
+             hover:bg-[#0c1533] hover:scale-105 hover:shadow-lg">
             Join
           </button>
         </div>
