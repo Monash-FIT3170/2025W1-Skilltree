@@ -23,7 +23,7 @@ export class AnnouncementController {
     return this.announcementService.createAnnouncement(user, dto);
   }
 
-  @Get('')
+  @Get('community/:id')
   getAllAnnouncements(@Param('id') communityId: string) {
     return this.announcementService.getAllAnnouncements(communityId);
   }
