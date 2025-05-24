@@ -188,6 +188,7 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   postId: 'postId',
+  feedbackText: 'feedbackText',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

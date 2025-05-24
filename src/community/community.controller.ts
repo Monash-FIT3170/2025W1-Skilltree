@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { CommunityService } from './community.service';
@@ -66,5 +68,15 @@ export class CommunityController {
   @Get('/:communityId/admins')
   getCommunityAdmins(@Param('communityId') communityId: string) {
     return this.communityService.getCommunityAdmins(communityId);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtGuard)
+  updateCommunity(
+    @Param('id') id: string,
+    @Body() dto: CommunuityCreationDto,
+    @GetUser() user: User,
+  ) {
+    return this.communityService.updateCommunity(id, dto, user);
   }
 }

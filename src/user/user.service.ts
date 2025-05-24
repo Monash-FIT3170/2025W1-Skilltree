@@ -1,25 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { userSelect } from 'src/prismaIncludes';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getMe(user: User) {
-    console.log(user);
-
     const userData = await this.prisma.user.findFirst({
       where: {
         id: user.id,
       },
-      select: {
-        id: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true,
-        hash: false,
-      },
+      select: userSelect,
     });
 
     if (!userData) {

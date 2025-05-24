@@ -15,27 +15,44 @@ import { UserModule } from './user/user.module';
 import { EventService } from './event/event.service';
 import { EventController } from './event/event.controller';
 import { EventModule } from './event/event.module';
+import { AnnouncementService } from './announcement/announcement.service';
+import { AnnouncementController } from './announcement/announcement.controller';
+import { AnnouncementModule } from './announcement/announcement.module';
+import { PostModule } from './post/post.module';
+import { CommunityService } from './community/community.service';
+import { MulterModule } from './multer/multer.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'),
+    // }),
     PrismaModule,
     JwtModule.register({}),
     AuthModule,
     CommunityModule,
     UserModule,
+    AnnouncementModule,
     EventModule,
+    PostModule,
+    MulterModule,
   ],
-  controllers: [AppController, AuthController, UserController, EventController],
+  controllers: [AppController, AuthController, UserController, EventController, AnnouncementController],
   providers: [
     AppService,
     AuthService,
+    CommunityService,
+    UserService,
     PrismaService,
     JwtService,
     UserService,
     EventService,
+    AnnouncementService
   ],
 })
 export class AppModule {}

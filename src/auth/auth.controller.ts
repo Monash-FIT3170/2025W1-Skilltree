@@ -22,8 +22,6 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @Patch('forgot-password')
   forgotPassword(@GetUser() user: User, @Body() dto: ForgotPasswordDto) {
-    console.log(dto, user);
-
     return this.authService.forgotPassword(user, dto);
   }
 }

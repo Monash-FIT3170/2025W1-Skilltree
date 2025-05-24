@@ -3,13 +3,17 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CommunuityCreationDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  profileImage: string;
 
   @IsString()
   @IsNotEmpty()
-  skill: string;
+  name: string;
 
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   tags: string[];
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
 }

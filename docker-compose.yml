@@ -5,11 +5,11 @@ services:
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_HOST=localhost
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=arshb
-      - POSTGRES_PASSWORD=arshb
-      - POSTGRES_DB=skilltree
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     networks:
       - dev-network
 networks:

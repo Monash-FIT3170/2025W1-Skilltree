@@ -3307,7 +3307,6 @@ export namespace Prisma {
   export type CommunityMinAggregateOutputType = {
     id: string | null
     name: string | null
-    skill: string | null
     icon: string | null
     description: string | null
     communityExperience: number | null
@@ -3319,7 +3318,6 @@ export namespace Prisma {
   export type CommunityMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    skill: string | null
     icon: string | null
     description: string | null
     communityExperience: number | null
@@ -3354,7 +3352,6 @@ export namespace Prisma {
   export type CommunityMinAggregateInputType = {
     id?: true
     name?: true
-    skill?: true
     icon?: true
     description?: true
     communityExperience?: true
@@ -3366,7 +3363,6 @@ export namespace Prisma {
   export type CommunityMaxAggregateInputType = {
     id?: true
     name?: true
-    skill?: true
     icon?: true
     description?: true
     communityExperience?: true
@@ -3478,7 +3474,7 @@ export namespace Prisma {
   export type CommunityGroupByOutputType = {
     id: string
     name: string
-    skill: string
+    skill: string[]
     icon: string | null
     tags: string[]
     description: string | null
@@ -3607,7 +3603,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      skill: string
+      skill: string[]
       icon: string | null
       tags: string[]
       description: string | null
@@ -4049,7 +4045,7 @@ export namespace Prisma {
   interface CommunityFieldRefs {
     readonly id: FieldRef<"Community", 'String'>
     readonly name: FieldRef<"Community", 'String'>
-    readonly skill: FieldRef<"Community", 'String'>
+    readonly skill: FieldRef<"Community", 'String[]'>
     readonly icon: FieldRef<"Community", 'String'>
     readonly tags: FieldRef<"Community", 'String[]'>
     readonly description: FieldRef<"Community", 'String'>
@@ -10346,6 +10342,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     postId: string | null
+    feedbackText: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10354,6 +10351,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     postId: string | null
+    feedbackText: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10362,6 +10360,7 @@ export namespace Prisma {
     id: number
     userId: number
     postId: number
+    feedbackText: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -10372,6 +10371,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     postId?: true
+    feedbackText?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -10380,6 +10380,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     postId?: true
+    feedbackText?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -10388,6 +10389,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     postId?: true
+    feedbackText?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -10469,6 +10471,7 @@ export namespace Prisma {
     id: string
     userId: string
     postId: string
+    feedbackText: string
     createdAt: Date
     updatedAt: Date
     _count: FeedbackCountAggregateOutputType | null
@@ -10494,6 +10497,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10504,6 +10508,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10514,6 +10519,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10524,11 +10530,12 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FeedbackOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["feedback"]>
+  export type FeedbackOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "postId" | "feedbackText" | "createdAt" | "updatedAt", ExtArgs["result"]["feedback"]>
   export type FeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     post?: boolean | PostDefaultArgs<ExtArgs>
@@ -10552,6 +10559,7 @@ export namespace Prisma {
       id: string
       userId: string
       postId: string
+      feedbackText: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["feedback"]>
@@ -10982,6 +10990,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Feedback", 'String'>
     readonly userId: FieldRef<"Feedback", 'String'>
     readonly postId: FieldRef<"Feedback", 'String'>
+    readonly feedbackText: FieldRef<"Feedback", 'String'>
     readonly createdAt: FieldRef<"Feedback", 'DateTime'>
     readonly updatedAt: FieldRef<"Feedback", 'DateTime'>
   }
@@ -12661,6 +12670,7 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     postId: 'postId',
+    feedbackText: 'feedbackText',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12866,7 +12876,7 @@ export namespace Prisma {
     NOT?: CommunityWhereInput | CommunityWhereInput[]
     id?: StringFilter<"Community"> | string
     name?: StringFilter<"Community"> | string
-    skill?: StringFilter<"Community"> | string
+    skill?: StringNullableListFilter<"Community">
     icon?: StringNullableFilter<"Community"> | string | null
     tags?: StringNullableListFilter<"Community">
     description?: StringNullableFilter<"Community"> | string | null
@@ -12913,7 +12923,7 @@ export namespace Prisma {
     OR?: CommunityWhereInput[]
     NOT?: CommunityWhereInput | CommunityWhereInput[]
     name?: StringFilter<"Community"> | string
-    skill?: StringFilter<"Community"> | string
+    skill?: StringNullableListFilter<"Community">
     icon?: StringNullableFilter<"Community"> | string | null
     tags?: StringNullableListFilter<"Community">
     description?: StringNullableFilter<"Community"> | string | null
@@ -12956,7 +12966,7 @@ export namespace Prisma {
     NOT?: CommunityScalarWhereWithAggregatesInput | CommunityScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Community"> | string
     name?: StringWithAggregatesFilter<"Community"> | string
-    skill?: StringWithAggregatesFilter<"Community"> | string
+    skill?: StringNullableListFilter<"Community">
     icon?: StringNullableWithAggregatesFilter<"Community"> | string | null
     tags?: StringNullableListFilter<"Community">
     description?: StringNullableWithAggregatesFilter<"Community"> | string | null
@@ -13304,6 +13314,7 @@ export namespace Prisma {
     id?: StringFilter<"Feedback"> | string
     userId?: StringFilter<"Feedback"> | string
     postId?: StringFilter<"Feedback"> | string
+    feedbackText?: StringFilter<"Feedback"> | string
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13314,6 +13325,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -13327,6 +13339,7 @@ export namespace Prisma {
     NOT?: FeedbackWhereInput | FeedbackWhereInput[]
     userId?: StringFilter<"Feedback"> | string
     postId?: StringFilter<"Feedback"> | string
+    feedbackText?: StringFilter<"Feedback"> | string
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13337,6 +13350,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FeedbackCountOrderByAggregateInput
@@ -13351,6 +13365,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Feedback"> | string
     userId?: StringWithAggregatesFilter<"Feedback"> | string
     postId?: StringWithAggregatesFilter<"Feedback"> | string
+    feedbackText?: StringWithAggregatesFilter<"Feedback"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
   }
@@ -13537,7 +13552,7 @@ export namespace Prisma {
   export type CommunityCreateInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -13558,7 +13573,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -13579,7 +13594,7 @@ export namespace Prisma {
   export type CommunityUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13600,7 +13615,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13621,7 +13636,7 @@ export namespace Prisma {
   export type CommunityCreateManyInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -13634,7 +13649,7 @@ export namespace Prisma {
   export type CommunityUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13646,7 +13661,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13986,6 +14001,7 @@ export namespace Prisma {
 
   export type FeedbackCreateInput = {
     id?: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFeedbackInput
@@ -13996,12 +14012,14 @@ export namespace Prisma {
     id?: string
     userId: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type FeedbackUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFeedbackNestedInput
@@ -14012,6 +14030,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14020,12 +14039,14 @@ export namespace Prisma {
     id?: string
     userId: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type FeedbackUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14034,6 +14055,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14373,7 +14395,6 @@ export namespace Prisma {
   export type CommunityMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    skill?: SortOrder
     icon?: SortOrder
     description?: SortOrder
     communityExperience?: SortOrder
@@ -14385,7 +14406,6 @@ export namespace Prisma {
   export type CommunityMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    skill?: SortOrder
     icon?: SortOrder
     description?: SortOrder
     communityExperience?: SortOrder
@@ -14602,6 +14622,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14610,6 +14631,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14618,6 +14640,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15095,6 +15118,10 @@ export namespace Prisma {
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
   }
 
+  export type CommunityCreateskillInput = {
+    set: string[]
+  }
+
   export type CommunityCreatetagsInput = {
     set: string[]
   }
@@ -15209,6 +15236,11 @@ export namespace Prisma {
     connectOrCreate?: EventCreateOrConnectWithoutCommunityInput | EventCreateOrConnectWithoutCommunityInput[]
     createMany?: EventCreateManyCommunityInputEnvelope
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type CommunityUpdateskillInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type CommunityUpdatetagsInput = {
@@ -16187,7 +16219,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutCreatorInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -16207,7 +16239,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutCreatorInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -16237,7 +16269,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutAdminsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -16257,7 +16289,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutAdminsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -16282,7 +16314,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutUsersInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -16302,7 +16334,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutUsersInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -16456,6 +16488,7 @@ export namespace Prisma {
 
   export type FeedbackCreateWithoutUserInput = {
     id?: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
     post: PostCreateNestedOneWithoutFeedbackInput
@@ -16464,6 +16497,7 @@ export namespace Prisma {
   export type FeedbackUncheckedCreateWithoutUserInput = {
     id?: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16532,7 +16566,7 @@ export namespace Prisma {
     NOT?: CommunityScalarWhereInput | CommunityScalarWhereInput[]
     id?: StringFilter<"Community"> | string
     name?: StringFilter<"Community"> | string
-    skill?: StringFilter<"Community"> | string
+    skill?: StringNullableListFilter<"Community">
     icon?: StringNullableFilter<"Community"> | string | null
     tags?: StringNullableListFilter<"Community">
     description?: StringNullableFilter<"Community"> | string | null
@@ -16722,6 +16756,7 @@ export namespace Prisma {
     id?: StringFilter<"Feedback"> | string
     userId?: StringFilter<"Feedback"> | string
     postId?: StringFilter<"Feedback"> | string
+    feedbackText?: StringFilter<"Feedback"> | string
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
   }
@@ -17245,7 +17280,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutSkillTreeNodesInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17265,7 +17300,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutSkillTreeNodesInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17378,7 +17413,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutSkillTreeNodesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17398,7 +17433,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutSkillTreeNodesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17513,7 +17548,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutPostsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17533,7 +17568,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutPostsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17596,6 +17631,7 @@ export namespace Prisma {
 
   export type FeedbackCreateWithoutPostInput = {
     id?: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFeedbackInput
@@ -17604,6 +17640,7 @@ export namespace Prisma {
   export type FeedbackUncheckedCreateWithoutPostInput = {
     id?: string
     userId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17632,7 +17669,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutPostsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17652,7 +17689,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutPostsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17772,7 +17809,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutSkillForestsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17792,7 +17829,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutSkillForestsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17933,7 +17970,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutExperiencesInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -17953,7 +17990,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutExperiencesInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -18111,7 +18148,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutExperiencesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18131,7 +18168,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutExperiencesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18244,7 +18281,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutLeaderboardsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -18264,7 +18301,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutLeaderboardsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -18366,7 +18403,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutLeaderboardsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18386,7 +18423,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutLeaderboardsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18578,7 +18615,7 @@ export namespace Prisma {
   export type CommunityCreateWithoutEventsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -18598,7 +18635,7 @@ export namespace Prisma {
   export type CommunityUncheckedCreateWithoutEventsInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -18700,7 +18737,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18720,7 +18757,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18818,7 +18855,7 @@ export namespace Prisma {
   export type CommunityCreateManyCreatorInput = {
     id?: string
     name: string
-    skill: string
+    skill?: CommunityCreateskillInput | string[]
     icon?: string | null
     tags?: CommunityCreatetagsInput | string[]
     description?: string | null
@@ -18853,6 +18890,7 @@ export namespace Prisma {
   export type FeedbackCreateManyUserInput = {
     id?: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18871,7 +18909,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutCreatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18891,7 +18929,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutCreatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18911,7 +18949,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateManyWithoutCreatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18923,7 +18961,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutAdminsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18943,7 +18981,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutAdminsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18963,7 +19001,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateManyWithoutAdminsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18976,7 +19014,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18996,7 +19034,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19016,7 +19054,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateManyWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19155,6 +19193,7 @@ export namespace Prisma {
 
   export type FeedbackUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     post?: PostUpdateOneRequiredWithoutFeedbackNestedInput
@@ -19163,6 +19202,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19170,6 +19210,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19503,12 +19544,14 @@ export namespace Prisma {
   export type FeedbackCreateManyPostInput = {
     id?: string
     userId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type FeedbackUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFeedbackNestedInput
@@ -19517,6 +19560,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19524,6 +19568,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateManyWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19531,7 +19576,7 @@ export namespace Prisma {
   export type CommunityUpdateWithoutSkillForestsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19551,7 +19596,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateWithoutSkillForestsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19571,7 +19616,7 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateManyWithoutSkillForestsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    skill?: StringFieldUpdateOperationsInput | string
+    skill?: CommunityUpdateskillInput | string[]
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: CommunityUpdatetagsInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
