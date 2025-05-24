@@ -10342,6 +10342,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     postId: string | null
+    feedbackText: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10350,6 +10351,7 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     postId: string | null
+    feedbackText: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10358,6 +10360,7 @@ export namespace Prisma {
     id: number
     userId: number
     postId: number
+    feedbackText: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -10368,6 +10371,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     postId?: true
+    feedbackText?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -10376,6 +10380,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     postId?: true
+    feedbackText?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -10384,6 +10389,7 @@ export namespace Prisma {
     id?: true
     userId?: true
     postId?: true
+    feedbackText?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -10465,6 +10471,7 @@ export namespace Prisma {
     id: string
     userId: string
     postId: string
+    feedbackText: string
     createdAt: Date
     updatedAt: Date
     _count: FeedbackCountAggregateOutputType | null
@@ -10490,6 +10497,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10500,6 +10508,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10510,6 +10519,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -10520,11 +10530,12 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     postId?: boolean
+    feedbackText?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FeedbackOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "postId" | "createdAt" | "updatedAt", ExtArgs["result"]["feedback"]>
+  export type FeedbackOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "postId" | "feedbackText" | "createdAt" | "updatedAt", ExtArgs["result"]["feedback"]>
   export type FeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     post?: boolean | PostDefaultArgs<ExtArgs>
@@ -10548,6 +10559,7 @@ export namespace Prisma {
       id: string
       userId: string
       postId: string
+      feedbackText: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["feedback"]>
@@ -10978,6 +10990,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Feedback", 'String'>
     readonly userId: FieldRef<"Feedback", 'String'>
     readonly postId: FieldRef<"Feedback", 'String'>
+    readonly feedbackText: FieldRef<"Feedback", 'String'>
     readonly createdAt: FieldRef<"Feedback", 'DateTime'>
     readonly updatedAt: FieldRef<"Feedback", 'DateTime'>
   }
@@ -12657,6 +12670,7 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     postId: 'postId',
+    feedbackText: 'feedbackText',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -13300,6 +13314,7 @@ export namespace Prisma {
     id?: StringFilter<"Feedback"> | string
     userId?: StringFilter<"Feedback"> | string
     postId?: StringFilter<"Feedback"> | string
+    feedbackText?: StringFilter<"Feedback"> | string
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13310,6 +13325,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -13323,6 +13339,7 @@ export namespace Prisma {
     NOT?: FeedbackWhereInput | FeedbackWhereInput[]
     userId?: StringFilter<"Feedback"> | string
     postId?: StringFilter<"Feedback"> | string
+    feedbackText?: StringFilter<"Feedback"> | string
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13333,6 +13350,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FeedbackCountOrderByAggregateInput
@@ -13347,6 +13365,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Feedback"> | string
     userId?: StringWithAggregatesFilter<"Feedback"> | string
     postId?: StringWithAggregatesFilter<"Feedback"> | string
+    feedbackText?: StringWithAggregatesFilter<"Feedback"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Feedback"> | Date | string
   }
@@ -13982,6 +14001,7 @@ export namespace Prisma {
 
   export type FeedbackCreateInput = {
     id?: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFeedbackInput
@@ -13992,12 +14012,14 @@ export namespace Prisma {
     id?: string
     userId: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type FeedbackUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFeedbackNestedInput
@@ -14008,6 +14030,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14016,12 +14039,14 @@ export namespace Prisma {
     id?: string
     userId: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type FeedbackUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14030,6 +14055,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14596,6 +14622,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14604,6 +14631,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14612,6 +14640,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     postId?: SortOrder
+    feedbackText?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16459,6 +16488,7 @@ export namespace Prisma {
 
   export type FeedbackCreateWithoutUserInput = {
     id?: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
     post: PostCreateNestedOneWithoutFeedbackInput
@@ -16467,6 +16497,7 @@ export namespace Prisma {
   export type FeedbackUncheckedCreateWithoutUserInput = {
     id?: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16725,6 +16756,7 @@ export namespace Prisma {
     id?: StringFilter<"Feedback"> | string
     userId?: StringFilter<"Feedback"> | string
     postId?: StringFilter<"Feedback"> | string
+    feedbackText?: StringFilter<"Feedback"> | string
     createdAt?: DateTimeFilter<"Feedback"> | Date | string
     updatedAt?: DateTimeFilter<"Feedback"> | Date | string
   }
@@ -17599,6 +17631,7 @@ export namespace Prisma {
 
   export type FeedbackCreateWithoutPostInput = {
     id?: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFeedbackInput
@@ -17607,6 +17640,7 @@ export namespace Prisma {
   export type FeedbackUncheckedCreateWithoutPostInput = {
     id?: string
     userId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18856,6 +18890,7 @@ export namespace Prisma {
   export type FeedbackCreateManyUserInput = {
     id?: string
     postId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19158,6 +19193,7 @@ export namespace Prisma {
 
   export type FeedbackUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     post?: PostUpdateOneRequiredWithoutFeedbackNestedInput
@@ -19166,6 +19202,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19173,6 +19210,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19506,12 +19544,14 @@ export namespace Prisma {
   export type FeedbackCreateManyPostInput = {
     id?: string
     userId: string
+    feedbackText: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type FeedbackUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFeedbackNestedInput
@@ -19520,6 +19560,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19527,6 +19568,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateManyWithoutPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    feedbackText?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
