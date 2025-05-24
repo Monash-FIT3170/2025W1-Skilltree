@@ -1,16 +1,16 @@
 const FEATURE_CARDS = [
   {
-    img: '/images/download.png',
+    img: '/images/aboutus1.jpg',
     title: 'Discover Opportunities',
     desc: 'Explore new paths and find the right project for your skillset.',
   },
   {
-    img: '/images/download.png',
+    img: '/images/aboutus2.jpg',
     title: 'Learn From The Experts',
     desc: 'Get insights and tutorials from industry leaders and professionals.',
   },
   {
-    img: '/images/download.png',
+    img: '/images/aboutus3.jpg',
     title: 'Connect Communities',
     desc: 'Join groups to collaborate, share, and grow together.',
   },
