@@ -3,7 +3,7 @@ const SkillTreeButton = () => {
         <a href='#home'>
         <section className="inline-flex items-center px-4 py-2 bg-gray-300 rounded-full">
             <img
-                src="/images/download.png"
+                src="/images/skilltree-logo.jpg"
                 alt="SkillTree Logo"
                 className="w-8 h-8 mr-3 rounded-full"
             />
