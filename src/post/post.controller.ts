@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -28,7 +29,7 @@ export class PostController {
 
   @UseGuards(JwtGuard)
   @Post()
-  async createPost(dto: CreatePostDto, @GetUser() user: User) {
+  async createPost(@Body() dto: CreatePostDto, @GetUser() user: User) {
     return this.postService.createPost(dto, user);
   }
 

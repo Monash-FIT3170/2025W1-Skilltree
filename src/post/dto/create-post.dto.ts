@@ -7,7 +7,7 @@ export class CreatePostDto {
 
   @IsNotEmpty()
   @IsString()
-  attachment: string;
+  attachment?: string;
 
   @IsNotEmpty()
   @IsString()

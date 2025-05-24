@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { userSelect } from 'src/prismaIncludes';
 
 @Injectable()
 export class UserService {
@@ -11,21 +12,7 @@ export class UserService {
       where: {
         id: user.id,
       },
-      select: {
-        id: true,
-        email: true,
-        hash: false,
-        createdCommunities: true,
-        adminOfCommunities: true,
-        verifiedInCommunities: true,
-        posts: true,
-        skillForests: true,
-        followedSkillForests: true,
-        experiences: true,
-        leaderboardEntries: true,
-        feedback: true,
-        events: true,
-      },
+      select: userSelect,
     });
 
     if (!userData) {

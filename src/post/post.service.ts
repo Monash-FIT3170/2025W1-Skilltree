@@ -1,20 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { User } from 'generated/prisma';
+import { postSelect } from 'src/prismaIncludes';
 
 @Injectable()
 export class PostService {
   constructor(private prismaService: PrismaService) {}
 
   async getAllPosts() {
-    return await this.prismaService.post.findMany();
+    return await this.prismaService.post.findMany({
+      select: postSelect,
+    });
   }
 
   async getPostById(id: string) {
     const post = await this.prismaService.post.findUnique({
       where: { id },
+      select: postSelect,
     });
+
+    if (!post) {
+      throw new HttpException(
+        `Post with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return {
       message: post,
@@ -23,6 +34,16 @@ export class PostService {
 
   async createPost(dto: CreatePostDto, user: User) {
     const { text, attachment, communityId } = dto;
+
+    const community = await this.prismaService.community.findUnique({
+      where: { id: communityId },
+    });
+    if (!community) {
+      throw new HttpException(
+        `Community with ID ${communityId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     await this.prismaService.post.create({
       data: {
