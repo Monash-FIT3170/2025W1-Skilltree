@@ -29,7 +29,7 @@ export class FeedbackController {
   }
 
   @Get(':id')
-  getFeedbackById(@Param() id: string) {
+  getFeedbackById(@Param('id') id: string) {
     return this.competitionService.getFeedbackById(id);
   }
 
