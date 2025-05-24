@@ -1,70 +1,31 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const SubmitResetEmailForm = () => {
-  const [form, setForm] = useState({
-    emailToChange: "",
-    oldPassword: "",
-    newPassword: "",
-  });
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
-  const router = useRouter();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleReset = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("/api/forgetpass", {
+    const res = await fetch("/api/request-reset", {
       method: "POST",
-      body: JSON.stringify({
-        user: form.emailToChange,
-        oldPass: form.oldPassword,
-        newPass: form.newPassword,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
     });
 
-    if (res.ok) {
-      // optional: show a flash or message
-      router.push("/login"); // ■ redirect on success
-    } else {
-      const err = await res.json();
-      alert(err.error || "Unknown error");
-    }
+    const data = await res.json();
+    setMessage(data.message || "Check your email for reset instructions.");
   };
 
   return (
-    <form onSubmit={handleReset}>
+    <form onSubmit={handleSubmit}>
       <input
-        value={form.emailToChange}
-        onChange={handleChange}
-        name="emailToChange"
-        type="text"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        name="email"
+        type="email"
         placeholder="Enter your email here"
-        className="border p-2 w-full mb-4"
-        required
-      />
-      <input
-        value={form.oldPassword}
-        onChange={handleChange}
-        name="oldPassword"
-        type="password"
-        placeholder="Enter your old password here"
-        className="border p-2 w-full mb-4"
-        required
-      />
-      <input
-        value={form.newPassword}
-        onChange={handleChange}
-        name="newPassword"
-        type="password"
-        placeholder="Enter your new password here"
         className="border p-2 w-full mb-4"
         required
       />
@@ -72,9 +33,11 @@ const SubmitResetEmailForm = () => {
         type="submit"
         className="bg-blue-500 text-white px-4 py-2 rounded"
       >
-        Reset Password
+        Send Reset Link
       </button>
+      {message && <p className="text-green-600 mt-4">{message}</p>}
     </form>
   );
 };
+
 export default SubmitResetEmailForm;
