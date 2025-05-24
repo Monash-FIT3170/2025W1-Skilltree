@@ -9,9 +9,11 @@ export class PostService {
   constructor(private prismaService: PrismaService) {}
 
   async getAllPosts() {
-    return await this.prismaService.post.findMany({
-      select: postSelect,
-    });
+    return {
+      message: await this.prismaService.post.findMany({
+        select: postSelect,
+      }),
+    };
   }
 
   async getPostById(id: string) {
