@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AnnouncementCreationDto } from './dto/create-announcement.dto';
-import { GetAnnouncementDto } from './dto/get-announcement.dto';
 import { User } from 'generated/prisma';
 
 
@@ -13,6 +12,14 @@ export class AnnouncementService {
     user: User,
     dto: AnnouncementCreationDto,
   ) {
+    //check if community exists
+   const community = await this.prisma.community.findUnique({
+    where: { id: dto.communityId },
+  });
+    if (!community) {
+      throw new BadRequestException('Community not found');
+    }
+
     const announcement = await this.prisma.post.create({
       data: {
         text: dto.text,
@@ -20,6 +27,7 @@ export class AnnouncementService {
         authorId: user.id,
       },
     });
+ 
     /*
     // If the announcement doesn't exist, throw an error
     if (!announcement) {
@@ -32,17 +40,20 @@ export class AnnouncementService {
       message: announcement,
     };
   }
-    //might need to be change to all announcements where userID = announcement authorID
-    async getAllAnnouncements() {
-    const announcements = await this.prisma.post.findMany();
+    //get all announcements in a specific community
+    async getAllAnnouncements(communityId: string) {
+    const announcements = await this.prisma.post.findMany({
+    where: { communityId },
+
+  });
 
     return {
       message: announcements,
     };
   }
-    async getAnnouncementById(dto: GetAnnouncementDto) {
+    async getAnnouncementById(id: string) {
       const announcement = await this.prisma.post.findUnique({
-        where: { id: dto.id },
+        where: { id: id },
       });
   
       if (!announcement) {

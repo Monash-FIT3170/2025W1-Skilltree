@@ -11,7 +11,6 @@ import { AnnouncementService } from './announcement.service';
 import { AnnouncementCreationDto } from './dto';
 import { User } from 'generated/prisma';
 import { JwtGuard } from 'src/guards';
-import { GetAnnouncementDto } from './dto/get-announcement.dto';
 import { GetUser } from 'src/decorator';
 
 @Controller('announcement')
@@ -25,14 +24,14 @@ export class AnnouncementController {
   }
 
   @Get('')
-  getAllAnnouncements() {
-    return this.announcementService.getAllAnnouncements();
+  getAllAnnouncements(@Param('id') communityId: string) {
+    return this.announcementService.getAllAnnouncements(communityId);
   }
 
-  @Get(':id')
-  getAnnouncementById(@Param() dto: GetAnnouncementDto) {
-    return this.announcementService.getAnnouncementById(dto);
-  }
+@Get(':id')
+  getAnnouncementById(@Param() id: string) {
+  return this.announcementService.getAnnouncementById(id);
+}
 
   @Delete(':id')
   @UseGuards(JwtGuard)
