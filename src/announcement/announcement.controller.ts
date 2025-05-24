@@ -29,7 +29,7 @@ export class AnnouncementController {
   }
 
 @Get(':id')
-  getAnnouncementById(@Param() id: string) {
+  getAnnouncementById(@Param('id') id: string) {
   return this.announcementService.getAnnouncementById(id);
 }
 
