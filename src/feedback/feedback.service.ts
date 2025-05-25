@@ -12,6 +12,7 @@ export class FeedbackService {
       data: {
         userId: user.id,
         postId: dto.postId,
+        feedbackText: dto.feedbackText
       },
     });
 
