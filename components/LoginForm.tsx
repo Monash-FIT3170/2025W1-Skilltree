@@ -84,7 +84,7 @@ const LoginForm = () => {
           {loading ? "Logging in..." : "Submit"}
         </Button>
         <Button
-          onClick={() => router.push("/forgot-password")}
+          onClick={() => router.push("/forget-password")}
           className="flex-1"
           variant="link"
           type="button"
