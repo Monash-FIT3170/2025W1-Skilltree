@@ -102,12 +102,12 @@ function AppSidebar() {
                     <span>Achievements</span>
                   </Link>
                 </SidebarMenuButton>
-                <SidebarMenuButton asChild tooltip="Manage Communities">
+                {/* <SidebarMenuButton asChild tooltip="Manage Communities">
                   <Link href={`/communities/manage/${communityId}`}>
                     <SlidersHorizontalIcon size={48} />
                     <span>Manage Communities</span>
                   </Link>
-                </SidebarMenuButton>
+                </SidebarMenuButton> */}
 
                 
               </SidebarMenuItem>

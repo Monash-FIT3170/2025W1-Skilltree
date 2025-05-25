@@ -183,6 +183,24 @@ export default function ManageCommunities() {
     alert("Community details saved for: " + communityId);
   };
 
+    useEffect(() => {
+    if (!communityId) return;
+
+    // Initialize form state
+    setCommunityName(`Community ${communityId}`);
+    setCommunityTags([]);
+    setCommunityDescription("");
+    setIconFile(null);
+    setIconPreview(null);
+    setMembers([]);
+    setNewMemberName("");
+    setSelectedRole("member");
+    setIsPrivate(false);
+    setEvents([]);
+    setAnnouncement("");
+    setAnnouncementPreview(false);
+    setAvailableRoles(["admin", "moderator", "member"]);
+  }, [communityId]);
 
  
 
