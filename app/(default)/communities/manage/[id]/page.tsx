@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-
+import { createEvent } from "@/app/api/events"; 
 
 const TextEditor = ({
   value,
@@ -159,12 +159,25 @@ export default function ManageCommunities() {
   //   alert("Proof rejected");
   // };
 
-  const validateAndAddEvent = () => {
-    setEventErrors(null);
-    if (!newEventTitle.trim()) return setEventErrors("Event title is required");
-    if (!newEventDate) return setEventErrors("Event date is required");
-    if (new Date(newEventDate) < new Date())
-      return setEventErrors("Event date cannot be in the past");
+
+
+const validateAndAddEvent = async () => {
+  setEventErrors(null);
+
+  if (!newEventTitle.trim()) return setEventErrors("Event title is required");
+  if (!newEventDate) return setEventErrors("Event date is required");
+
+  try {
+    const payload = {
+      name: newEventTitle.trim(),
+      communityId: String(communityId), // from useParams()
+      experienceId: "default", // You may get this from somewhere or leave as is
+      rankedStatus: true,
+      experiencePayout: 0,
+    };
+
+    await createEvent(payload);
+
     setEvents((prev) => [
       ...prev,
       {
@@ -174,10 +187,16 @@ export default function ManageCommunities() {
         description: newEventDescription.trim(),
       },
     ]);
+
+    // Reset fields
     setNewEventTitle("");
     setNewEventDate("");
     setNewEventDescription("");
-  };
+  } catch (err) {
+    setEventErrors("Failed to create event.");
+  }
+};
+
 
   const handleSaveDetails = () => {
     alert("Community details saved for: " + communityId);
