@@ -11,6 +11,7 @@ import { sendEmail } from "@/lib/sendEmail"; // adjust path if needed
 //EMAIL_PORT=2525 in .env file
 //EMAIL_USER=e47b38006c1edd in .env file
 //EMAIL_PASS=d956040b560236 in .env file
+//NEXT_PUBLIC_BASE_URL=http://localhost:3000 .env file
 //It is connected to my personal account shiddesh1910@gmail.com inbox right now so only I can see the reset email but can also sign up for nodemailer with your personal account to test this just chnage it to your own generated username and password
 
 const JWT_RESET_SECRET = process.env.JWT_RESET_SECRET!;
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
     }
 
     const token = jwt.sign({ email: user.email }, JWT_RESET_SECRET, { expiresIn: "15m" });
-    const resetLink = `${BASE_URL}/reset-password?token=${token}`;
+    const resetLink = `${BASE_URL}/resetPassword?token=${token}`;
 
     const html = `
       <p>You requested a password reset.</p>
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
 
     await sendEmail({
       to: email,
-      subject: "Reset Your Password",
+      subject: "Skilltree: Reset Your Password",
       html,
     });
 

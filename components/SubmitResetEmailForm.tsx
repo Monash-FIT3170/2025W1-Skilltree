@@ -39,7 +39,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       />
       <button
         type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-[#0A1128] text-white font-semibold px-6 py-2 rounded-md 
+             shadow-md transition-all duration-300 ease-in-out 
+             hover:bg-[#0c1533] hover:scale-105 hover:shadow-lg"
         disabled={loading}
       >
         {loading ? "Sending..." : "Send Reset Link"}
