@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import SkillTree from "@/components/SkillTreeGraph"; 
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,11 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { useRouter } from "next/navigation";
 
 export default function CommunityForm() {
-    const router = useRouter()
   const [communityName, setCommunityName] = useState("");
   const [communityTags, setCommunityTags] = useState<string[]>(["Community"]);
   const [communityDescription, setCommunityDescription] = useState(
@@ -22,7 +20,7 @@ export default function CommunityForm() {
   );
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
-
+const router = useRouter();
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -33,38 +31,26 @@ export default function CommunityForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!communityName.trim()) {
-      alert("Community name is required");
-      return;
-    }
-    
-
     const newCommunity = {
-      id: Date.now(),
-      name: communityName.trim(),
+      id: Date.now(), // Generate a temporary ID
+      name: communityName,
       tags: communityTags,
       description: communityDescription,
-
-      icon: iconPreview,
-      createdAt: new Date().toISOString(),
-      creatorId: 1,
+      icon: iconFile,
     };
+    
     try {
+      // Store community data (temporary solution)
       const existingCommunities = JSON.parse(localStorage.getItem('communities') || '[]');
-      const updatedCommunities = [...existingCommunities, newCommunity];
-      localStorage.setItem('communities', JSON.stringify(updatedCommunities));
-      // Change this line to redirect to the skill tree page
+      localStorage.setItem('communities', JSON.stringify([...existingCommunities, newCommunity]));
+      
+      // Navigate to skill tree page
       router.push(`/communities/${newCommunity.id}/skilltree`);
     } catch (error) {
-      console.error('Error saving community:', error);
-      alert('Failed to save community. Please try again.');
+      console.error('Error:', error);
+      alert('Failed to create community');
     }
 };
-
-  // Add the handleCancel function here
-  const handleCancel = () => {
-    router.push('/communities/manage');
-  };
 
   return (
     <div className="mx-auto w-full max-w-3xl relative">
@@ -149,7 +135,7 @@ export default function CommunityForm() {
           </div>
         </div>
         <div className="flex justify-end gap-4">
-          <Button variant="destructive" type="button" onClick={handleCancel}>
+          <Button variant="destructive" type="button">
             Cancel
           </Button>
           <Button type="submit" className="hover:bg-[#1e293b]">
