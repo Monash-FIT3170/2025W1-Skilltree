@@ -88,6 +88,18 @@ export class PostService {
   }
 
   async likePost(id: string) {
+    const post = await this.prismaService.post.findUnique({
+      where: { id },
+      select: postSelect,
+    });
+
+    if (!post) {
+      throw new HttpException(
+        `Post with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     this.prismaService.post.update({
       where: { id },
       data: { likes: { increment: 1 } },
@@ -99,6 +111,18 @@ export class PostService {
   }
 
   async unlikePost(id: string) {
+    const post = await this.prismaService.post.findUnique({
+      where: { id },
+      select: postSelect,
+    });
+
+    if (!post) {
+      throw new HttpException(
+        `Post with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     this.prismaService.post.update({
       where: { id },
       data: { likes: { decrement: 1 } },

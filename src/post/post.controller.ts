@@ -40,13 +40,13 @@ export class PostController {
     return this.postService.deletePost(id, user);
   }
 
-  @Post('')
+  @Post('like/:postId')
   @UseGuards(JwtGuard)
   async likePost(@Param('postId') id: string) {
     return this.postService.likePost(id);
   }
 
-  @Post('')
+  @Post('unlike/:postId')
   @UseGuards(JwtGuard)
   async unlikepost(@Param('postId') id: string) {
     return this.postService.unlikePost(id);
