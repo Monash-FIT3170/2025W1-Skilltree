@@ -96,12 +96,6 @@ function AppSidebar() {
                     <span>Add a Community</span>
                   </Link>
                 </SidebarMenuButton>
-                <SidebarMenuButton asChild tooltip="Achievements">
-                  <Link href="/achievements">
-                    <AwardIcon size={48} />
-                    <span>Achievements</span>
-                  </Link>
-                </SidebarMenuButton>
                 <SidebarMenuButton asChild tooltip="Manage Communities">
                   <Link href="/communities/manage">
                     <SlidersHorizontalIcon size={48} />
