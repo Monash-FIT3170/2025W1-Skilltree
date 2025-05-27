@@ -331,8 +331,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.8.2
-   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
+   * Prisma Client JS version: 6.7.0
+   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
    */
   export type PrismaVersion = {
     client: string
@@ -5807,8 +5807,18 @@ export namespace Prisma {
 
   export type AggregatePost = {
     _count: PostCountAggregateOutputType | null
+    _avg: PostAvgAggregateOutputType | null
+    _sum: PostSumAggregateOutputType | null
     _min: PostMinAggregateOutputType | null
     _max: PostMaxAggregateOutputType | null
+  }
+
+  export type PostAvgAggregateOutputType = {
+    likes: number | null
+  }
+
+  export type PostSumAggregateOutputType = {
+    likes: number | null
   }
 
   export type PostMinAggregateOutputType = {
@@ -5817,6 +5827,7 @@ export namespace Prisma {
     attachment: string | null
     communityId: string | null
     authorId: string | null
+    likes: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5827,6 +5838,7 @@ export namespace Prisma {
     attachment: string | null
     communityId: string | null
     authorId: string | null
+    likes: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5837,11 +5849,20 @@ export namespace Prisma {
     attachment: number
     communityId: number
     authorId: number
+    likes: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type PostAvgAggregateInputType = {
+    likes?: true
+  }
+
+  export type PostSumAggregateInputType = {
+    likes?: true
+  }
 
   export type PostMinAggregateInputType = {
     id?: true
@@ -5849,6 +5870,7 @@ export namespace Prisma {
     attachment?: true
     communityId?: true
     authorId?: true
+    likes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5859,6 +5881,7 @@ export namespace Prisma {
     attachment?: true
     communityId?: true
     authorId?: true
+    likes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5869,6 +5892,7 @@ export namespace Prisma {
     attachment?: true
     communityId?: true
     authorId?: true
+    likes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -5912,6 +5936,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PostAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PostSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PostMinAggregateInputType
@@ -5942,6 +5978,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PostCountAggregateInputType | true
+    _avg?: PostAvgAggregateInputType
+    _sum?: PostSumAggregateInputType
     _min?: PostMinAggregateInputType
     _max?: PostMaxAggregateInputType
   }
@@ -5952,9 +5990,12 @@ export namespace Prisma {
     attachment: string | null
     communityId: string
     authorId: string
+    likes: number
     createdAt: Date
     updatedAt: Date
     _count: PostCountAggregateOutputType | null
+    _avg: PostAvgAggregateOutputType | null
+    _sum: PostSumAggregateOutputType | null
     _min: PostMinAggregateOutputType | null
     _max: PostMaxAggregateOutputType | null
   }
@@ -5979,6 +6020,7 @@ export namespace Prisma {
     attachment?: boolean
     communityId?: boolean
     authorId?: boolean
+    likes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     community?: boolean | CommunityDefaultArgs<ExtArgs>
@@ -5993,6 +6035,7 @@ export namespace Prisma {
     attachment?: boolean
     communityId?: boolean
     authorId?: boolean
+    likes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     community?: boolean | CommunityDefaultArgs<ExtArgs>
@@ -6005,6 +6048,7 @@ export namespace Prisma {
     attachment?: boolean
     communityId?: boolean
     authorId?: boolean
+    likes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     community?: boolean | CommunityDefaultArgs<ExtArgs>
@@ -6017,11 +6061,12 @@ export namespace Prisma {
     attachment?: boolean
     communityId?: boolean
     authorId?: boolean
+    likes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "attachment" | "communityId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "attachment" | "communityId" | "authorId" | "likes" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
   export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
@@ -6050,6 +6095,7 @@ export namespace Prisma {
       attachment: string | null
       communityId: string
       authorId: string
+      likes: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["post"]>
@@ -6483,6 +6529,7 @@ export namespace Prisma {
     readonly attachment: FieldRef<"Post", 'String'>
     readonly communityId: FieldRef<"Post", 'String'>
     readonly authorId: FieldRef<"Post", 'String'>
+    readonly likes: FieldRef<"Post", 'Int'>
     readonly createdAt: FieldRef<"Post", 'DateTime'>
     readonly updatedAt: FieldRef<"Post", 'DateTime'>
   }
@@ -12627,6 +12674,7 @@ export namespace Prisma {
     attachment: 'attachment',
     communityId: 'communityId',
     authorId: 'authorId',
+    likes: 'likes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -13059,6 +13107,7 @@ export namespace Prisma {
     attachment?: StringNullableFilter<"Post"> | string | null
     communityId?: StringFilter<"Post"> | string
     authorId?: StringFilter<"Post"> | string
+    likes?: IntFilter<"Post"> | number
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
@@ -13072,6 +13121,7 @@ export namespace Prisma {
     attachment?: SortOrderInput | SortOrder
     communityId?: SortOrder
     authorId?: SortOrder
+    likes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     community?: CommunityOrderByWithRelationInput
@@ -13088,6 +13138,7 @@ export namespace Prisma {
     attachment?: StringNullableFilter<"Post"> | string | null
     communityId?: StringFilter<"Post"> | string
     authorId?: StringFilter<"Post"> | string
+    likes?: IntFilter<"Post"> | number
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
     community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
@@ -13101,11 +13152,14 @@ export namespace Prisma {
     attachment?: SortOrderInput | SortOrder
     communityId?: SortOrder
     authorId?: SortOrder
+    likes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PostCountOrderByAggregateInput
+    _avg?: PostAvgOrderByAggregateInput
     _max?: PostMaxOrderByAggregateInput
     _min?: PostMinOrderByAggregateInput
+    _sum?: PostSumOrderByAggregateInput
   }
 
   export type PostScalarWhereWithAggregatesInput = {
@@ -13117,6 +13171,7 @@ export namespace Prisma {
     attachment?: StringNullableWithAggregatesFilter<"Post"> | string | null
     communityId?: StringWithAggregatesFilter<"Post"> | string
     authorId?: StringWithAggregatesFilter<"Post"> | string
+    likes?: IntWithAggregatesFilter<"Post"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
   }
@@ -13746,6 +13801,7 @@ export namespace Prisma {
     id?: string
     text: string
     attachment?: string | null
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     community: CommunityCreateNestedOneWithoutPostsInput
@@ -13759,6 +13815,7 @@ export namespace Prisma {
     attachment?: string | null
     communityId: string
     authorId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
@@ -13768,6 +13825,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
@@ -13781,6 +13839,7 @@ export namespace Prisma {
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     communityId?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
@@ -13792,6 +13851,7 @@ export namespace Prisma {
     attachment?: string | null
     communityId: string
     authorId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13800,6 +13860,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13810,6 +13871,7 @@ export namespace Prisma {
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     communityId?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14479,14 +14541,30 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type PostCountOrderByAggregateInput = {
     id?: SortOrder
     text?: SortOrder
     attachment?: SortOrder
     communityId?: SortOrder
     authorId?: SortOrder
+    likes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PostAvgOrderByAggregateInput = {
+    likes?: SortOrder
   }
 
   export type PostMaxOrderByAggregateInput = {
@@ -14495,6 +14573,7 @@ export namespace Prisma {
     attachment?: SortOrder
     communityId?: SortOrder
     authorId?: SortOrder
+    likes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14505,8 +14584,29 @@ export namespace Prisma {
     attachment?: SortOrder
     communityId?: SortOrder
     authorId?: SortOrder
+    likes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PostSumOrderByAggregateInput = {
+    likes?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type SkillForestCountOrderByAggregateInput = {
@@ -14528,17 +14628,6 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type ExperienceCountOrderByAggregateInput = {
@@ -14574,22 +14663,6 @@ export namespace Prisma {
 
   export type ExperienceSumOrderByAggregateInput = {
     amount?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type LeaderboardCountOrderByAggregateInput = {
@@ -15584,6 +15657,14 @@ export namespace Prisma {
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type CommunityUpdateOneRequiredWithoutPostsNestedInput = {
     create?: XOR<CommunityCreateWithoutPostsInput, CommunityUncheckedCreateWithoutPostsInput>
     connectOrCreate?: CommunityCreateOrConnectWithoutPostsInput
@@ -15768,14 +15849,6 @@ export namespace Prisma {
     connectOrCreate?: EventCreateOrConnectWithoutExperienceInput | EventCreateOrConnectWithoutExperienceInput[]
     createMany?: EventCreateManyExperienceInputEnvelope
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type CommunityUpdateOneRequiredWithoutExperiencesNestedInput = {
@@ -16360,6 +16433,7 @@ export namespace Prisma {
     id?: string
     text: string
     attachment?: string | null
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     community: CommunityCreateNestedOneWithoutPostsInput
@@ -16371,6 +16445,7 @@ export namespace Prisma {
     text: string
     attachment?: string | null
     communityId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
@@ -16633,6 +16708,7 @@ export namespace Prisma {
     attachment?: StringNullableFilter<"Post"> | string | null
     communityId?: StringFilter<"Post"> | string
     authorId?: StringFilter<"Post"> | string
+    likes?: IntFilter<"Post"> | number
     createdAt?: DateTimeFilter<"Post"> | Date | string
     updatedAt?: DateTimeFilter<"Post"> | Date | string
   }
@@ -16943,6 +17019,7 @@ export namespace Prisma {
     id?: string
     text: string
     attachment?: string | null
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     author: UserCreateNestedOneWithoutPostsInput
@@ -16954,6 +17031,7 @@ export namespace Prisma {
     text: string
     attachment?: string | null
     authorId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     feedback?: FeedbackUncheckedCreateNestedManyWithoutPostInput
@@ -18515,6 +18593,7 @@ export namespace Prisma {
     id?: string
     text: string
     attachment?: string | null
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     community: CommunityCreateNestedOneWithoutPostsInput
@@ -18527,6 +18606,7 @@ export namespace Prisma {
     attachment?: string | null
     communityId: string
     authorId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18596,6 +18676,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
@@ -18608,6 +18689,7 @@ export namespace Prisma {
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     communityId?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18869,6 +18951,7 @@ export namespace Prisma {
     text: string
     attachment?: string | null
     communityId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19068,6 +19151,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     community?: CommunityUpdateOneRequiredWithoutPostsNestedInput
@@ -19079,6 +19163,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     communityId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
@@ -19089,6 +19174,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     communityId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19262,6 +19348,7 @@ export namespace Prisma {
     text: string
     attachment?: string | null
     authorId: string
+    likes?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19408,6 +19495,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneRequiredWithoutPostsNestedInput
@@ -19419,6 +19507,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     authorId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     feedback?: FeedbackUncheckedUpdateManyWithoutPostNestedInput
@@ -19429,6 +19518,7 @@ export namespace Prisma {
     text?: StringFieldUpdateOperationsInput | string
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
     authorId?: StringFieldUpdateOperationsInput | string
+    likes?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
