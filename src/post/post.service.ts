@@ -88,21 +88,25 @@ export class PostService {
     };
   }
 
-  async incrementPostLike() {
-    const post = await this.prismaService.post;
-    post.fields.likes += 1;
-
-    return {
-      message: 'Like removed from Post',
-    };
-  }
-
-  async decrementPostLike() {
-    const post = await this.prismaService.post;
-    post.fields.likes -= 1;
+  async likePost(id: string) {
+    this.prismaService.post.update({
+      where: { id },
+      data: { likes: { increment: 1 } },
+    });
 
     return {
       message: 'Like added to Post',
+    };
+  }
+
+  async unlikePost(id: string) {
+    this.prismaService.post.update({
+      where: { id },
+      data: { likes: { decrement: 1 } },
+    });
+
+    return {
+      message: 'Like removed from Post',
     };
   }
 }
