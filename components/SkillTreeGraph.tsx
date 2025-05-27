@@ -3,18 +3,17 @@
 import React from "react";
 import { useParams } from "next/navigation";
 
-const SkillTreeGraph = () => {
+const SkillTree = () => {
   const { id } = useParams();
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Skill Tree View</h1>
-      <div className="bg-white rounded-lg shadow p-4">
-        <p>Community ID: {id}</p>
-        {/* Add your skill tree visualization here */}
-      </div>
+      <h1 className="text-2xl font-bold mb-4">Skill Tree for Community: {id}</h1>
+        <section>
+           {/* Skill tree will render here */}
+        </section>
     </div>
   );
 };
 
-export default SkillTreeGraph;
+export default SkillTree;
