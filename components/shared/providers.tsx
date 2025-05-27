@@ -77,9 +77,6 @@ function AppSidebar() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  
-  const communityId = "default-id";
-
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
@@ -105,14 +102,12 @@ function AppSidebar() {
                     <span>Achievements</span>
                   </Link>
                 </SidebarMenuButton>
-                {/* <SidebarMenuButton asChild tooltip="Manage Communities">
-                  <Link href={`/communities/manage/${communityId}`}>
+                <SidebarMenuButton asChild tooltip="Manage Communities">
+                  <Link href="/communities/manage">
                     <SlidersHorizontalIcon size={48} />
                     <span>Manage Communities</span>
                   </Link>
-                </SidebarMenuButton> */}
-
-                
+                </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
