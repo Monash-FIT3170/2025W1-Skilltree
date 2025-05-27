@@ -35,7 +35,7 @@ export class PostService {
   }
 
   async createPost(dto: CreatePostDto, user: User) {
-    const { text, attachment, communityId, likes } = dto;
+    const { text, attachment, communityId } = dto;
 
     const community = await this.prismaService.community.findUnique({
       where: { id: communityId },
@@ -53,7 +53,6 @@ export class PostService {
         attachment,
         communityId,
         authorId: user.id,
-        likes,
       },
     });
 

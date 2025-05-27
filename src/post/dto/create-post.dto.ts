@@ -12,8 +12,4 @@ export class CreatePostDto {
   @IsNotEmpty()
   @IsString()
   communityId: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  likes: number;
 }
