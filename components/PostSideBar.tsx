@@ -32,7 +32,9 @@ export default function PostSidebar({
               className="w-20 h-20 rounded object-cover"
             />
             <div className="flex flex-col justify-between flex-1">
-              <p className="font-semibold text-base truncate">Post Title</p>
+              <p className="font-semibold text-base  w-full">
+                {post.community}
+              </p>
               <p className="text-sm text-gray-600 mt-1 line-clamp-2">
                 {post.text}
               </p>
