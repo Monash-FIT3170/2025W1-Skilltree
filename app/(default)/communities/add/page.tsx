@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import SkillTree from "@/components/SkillTreeGraph"; 
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 
 export default function CommunityForm() {
   const [communityName, setCommunityName] = useState("");
@@ -19,7 +20,7 @@ export default function CommunityForm() {
   );
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
-
+const router = useRouter();
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -30,13 +31,26 @@ export default function CommunityForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
+    const newCommunity = {
+      id: Date.now(), // Generate a temporary ID
       name: communityName,
       tags: communityTags,
       description: communityDescription,
       icon: iconFile,
-    });
-  };
+    };
+    
+    try {
+      // Store community data (temporary solution)
+      const existingCommunities = JSON.parse(localStorage.getItem('communities') || '[]');
+      localStorage.setItem('communities', JSON.stringify([...existingCommunities, newCommunity]));
+      
+      // Navigate to skill tree page
+      router.push(`/communities/${newCommunity.id}/skilltree`);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to create community');
+    }
+};
 
   return (
     <div className="mx-auto w-full max-w-3xl relative">
