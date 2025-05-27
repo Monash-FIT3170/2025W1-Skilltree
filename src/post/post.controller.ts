@@ -40,13 +40,21 @@ export class PostController {
     return this.postService.deletePost(id, user);
   }
 
-  @Patch()
-  async incrementPostLike(){
-    return this.postService.incrementPostLike();
+  @Post('/like/:postId')
+  @UseGuards(JwtGuard)
+  joinCommunity(
+    @Param('communityId') communityId: string,
+    @GetUser() user: User,
+  ) {
+    return this.communityService.joinCommunity(communityId, user);
   }
 
-  @Patch()
-  async decrementPostLike(){
-    return this.postService.decrementPostLike();
+  @Post('/unlike/:postId')
+  @UseGuards(JwtGuard)
+  leaveCommunity(
+    @Param('communityId') communityId: string,
+    @GetUser() user: User,
+  ) {
+    return this.communityService.leaveCommunity(communityId, user);
   }
 }
