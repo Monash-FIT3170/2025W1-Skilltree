@@ -35,7 +35,7 @@ export class PostService {
   }
 
   async createPost(dto: CreatePostDto, user: User) {
-    const { text, attachment, communityId } = dto;
+    const { text, attachment, communityId, likes } = dto;
 
     const community = await this.prismaService.community.findUnique({
       where: { id: communityId },
@@ -53,6 +53,7 @@ export class PostService {
         attachment,
         communityId,
         authorId: user.id,
+        likes,
       },
     });
 
@@ -84,6 +85,24 @@ export class PostService {
 
     return {
       message: 'The post has been deleted successfully!',
+    };
+  }
+
+  async incrementPostLike() {
+    const post = await this.prismaService.post;
+    post.fields.likes += 1;
+
+    return {
+      message: 'Like removed from Post',
+    };
+  }
+
+  async decrementPostLike() {
+    const post = await this.prismaService.post;
+    post.fields.likes -= 1;
+
+    return {
+      message: 'Like added to Post',
     };
   }
 }
