@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -37,5 +38,17 @@ export class PostController {
   @Delete(':id')
   async deletePost(@Param('id') id: string, @GetUser() user: User) {
     return this.postService.deletePost(id, user);
+  }
+
+  @Post('like/:postId')
+  @UseGuards(JwtGuard)
+  async likePost(@Param('postId') id: string) {
+    return this.postService.likePost(id);
+  }
+
+  @Post('unlike/:postId')
+  @UseGuards(JwtGuard)
+  async unlikepost(@Param('postId') id: string) {
+    return this.postService.unlikePost(id);
   }
 }

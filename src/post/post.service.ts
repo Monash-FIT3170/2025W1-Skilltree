@@ -86,4 +86,50 @@ export class PostService {
       message: 'The post has been deleted successfully!',
     };
   }
+
+  async likePost(id: string) {
+    const post = await this.prismaService.post.findUnique({
+      where: { id },
+      select: postSelect,
+    });
+
+    if (!post) {
+      throw new HttpException(
+        `Post with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    this.prismaService.post.update({
+      where: { id },
+      data: { likes: { increment: 1 } },
+    });
+
+    return {
+      message: 'Like added to Post',
+    };
+  }
+
+  async unlikePost(id: string) {
+    const post = await this.prismaService.post.findUnique({
+      where: { id },
+      select: postSelect,
+    });
+
+    if (!post) {
+      throw new HttpException(
+        `Post with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    this.prismaService.post.update({
+      where: { id },
+      data: { likes: { decrement: 1 } },
+    });
+
+    return {
+      message: 'Like removed from Post',
+    };
+  }
 }
