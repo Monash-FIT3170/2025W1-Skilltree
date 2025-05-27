@@ -101,7 +101,7 @@ const LoginForm = () => {
         className="w-full"
         variant="link"
       >
-        Don't have an account? Sign Up
+        Don&apos;t have an account? Sign Up
       </Button>
     </form>
   );
