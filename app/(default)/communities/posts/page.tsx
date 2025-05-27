@@ -6,30 +6,7 @@ import { PostType } from "@/models/Post";
 import PostDetail from "@/components/PostDetails";
 import PostSidebar from "@/components/PostSideBar";
 import { Button } from "@/components/ui/button";
-
-// fake posts for testing
-const mockPosts: PostType[] = [
-  {
-    _id: "1",
-    community: "community1",
-    user: "user1",
-    text: "Example post 1",
-    attachment: "https://picsum.photos/720",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    __v: 0,
-  },
-  {
-    _id: "2",
-    community: "community1",
-    user: "user2",
-    text: "Example post 2",
-    attachment: "https://picsum.photos/720",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    __v: 0,
-  },
-];
+import { communities } from "@/lib/mocks";
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<PostType[]>([]);
@@ -37,8 +14,8 @@ export default function PostsPage() {
 
   useEffect(() => {
     // TODO: fetch from DB
-    setPosts(mockPosts);
-    setSelectedPost(mockPosts[0]);
+    setPosts(communities);
+    setSelectedPost(communities[0]);
   }, []);
 
   return (

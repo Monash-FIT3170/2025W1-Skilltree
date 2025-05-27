@@ -38,18 +38,12 @@ export default function PostDetail({ post }: PostDetailProps) {
 
   return (
     <div className="p-6 space-y-4 w-full">
-      <h2 className="text-2xl font-bold">
-        {post.text?.slice(0, 50) || "Post Title"}
-
-        <div className="mt-auto absolute top-6 right-6">
-          <Button
-            onClick={() => router.push(`/communities/posts/proof`)}
-            className="w-full bg-black text-white"
-          >
-            Upload Proof of Completion
-          </Button>
-        </div>
+      <h2 className="flex text-2xl font-bold">
+        {post.community || "Post Title"}
       </h2>
+      <Button onClick={() => router.push(`/communities/posts/proof`)}>
+        Upload Proof of Completion
+      </Button>
       {/* image */}
       <div className="w-full space-y-4 mt-4">
         <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center">
