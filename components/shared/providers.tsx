@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { HomeIcon, AwardIcon, PlusIcon, SlidersHorizontalIcon } from "lucide-react";
+
+import { HomeIcon, AwardIcon, PlusIcon, SlidersHorizontalIcon} from "lucide-react";
+import { Navbar } from "../Navbar";
+import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
