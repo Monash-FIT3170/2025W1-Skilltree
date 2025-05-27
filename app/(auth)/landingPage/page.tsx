@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Hero from '@/components/landingPage/Hero';
 import AboutUs from '@/components/landingPage/AboutUs';
 import Features from '@/components/landingPage/Features';
@@ -8,7 +8,13 @@ import NavBar from '@/components/landingPage/NavBar';
 import Communities from '@/components/landingPage/Communities';
 import OurFooter from '@/components/landingPage/OurFooter';
 
-function Section({ id, title, children }) {
+type SectionProps = {
+  id: string;
+  title: string;
+  children: ReactNode;
+};
+
+function Section({ id, title, children }: SectionProps) {
   return (
     <section id={id} className="container mx-auto px-6 pb-20">
       <h2 className="text-3xl font-semibold mb-8">{title}</h2>
