@@ -17,6 +17,13 @@ type Course = {
   title: string;
 };
 
+// Define a type for reviews
+type CourseReview = {
+  courseId: string;
+  rating: number; // 1-5 stars
+  // You could add a comment field here too if needed
+};
+
 const courses: Course[] = [
   { id: "course1", title: "Gardening" },
   { id: "course2", title: "Guitar for beginners" },
@@ -26,6 +33,8 @@ const courses: Course[] = [
 const EnrollCourses = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [enrolledCourses, setEnrolledCourses] = useState<string[]>([]);
+  // New state to store reviews, mapping courseId to its review
+  const [courseReviews, setCourseReviews] = useState<CourseReview[]>([]);
 
   const toggleEnroll = (course: Course) => {
     if (enrolledCourses.includes(course.id)) {
@@ -35,6 +44,31 @@ const EnrollCourses = () => {
       setEnrolledCourses((prev) => [...prev, course.id]);
       toast.success(`Enrolled in ${course.title}`);
     }
+  };
+
+  const handleRating = (courseId: string, rating: number) => {
+    setCourseReviews((prevReviews) => {
+      const existingReviewIndex = prevReviews.findIndex(
+        (review) => review.courseId === courseId
+      );
+
+      if (existingReviewIndex > -1) {
+        // Update existing review
+        const updatedReviews = [...prevReviews];
+        updatedReviews[existingReviewIndex] = { courseId, rating };
+        return updatedReviews;
+      } else {
+        // Add new review
+        return [...prevReviews, { courseId, rating }];
+      }
+    });
+    toast.success(`Rated ${rating} stars for this course!`);
+  };
+
+  // Helper function to get the current rating for a course
+  const getCurrentRating = (courseId: string) => {
+    const review = courseReviews.find((r) => r.courseId === courseId);
+    return review ? review.rating : 0;
   };
 
   return (
@@ -67,6 +101,28 @@ const EnrollCourses = () => {
               >
                 {enrolledCourses.includes(course.id) ? "Enrolled" : "Enroll"}
               </Button>
+
+              {/* Star Rating System */}
+              <div className="flex items-center justify-center mt-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    className="cursor-pointer text-2xl"
+                    style={{
+                      color:
+                        star <= getCurrentRating(course.id) ? "#FFD700" : "#ccc",
+                    }}
+                    onClick={() => handleRating(course.id, star)}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <p className="text-center text-sm text-gray-500">
+                {getCurrentRating(course.id) > 0
+                  ? `You rated: ${getCurrentRating(course.id)} stars`
+                  : "Rate this course"}
+              </p>
             </div>
           </Card>
         ))}
