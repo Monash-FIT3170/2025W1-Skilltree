@@ -11,17 +11,16 @@ type PostDetailProps = {
 };
 
 export default function PostDetail({ post }: PostDetailProps) {
-  const [feedbackList, setFeedbackList] = useState<string[]>([]);
+  //const [feedbackList, setFeedbackList] = useState<string[]>([]);
   const [newFeedback, setNewFeedback] = useState("");
   const [likes, setLikes] = useState(0);
 
   const router = useRouter();
 
-  /* For testing:
     const [feedbackList, setFeedbackList] = useState<string[]>([
-    "nice bro",
-    "great work",
-    ]); */
+    "Wow that is really cool!",
+    "I love form validation!",
+    ]);
 
   const handleAddFeedback = () => {
     if (newFeedback.trim() === "") return;
