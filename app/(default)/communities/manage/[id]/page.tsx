@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Plus, UserCheck, UserX, ArrowLeft, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-
 
 const TextEditor = ({
   value,
@@ -39,17 +39,10 @@ type Community = {
 };
 
 export default function ManageCommunities() {
-  const [communities] = useState<Community[]>(
-    [
-      { id: 1, name: "     " },
-      { id: 2, name: "     " },
-      { id: 3, name: "     " },
-    ]
-  );
+  const params = useParams();
+  const router = useRouter();
+  const communityId = params.id;
 
-  const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(
-    null
-  );
 
   // === Roles ===
   const [availableRoles, setAvailableRoles] = useState<string[]>(
@@ -72,21 +65,21 @@ export default function ManageCommunities() {
     { id: number; name: string; role: string }[]
   >([]);
   const [newMemberName, setNewMemberName] = useState("");
-  const [newMemberRole, setNewMemberRole] = useState("member");
+ 
 
   // === Community Settings ===
   const [isPrivate, setIsPrivate] = useState(false);
-  const [allowPosts, setAllowPosts] = useState(true);
+  // const [allowPosts, setAllowPosts] = useState(true);
 
-  // === Content & Verification (pending proofs) ===
-  const [pendingProofs, setPendingProofs] = useState<
-    { id: number; user: string; proofType: string }[]
-  >([
-    { id: 1, user: "         ", proofType: "ID Verification" },
-    { id: 2, user: "         ", proofType: " " },
-  ]);
+  // // === Content & Verification (pending proofs) ===
+  // const [pendingProofs, setPendingProofs] = useState<
+  //   { id: number; user: string; proofType: string }[]
+  // >([
+  //   { id: 1, user: "         ", proofType: "ID Verification" },
+  //   { id: 2, user: "         ", proofType: " " },
+  // ]);
 
-  // === Events & Competitions ===
+  // === Events ===
   const [events, setEvents] = useState<
     { id: number; title: string; date: string; description: string }[]
   >([]);
@@ -97,13 +90,13 @@ export default function ManageCommunities() {
   const [selectedRole, setSelectedRole] = useState("");
 
   // === Analytics & Leaderboards ===
-  const leaderboard = [
-    { rank: 1, name: " ", points: 1200 },
-    { rank: 2, name: " ", points: 950 },
-    { rank: 3, name: "", points: 875 },
-  ];
+  // const leaderboard = [
+  //   { rank: 1, name: " ", points: 1200 },
+  //   { rank: 2, name: " ", points: 950 },
+  //   { rank: 3, name: "", points: 875 },
+  // ];
 
-  // === Announcements ===
+
   const [announcement, setAnnouncement] = useState("");
   const [announcementPreview, setAnnouncementPreview] = useState(false);
 
@@ -116,15 +109,15 @@ export default function ManageCommunities() {
     }
   };
 
-  // Add new role to available roles list
-  const addNewRole = () => {
-    const trimmed = newRoleName.trim().toLowerCase();
-    if (!trimmed) return alert("Enter a role name");
-    if (availableRoles.includes(trimmed))
-      return alert("This role already exists");
-    setAvailableRoles((prev) => [...prev, trimmed]);
-    setNewRoleName("");
-  };
+  // 
+  // const addNewRole = () => {
+  //   const trimmed = newRoleName.trim().toLowerCase();
+  //   if (!trimmed) return alert("Enter a role name");
+  //   if (availableRoles.includes(trimmed))
+  //     return alert("This role already exists");
+  //   setAvailableRoles((prev) => [...prev, trimmed]);
+  //   setNewRoleName("");
+  // };
 
   // Add new member with selected role
   const addMember = (role: string) => {
@@ -134,7 +127,7 @@ export default function ManageCommunities() {
       { id: Date.now(), name: newMemberName.trim(), role },
     ]);
     setNewMemberName("");
-    setNewMemberRole("member");
+    setSelectedRole("member");  
   };
 
   // Toggle member role by cycling through available roles
@@ -155,87 +148,85 @@ export default function ManageCommunities() {
     setMembers((prev) => prev.filter((m) => m.id !== id));
   };
 
-  const approveProof = (id: number) => {
-    setPendingProofs((prev) => prev.filter((p) => p.id !== id));
-    alert("Proof approved");
-  };
+  // const approveProof = (id: number) => {
+  //   setPendingProofs((prev) => prev.filter((p) => p.id !== id));
+  //   alert("Proof approved");
+  // };
 
-  const rejectProof = (id: number) => {
-    setPendingProofs((prev) => prev.filter((p) => p.id !== id));
-    alert("Proof rejected");
-  };
+  // const rejectProof = (id: number) => {
+  //   setPendingProofs((prev) => prev.filter((p) => p.id !== id));
+  //   alert("Proof rejected");
+  // };
 
-  const validateAndAddEvent = () => {
+
+
+  // Add this mock function before validateAndAddEvent
+  async function createEvent(payload: any) {
+    // Simulate API call delay
+    return new Promise((resolve) => setTimeout(resolve, 500));
+  }
+
+  const validateAndAddEvent = async () => {
     setEventErrors(null);
+
     if (!newEventTitle.trim()) return setEventErrors("Event title is required");
     if (!newEventDate) return setEventErrors("Event date is required");
-    if (new Date(newEventDate) < new Date())
-      return setEventErrors("Event date cannot be in the past");
-    setEvents((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        title: newEventTitle.trim(),
-        date: newEventDate,
-        description: newEventDescription.trim(),
-      },
-    ]);
-    setNewEventTitle("");
-    setNewEventDate("");
-    setNewEventDescription("");
-  };
 
-  const handleSaveDetails = () => {
-    alert("Community details saved!");
-  };
+    try {
+      const payload = {
+        name: newEventTitle.trim(),
+        communityId: String(communityId), // from useParams()
+        experienceId: "default", // You may get this from somewhere or leave as is
+        rankedStatus: true,
+        experiencePayout: 0,
+      };
 
-  useEffect(() => {
-    if (selectedCommunity) {
-      setCommunityName(selectedCommunity.name);
-      setCommunityTags([]);
-      setCommunityDescription("");
-      setIconFile(null);
-      setIconPreview(null);
-      setMembers([]);
-      setNewMemberName("");
-      setNewMemberRole("member");
-      setIsPrivate(false);
-      setAllowPosts(true);
-      setPendingProofs([
-        { id: 1, user: " ", proofType: "ID Verification" },
-        { id: 2, user: " ", proofType: " " },
+      await createEvent(payload);
+
+      setEvents((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          title: newEventTitle.trim(),
+          date: newEventDate,
+          description: newEventDescription.trim(),
+        },
       ]);
-      setEvents([]);
+
+      // Reset fields
       setNewEventTitle("");
       setNewEventDate("");
       setNewEventDescription("");
-      setEventErrors(null);
-      setAnnouncement("");
-      setAnnouncementPreview(false);
-      setAvailableRoles(["admin", "moderator", "member"]); // reset roles on new community load
+    } catch (err) {
+      setEventErrors("Failed to create event.");
     }
-  }, [selectedCommunity]);
+  };
 
-  if (!selectedCommunity) {
-    return (
-      <div className="max-w-2xl mx-auto  gap-4">
-        <h2 className="2xl font-semibold mb-4">Your Communities</h2>
-        <ul className="space-y-3">
-          {communities.map((c) => (
-            <li key={c.id}>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => setSelectedCommunity(c)}
-              >
-                {c.name}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+
+  const handleSaveDetails = () => {
+    alert("Community details saved for: " + communityId);
+  };
+
+    useEffect(() => {
+    if (!communityId) return;
+
+    // Initialize form state
+    setCommunityName(`Community ${communityId}`);
+    setCommunityTags([]);
+    setCommunityDescription("");
+    setIconFile(null);
+    setIconPreview(null);
+    setMembers([]);
+    setNewMemberName("");
+    setSelectedRole("member");
+    setIsPrivate(false);
+    setEvents([]);
+    setAnnouncement("");
+    setAnnouncementPreview(false);
+    setAvailableRoles(["admin", "moderator", "member"]);
+  }, [communityId]);
+
+ 
 
   return (
     <div className="min-h-screen min-w-full flex flex-col">
@@ -243,7 +234,7 @@ export default function ManageCommunities() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setSelectedCommunity(null)}
+          onClick={() => router.back()}
           className="mb-4 flex items-center space-x-1"
         >
           <ArrowLeft size={16} />
@@ -254,8 +245,8 @@ export default function ManageCommunities() {
       <main className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-10 p-8">
         <section>
           <h2 className="2xl font-semibold mb-4 flex items-center justify-between">
-            Community Settings
-            {/* Dropdown menu with 3 dots */}
+            Manage: Community {communityId}
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="ml-2">
@@ -370,7 +361,7 @@ export default function ManageCommunities() {
         {/* Members & Roles */}
         <section>
           <h1 className="3xl font-bold mb-6">
-            Manage: {selectedCommunity.name}
+            Manage:  
           </h1>
           <h2 className="2xl font-semibold mb-4">Members & Roles</h2>
 
@@ -561,6 +552,8 @@ export default function ManageCommunities() {
                 alert("Announcement saved!");
                 setAnnouncementDialogOpen(false); // Optionally close dialog on save
               }}
+
+
               disabled={!announcement.trim()}
             >
               Save Announcement
@@ -575,3 +568,5 @@ export default function ManageCommunities() {
     </div>
   );
 }
+
+
