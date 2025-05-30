@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { createEvent } from "@/app/api/events"; 
 
 const TextEditor = ({
   value,
@@ -176,7 +175,7 @@ const validateAndAddEvent = async () => {
       experiencePayout: 0,
     };
 
-    await createEvent(payload);
+
 
     setEvents((prev) => [
       ...prev,
