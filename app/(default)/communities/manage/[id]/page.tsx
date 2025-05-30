@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { createEvent } from "@/app/api/events"; 
 
 const TextEditor = ({
   value,
@@ -161,41 +160,47 @@ export default function ManageCommunities() {
 
 
 
-const validateAndAddEvent = async () => {
-  setEventErrors(null);
-
-  if (!newEventTitle.trim()) return setEventErrors("Event title is required");
-  if (!newEventDate) return setEventErrors("Event date is required");
-
-  try {
-    const payload = {
-      name: newEventTitle.trim(),
-      communityId: String(communityId), // from useParams()
-      experienceId: "default", // You may get this from somewhere or leave as is
-      rankedStatus: true,
-      experiencePayout: 0,
-    };
-
-    await createEvent(payload);
-
-    setEvents((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        title: newEventTitle.trim(),
-        date: newEventDate,
-        description: newEventDescription.trim(),
-      },
-    ]);
-
-    // Reset fields
-    setNewEventTitle("");
-    setNewEventDate("");
-    setNewEventDescription("");
-  } catch (err) {
-    setEventErrors("Failed to create event.");
+  // Add this mock function before validateAndAddEvent
+  async function createEvent(payload: any) {
+    // Simulate API call delay
+    return new Promise((resolve) => setTimeout(resolve, 500));
   }
-};
+
+  const validateAndAddEvent = async () => {
+    setEventErrors(null);
+
+    if (!newEventTitle.trim()) return setEventErrors("Event title is required");
+    if (!newEventDate) return setEventErrors("Event date is required");
+
+    try {
+      const payload = {
+        name: newEventTitle.trim(),
+        communityId: String(communityId), // from useParams()
+        experienceId: "default", // You may get this from somewhere or leave as is
+        rankedStatus: true,
+        experiencePayout: 0,
+      };
+
+      await createEvent(payload);
+
+      setEvents((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          title: newEventTitle.trim(),
+          date: newEventDate,
+          description: newEventDescription.trim(),
+        },
+      ]);
+
+      // Reset fields
+      setNewEventTitle("");
+      setNewEventDate("");
+      setNewEventDescription("");
+    } catch (err) {
+      setEventErrors("Failed to create event.");
+    }
+  };
 
 
   const handleSaveDetails = () => {
