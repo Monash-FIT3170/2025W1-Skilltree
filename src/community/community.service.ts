@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommunuityCreationDto } from './dto';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { GetCommunityDto } from './dto/get-community.dto';
 import { MulterService } from 'src/multer/multer.service';
 import { ConfigService } from '@nestjs/config';

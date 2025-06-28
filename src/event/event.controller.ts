@@ -1,9 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { EventService } from './event.service';
 import { JwtGuard } from 'src/guards';
 import { CreateEventDto } from './dto';
 import { GetUser } from 'src/decorator';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 
 @Controller('event')
 export class EventController {
@@ -22,15 +31,19 @@ export class EventController {
   @UseGuards(JwtGuard)
   @Post()
   createEvent(@Body() dto: CreateEventDto, @GetUser() user: User) {
-    return this.eventService.createEvent(dto,user);
+    return this.eventService.createEvent(dto, user);
   }
 
   @UseGuards(JwtGuard)
   @Patch(':id')
-  updateEvent(@Param('id') id: string, @Body() dto: CreateEventDto, @GetUser() user: User) {
+  updateEvent(
+    @Param('id') id: string,
+    @Body() dto: CreateEventDto,
+    @GetUser() user: User,
+  ) {
     return this.eventService.updateEvent(id, dto, user);
   }
-  
+
   @UseGuards(JwtGuard)
   @Delete(':id')
   deleteEvent(@Param('id') id: string, @GetUser() user: User) {

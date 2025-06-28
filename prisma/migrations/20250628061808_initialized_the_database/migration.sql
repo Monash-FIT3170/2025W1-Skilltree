@@ -1,18 +1,19 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "hash" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-  - Added the required column `updatedAt` to the `User` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Community" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "skill" TEXT NOT NULL,
+    "skill" TEXT[],
     "icon" TEXT,
     "tags" TEXT[],
     "description" TEXT,
@@ -44,6 +45,7 @@ CREATE TABLE "Post" (
     "attachment" TEXT,
     "communityId" TEXT NOT NULL,
     "authorId" TEXT NOT NULL,
+    "likes" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -87,6 +89,7 @@ CREATE TABLE "Feedback" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "postId" TEXT NOT NULL,
+    "feedbackText" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -94,20 +97,9 @@ CREATE TABLE "Feedback" (
 );
 
 -- CreateTable
-CREATE TABLE "Verification" (
-    "id" TEXT NOT NULL,
-    "communityId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "postId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Verification_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Event" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "rankedStatus" BOOLEAN,
     "experiencePayout" INTEGER,
     "communityId" TEXT NOT NULL,
@@ -168,7 +160,55 @@ CREATE TABLE "_LeaderboardUsers" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE INDEX "User_createdAt_idx" ON "User"("createdAt");
+
+-- CreateIndex
+CREATE INDEX "Community_creatorId_idx" ON "Community"("creatorId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "SkilltreeNode_nextId_key" ON "SkilltreeNode"("nextId");
+
+-- CreateIndex
+CREATE INDEX "SkilltreeNode_communityId_idx" ON "SkilltreeNode"("communityId");
+
+-- CreateIndex
+CREATE INDEX "SkilltreeNode_experienceId_idx" ON "SkilltreeNode"("experienceId");
+
+-- CreateIndex
+CREATE INDEX "Post_communityId_idx" ON "Post"("communityId");
+
+-- CreateIndex
+CREATE INDEX "Post_authorId_idx" ON "Post"("authorId");
+
+-- CreateIndex
+CREATE INDEX "SkillForest_userId_idx" ON "SkillForest"("userId");
+
+-- CreateIndex
+CREATE INDEX "Experience_communityId_idx" ON "Experience"("communityId");
+
+-- CreateIndex
+CREATE INDEX "Experience_userId_idx" ON "Experience"("userId");
+
+-- CreateIndex
+CREATE INDEX "Leaderboard_communityId_idx" ON "Leaderboard"("communityId");
+
+-- CreateIndex
+CREATE INDEX "Feedback_userId_idx" ON "Feedback"("userId");
+
+-- CreateIndex
+CREATE INDEX "Feedback_postId_idx" ON "Feedback"("postId");
+
+-- CreateIndex
+CREATE INDEX "Event_communityId_idx" ON "Event"("communityId");
+
+-- CreateIndex
+CREATE INDEX "Event_userId_idx" ON "Event"("userId");
+
+-- CreateIndex
+CREATE INDEX "Event_experienceId_idx" ON "Event"("experienceId");
 
 -- CreateIndex
 CREATE INDEX "_AdminCommunities_B_index" ON "_AdminCommunities"("B");
@@ -223,15 +263,6 @@ ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_userId_fkey" FOREIGN KEY ("userI
 
 -- AddForeignKey
 ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Verification" ADD CONSTRAINT "Verification_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Verification" ADD CONSTRAINT "Verification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Verification" ADD CONSTRAINT "Verification_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

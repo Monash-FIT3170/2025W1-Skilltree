@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
 import { AnnouncementCreationDto } from './dto';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { JwtGuard } from 'src/guards';
 import { GetUser } from 'src/decorator';
 
@@ -19,7 +19,10 @@ export class AnnouncementController {
 
   @Post('')
   @UseGuards(JwtGuard)
-  createAnnouncement(@GetUser() user: User, @Body() dto: AnnouncementCreationDto) {
+  createAnnouncement(
+    @GetUser() user: User,
+    @Body() dto: AnnouncementCreationDto,
+  ) {
     return this.announcementService.createAnnouncement(user, dto);
   }
 
@@ -28,10 +31,10 @@ export class AnnouncementController {
     return this.announcementService.getAllAnnouncements(communityId);
   }
 
-@Get(':id')
+  @Get(':id')
   getAnnouncementById(@Param('id') id: string) {
-  return this.announcementService.getAnnouncementById(id);
-}
+    return this.announcementService.getAnnouncementById(id);
+  }
 
   @Delete(':id')
   @UseGuards(JwtGuard)

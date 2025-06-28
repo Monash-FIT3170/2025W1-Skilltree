@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { JwtGuard } from 'src/guards';
 import { GetUser } from 'src/decorator';
 

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { CommunityService } from './community.service';
 import { CommunuityCreationDto } from './dto';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { JwtGuard } from 'src/guards';
 import { GetCommunityDto } from './dto/get-community.dto';
 import { GetUser } from 'src/decorator';

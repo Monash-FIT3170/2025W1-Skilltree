@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -12,7 +11,7 @@ import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtGuard } from 'src/guards';
 import { GetUser } from 'src/decorator';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 
 @Controller('post')
 export class PostController {

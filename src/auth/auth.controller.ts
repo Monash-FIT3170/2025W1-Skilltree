@@ -2,7 +2,7 @@ import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto, ForgotPasswordDto } from './dto';
 import { JwtGuard } from 'src/guards';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { GetUser } from '../decorator';
 
 @Controller('auth')

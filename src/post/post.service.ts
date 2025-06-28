@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { postSelect } from 'src/prismaIncludes';
 
 @Injectable()
@@ -100,7 +100,7 @@ export class PostService {
       );
     }
 
-    this.prismaService.post.update({
+    await this.prismaService.post.update({
       where: { id },
       data: { likes: { increment: 1 } },
     });
@@ -123,7 +123,7 @@ export class PostService {
       );
     }
 
-    this.prismaService.post.update({
+    await this.prismaService.post.update({
       where: { id },
       data: { likes: { decrement: 1 } },
     });
