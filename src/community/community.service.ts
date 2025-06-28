@@ -3,9 +3,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CommunuityCreationDto } from './dto';
 import { User } from '@prisma/client';
 import { GetCommunityDto } from './dto/get-community.dto';
-import { MulterService } from 'src/multer/multer.service';
 import { ConfigService } from '@nestjs/config';
 import { UpdateCommunityDto } from './dto/update-community.dto';
+import { CommonService } from 'src/common/common.service';
 
 const includeAllFields = {
   id: true,
@@ -31,11 +31,15 @@ const includeAllFields = {
 export class CommunityService {
   constructor(
     private prisma: PrismaService,
-    private multerService: MulterService,
-    private configService: ConfigService,
+    private config: ConfigService,
+    private readonly common: CommonService,
   ) {}
 
-  async createCommunity(user: User, dto: CommunuityCreationDto) {
+  async createCommunity(
+    user: User,
+    dto: CommunuityCreationDto,
+    file: Express.Multer.File,
+  ) {
     const community = await this.prisma.community.create({
       data: {
         icon: '',
@@ -52,15 +56,15 @@ export class CommunityService {
       },
     });
 
-    const { filename } = await this.multerService.handleFileUpload(
+    const filename = this.common.handleFileUpload(
+      file.originalname,
       `community-${community.id}.png`,
-      dto.profileImage,
     );
 
     await this.prisma.community.update({
       where: { id: community.id },
       data: {
-        icon: `${this.configService.get('BASE_URL')}/static/${filename}`,
+        icon: `${this.config.get('BASE_URL')}/static/${filename}`,
       },
     });
 
@@ -108,7 +112,7 @@ export class CommunityService {
       );
     }
 
-    this.multerService.removeFile(`community-${id}.png`);
+    this.common.removeFile(`community-${id}.png`);
 
     await this.prisma.community.delete({
       where: { id },
@@ -135,7 +139,7 @@ export class CommunityService {
       },
     });
 
-    const updatedCommunity = await this.prisma.community.findUnique({
+    await this.prisma.community.findUnique({
       where: { id: communityId },
       include: {
         users: true,
@@ -196,7 +200,12 @@ export class CommunityService {
     return { message: community.users };
   }
 
-  async updateCommunity(id: string, dto: UpdateCommunityDto, user: User) {
+  async updateCommunity(
+    id: string,
+    dto: UpdateCommunityDto,
+    user: User,
+    file: Express.Multer.File,
+  ) {
     const community = await this.prisma.community.findUnique({
       where: { id },
     });
@@ -212,15 +221,15 @@ export class CommunityService {
       );
     }
 
-    const { filename } = await this.multerService.handleFileUpload(
+    const filename = this.common.handleFileUpload(
+      file.originalname,
       `community-${community.id}.png`,
-      dto.profileImage,
     );
 
     const updatedCommunity = await this.prisma.community.update({
       where: { id },
       data: {
-        icon: `${this.configService.get('BASE_URL')}/static/${filename}`,
+        icon: `${this.config.get('BASE_URL')}/static/${filename}`,
         name: dto.name,
         tags: dto.tags,
         description: dto.description,

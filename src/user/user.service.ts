@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { userSelect } from 'src/prismaIncludes';
 
 @Injectable()
 export class UserService {
@@ -12,7 +11,6 @@ export class UserService {
       where: {
         id: user.id,
       },
-      select: userSelect,
     });
 
     if (!userData) {

@@ -38,7 +38,7 @@ export class AuthService {
       );
     }
 
-    const token = await this.signToken(user.id!, user.email!);
+    const token = await this.signToken(user.id, user.email);
 
     return token;
   }

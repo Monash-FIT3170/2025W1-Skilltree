@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { User } from '@prisma/client';
-import { postSelect } from 'src/prismaIncludes';
 
 @Injectable()
 export class PostService {
@@ -10,16 +9,13 @@ export class PostService {
 
   async getAllPosts() {
     return {
-      message: await this.prismaService.post.findMany({
-        select: postSelect,
-      }),
+      message: await this.prismaService.post.findMany(),
     };
   }
 
   async getPostById(id: string) {
     const post = await this.prismaService.post.findUnique({
       where: { id },
-      select: postSelect,
     });
 
     if (!post) {
@@ -90,7 +86,6 @@ export class PostService {
   async likePost(id: string) {
     const post = await this.prismaService.post.findUnique({
       where: { id },
-      select: postSelect,
     });
 
     if (!post) {
@@ -113,7 +108,6 @@ export class PostService {
   async unlikePost(id: string) {
     const post = await this.prismaService.post.findUnique({
       where: { id },
-      select: postSelect,
     });
 
     if (!post) {

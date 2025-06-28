@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto';
-import { eventSelect } from 'src/prismaIncludes';
 
 @Injectable()
 export class EventService {
@@ -10,9 +9,7 @@ export class EventService {
 
   async getAllEvents() {
     return {
-      message: await this.prismaService.event.findMany({
-        select: eventSelect,
-      }),
+      message: await this.prismaService.event.findMany(),
     };
   }
 
@@ -21,7 +18,6 @@ export class EventService {
       where: {
         id: dto.commmunityId,
       },
-      select: eventSelect,
     });
     if (!community) {
       throw new HttpException(

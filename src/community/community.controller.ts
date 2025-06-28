@@ -4,10 +4,11 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommunityService } from './community.service';
 import { CommunuityCreationDto } from './dto';
@@ -15,6 +16,7 @@ import { User } from '@prisma/client';
 import { JwtGuard } from 'src/guards';
 import { GetCommunityDto } from './dto/get-community.dto';
 import { GetUser } from 'src/decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('community')
 export class CommunityController {
@@ -22,8 +24,13 @@ export class CommunityController {
 
   @Post('')
   @UseGuards(JwtGuard)
-  createCommunity(@Body() dto: CommunuityCreationDto, @GetUser() user: User) {
-    return this.communityService.createCommunity(user, dto);
+  @UseInterceptors(FileInterceptor('file'))
+  createCommunity(
+    @Body() dto: CommunuityCreationDto,
+    @GetUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.communityService.createCommunity(user, dto, file);
   }
 
   @Get('')
@@ -72,11 +79,13 @@ export class CommunityController {
 
   @Put(':id')
   @UseGuards(JwtGuard)
+  @UseInterceptors(FileInterceptor('file'))
   updateCommunity(
     @Param('id') id: string,
     @Body() dto: CommunuityCreationDto,
     @GetUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.communityService.updateCommunity(id, dto, user);
+    return this.communityService.updateCommunity(id, dto, user, file);
   }
 }

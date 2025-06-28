@@ -1,42 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { extname, join } from 'path';
+
 import { ConfigModule } from '@nestjs/config';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { PrismaService } from './prisma/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from './prisma/prisma.module';
-import { MulterModule } from './multer/multer.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-
-import { CommunityService } from './community/community.service';
 import { CommunityModule } from './community/community.module';
-import { CommunityController } from './community/community.controller';
-
-import { UserService } from './user/user.service';
-import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
-
-import { EventService } from './event/event.service';
-import { EventController } from './event/event.controller';
 import { EventModule } from './event/event.module';
-
 import { PostModule } from './post/post.module';
-import { PostController } from './post/post.controller';
-import { PostService } from './post/post.service';
-
-import { FeedbackService } from './feedback/feedback.service';
-import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackModule } from './feedback/feedback.module';
-
-import { AnnouncementService } from './announcement/announcement.service';
-import { AnnouncementController } from './announcement/announcement.controller';
 import { AnnouncementModule } from './announcement/announcement.module';
-
+import { MulterModule } from '@nestjs/platform-express';
+import { CommonModule } from './common/common.module';
+import { CommonService } from './common/common.service';
+import { diskStorage } from 'multer';
+import { log } from 'console';
 
 @Module({
   imports: [
@@ -46,8 +28,17 @@ import { AnnouncementModule } from './announcement/announcement.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
-    PrismaModule,
+    MulterModule.register({
+      dest: join(__dirname, '..', 'uploads'),
+      storage: diskStorage({
+        destination: join(__dirname, '..', 'uploads'),
+        filename(req, file, callback) {
+          callback(null, file.originalname);
+        },
+      }),
+    }),
     JwtModule.register({}),
+    PrismaModule,
     AuthModule,
     CommunityModule,
     UserModule,
@@ -55,20 +46,9 @@ import { AnnouncementModule } from './announcement/announcement.module';
     PostModule,
     FeedbackModule,
     AnnouncementModule,
-    MulterModule,
+    CommonModule,
   ],
-  controllers: [AppController, AuthController, CommunityController, UserController, EventController, PostController, FeedbackController, AnnouncementController],
-  providers: [
-    AppService,
-    AuthService,
-    CommunityService,
-    UserService,
-    PostService,
-    EventService,
-    FeedbackService,
-    AnnouncementService,
-    PrismaService,
-    JwtService,
-  ],
+  controllers: [AppController],
+  providers: [AppService, CommonService],
 })
 export class AppModule {}
