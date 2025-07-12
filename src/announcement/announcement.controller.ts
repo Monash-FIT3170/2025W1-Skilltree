@@ -29,6 +29,8 @@ export class AnnouncementController {
 	@Get('community/:id')
 	getAllAnnouncements(@Param('id') id: string) {
 		return this.announcementService.getAllAnnouncements(id);
+
+		
 	}
 
 	@Get(':id')
