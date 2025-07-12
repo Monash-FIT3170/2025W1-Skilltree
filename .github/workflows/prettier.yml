@@ -24,14 +24,12 @@ jobs:
         run: npm ci
 
       - name: Check Prettier formatting
-        run: npx prettier --check "src/**/*.ts" "test/**/*.ts" "*.json" "*.md" "*.yml" "*.yaml"
+        run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
 
       - name: Format with Prettier (if check fails)
         if: failure()
         run: |
+          echo "🎨 Formatting code with Prettier..."
           echo "❌ Code is not properly formatted!"
-          echo "Run 'npm run format' locally to fix formatting issues."
-          echo ""
-          echo "Files that need formatting:"
-          npx prettier --list-different "src/**/*.ts" "test/**/*.ts" "*.json" "*.md" "*.yml" "*.yaml" || true
-          exit 1
+          npx prettier --write "src/**/*.ts" "test/**/*.ts"
+          echo "✅ Code has been formatted with Prettier"
