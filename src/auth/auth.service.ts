@@ -1,121 +1,121 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignInDto, SignUpDto, ForgotPasswordDto } from './dto';
-import * as argon from 'argon2';
+import { verify, hash } from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private config: ConfigService,
-    private prisma: PrismaService,
-    private jwt: JwtService,
-  ) {}
+	constructor(
+		private config: ConfigService,
+		private prisma: PrismaService,
+		private jwt: JwtService,
+	) {}
 
-  async signin(dto: SignInDto) {
-    const { email, password } = dto;
+	async signin(dto: SignInDto) {
+		const { email, password } = dto;
 
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+		const user = await this.prisma.user.findUnique({
+			where: {
+				email,
+			},
+		});
 
-    if (!user) {
-      throw new HttpException(
-        `The user with ${dto.email} was not found. Please sign up.`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+		if (!user) {
+			throw new HttpException(
+				`The user with ${dto.email} was not found. Please sign up.`,
+				HttpStatus.NOT_FOUND,
+			);
+		}
 
-    const passwordMatches = await argon.verify(user.hash!, password);
-    if (!passwordMatches) {
-      throw new HttpException(
-        'The password entered seems to be invalid. Please try again.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+		const passwordMatches = await verify(user.hash!, password);
+		if (!passwordMatches) {
+			throw new HttpException(
+				'The password entered seems to be invalid. Please try again.',
+				HttpStatus.UNAUTHORIZED,
+			);
+		}
 
-    const token = await this.signToken(user.id, user.email);
+		const token = await this.signToken(user.id, user.email);
 
-    return token;
-  }
+		return token;
+	}
 
-  async signup(dto: SignUpDto) {
-    const hash = await argon.hash(dto.password);
+	async signup(dto: SignUpDto) {
+		const hashedPassword = await hash(dto.password);
 
-    const userExists = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (userExists) {
-      throw new HttpException(
-        'The user already exists. Please sign in.',
-        HttpStatus.CONFLICT,
-      );
-    }
+		const userExists = await this.prisma.user.findUnique({
+			where: {
+				email: dto.email,
+			},
+		});
+		if (userExists) {
+			throw new HttpException(
+				'The user already exists. Please sign in.',
+				HttpStatus.CONFLICT,
+			);
+		}
 
-    await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        hash,
-      },
-    });
+		await this.prisma.user.create({
+			data: {
+				email: dto.email,
+				hash: hashedPassword,
+			},
+		});
 
-    return {
-      message:
-        'A new user has been created successfully. Enjoy your time on SkillTree!',
-    };
-  }
+		return {
+			message:
+				'A new user has been created successfully. Enjoy your time on SkillTree!',
+		};
+	}
 
-  async signToken(
-    userId: string,
-    email: string,
-  ): Promise<{ access_token: string }> {
-    const payload = {
-      sub: userId,
-      email,
-    };
+	async signToken(
+		userId: string,
+		email: string,
+	): Promise<{ access_token: string }> {
+		const payload = {
+			sub: userId,
+			email,
+		};
 
-    return {
-      access_token: await this.jwt.signAsync(payload, {
-        secret: this.config.get('JWT_SECRET')!,
-        expiresIn: '1h',
-      }),
-    };
-  }
+		return {
+			access_token: await this.jwt.signAsync(payload, {
+				secret: this.config.get('JWT_SECRET')!,
+				expiresIn: '1h',
+			}),
+		};
+	}
 
-  async forgotPassword(user: User, dto: ForgotPasswordDto) {
-    const { id } = user;
+	async forgotPassword(user: User, dto: ForgotPasswordDto) {
+		const { id } = user;
 
-    const userData = await this.prisma.user.findFirst({
-      where: {
-        id,
-      },
-    });
+		const userData = await this.prisma.user.findFirst({
+			where: {
+				id,
+			},
+		});
 
-    if (!userData) {
-      throw new HttpException(
-        'The user was not found. Please sign up.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+		if (!userData) {
+			throw new HttpException(
+				'The user was not found. Please sign up.',
+				HttpStatus.NOT_FOUND,
+			);
+		}
 
-    const hash = await argon.hash(dto.password);
-    await this.prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        hash,
-      },
-    });
+		const hashedPassword = await hash(dto.password);
+		await this.prisma.user.update({
+			where: {
+				id,
+			},
+			data: {
+				hash: hashedPassword,
+			},
+		});
 
-    return {
-      message: `The password has been updated successfully for ${user.email}.`,
-    };
-  }
+		return {
+			message: `The password has been updated successfully for ${user.email}.`,
+		};
+	}
 }

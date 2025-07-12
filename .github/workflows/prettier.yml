@@ -1,0 +1,37 @@
+name: Prettier Formatting
+
+on:
+  push:
+    branches: [main, backend]
+  pull_request:
+    branches: [main, backend]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Prettier formatting
+        run: npx prettier --check "src/**/*.ts" "test/**/*.ts" "*.json" "*.md" "*.yml" "*.yaml"
+
+      - name: Format with Prettier (if check fails)
+        if: failure()
+        run: |
+          echo "❌ Code is not properly formatted!"
+          echo "Run 'npm run format' locally to fix formatting issues."
+          echo ""
+          echo "Files that need formatting:"
+          npx prettier --list-different "src/**/*.ts" "test/**/*.ts" "*.json" "*.md" "*.yml" "*.yaml" || true
+          exit 1

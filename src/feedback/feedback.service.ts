@@ -5,62 +5,62 @@ import { CreateFeedbackDto } from './dto/create-feedback.dto';
 
 @Injectable()
 export class FeedbackService {
-  constructor(private prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) {}
 
-  async createFeedback(dto: CreateFeedbackDto, user: User) {
-    const feedback = await this.prisma.feedback.create({
-      data: {
-        userId: user.id,
-        postId: dto.postId,
-        feedbackText: dto.feedbackText,
-      },
-    });
+	async createFeedback(dto: CreateFeedbackDto, user: User) {
+		const feedback = await this.prisma.feedback.create({
+			data: {
+				userId: user.id,
+				postId: dto.postId,
+				feedbackText: dto.feedbackText,
+			},
+		});
 
-    return {
-      message: feedback,
-    };
-  }
+		return {
+			message: feedback,
+		};
+	}
 
-  async getAllFeedback() {
-    const allFeedback = await this.prisma.feedback.findMany();
+	async getAllFeedback() {
+		const allFeedback = await this.prisma.feedback.findMany();
 
-    return {
-      message: allFeedback,
-    };
-  }
+		return {
+			message: allFeedback,
+		};
+	}
 
-  async getFeedbackById(id: string) {
-    const feedback = await this.prisma.feedback.findUnique({
-      where: { id: id },
-    });
+	async getFeedbackById(id: string) {
+		const feedback = await this.prisma.feedback.findUnique({
+			where: { id: id },
+		});
 
-    if (!feedback) {
-      throw new HttpException('Feedback not found', HttpStatus.NOT_FOUND);
-    }
+		if (!feedback) {
+			throw new HttpException('Feedback not found', HttpStatus.NOT_FOUND);
+		}
 
-    return { message: feedback };
-  }
+		return { message: feedback };
+	}
 
-  async deleteFeedback(id: string, user: User) {
-    const feedback = await this.prisma.feedback.findUnique({
-      where: { id, userId: user.id },
-    });
+	async deleteFeedback(id: string, user: User) {
+		const feedback = await this.prisma.feedback.findUnique({
+			where: { id, userId: user.id },
+		});
 
-    if (!feedback) {
-      throw new HttpException('Feedback not found', HttpStatus.NOT_FOUND);
-    }
+		if (!feedback) {
+			throw new HttpException('Feedback not found', HttpStatus.NOT_FOUND);
+		}
 
-    if (feedback.userId !== user.id) {
-      throw new HttpException(
-        'You are not authorized to delete this feedback',
-        HttpStatus.FORBIDDEN,
-      );
-    }
+		if (feedback.userId !== user.id) {
+			throw new HttpException(
+				'You are not authorized to delete this feedback',
+				HttpStatus.FORBIDDEN,
+			);
+		}
 
-    await this.prisma.feedback.delete({
-      where: { id },
-    });
+		await this.prisma.feedback.delete({
+			where: { id },
+		});
 
-    return { message: 'Feedback deleted successfully' };
-  }
+		return { message: 'Feedback deleted successfully' };
+	}
 }

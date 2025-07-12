@@ -1,0 +1,37 @@
+name: ESLint Check
+
+on:
+  push:
+    branches: [main, backend]
+  pull_request:
+    branches: [main, backend]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: ESLint Report
+        if: failure()
+        run: |
+          echo "❌ ESLint found issues!"
+          echo "Run 'npm run lint' locally to see and fix linting issues."
+          echo "Many issues can be auto-fixed by running 'npm run lint' as it includes the --fix flag."
+          exit 1
+          echo "Many issues can be auto-fixed by running 'pnpm run lint' as it includes the --fix flag."
+          exit 1

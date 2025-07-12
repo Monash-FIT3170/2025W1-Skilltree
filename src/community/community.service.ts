@@ -2,240 +2,216 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommunuityCreationDto } from './dto';
 import { User } from '@prisma/client';
-import { GetCommunityDto } from './dto/get-community.dto';
 import { ConfigService } from '@nestjs/config';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommonService } from 'src/common/common.service';
 
-const includeAllFields = {
-  id: true,
-  name: true,
-  skill: true,
-  icon: true,
-  tags: true,
-  description: true,
-  communityExperience: true,
-  creatorId: true,
-  creator: true,
-  admins: true,
-  users: true,
-  skillTreeNodes: true,
-  posts: true,
-  skillForests: true,
-  experiences: true,
-  leaderboards: true,
-  events: true,
-};
-
 @Injectable()
 export class CommunityService {
-  constructor(
-    private prisma: PrismaService,
-    private config: ConfigService,
-    private readonly common: CommonService,
-  ) {}
+	constructor(
+		private prisma: PrismaService,
+		private config: ConfigService,
+		private readonly common: CommonService,
+	) {}
 
-  async createCommunity(
-    user: User,
-    dto: CommunuityCreationDto,
-    file: Express.Multer.File,
-  ) {
-    const community = await this.prisma.community.create({
-      data: {
-        icon: '',
-        name: dto.name,
-        tags: dto.tags,
-        description: dto.description,
-        creatorId: user.id,
-        admins: {
-          connect: { id: user.id },
-        },
-        users: {
-          connect: { id: user.id },
-        },
-      },
-    });
+	async createCommunity(
+		user: User,
+		dto: CommunuityCreationDto,
+		file: Express.Multer.File,
+	) {
+		const community = await this.prisma.community.create({
+			data: {
+				icon: '',
+				name: dto.name,
+				tags: dto.tags,
+				description: dto.description,
+				creatorId: user.id,
+				admins: {
+					connect: { id: user.id },
+				},
+				users: {
+					connect: { id: user.id },
+				},
+			},
+		});
 
-    const filename = this.common.handleFileUpload(
-      file.originalname,
-      `community-${community.id}.png`,
-    );
+		const filename = this.common.handleFileUpload(
+			file.originalname,
+			`community-${community.id}.png`,
+		);
 
-    await this.prisma.community.update({
-      where: { id: community.id },
-      data: {
-        icon: `${this.config.get('BASE_URL')}/static/${filename}`,
-      },
-    });
+		await this.prisma.community.update({
+			where: { id: community.id },
+			data: {
+				icon: `${this.config.get('BASE_URL')}/static/${filename}`,
+			},
+		});
 
-    return {
-      message: community,
-    };
-  }
+		return {
+			message: community,
+		};
+	}
 
-  async getAllCommunities() {
-    const communities = await this.prisma.community.findMany({
-      select: includeAllFields,
-    });
+	async getAllCommunities() {
+		const communities = await this.prisma.community.findMany();
 
-    return {
-      message: communities,
-    };
-  }
+		return {
+			message: communities,
+		};
+	}
 
-  async getCommunityById(dto: GetCommunityDto) {
-    const community = await this.prisma.community.findUnique({
-      where: { id: dto.id },
-      select: includeAllFields,
-    });
+	async getCommunityById(id: string) {
+		const community = await this.prisma.community.findUnique({
+			where: { id: id },
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    return { message: community };
-  }
+		return { message: community };
+	}
 
-  async deleteCommunity(id: string, user: User) {
-    const community = await this.prisma.community.findUnique({
-      where: { id },
-    });
+	async deleteCommunity(id: string, user: User) {
+		const community = await this.prisma.community.findUnique({
+			where: { id },
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    if (community.creatorId !== user.id) {
-      throw new HttpException(
-        'You are not authorized to delete this community',
-        HttpStatus.FORBIDDEN,
-      );
-    }
+		if (community.creatorId !== user.id) {
+			throw new HttpException(
+				'You are not authorized to delete this community',
+				HttpStatus.FORBIDDEN,
+			);
+		}
 
-    this.common.removeFile(`community-${id}.png`);
+		this.common.removeFile(`community-${id}.png`);
 
-    await this.prisma.community.delete({
-      where: { id },
-    });
+		await this.prisma.community.delete({
+			where: { id },
+		});
 
-    return { message: 'Community deleted successfully' };
-  }
+		return { message: 'Community deleted successfully' };
+	}
 
-  async joinCommunity(communityId: string, user: User) {
-    const community = await this.prisma.community.findUnique({
-      where: { id: communityId },
-    });
+	async joinCommunity(communityId: string, user: User) {
+		const community = await this.prisma.community.findUnique({
+			where: { id: communityId },
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    await this.prisma.community.update({
-      where: { id: communityId },
-      data: {
-        users: {
-          connect: { id: user.id },
-        },
-      },
-    });
+		await this.prisma.community.update({
+			where: { id: communityId },
+			data: {
+				users: {
+					connect: { id: user.id },
+				},
+			},
+		});
 
-    await this.prisma.community.findUnique({
-      where: { id: communityId },
-      include: {
-        users: true,
-      },
-    });
+		await this.prisma.community.findUnique({
+			where: { id: communityId },
+			include: {
+				users: true,
+			},
+		});
 
-    return { message: 'Joined community successfully' };
-  }
+		return { message: 'Joined community successfully' };
+	}
 
-  async leaveCommunity(communityId: string, user: User) {
-    const community = await this.prisma.community.findUnique({
-      where: { id: communityId },
-    });
+	async leaveCommunity(communityId: string, user: User) {
+		const community = await this.prisma.community.findUnique({
+			where: { id: communityId },
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    await this.prisma.community.update({
-      where: { id: communityId },
-      data: {
-        users: {
-          disconnect: { id: user.id },
-        },
-      },
-    });
+		await this.prisma.community.update({
+			where: { id: communityId },
+			data: {
+				users: {
+					disconnect: { id: user.id },
+				},
+			},
+		});
 
-    return { message: 'Left community successfully' };
-  }
+		return { message: 'Left community successfully' };
+	}
 
-  async getCommunityAdmins(communityId: string) {
-    const community = await this.prisma.community.findUnique({
-      where: { id: communityId },
-      include: {
-        admins: true,
-      },
-    });
+	async getCommunityAdmins(communityId: string) {
+		const community = await this.prisma.community.findUnique({
+			where: { id: communityId },
+			include: {
+				admins: true,
+			},
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    return { message: community.admins };
-  }
+		return { message: community.admins };
+	}
 
-  async getCommunityMembers(communityId: string) {
-    const community = await this.prisma.community.findUnique({
-      where: { id: communityId },
-      include: {
-        users: true,
-      },
-    });
+	async getCommunityMembers(communityId: string) {
+		const community = await this.prisma.community.findUnique({
+			where: { id: communityId },
+			include: {
+				users: true,
+			},
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    return { message: community.users };
-  }
+		return { message: community.users };
+	}
 
-  async updateCommunity(
-    id: string,
-    dto: UpdateCommunityDto,
-    user: User,
-    file: Express.Multer.File,
-  ) {
-    const community = await this.prisma.community.findUnique({
-      where: { id },
-    });
+	async updateCommunity(
+		id: string,
+		dto: UpdateCommunityDto,
+		user: User,
+		file: Express.Multer.File,
+	) {
+		const community = await this.prisma.community.findUnique({
+			where: { id },
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    if (community.creatorId !== user.id) {
-      throw new HttpException(
-        'You are not authorized to update this community',
-        HttpStatus.FORBIDDEN,
-      );
-    }
+		if (community.creatorId !== user.id) {
+			throw new HttpException(
+				'You are not authorized to update this community',
+				HttpStatus.FORBIDDEN,
+			);
+		}
 
-    const filename = this.common.handleFileUpload(
-      file.originalname,
-      `community-${community.id}.png`,
-    );
+		const filename = this.common.handleFileUpload(
+			file.originalname,
+			`community-${community.id}.png`,
+		);
 
-    const updatedCommunity = await this.prisma.community.update({
-      where: { id },
-      data: {
-        icon: `${this.config.get('BASE_URL')}/static/${filename}`,
-        name: dto.name,
-        tags: dto.tags,
-        description: dto.description,
-      },
-    });
+		const updatedCommunity = await this.prisma.community.update({
+			where: { id },
+			data: {
+				icon: `${this.config.get('BASE_URL')}/static/${filename}`,
+				name: dto.name,
+				tags: dto.tags,
+				description: dto.description,
+			},
+		});
 
-    return { message: updatedCommunity };
-  }
+		return { message: updatedCommunity };
+	}
 }

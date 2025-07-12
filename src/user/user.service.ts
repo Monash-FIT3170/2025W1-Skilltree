@@ -4,22 +4,22 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) {}
 
-  async getMe(user: User) {
-    const userData = await this.prisma.user.findFirst({
-      where: {
-        id: user.id,
-      },
-    });
+	async getMe(user: User) {
+		const userData = await this.prisma.user.findUnique({
+			where: {
+				id: user.id,
+			},
+		});
 
-    if (!userData) {
-      throw new HttpException(
-        'The user was not found. Please sign up.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+		if (!userData) {
+			throw new HttpException(
+				'The user was not found. Please sign up.',
+				HttpStatus.NOT_FOUND,
+			);
+		}
 
-    return userData;
-  }
+		return userData;
+	}
 }

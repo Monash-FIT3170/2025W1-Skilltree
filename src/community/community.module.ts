@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { CommonService } from 'src/common/common.service';
 
 @Module({
-  controllers: [CommunityController],
-  providers: [CommunityService, ConfigService, CommonService],
+	controllers: [CommunityController],
+	providers: [CommunityService, ConfigService, CommonService],
 })
 export class CommunityModule {}
