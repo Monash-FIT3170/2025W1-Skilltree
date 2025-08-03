@@ -96,10 +96,22 @@ export default function PostDetail({ post }: PostDetailProps) {
           className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
           rows={3}
           placeholder="Write your feedback here..."
-        />
-        <button className="mt-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition-transform hover:scale-110 active:scale-95">
-          Post Feedback
-        </button>
+          value = {newFeedback}
+          onChange={(e) => setNewFeedback(e.target.value)}
+        ></textarea>
+  
+        <button
+        className={`mt-2 px-4 py-2 rounded-lg 
+          ${newFeedback.trim() === "" 
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+            : "bg-black text-white hover:bg-gray-900 transition-transform hover:scale-110 active:scale-95"}
+        `}
+        onClick={handleAddFeedback}
+        disabled={newFeedback.trim() === ""}
+        type="button"
+      >
+        Post Feedback
+      </button>
       </div>
 
       {/* comment section */}
