@@ -30,7 +30,7 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
                 <button
                     onClick={handleLike}
                     className={`flex-1 min-w-0 flex items-center justify-center px-4 py-2 rounded transition-colors transition-transform 
-                        ${liked ? "text-[#34D399]" : ""}
+                        ${liked ? "text-[#34D399]" : "text-gray-600"}
                         hover:scale-105 active:scale-95`}
                     style={{ minWidth: 0 }}
                     title={liked ? "You liked this post" : "Like this post"}
