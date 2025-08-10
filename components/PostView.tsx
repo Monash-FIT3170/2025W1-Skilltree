@@ -15,6 +15,8 @@ interface PostViewPanelProps {
     userRole: UserRole;
 }
 
+
+
 export default function PostView({userRole}: PostViewPanelProps) {
   return (
     <div className="bg-white rounded-lg shadow max-w-2xl mx-auto my-8">
@@ -54,7 +56,7 @@ export default function PostView({userRole}: PostViewPanelProps) {
         <div>
           <span className="inline-flex items-center">
 
-            <ThumbsUp className="mr-1" size={18} color="#2563eb" fill="#2563eb" />
+            <ThumbsUp className="mr-1" size={18} color="#34D399" fill = "#34D399"/>
             {postLikes} likes
           </span>
         </div>
