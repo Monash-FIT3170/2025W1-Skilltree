@@ -16,23 +16,23 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
         },
         {
             icon: <MessageCircle className="mr-2" size = {iconSize}/>,
-            label: "Comment",
+            label: "Feedback",
             className: "text-gray-600 hover:text-gray-900",
-        },
-        {
-            icon: <Award className="mr-2" size = {iconSize}/>,
-            label: "Proof",
-            className: "text-gray-600 hover:text-gray-900",
-        },
+        }//,
+        // {
+        //     icon: <Award className="mr-2" size = {iconSize}/>,
+        //     label: "Proof",
+        //     className: "text-gray-600 hover:text-gray-900",
+        // },
     ];
-
-    if (userRole === "verified" || userRole === "admin") {
-        actions.push({
-            icon: <Zap className="mr-2" size = {iconSize}/>,
-            label: "Give XP",
-            className: "text-gray-600 hover:text-gray-900",
-        });
-    }
+    // change to have this be done from comment system
+    // if (userRole === "verified" || userRole === "admin") {
+    //     actions.push({
+    //         icon: <Zap className="mr-2" size = {iconSize}/>,
+    //         label: "Give XP",
+    //         className: "text-gray-600 hover:text-gray-900",
+    //     });
+    // }
     if (userRole === "admin") {
         actions.push({
             icon: <Delete className="mr-2" size = {iconSize}/>,
