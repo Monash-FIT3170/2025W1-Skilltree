@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ThumbsUp } from "lucide-react";
 import { PostInteractionPanel } from "@/components/PostInteractionPanel";
+import PostFeedbackForm from "./PostFeedbackForm";
 const communityIcon = "/placeholder.png"; // Placeholder for community icon
 const postTitle = "Snowboarding Jump Node";
 const postUser = "Example User"; // Placeholder for user name
@@ -14,6 +15,7 @@ type UserRole = 'admin' | 'verified' | 'normal';
 interface PostViewPanelProps {
     userRole: UserRole;
 }
+
 
 
 
@@ -65,6 +67,10 @@ export default function PostView({userRole}: PostViewPanelProps) {
 
       {/* Action panel */}
       <PostInteractionPanel userRole={userRole} />
+      <br></br>
+
+      {/* Feedback form */}
+      <PostFeedbackForm />
     </div>
   );
 }

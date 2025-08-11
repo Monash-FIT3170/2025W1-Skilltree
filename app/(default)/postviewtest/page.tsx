@@ -2,6 +2,7 @@ import React from "react";
 //import { useRouter } from "next/navigation";
 import { PostInteractionPanel } from "@/components/PostInteractionPanel";
 import PostView from "@/components/PostView";
+import PostFeedbackForm from "@/components/PostFeedbackForm";
 
 export default function postviewtest() {
     return (
