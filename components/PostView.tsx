@@ -8,8 +8,6 @@ const postUser = "Example User"; // Placeholder for user name
 const postTimeAgo = "5h ago"; // Placeholder for time since post was made
 const postText = "this is me doing a jump. how good!";
 const postImage = "/placeholder.png"; // Placeholder image path
-const postLikes = 59; // Placeholder for number of likes
-const postComments = 2; // Placeholder for number of comments
 
 type UserRole = 'admin' | 'verified' | 'normal';
 interface PostViewPanelProps {
@@ -53,24 +51,10 @@ export default function PostView({userRole}: PostViewPanelProps) {
         />
       </div>
 
-      {/* Like/people summary and comment count */}
-      <div className="flex items-center justify-between px-4 py-2 border-b text-sm text-gray-600">
-        <div>
-          <span className="inline-flex items-center">
-
-            <ThumbsUp className="mr-1" size={18} color="#34D399" fill = "#34D399"/>
-            {postLikes} likes
-          </span>
-        </div>
-        <div>{postComments} comments</div>
-      </div>
 
       {/* Action panel */}
       <PostInteractionPanel userRole={userRole} />
       <br></br>
-
-      {/* Feedback form */}
-      <PostFeedbackForm />
     </div>
   );
 }
