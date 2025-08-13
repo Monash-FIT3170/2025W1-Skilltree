@@ -116,13 +116,8 @@ export default function CreateCommunityForm() {
     <div className="min-h-[80vh] w-full grid place-items-start sm:place-items-center p-4 sm:p-8 bg-transparent">
       <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-8 shadow-xl border">
         <div className="mb-6 flex items-start justify-between gap-4">
-          <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900">Creating a community?</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900">Create a community!</h2>
           <div className="text-xs sm:text-sm text-zinc-500">
-            {user ? (
-              <span>Logged in as: <span className="font-medium text-zinc-700">{user}</span></span>
-            ) : (
-              <span>Not logged in</span>
-            )}
           </div>
         </div>
 
