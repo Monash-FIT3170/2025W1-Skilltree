@@ -39,6 +39,7 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
           )}
           value={d.title ?? ''}
           placeholder="Untitled"
+          aria-label="Node title"
           onChange={(e) => d.onRename?.(nodeId, e.target.value)}
           onMouseDown={(e) => e.stopPropagation()} // don't drag while typing
         />
@@ -49,9 +50,20 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
         )}
       </div>
 
-      {/* Description (optional) */}
-      <div className="px-3 py-2 text-sm min-h-[54px]">
-        {d.description ? <p className="text-muted-foreground">{d.description}</p> : null}
+      {/* Editable description */}
+      <div className="px-3 py-2 text-sm">
+        <textarea
+          className={cn(
+            'nodrag nowheel',
+            'w-full bg-transparent outline-none resize-y',
+            'min-h-[30px] text-muted-foreground'
+          )}
+          value={d.description ?? ''}
+          placeholder="Add a description…"
+          aria-label="Node description"
+          onChange={(e) => d.onChangeDescription?.(nodeId, e.target.value)}
+          onMouseDown={(e) => e.stopPropagation()}
+        />
       </div>
 
       {/* Footer: status + action */}

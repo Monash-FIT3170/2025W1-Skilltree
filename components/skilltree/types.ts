@@ -10,7 +10,8 @@ export type SkillNodeData = {
   // injected/derived at runtime:
   status?: SkillStatus;
   onComplete?: (id: string) => void | Promise<void>;
-  onRename?: (id: string, title: string) => void; // ⬅️ added for inline renaming
+  onRename?: (id: string, title: string) => void;
+  onChangeDescription?: (id: string, description: string) => void; // ⬅️ NEW
 };
 
 export type SkillTreeDTO = {
