@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import '@xyflow/react/dist/style.css';
-import '@/styles/globals.css';
+import '@/app/globals.css';
 import { Providers } from "@/components/shared/providers";
 // TODO: guarding
 const geistSans = Montserrat({
