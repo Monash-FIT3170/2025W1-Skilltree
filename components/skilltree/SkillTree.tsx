@@ -10,6 +10,7 @@ import {
   ConnectionMode,
   useNodesState,
   useEdgesState,
+  Position,
 } from '@xyflow/react';
 import type { Edge, Node, NodeTypes } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -145,7 +146,7 @@ export default function SkillTree({
     }));
   }, [nodes, edges, completedIds, onComplete, setNodes]);
 
-  // ---- layout helper
+  // ---- layout helper (kept for deletes; preserves existing positions)
   const relayout = useCallback(
     (nextNodes: Node<SkillNodeData>[], nextEdges: Edge[]) =>
       layoutTopDown(
@@ -158,24 +159,37 @@ export default function SkillTree({
   // ---- mutations (NO "add root"; root is guaranteed)
   const makeId = useCallback(() => `n_${Math.random().toString(36).slice(2, 9)}`, []);
 
+  /** Add a child relative to the parent's CURRENT position (no global relayout). */
   const addChild = useCallback(() => {
     const parentId = selectedIds[0] ?? rootId; // fallback to root if nothing selected
+    const parent = (nodes as Node<SkillNodeData>[]).find(n => n.id === parentId);
+    const { x: px = 0, y: py = 0 } = parent?.position ?? { x: 0, y: 0 };
+
+    // Sibling-aware offset: space children horizontally, drop below parent
+    const childrenMap = buildChildrenMap(edges);
+    const existingChildrenCount = (childrenMap[parentId] ?? []).length;
+
+    const dx = 240; // horizontal gap between siblings
+    const dy = 140; // vertical gap below parent
+    const startX = px - (existingChildrenCount * dx) / 2;
+    const childX = startX + existingChildrenCount * dx;
+    const childY = py + dy;
+
     const id = makeId();
     const newNode: Node<SkillNodeData> = {
       id,
       type: 'skill',
       data: { title: 'New child' },
-      position: { x: 0, y: 0 },
+      position: { x: childX, y: childY },
+      sourcePosition: Position.Top,
+      targetPosition: Position.Bottom,
     };
     const newEdge: Edge = { id: `e-${id}-${parentId}`, source: id, target: parentId };
 
-    const nextNodes = [...(nodes as Node<SkillNodeData>[]), newNode];
-    const nextEdges = [...edges, newEdge];
-
-    setEdges(nextEdges);
-    setNodes(relayout(nextNodes, nextEdges));
-    setSelectedIds([id]);
-  }, [edges, nodes, relayout, selectedIds, rootId, makeId]);
+    setEdges(prev => [...prev, newEdge]);
+    setNodes(prev => [...(prev as Node<SkillNodeData>[]), newNode]);
+    setSelectedIds([id]); // focus the new child
+  }, [edges, nodes, selectedIds, rootId, makeId]);
 
   /** Cascading delete: delete selected nodes AND all of their descendants (children, grandchildren, ...). Root stays protected. */
   const deleteSelected = useCallback(() => {
@@ -215,7 +229,7 @@ export default function SkillTree({
 
     setCompletedIds(nextCompleted);
     setEdges(nextEdges);
-    setNodes(relayout(nextNodes, nextEdges));
+    setNodes(relayout(nextNodes, nextEdges)); // ok to relayout after deletes
     setSelectedIds([rootId]); // return focus to root
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
 
