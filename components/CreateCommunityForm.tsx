@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { X, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 export default function CreateCommunityForm() {
   const [form, setForm] = useState({
     communityName: "",
@@ -24,21 +26,7 @@ export default function CreateCommunityForm() {
   const [tagDraft, setTagDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [user, setUser] = useState<string | null>(null); // To store the logged-in user
-
-  // Fetch the logged-in user's details when the component mounts
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/getUser");
-        const data = await res.json();
-        setUser(data?.success ? data?.email ?? null : null);
-      } catch {
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
+  const router = useRouter();
 
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
@@ -49,25 +37,24 @@ export default function CreateCommunityForm() {
     const file = e.target.files?.[0];
     if (!file) return;
     setIconFile(file);
-    const url = URL.createObjectURL(file);
-    setIconPreview(url);
+    setIconPreview(URL.createObjectURL(file));
   };
 
-    const addTag = (t: string) => {
+  const addTag = (t: string) => {
     const v = t.trim();
-    if (!v) return;
-    if (tags.includes(v)) return;
+    if (!v || tags.includes(v)) return;
     setTags((prev) => [...prev, v]);
     setTagDraft("");
   };
+
   const removeTag = (t: string) => setTags((prev) => prev.filter((x) => x !== t));
+
   const onTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       addTag(tagDraft);
     }
     if (e.key === "Backspace" && !tagDraft && tags.length) {
-      // quick delete last tag when input empty
       removeTag(tags[tags.length - 1]);
     }
   };
@@ -79,34 +66,19 @@ export default function CreateCommunityForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+
     try {
-      const payload = {
-        communityName: form.communityName,
-        communityDesc: form.communityDesc,
-        category,
-        tags,
-        ownerEmail: user ?? undefined, // optional; backend can ignore
-        // For now we are not sending the image file; wire this later as multipart/form-data
-      };
-      const res = await fetch("/api/createCommunity", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      setMessage(
-        data?.success
-          ? "Community Successfully Created"
-          : `Community creation failed: ${data?.message ?? "Unknown error"}`
-      );
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Redirect to the success page (without "(default)" in URL)
+      router.push("/communities/[id]/skilltree");
     } catch (err) {
-      setMessage("Error occurred.");
+      setMessage("Error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -116,9 +88,9 @@ export default function CreateCommunityForm() {
     <div className="min-h-[80vh] w-full grid place-items-start sm:place-items-center p-4 sm:p-8 bg-transparent">
       <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-8 shadow-xl border">
         <div className="mb-6 flex items-start justify-between gap-4">
-          <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900">Create a community!</h2>
-          <div className="text-xs sm:text-sm text-zinc-500">
-          </div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900">
+            Create a community!
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -133,8 +105,11 @@ export default function CreateCommunityForm() {
                 aria-label="Upload icon"
               >
                 {iconPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={iconPreview} alt="icon" className="h-full w-full object-cover" />
+                  <img
+                    src={iconPreview}
+                    alt="icon"
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <Plus className="h-6 w-6 text-zinc-400" />
                 )}
@@ -224,7 +199,9 @@ export default function CreateCommunityForm() {
                 className="m-1 flex-1 min-w-[120px] border-none outline-none h-8 px-2 text-sm bg-transparent"
               />
             </div>
-            <p className="text-xs text-zinc-500">Press Enter or comma to add a tag.</p>
+            <p className="text-xs text-zinc-500">
+              Press Enter or comma to add a tag.
+            </p>
           </div>
 
           {/* Actions */}
@@ -241,9 +218,7 @@ export default function CreateCommunityForm() {
             </Button>
           </div>
 
-          {message ? (
-            <p className="text-sm text-zinc-700">{message}</p>
-          ) : null}
+          {message ? <p className="text-sm text-zinc-700">{message}</p> : null}
         </form>
       </div>
     </div>
