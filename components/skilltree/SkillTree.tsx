@@ -1,7 +1,7 @@
 // components/skilltree/SkillTree.tsx
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -61,6 +61,16 @@ function ensureRoot(
   return { nodes, rootId };
 }
 
+const arraysEqual = (a: string[], b: string[]) =>
+  a.length === b.length && a.every((v, i) => v === b[i]);
+
+const initialKey = (dto: SkillTreeDTO) =>
+  JSON.stringify({
+    n: dto.nodes.map(n => ({ id: n.id, x: n.position?.x ?? 0, y: n.position?.y ?? 0 })),
+    e: dto.edges.map(e => ({ s: e.source, t: e.target })),
+    c: [...dto.completedIds].sort(),
+  });
+
 /* ---------------------------------------------------------------------- */
 
 type Props = {
@@ -97,56 +107,98 @@ export default function SkillTree({
   }, [initial, communityName, preferredRootId]);
 
   const [rootId, setRootId] = useState<string>(seed.rootId);
-
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<SkillNodeData>>(seed.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(seed.edges);
   const [completedIds, setCompletedIds] = useState<Set<string>>(seed.completed);
   const [selectedIds, setSelectedIds] = useState<string[]>([seed.rootId]);
 
-  // Re-apply when initial/communityName/rootId prop changes
+  // Guard against parents re-supplying a new "initial" each render
+  const lastAppliedInitialRef = useRef<string>(
+    initial
+      ? initialKey({
+          nodes: seed.nodes,
+          edges: seed.edges,
+          completedIds: Array.from(seed.completed),
+        })
+      : ''
+  );
+
+  // Re-apply when initial/communityName/rootId prop changes — only if materially different
   useEffect(() => {
     const ensured = ensureRoot(initial?.nodes ?? [], initial?.edges ?? [], communityName, preferredRootId);
     const laid = layoutTopDown(ensured.nodes, initial?.edges ?? []);
+    const key = initialKey({
+      nodes: laid,
+      edges: initial?.edges ?? [],
+      completedIds: initial?.completedIds ?? [],
+    });
+    if (key === lastAppliedInitialRef.current) return;
+
     setNodes(laid);
     setEdges(initial?.edges ?? []);
     setCompletedIds(new Set(initial?.completedIds ?? []));
     setRootId(ensured.rootId);
-    setSelectedIds([ensured.rootId]); // auto-select root for quick "Add child"
+    setSelectedIds([ensured.rootId]);
+
+    lastAppliedInitialRef.current = key;
   }, [initial, communityName, preferredRootId, setEdges, setNodes]);
 
-  // compute derived statuses, then inject into node data
+  /* ---------- stable handlers (prevent new function refs every render) ---------- */
+
+  const handleComplete = useCallback(
+    async (id: string) => {
+      setCompletedIds(prev => {
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+      try {
+        await onComplete?.(id);
+      } catch {
+        // no-op
+      }
+    },
+    [onComplete]
+  );
+
+  const handleRename = useCallback((id: string, title: string) => {
+    setNodes(prev =>
+      (prev as Node<SkillNodeData>[]).map(node =>
+        node.id === id ? { ...node, data: { ...node.data, title } } : node
+      )
+    );
+  }, [setNodes]);
+
+  /* ---------- compute statuses but keep node references stable ---------- */
+
   const nodesWithStatus = useMemo<Node<SkillNodeData>[]>(() => {
     const statusMap = computeStatuses(nodes as Node<SkillNodeData>[], edges, completedIds);
-    return (nodes as Node<SkillNodeData>[]).map(n => ({
-      ...n,
-      type: 'skill',
-      data: {
-        ...n.data,
-        status: statusMap.get(n.id),
-        onComplete: async (id: string) => {
-          setCompletedIds(prev => {
-            const next = new Set(prev);
-            next.add(id);
-            return next;
-          });
-          try {
-            await onComplete?.(id);
-          } catch {
-            /* no-op */
-          }
-        },
-        onRename: (id: string, title: string) => {
-          setNodes(prev =>
-            (prev as Node<SkillNodeData>[]).map(node =>
-              node.id === id ? { ...node, data: { ...node.data, title } } : node
-            )
-          );
-        },
-      },
-    }));
-  }, [nodes, edges, completedIds, onComplete, setNodes]);
 
-  // ---- layout helper (kept for deletes; preserves existing positions)
+    return (nodes as Node<SkillNodeData>[]).map(n => {
+      const nextStatus = statusMap.get(n.id);
+      const curr = n.data as SkillNodeData | undefined;
+
+      const sameStatus = curr?.status === nextStatus;
+      const sameHandlers = curr?.onComplete === handleComplete && curr?.onRename === handleRename;
+      const typeOk = n.type === 'skill';
+
+      // Reuse the exact same node object if nothing semantically changed.
+      if (sameStatus && sameHandlers && typeOk) return n;
+
+      return {
+        ...n,
+        type: 'skill',
+        data: {
+          ...n.data,
+          status: nextStatus,
+          onComplete: handleComplete,
+          onRename: handleRename,
+        },
+      };
+    });
+  }, [nodes, edges, completedIds, handleComplete, handleRename]);
+
+  // ---- layout helper (used for deletes; preserves remaining positions)
   const relayout = useCallback(
     (nextNodes: Node<SkillNodeData>[], nextEdges: Edge[]) =>
       layoutTopDown(
@@ -156,7 +208,7 @@ export default function SkillTree({
     []
   );
 
-  // ---- mutations (NO "add root"; root is guaranteed)
+  // ---- mutations
   const makeId = useCallback(() => `n_${Math.random().toString(36).slice(2, 9)}`, []);
 
   /** Add a child relative to the parent's CURRENT position (no global relayout). */
@@ -186,19 +238,18 @@ export default function SkillTree({
     };
     const newEdge: Edge = { id: `e-${id}-${parentId}`, source: id, target: parentId };
 
+    // Push changes once; ReactFlow will render with stable node refs elsewhere
     setEdges(prev => [...prev, newEdge]);
     setNodes(prev => [...(prev as Node<SkillNodeData>[]), newNode]);
-    setSelectedIds([id]); // focus the new child
+    setSelectedIds(prev => (prev.length === 1 && prev[0] === id ? prev : [id]));
   }, [edges, nodes, selectedIds, rootId, makeId]);
 
-  /** Cascading delete: delete selected nodes AND all of their descendants (children, grandchildren, ...). Root stays protected. */
+  /** Cascading delete: delete selected nodes AND all descendants; root stays protected. */
   const deleteSelected = useCallback(() => {
     if (selectedIds.length === 0) return;
 
-    // Build parent -> children map from current edges (child -> parent semantics)
     const childrenMap = buildChildrenMap(edges);
 
-    // Collect all descendants for a given id (DFS)
     const collectDescendants = (id: string, acc: Set<string>) => {
       const kids = childrenMap[id] ?? [];
       for (const k of kids) {
@@ -209,7 +260,6 @@ export default function SkillTree({
       }
     };
 
-    // Start with selected (excluding root), then add their descendants
     const toRemove = new Set<string>();
     for (const id of selectedIds) {
       if (id === rootId) continue; // protect root
@@ -218,7 +268,6 @@ export default function SkillTree({
     }
     if (toRemove.size === 0) return;
 
-    // Filter nodes/edges/completions
     const nextNodes = (nodes as Node<SkillNodeData>[]).filter(n => !toRemove.has(n.id));
     const nextEdges = edges.filter(
       e => !toRemove.has(String(e.source)) && !toRemove.has(String(e.target))
@@ -229,8 +278,8 @@ export default function SkillTree({
 
     setCompletedIds(nextCompleted);
     setEdges(nextEdges);
-    setNodes(relayout(nextNodes, nextEdges)); // ok to relayout after deletes
-    setSelectedIds([rootId]); // return focus to root
+    setNodes(relayout(nextNodes, nextEdges));
+    setSelectedIds(prev => (prev.length === 1 && prev[0] === rootId ? prev : [rootId]));
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
 
   return (
@@ -274,7 +323,7 @@ export default function SkillTree({
           proOptions={{ hideAttribution: true }}
           onSelectionChange={(sel) => {
             const next = (sel?.nodes ?? []).map(n => n.id);
-            setSelectedIds(next.length ? next : [rootId]);
+            setSelectedIds(prev => (arraysEqual(prev, next.length ? next : [rootId]) ? prev : (next.length ? next : [rootId])));
           }}
         >
           <MiniMap />
