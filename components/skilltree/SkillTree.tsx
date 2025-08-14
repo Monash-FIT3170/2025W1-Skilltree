@@ -300,7 +300,7 @@ export default function SkillTree({
             (selectedIds.length === 1 && selectedIds[0] === rootId)
           }
         >
-          🗑 Delete selected
+          🗑 Delete
         </button>
 
         <div className="ml-auto text-xs text-muted-foreground">
