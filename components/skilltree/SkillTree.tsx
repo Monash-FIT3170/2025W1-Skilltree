@@ -15,7 +15,7 @@ import type { Edge, Node, NodeTypes } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import SkillNode from '@/components/skilltree/SkillNode';
-import { computeStatuses, layoutTopDown } from '@/components/skilltree/graph';
+import { computeStatuses, layoutTopDown, buildChildrenMap } from '@/components/skilltree/graph';
 import type { SkillNodeData, SkillTreeDTO } from '@/components/skilltree/types';
 
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
@@ -113,7 +113,7 @@ export default function SkillTree({
     setSelectedIds([ensured.rootId]); // auto-select root for quick "Add child"
   }, [initial, communityName, preferredRootId, setEdges, setNodes]);
 
-  // compute derived statuses, then inject into node data (render-only)
+  // compute derived statuses, then inject into node data
   const nodesWithStatus = useMemo<Node<SkillNodeData>[]>(() => {
     const statusMap = computeStatuses(nodes as Node<SkillNodeData>[], edges, completedIds);
     return (nodes as Node<SkillNodeData>[]).map(n => ({
@@ -177,13 +177,34 @@ export default function SkillTree({
     setSelectedIds([id]);
   }, [edges, nodes, relayout, selectedIds, rootId, makeId]);
 
+  /** Cascading delete: delete selected nodes AND all of their descendants (children, grandchildren, ...). Root stays protected. */
   const deleteSelected = useCallback(() => {
     if (selectedIds.length === 0) return;
 
-    // Never delete the root
-    const toRemove = new Set(selectedIds.filter(id => id !== rootId));
+    // Build parent -> children map from current edges (child -> parent semantics)
+    const childrenMap = buildChildrenMap(edges);
+
+    // Collect all descendants for a given id (DFS)
+    const collectDescendants = (id: string, acc: Set<string>) => {
+      const kids = childrenMap[id] ?? [];
+      for (const k of kids) {
+        if (!acc.has(k)) {
+          acc.add(k);
+          collectDescendants(k, acc);
+        }
+      }
+    };
+
+    // Start with selected (excluding root), then add their descendants
+    const toRemove = new Set<string>();
+    for (const id of selectedIds) {
+      if (id === rootId) continue; // protect root
+      toRemove.add(id);
+      collectDescendants(id, toRemove);
+    }
     if (toRemove.size === 0) return;
 
+    // Filter nodes/edges/completions
     const nextNodes = (nodes as Node<SkillNodeData>[]).filter(n => !toRemove.has(n.id));
     const nextEdges = edges.filter(
       e => !toRemove.has(String(e.source)) && !toRemove.has(String(e.target))
@@ -212,7 +233,8 @@ export default function SkillTree({
           className="px-2 py-1 border rounded-md text-xs hover:bg-destructive/20 disabled:opacity-50"
           onClick={deleteSelected}
           disabled={
-            selectedIds.length === 0 || (selectedIds.length === 1 && selectedIds[0] === rootId)
+            selectedIds.length === 0 ||
+            (selectedIds.length === 1 && selectedIds[0] === rootId)
           }
         >
           🗑 Delete selected
