@@ -1,4 +1,4 @@
-// components/skill-tree/types.ts
+// components/skilltree/types.ts
 import type { Edge, Node } from '@xyflow/react';
 
 export type SkillStatus = 'locked' | 'unlocked' | 'completed';
@@ -10,6 +10,7 @@ export type SkillNodeData = {
   // injected/derived at runtime:
   status?: SkillStatus;
   onComplete?: (id: string) => void | Promise<void>;
+  onRename?: (id: string, title: string) => void; // ⬅️ added for inline renaming
 };
 
 export type SkillTreeDTO = {

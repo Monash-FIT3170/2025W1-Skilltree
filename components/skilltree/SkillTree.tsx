@@ -1,7 +1,7 @@
 // components/skilltree/SkillTree.tsx
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -72,8 +72,6 @@ type Props = {
 
   /** Called when user completes a node */
   onComplete?: (nodeId: string) => Promise<void> | void;
-  /** Emits the whole DTO whenever nodes/edges/completions change */
-  onChange?: (dto: SkillTreeDTO) => void;
 
   /** Optional: control width/height of canvas container */
   className?: string;
@@ -84,7 +82,6 @@ export default function SkillTree({
   communityName,
   rootId: preferredRootId = 'root',
   onComplete,
-  onChange,
   className,
 }: Props) {
   // ----- initialise with an ensured root
@@ -116,7 +113,7 @@ export default function SkillTree({
     setSelectedIds([ensured.rootId]); // auto-select root for quick "Add child"
   }, [initial, communityName, preferredRootId, setEdges, setNodes]);
 
-  // compute derived statuses, then inject into node data
+  // compute derived statuses, then inject into node data (render-only)
   const nodesWithStatus = useMemo<Node<SkillNodeData>[]>(() => {
     const statusMap = computeStatuses(nodes as Node<SkillNodeData>[], edges, completedIds);
     return (nodes as Node<SkillNodeData>[]).map(n => ({
@@ -137,23 +134,16 @@ export default function SkillTree({
             /* no-op */
           }
         },
+        onRename: (id: string, title: string) => {
+          setNodes(prev =>
+            (prev as Node<SkillNodeData>[]).map(node =>
+              node.id === id ? { ...node, data: { ...node.data, title } } : node
+            )
+          );
+        },
       },
     }));
-  }, [nodes, edges, completedIds, onComplete]);
-
-  // Emit DTO up (unchanged from your version)
-  useEffect(() => {
-    onChange?.({
-      nodes: (nodes as Node<SkillNodeData>[]).map(n => ({
-        id: n.id,
-        type: 'skill',
-        data: n.data,
-        position: n.position,
-      })),
-      edges,
-      completedIds: Array.from(completedIds),
-    });
-  }, [nodes, edges, completedIds, onChange]);
+  }, [nodes, edges, completedIds, onComplete, setNodes]);
 
   // ---- layout helper
   const relayout = useCallback(
@@ -210,12 +200,11 @@ export default function SkillTree({
 
   return (
     <div className={className ?? 'h-[75vh] w-full rounded-md border flex flex-col'}>
-      {/* Toolbar — removed "Add root" */}
+      {/* Toolbar — no "Add root" */}
       <div className="flex items-center gap-2 p-2 border-b bg-muted/30">
         <button
           className="px-2 py-1 border rounded-md text-xs hover:bg-muted disabled:opacity-50"
           onClick={addChild}
-          disabled={false}
         >
           + Add child
         </button>
@@ -226,7 +215,7 @@ export default function SkillTree({
             selectedIds.length === 0 || (selectedIds.length === 1 && selectedIds[0] === rootId)
           }
         >
-          🗑 Delete
+          🗑 Delete selected
         </button>
 
         <div className="ml-auto text-xs text-muted-foreground">

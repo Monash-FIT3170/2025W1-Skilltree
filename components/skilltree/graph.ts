@@ -1,4 +1,4 @@
-// components/skill-tree/graph.ts
+// components/skilltree/graph.ts
 import type { Edge, Node } from '@xyflow/react';
 import { Position } from '@xyflow/react';
 import type { SkillStatus, SkillNodeData } from './types';
