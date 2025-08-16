@@ -18,6 +18,7 @@ export default function CreateCommunityForm() {
   const [form, setForm] = useState({
     communityName: "",
     communityDesc: "",
+    isAdultOnly: false,
   });
   const [category, setCategory] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
@@ -27,7 +28,7 @@ export default function CreateCommunityForm() {
   const [user, setUser] = useState<string | null>(null); // To store the logged-in user
   // Helper to reset form state
   const resetForm = () => {
-    setForm({ communityName: "", communityDesc: "" });
+  setForm({ communityName: "", communityDesc: "", isAdultOnly: false });
     setCategory("");
     setTags([]);
     setTagDraft("");
@@ -87,7 +88,11 @@ export default function CreateCommunityForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "isAdultOnly") {
+      setForm((prev) => ({ ...prev, isAdultOnly: (e.target as HTMLInputElement).checked }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
 
@@ -205,6 +210,20 @@ export default function CreateCommunityForm() {
               onChange={handleChange}
               className="resize-none"
             />
+          </div>
+
+          {/* 18+ Only Checkbox */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-zinc-700">
+              <input
+                type="checkbox"
+                name="isAdultOnly"
+                checked={form.isAdultOnly}
+                onChange={handleChange}
+                className="form-checkbox h-5 w-5"
+              />
+              18+ Only Community
+            </label>
           </div>
 
           {/* Tags */}
