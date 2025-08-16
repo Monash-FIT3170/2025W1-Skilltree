@@ -198,38 +198,6 @@ export default function CreateCommunityForm() {
               className="resize-none"
             />
           </div>
-          {/* Name */}
-          <div className="space-y-2">
-            <Label htmlFor="communityName" className="text-zinc-700">
-              Community Name
-            </Label>
-            <Input
-              id="communityName"
-              name="communityName"
-              placeholder=""
-              required
-              value={form.communityName}
-              onChange={handleChange}
-              className="h-11"
-            />
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="communityDesc" className="text-zinc-700">
-              Community Description
-            </Label>
-            <Textarea
-              id="communityDesc"
-              name="communityDesc"
-              placeholder=""
-              required
-              rows={4}
-              value={form.communityDesc}
-              onChange={handleChange}
-              className="resize-none"
-            />
-          </div>
 
           {/* 18+ Only Checkbox */}
           <div className="space-y-2">
