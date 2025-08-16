@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { X, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 export default function CreateCommunityForm() {
   const [form, setForm] = useState({
     communityName: "",
@@ -51,6 +53,7 @@ export default function CreateCommunityForm() {
     };
     fetchUser();
   }, []);
+  const router = useRouter();
 
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
@@ -61,25 +64,24 @@ export default function CreateCommunityForm() {
     const file = e.target.files?.[0];
     if (!file) return;
     setIconFile(file);
-    const url = URL.createObjectURL(file);
-    setIconPreview(url);
+    setIconPreview(URL.createObjectURL(file));
   };
 
-    const addTag = (t: string) => {
+  const addTag = (t: string) => {
     const v = t.trim();
-    if (!v) return;
-    if (tags.includes(v)) return;
+    if (!v || tags.includes(v)) return;
     setTags((prev) => [...prev, v]);
     setTagDraft("");
   };
+
   const removeTag = (t: string) => setTags((prev) => prev.filter((x) => x !== t));
+
   const onTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       addTag(tagDraft);
     }
     if (e.key === "Backspace" && !tagDraft && tags.length) {
-      // quick delete last tag when input empty
       removeTag(tags[tags.length - 1]);
     }
   };
@@ -95,34 +97,19 @@ export default function CreateCommunityForm() {
     }
   };
 
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+
     try {
-      const payload = {
-        communityName: form.communityName,
-        communityDesc: form.communityDesc,
-        category,
-        tags,
-        ownerEmail: user ?? undefined, // optional; backend can ignore
-        // For now we are not sending the image file; wire this later as multipart/form-data
-      };
-      const res = await fetch("/api/createCommunity", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      setMessage(
-        data?.success
-          ? "Community Successfully Created"
-          : `Community creation failed: ${data?.message ?? "Unknown error"}`
-      );
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Redirect to the success page (without "(default)" in URL)
+      router.push("/communities/[id]/skilltree");
     } catch (err) {
-      setMessage("Error occurred.");
+      setMessage("Error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -179,6 +166,38 @@ export default function CreateCommunityForm() {
             </div>
           </div>
 
+          {/* Name */}
+          <div className="space-y-2">
+            <Label htmlFor="communityName" className="text-zinc-700">
+              Community Name
+            </Label>
+            <Input
+              id="communityName"
+              name="communityName"
+              placeholder=""
+              required
+              value={form.communityName}
+              onChange={handleChange}
+              className="h-11"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="communityDesc" className="text-zinc-700">
+              Community Description
+            </Label>
+            <Textarea
+              id="communityDesc"
+              name="communityDesc"
+              placeholder=""
+              required
+              rows={4}
+              value={form.communityDesc}
+              onChange={handleChange}
+              className="resize-none"
+            />
+          </div>
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="communityName" className="text-zinc-700">
