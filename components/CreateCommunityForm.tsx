@@ -27,7 +27,10 @@ export default function CreateCommunityForm() {
   const [tagDraft, setTagDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [user, setUser] = useState<string | null>(null); // To store the logged-in user
+  const [user, setUser] = useState<string | null>(null); 
+  
+
+  // To store the logged-in user
   // Helper to reset form state
   const resetForm = () => {
   setForm({ communityName: "", communityDesc: "", isAdultOnly: false });
@@ -107,7 +110,7 @@ export default function CreateCommunityForm() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Redirect to the success page (without "(default)" in URL)
-      router.push("/communities/[id]/skilltree");
+      router.push("/communities/add/createskilltree");
     } catch (err) {
       setMessage("Error occurred. Please try again.");
     } finally {
