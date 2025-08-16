@@ -29,7 +29,6 @@ function pickRootId(
   preferredRootId?: string
 ): string {
   if (preferredRootId && nodes.some(n => n.id === preferredRootId)) return preferredRootId;
-  // Root = node that is never a SOURCE (i.e., not a child of anyone)
   const sources = new Set(edges.map(e => String(e.source)));
   const candidates = nodes.filter(n => !sources.has(String(n.id)));
   return candidates.length ? String(candidates[0].id) : (preferredRootId ?? 'root');
@@ -51,12 +50,12 @@ function ensureRoot(
       {
         id: rootId,
         type: 'skill',
-        data: { title: communityName, isPrimary: true },
+        data: { title: communityName, isPrimary: true, xp: 0 },
         position: { x: 0, y: 0 },
       },
     ];
   } else {
-    existing.data = { ...existing.data, title: communityName, isPrimary: true };
+    existing.data = { ...existing.data, title: communityName, isPrimary: true, xp: existing.data?.xp ?? 0 };
   }
   return { nodes, rootId };
 }
@@ -160,10 +159,10 @@ export default function SkillTree({
     );
   }, [setNodes]);
 
-  const handleChangeDescription = useCallback((id: string, description: string) => {
+  const handleChangeXp = useCallback((id: string, xp: number) => {
     setNodes(prev =>
       (prev as Node<SkillNodeData>[]).map(node =>
-        node.id === id ? { ...node, data: { ...node.data, description } } : node
+        node.id === id ? { ...node, data: { ...node.data, xp } } : node
       )
     );
   }, [setNodes]);
@@ -181,7 +180,7 @@ export default function SkillTree({
       const sameHandlers =
         curr?.onComplete === handleComplete &&
         curr?.onRename === handleRename &&
-        curr?.onChangeDescription === handleChangeDescription;
+        curr?.onChangeXp === handleChangeXp;
       const typeOk = n.type === 'skill';
 
       if (sameStatus && sameHandlers && typeOk) return n;
@@ -194,11 +193,11 @@ export default function SkillTree({
           status: nextStatus,
           onComplete: handleComplete,
           onRename: handleRename,
-          onChangeDescription: handleChangeDescription,
+          onChangeXp: handleChangeXp,
         },
       };
     });
-  }, [nodes, edges, completedIds, handleComplete, handleRename, handleChangeDescription]);
+  }, [nodes, edges, completedIds, handleComplete, handleRename, handleChangeXp]);
 
   // ---- layout helper (used for deletes; preserves remaining positions)
   const relayout = useCallback(
@@ -233,7 +232,7 @@ export default function SkillTree({
     const newNode: Node<SkillNodeData> = {
       id,
       type: 'skill',
-      data: { title: 'New child', description: '' },
+      data: { title: 'New child', xp: 0 }, // no description
       position: { x: childX, y: childY },
       sourcePosition: Position.Top,
       targetPosition: Position.Bottom,
@@ -300,7 +299,7 @@ export default function SkillTree({
             (selectedIds.length === 1 && selectedIds[0] === rootId)
           }
         >
-          🗑 Delete
+          🗑 Delete 
         </button>
 
         <div className="ml-auto text-xs text-muted-foreground">

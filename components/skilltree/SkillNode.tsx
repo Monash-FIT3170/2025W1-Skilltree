@@ -41,7 +41,7 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
           placeholder="Untitled"
           aria-label="Node title"
           onChange={(e) => d.onRename?.(nodeId, e.target.value)}
-          onMouseDown={(e) => e.stopPropagation()} // don't drag while typing
+          onMouseDown={(e) => e.stopPropagation()}
         />
         {d.isPrimary && (
           <span className="text-xs rounded bg-primary/10 text-primary px-2 py-0.5 shrink-0">
@@ -50,20 +50,30 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
         )}
       </div>
 
-      {/* Editable description */}
-      <div className="px-3 py-2 text-sm">
-        <textarea
-          className={cn(
-            'nodrag nowheel',
-            'w-full bg-transparent outline-none resize-y',
-            'min-h-[30px] text-muted-foreground'
-          )}
-          value={d.description ?? ''}
-          placeholder="Add a description…"
-          aria-label="Node description"
-          onChange={(e) => d.onChangeDescription?.(nodeId, e.target.value)}
-          onMouseDown={(e) => e.stopPropagation()}
-        />
+      {/* XP input: numbers only with “XP” suffix */}
+      <div className="px-3 py-2">
+        <label className="sr-only" htmlFor={`xp-${nodeId}`}>XP</label>
+        <div className="flex items-center justify-center gap-2">
+          <input
+            id={`xp-${nodeId}`}
+            className={cn(
+              'nodrag nowheel',
+              'w-24 bg-transparent outline-none border rounded px-2 py-1 text-center text-sm'
+            )}
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="0"
+            value={d.xp === undefined ? '' : String(d.xp)}
+            onChange={(e) => {
+              // keep only digits
+              const digits = e.target.value.replace(/\D/g, '');
+              const next = digits === '' ? 0 : parseInt(digits, 10);
+              d.onChangeXp?.(nodeId, isNaN(next) ? 0 : next);
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
+          />
+          <span className="text-xs text-muted-foreground">XP</span>
+        </div>
       </div>
 
       {/* Footer: status + action */}

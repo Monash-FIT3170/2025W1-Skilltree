@@ -5,13 +5,14 @@ export type SkillStatus = 'locked' | 'unlocked' | 'completed';
 
 export type SkillNodeData = {
   title: string;
-  description?: string;
   isPrimary?: boolean;
+  xp?: number;
+
   // injected/derived at runtime:
   status?: SkillStatus;
   onComplete?: (id: string) => void | Promise<void>;
   onRename?: (id: string, title: string) => void;
-  onChangeDescription?: (id: string, description: string) => void; // ⬅️ NEW
+  onChangeXp?: (id: string, xp: number) => void;
 };
 
 export type SkillTreeDTO = {
