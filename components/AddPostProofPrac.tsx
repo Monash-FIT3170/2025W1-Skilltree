@@ -46,13 +46,6 @@ export default function AddPostProofPrac() {
   };
   return (
     <div className="relative w-full max-w-2xl mx-auto bg-white p-5 rounded-2xl shadow items-center gap-8 flex flex-col items-start">
-      <button
-        onClick = {handleCancel}
-        className = "absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100"
-      >
-        <XCircle className  ="w-6 h-6"/>
-
-      </button>
       <h1 className="text-lg font-bold">Upload Proof of Practice</h1>
     
       <div className="space-y-2 w-full text-m">
