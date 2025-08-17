@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import ReactFlow, {
   Controls,
   Handle,
@@ -9,6 +9,7 @@ import ReactFlow, {
   useEdgesState,
   Node,
   Edge,
+  ReactFlowInstance,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -49,9 +50,9 @@ const SkillNodeComponent = ({ data }: any) => {
       }}
     >
       {/* for the edges */}
-      <Handle type="target" position={Position.Top} />
+      <Handle type="target" position={Position.Top} isConnectable={false}/>
       <div style={{ padding: "6px 2px" }}>{data.label}</div>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle type="source" position={Position.Bottom} isConnectable={false}/>
 
     </div>
   );
@@ -65,6 +66,8 @@ export default function CommunitySkillTree({
   // for dragging
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
 
   // flatten tree to nodes + edges and compute positions
   const generateElements = useCallback(
@@ -137,8 +140,38 @@ export default function CommunitySkillTree({
     setEdges(flatEdges);
   }, [rootSkill, generateElements, setNodes, setEdges]);
 
+  // for search
+  const handleSearch = () => {
+    if (!searchTerm || !reactFlowInstance) return;
+    const targetNode = nodes.find((n) =>
+      n.data.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    if (targetNode) {
+      reactFlowInstance.fitView({ nodes: [targetNode], padding: 0.4, duration: 800 });
+    }
+  };
+
   return (
-    <div style={{ width: "100%", height: "600px" }}>
+    <div style={{ width: "100%", height: "650px", display: "flex", flexDirection: "column" }}>
+      {/* Search bar */}
+      <div className="p-2 flex gap-2 items-center">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          placeholder="Search skill..."
+          className="border rounded px-3 py-1 w-64"
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-emerald-600 text-white px-3 py-1 rounded"
+        >
+          Go
+        </button>
+    </div>
+
+    <div style={{ flex: 1  }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -148,11 +181,13 @@ export default function CommunitySkillTree({
         fitView
         defaultEdgeOptions={{ type: "smoothstep", animated: false }}
         // for user interaction -> do we want to keep this?
-        // nodesDraggable={false}
+        nodesDraggable={false}
         nodesConnectable={false} 
+        onInit={setReactFlowInstance}
       >
         <Controls />
       </ReactFlow>
+    </div>
     </div>
   );
 }
