@@ -46,4 +46,15 @@ export class LeaderboardController {
     return this.leaderboardService.createLeaderboardEntry(dto);
   }
 
+  @UseGuards(AuthGuard)
+  @Patch('entry/:leaderboardId/:userId')
+  async updateLeaderboardEntry(
+    @Param('leaderboardId') leaderboardId: string,
+    @Param('userId') userId: string,
+    @Body() updateData: { rank?: number; score?: number },
+  ) {
+    return this.leaderboardService.updateLeaderboardEntry(leaderboardId, userId, updateData);
+  }
+
+  
 }
