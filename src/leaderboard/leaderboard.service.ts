@@ -91,21 +91,32 @@ export class LeaderboardService {
   }
 
   async updateLeaderboard(
-  id: string, 
-  updateData: { name?: string; metric?: string }
-): Promise<ApiResponseType<Leaderboard>> {
-  const leaderboard = await this.prismaService.leaderboard.update({
-    where: { id },
-    data: updateData,
-  });
+    id: string, 
+    updateData: { name?: string; metric?: string }
+  ): Promise<ApiResponseType<Leaderboard>> {
+    const leaderboard = await this.prismaService.leaderboard.update({
+      where: { id },
+      data: updateData,
+    });
 
-  return {
-    ok: true,
-    message: leaderboard,
-    status: 200,
-  };
-}
+    return {
+      ok: true,
+      message: leaderboard,
+      status: 200,
+    };
+  }
 
+  async deleteLeaderboard(id: string): Promise<ApiResponseType<Leaderboard>> {
+    const leaderboard = await this.prismaService.leaderboard.delete({
+      where: { id },
+    });
+
+    return {
+      ok: true,
+      message: leaderboard,
+      status: 200,
+    };
+  }
   // for leaderboard enteries
 
   async createLeaderboardEntry(dto: CreateLeaderboardEntryDto): Promise<ApiResponseType<LeaderboardEntry>> {
