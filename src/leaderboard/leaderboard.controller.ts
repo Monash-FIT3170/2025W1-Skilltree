@@ -41,9 +41,15 @@ export class LeaderboardController {
   async updateLeaderboard(
   @Param('id') id: string,
   @Body() updateData: { name?: string; metric?: string },
-) {
+  ) {
   return this.leaderboardService.updateLeaderboard(id, updateData);
-}
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async deleteLeaderboard(@Param('id') id: string) {
+    return this.leaderboardService.deleteLeaderboard(id);
+  }
 
 
 // leaderboard entry methods
