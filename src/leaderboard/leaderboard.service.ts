@@ -156,6 +156,24 @@ export class LeaderboardService {
     };
   }
 
-  
+  async deleteLeaderboardEntry(
+    leaderboardId: string,
+    userId: string
+  ): Promise<ApiResponseType<LeaderboardEntry>> {
+    const entry = await this.prismaService.leaderboardEntry.delete({
+      where: {
+        leaderboardId_userId: {
+          leaderboardId,
+          userId,
+        },
+      },
+    });
+
+    return {
+      ok: true,
+      message: entry,
+      status: 200,
+    };
+  }
 }
 
