@@ -204,6 +204,19 @@ export class LeaderboardService {
     userId: string,
     updateData: { rank?: number; score?: number }
   ): Promise<ApiResponseType<LeaderboardEntry>> {
+    const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
+      where: {
+        leaderboardId_userId: {
+          leaderboardId,
+          userId,
+        },
+      },
+    });
+
+    if (!existingEntry) {
+      throw new HttpException('Leaderboard entry not found', HttpStatus.NOT_FOUND);
+    }
+
     const entry = await this.prismaService.leaderboardEntry.update({
       where: {
         leaderboardId_userId: {
