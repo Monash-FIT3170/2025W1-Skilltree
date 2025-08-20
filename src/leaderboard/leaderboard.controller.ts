@@ -81,4 +81,12 @@ export class LeaderboardController {
     return this.leaderboardService.deleteLeaderboardEntry(leaderboardId, userId);
   }
 
+  @Get('entry/:leaderboardId/:userId')
+  async getLeaderboardEntry(
+    @Param('leaderboardId') leaderboardId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.leaderboardService.getLeaderboardEntry(leaderboardId, userId);
+  }
+
 }

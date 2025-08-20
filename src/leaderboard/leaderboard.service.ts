@@ -259,7 +259,7 @@ export class LeaderboardService {
     if (!existingEntry) {
       throw new HttpException('Leaderboard entry not found', HttpStatus.NOT_FOUND);
     }
-    
+
     const entry = await this.prismaService.leaderboardEntry.delete({
       where: {
         leaderboardId_userId: {
@@ -268,6 +268,47 @@ export class LeaderboardService {
         },
       },
     });
+
+    return {
+      ok: true,
+      message: entry,
+      status: 200,
+    };
+  }
+
+  async getLeaderboardEntry(
+    leaderboardId: string,
+    userId: string
+  ): Promise<ApiResponseType<LeaderboardEntry>> {
+    const entry = await this.prismaService.leaderboardEntry.findUnique({
+      where: {
+        leaderboardId_userId: {
+          leaderboardId,
+          userId,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            profilePicture: true,
+          },
+        },
+        leaderboard: {
+          select: {
+            id: true,
+            name: true,
+            metric: true,
+          },
+        },
+      },
+    });
+
+    if (!entry) {
+      throw new HttpException('Leaderboard entry not found', HttpStatus.NOT_FOUND);
+    }
 
     return {
       ok: true,
