@@ -51,6 +51,21 @@ const subscribed = [...baseSubs, ...extraSubs];
 const getCommunityPostsHref = (c: any) =>
   `/communities/posts`; // const getCommunityPostsHref = (c: any) => `/communities/${c._id ?? encodeURIComponent((c.community || "posts").toLowerCase())}/posts`;
   
+// slug + community lookup for events → /communities/[id-or-slug]/events
+const slugify = (s: string) =>
+  s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+const getCommunityKeyFromName = (name: string) => {
+  const match = allCommunities.find(
+    (c: any) => c.community?.toLowerCase() === name.toLowerCase()
+  );
+  return match ? (match._id ?? slugify(match.community)) : slugify(name);
+};
+
+const getEventHref = (ev: EventItem) =>
+  `/communities/events`; //const getEventHref = (ev: EventItem) =>  `/communities/${getCommunityKeyFromName(ev.community)}/events`;
+ 
+
 
 export default function DashboardPage() {
   const columnHeight = "h-[85vh]"; // both columns scroll independently
@@ -134,30 +149,40 @@ export default function DashboardPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto pr-2">
-          <ul className="space-y-3">
-            {events.map((ev) => (
-              <li key={ev.id} className="rounded-lg border p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">
-                      {ev.title}
-                      {typeof ev.xp === "number" ? ` · ${ev.xp} XP` : ""}
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1 truncate">
-                      {ev.community} — {ev.skill}
-                    </p>
-                  </div>
-                  <Badge
-                    variant={ev.ranked ? "destructive" : "secondary"}
-                    className={ev.ranked ? "" : "text-emerald-700 bg-emerald-100"}
-                  >
-                    {ev.ranked ? "Ranked" : "UN-Ranked"}
-                  </Badge>
-                </div>
-              </li>
-            ))}
-          </ul>
+            <ul className="space-y-3">
+                {events.map((ev) => {
+                const href = getEventHref(ev);
+                return (
+                    <li key={ev.id}>
+                    <Link
+                        href={href}
+                        className="block rounded-lg border p-4 hover:bg-accent/40 transition"
+                        title={`Open ${ev.community} events`}
+                    >
+                        <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                            <p className="font-medium truncate">
+                            {ev.title}
+                            {typeof ev.xp === "number" ? ` · ${ev.xp} XP` : ""}
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-1 truncate">
+                            {ev.community} — {ev.skill}
+                            </p>
+                        </div>
+                        <Badge
+                            variant={ev.ranked ? "destructive" : "secondary"}
+                            className={ev.ranked ? "" : "text-emerald-700 bg-emerald-100"}
+                        >
+                            {ev.ranked ? "Ranked" : "UN-Ranked"}
+                        </Badge>
+                        </div>
+                    </Link>
+                    </li>
+                );
+                })}
+            </ul>
         </div>
+
       </section>
     </div>
   );
