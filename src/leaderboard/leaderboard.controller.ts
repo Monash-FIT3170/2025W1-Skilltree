@@ -36,7 +36,17 @@ export class LeaderboardController {
     return this.leaderboardService.createLeaderboard(dto);
   }
 
-  // leaderboard entry methods
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async updateLeaderboard(
+  @Param('id') id: string,
+  @Body() updateData: { name?: string; metric?: string },
+) {
+  return this.leaderboardService.updateLeaderboard(id, updateData);
+}
+
+
+// leaderboard entry methods
 
   @UseGuards(AuthGuard)
   @Post('entry')
