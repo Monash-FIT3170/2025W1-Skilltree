@@ -145,7 +145,7 @@ export class LeaderboardService {
     if (!leaderboard) {
       throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
     }
-    
+
     const user = await this.prismaService.user.findUnique({
       where: { id: dto.userId },
     });
@@ -154,10 +154,18 @@ export class LeaderboardService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-   
+    const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
+      where: {
+        leaderboardId_userId: {
+          leaderboardId: dto.leaderboardId,
+          userId: dto.userId,
+        },
+      },
+    });
 
-    
-
+    if (existingEntry) {
+      throw new HttpException('User already has an entry in this leaderboard', HttpStatus.CONFLICT);
+    }
 
     const entry = await this.prismaService.leaderboardEntry.create({
       data: {
