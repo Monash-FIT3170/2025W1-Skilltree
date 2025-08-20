@@ -125,6 +125,37 @@ export class LeaderboardService {
     };
   }
 
+  async updateLeaderboardEntry(
+    leaderboardId: string,
+    userId: string,
+    updateData: { rank?: number; score?: number }
+  ): Promise<ApiResponseType<LeaderboardEntry>> {
+    const entry = await this.prismaService.leaderboardEntry.update({
+      where: {
+        leaderboardId_userId: {
+          leaderboardId,
+          userId,
+        },
+      },
+      data: updateData,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
 
+    return {
+      ok: true,
+      message: entry,
+      status: 200,
+    };
+  }
+
+  
 }
 
