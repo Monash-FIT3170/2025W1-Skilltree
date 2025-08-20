@@ -94,6 +94,15 @@ export class LeaderboardService {
     id: string, 
     updateData: { name?: string; metric?: string }
   ): Promise<ApiResponseType<Leaderboard>> {
+
+    const existingLeaderboard = await this.prismaService.leaderboard.findUnique({
+      where: { id },
+    });
+
+    if (!existingLeaderboard) {
+      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+    }
+
     const leaderboard = await this.prismaService.leaderboard.update({
       where: { id },
       data: updateData,
@@ -107,6 +116,15 @@ export class LeaderboardService {
   }
 
   async deleteLeaderboard(id: string): Promise<ApiResponseType<Leaderboard>> {
+
+    const existingLeaderboard = await this.prismaService.leaderboard.findUnique({
+      where: { id },
+    });
+
+    if (!existingLeaderboard) {
+      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+    }
+
     const leaderboard = await this.prismaService.leaderboard.delete({
       where: { id },
     });
@@ -120,6 +138,7 @@ export class LeaderboardService {
   // for leaderboard enteries
 
   async createLeaderboardEntry(dto: CreateLeaderboardEntryDto): Promise<ApiResponseType<LeaderboardEntry>> {
+
     const entry = await this.prismaService.leaderboardEntry.create({
       data: {
         leaderboardId: dto.leaderboardId,
