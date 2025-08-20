@@ -20,6 +20,7 @@ import { CommonService } from './common/common.service';
 import { diskStorage } from 'multer';
 import { PostModule } from './post/post.module';
 import { EventModule } from './event/event.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
 	imports: [
@@ -48,6 +49,7 @@ import { EventModule } from './event/event.module';
 		FeedbackModule,
 		AnnouncementModule,
 		CommonModule,
+		LeaderboardModule
 	],
 	controllers: [AppController],
 	providers: [AppService, CommonService],

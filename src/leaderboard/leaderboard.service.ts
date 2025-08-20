@@ -1,8 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ApiResponseType } from '../types';
-import type { Leaderboard } from '@prisma/client';
+import type { Leaderboard, LeaderboardEntry } from '@prisma/client';
 import { CreateLeaderboardDto } from './dto/create-leaderboard.dto';
+import { CreateLeaderboardEntryDto } from './dto/create-leaderboard-entry.dto';
 
 @Injectable()
 export class LeaderboardService {
@@ -66,6 +67,14 @@ export class LeaderboardService {
   }
 
   async createLeaderboard(dto: CreateLeaderboardDto): Promise<ApiResponseType<Leaderboard>> {
+    const community = await this.prismaService.community.findUnique({
+      where: { id: dto.communityId },
+    });
+
+    if (!community) {
+      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+    }
+
     const leaderboard = await this.prismaService.leaderboard.create({
       data: {
         name: dto.name,
@@ -80,5 +89,4 @@ export class LeaderboardService {
       status: 201,
     };
   }
-
 }

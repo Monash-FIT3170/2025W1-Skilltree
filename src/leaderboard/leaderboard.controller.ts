@@ -3,15 +3,16 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
+  Delete,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { LeaderboardService } from './leaderboard.service';
 import { CreateLeaderboardDto } from './dto/create-leaderboard.dto';
-import { GetUser } from '../_utils/decorator';
-import { User } from '@prisma/client';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateLeaderboardEntryDto } from './dto/create-leaderboard-entry.dto'; 
 
 @Controller('leaderboard')
 export class LeaderboardController {
@@ -31,7 +32,6 @@ export class LeaderboardController {
   @Post()
   async createLeaderboard(
     @Body() dto: CreateLeaderboardDto,
-    @GetUser() user: User,
   ) {
     return this.leaderboardService.createLeaderboard(dto);
   }
