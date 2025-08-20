@@ -56,5 +56,13 @@ export class LeaderboardController {
     return this.leaderboardService.updateLeaderboardEntry(leaderboardId, userId, updateData);
   }
 
-  
+  @UseGuards(AuthGuard)
+  @Delete('entry/:leaderboardId/:userId')
+  async deleteLeaderboardEntry(
+    @Param('leaderboardId') leaderboardId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.leaderboardService.deleteLeaderboardEntry(leaderboardId, userId);
+  }
+
 }
