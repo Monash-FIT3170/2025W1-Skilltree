@@ -89,4 +89,42 @@ export class LeaderboardService {
       status: 201,
     };
   }
+
+  // for leaderboard enteries
+
+  async createLeaderboardEntry(dto: CreateLeaderboardEntryDto): Promise<ApiResponseType<LeaderboardEntry>> {
+    const entry = await this.prismaService.leaderboardEntry.create({
+      data: {
+        leaderboardId: dto.leaderboardId,
+        userId: dto.userId,
+        rank: dto.rank,
+        score: dto.score,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        leaderboard: {
+          select: {
+            id: true,
+            name: true,
+            metric: true,
+          },
+        },
+      },
+    });
+
+    return {
+      ok: true,
+      message: entry,
+      status: 201,
+    };
+  }
+
+
 }
+
