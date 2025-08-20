@@ -145,6 +145,16 @@ export class LeaderboardService {
     if (!leaderboard) {
       throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
     }
+    
+    const user = await this.prismaService.user.findUnique({
+      where: { id: dto.userId },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+   
 
     
 
