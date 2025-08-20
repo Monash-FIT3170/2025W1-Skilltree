@@ -138,6 +138,16 @@ export class LeaderboardService {
   // for leaderboard enteries
 
   async createLeaderboardEntry(dto: CreateLeaderboardEntryDto): Promise<ApiResponseType<LeaderboardEntry>> {
+    const leaderboard = await this.prismaService.leaderboard.findUnique({
+      where: { id: dto.leaderboardId },
+    });
+
+    if (!leaderboard) {
+      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+    }
+
+    
+
 
     const entry = await this.prismaService.leaderboardEntry.create({
       data: {
