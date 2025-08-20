@@ -35,4 +35,15 @@ export class LeaderboardController {
   ) {
     return this.leaderboardService.createLeaderboard(dto);
   }
+
+  // leaderboard entry methods
+
+  @UseGuards(AuthGuard)
+  @Post('entry')
+  async createLeaderboardEntry(
+    @Body() dto: CreateLeaderboardEntryDto,
+  ) {
+    return this.leaderboardService.createLeaderboardEntry(dto);
+  }
+
 }
