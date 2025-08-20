@@ -29,14 +29,28 @@ const events: EventItem[] = [
   { id: "e2", title: "Livery Jam", community: "Fan Garage", skill: "Race Strategy", ranked: true, xp: 800 },
   { id: "e3", title: "100m Sprint Ladder", community: "Swim Circle", skill: "Freestyle Sprint", ranked: true, xp: 1000 },
   { id: "e4", title: "Backyard Six Fest", community: "Cricket Corner", skill: "Hits Showcase", ranked: false },
+  { id: "e5", title: "Technique Showdown", community: "Swim Circle", skill: "Flip Turns", ranked: false },
+  { id: "e6", title: "Skill Forest Relay", community: "Fan Garage", skill: "Strategy Draft", ranked: true, xp: 600 },
+  { id: "e7", title: "Weekly Ladder", community: "Cricket Corner", skill: "Batting Practice", ranked: true, xp: 700 },
+  { id: "e8", title: "Open Mic Coaching", community: "Fan Garage", skill: "AMA", ranked: false },
+  { id: "e9", title: "100m Sprint Ladder", community: "Swim Circle", skill: "Freestyle Sprint", ranked: true, xp: 1000 },
+  { id: "e10", title: "Livery Jam", community: "Fan Garage", skill: "Race Strategy", ranked: true, xp: 800 },
+  { id: "e11", title: "Race Day Bingo", community: "Fan Garage", skill: "Community Engagement", ranked: false },
+  { id: "e12", title: "Community Showcase", community: "Cricket Corner", skill: "Highlights", ranked: false },
 ];
 
 // Pretend these are the user's subs:
-const subscribed = allCommunities.slice(0, 8);
+const baseSubs = allCommunities.slice(0, 8);
+const extraSubs = Array.from({ length: 6 }, (_, i) => {
+  const c = baseSubs[i % baseSubs.length];
+  return { ...c, _id: `${c._id ?? c.community}-dup${i + 1}` };
+});
+const subscribed = [...baseSubs, ...extraSubs];
 
 // build a per-community posts href; fall back to a slug from name if no _id
 const getCommunityPostsHref = (c: any) =>
-  `/communities/${c._id ?? encodeURIComponent((c.community || "posts").toLowerCase())}/posts`;
+  `/communities/posts`; // const getCommunityPostsHref = (c: any) => `/communities/${c._id ?? encodeURIComponent((c.community || "posts").toLowerCase())}/posts`;
+  
 
 export default function DashboardPage() {
   const columnHeight = "h-[85vh]"; // both columns scroll independently
