@@ -38,6 +38,7 @@ model User {
   followedSkillTrees   SkillTree[]           @relation("SkillTreeFollowers")
   customSkillForests   SkillForest[]
   leaderboardEntries   LeaderboardEntry[]
+  likedPosts           Post[]                @relation("LikedPosts")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -125,7 +126,7 @@ model Post {
   skillTreeNode      SkillTreeNode?     @relation(fields: [skillTreeNodeId], references: [id])
   verifications      Verification[]
   verificationStatus VerificationStatus @default(PENDING)
-  likes              Int                @default(0)
+  likes              User[]             @relation("LikedPosts")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

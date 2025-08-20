@@ -18,6 +18,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { CommonModule } from './common/common.module';
 import { CommonService } from './common/common.service';
 import { diskStorage } from 'multer';
+import { PostModule } from './post/post.module';
+import { EventModule } from './event/event.module';
 
 @Module({
 	imports: [
