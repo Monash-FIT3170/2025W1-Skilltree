@@ -40,7 +40,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
         <h2 className="text-lg font-semibold">Recent Events</h2>
       </div>
 
-      <div className="rounded-2xl bg-slate-100 p-4 md:p-6">
+      <div className="rounded-2xl p-4 md:p-6">
         <div className="space-y-3">
           {payload.events.map((ev) => (
             <Card key={ev.id} className="rounded-xl">
