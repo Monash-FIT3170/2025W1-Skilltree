@@ -87,10 +87,9 @@ export default function PostProofPracButton() {
 
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>TitUpload Proof of Practicele</DialogTitle>
+              <DialogTitle>Upload Proof of Practice</DialogTitle>
               <DialogDescription>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde,
-                accusantium.
+                Share your progress and get feedback from the community.
               </DialogDescription>
             </DialogHeader>
 
