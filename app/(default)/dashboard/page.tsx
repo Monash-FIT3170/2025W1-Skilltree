@@ -39,32 +39,37 @@ const events: EventItem[] = [
   { id: "e12", title: "Community Showcase", community: "Cricket Corner", skill: "Highlights", ranked: false },
 ];
 
-// Pretend these are the user's subs:
-const baseSubs = allCommunities.slice(0, 8);
+// ---- Subscribed communities with a few admins ----
+// Mark some base items as admins by index for determinism
+const adminBaseIdx = new Set([0, 2, 5]); // 3 admins in the base 8
+const baseSubs = allCommunities.slice(0, 8).map((c: any, i: number) => ({
+  ...c,
+  role: adminBaseIdx.has(i) ? "admin" : "member",
+}));
+
+// Create extra items (6 more) and mark a couple as admin too
 const extraSubs = Array.from({ length: 6 }, (_, i) => {
   const c = baseSubs[i % baseSubs.length];
-  return { ...c, _id: `${c._id ?? c.community}-dup${i + 1}` };
+  const isAdminExtra = i === 1 || i === 4; // 2 admins in the extras
+  return {
+    ...c,
+    _id: `${c._id ?? c.community}-dup${i + 1}`,
+    role: isAdminExtra ? "admin" : "member",
+  };
 });
+
 const subscribed = [...baseSubs, ...extraSubs];
 
-// build a per-community posts href; fall back to a slug from name if no _id
-const getCommunityPostsHref = (c: any) =>
-  `/communities/posts`; // const getCommunityPostsHref = (c: any) => `/communities/${c._id ?? encodeURIComponent((c.community || "posts").toLowerCase())}/posts`;
-  
-// slug + community lookup for events → /communities/[id-or-slug]/events
-const slugify = (s: string) =>
-  s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+// Routes (currently global posts/events pages)
+const getCommunityPostsHref = (_c: any) => `/communities/posts`;
+const getEventHref = (_ev: EventItem) => `/communities/events`;
 
-const getCommunityKeyFromName = (name: string) => {
-  const match = allCommunities.find(
-    (c: any) => c.community?.toLowerCase() === name.toLowerCase()
-  );
-  return match ? (match._id ?? slugify(match.community)) : slugify(name);
-};
 
-const getEventHref = (ev: EventItem) =>
-  `/communities/events`; //const getEventHref = (ev: EventItem) =>  `/communities/${getCommunityKeyFromName(ev.community)}/events`;
- 
+//const getEventHref = (ev: EventItem) =>  `/communities/${getCommunityKeyFromName(ev.community)}/events`;
+// const getCommunityPostsHref = (c: any) => `/communities/${c._id ?? encodeURIComponent((c.community || "posts").toLowerCase())}/posts`;
+
+
+
 
 
 export default function DashboardPage() {
@@ -89,11 +94,13 @@ export default function DashboardPage() {
                 {subscribed.map((c: any) => {
                     const href = getCommunityPostsHref(c);
                     const initial = (c.community?.[0] ?? "C").toUpperCase();
+                    const isAdmin = c.role === "admin";
+
                     return (
                     <Card key={c._id ?? c.community} className="hover:bg-accent/40 transition">
-                        <CardContent className="p-4">
-                        <div className="flex items-start gap-3">
-                            {/* Clickable Avatar */}
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        {/* Clickable Avatar */}
                             <Link href={href} className="shrink-0">
                             <Avatar className="h-10 w-10">
                                 <AvatarImage src={c.image ?? ""} alt={c.community ?? "Community"} />
@@ -101,13 +108,26 @@ export default function DashboardPage() {
                             </Avatar>
                             </Link>
 
+
+
+                            
+
+
                             <div className="min-w-0 flex-1">
-                            {/* Clickable Name */}
-                            <Link href={href}>
-                                <p className="font-medium truncate hover:underline">
-                                {c.community}
-                                </p>
-                            </Link>
+                              {/* Name + Role badge inline */}
+                              <div className="flex items-center gap-2 justify-between min-w-0">
+                                <Link href={href} className="min-w-0">
+                                  <p className="font-medium truncate hover:underline">{c.community}</p>
+                                </Link>
+                                <Badge 
+                                  variant={isAdmin ? "destructive" : "secondary"}
+                                  className={`${isAdmin ? "" : "text-emerald-700 bg-emerald-100"} shrink-0`}
+                                >
+                                  {isAdmin ? "Admin" : "Member"}
+                                </Badge>
+                              </div>
+
+                            
 
                             <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                                 {c.text}
