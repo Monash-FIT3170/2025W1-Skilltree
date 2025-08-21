@@ -7,6 +7,7 @@ export default function PostFeedbackForm() {
     const [feedback, setFeedback] = useState("");
     const [xpActive, setXpActive] = useState(false);
 
+
     return (
         <div className="w-full max-w-4xl mx-auto bg-white p-4 rounded-lg shadow flex items-center gap-4">
             {/* Avatar */}
@@ -40,8 +41,8 @@ export default function PostFeedbackForm() {
                 onClick={() => setXpActive(!xpActive)}
                 type="button"
             >
-                <Zap size={22} className={xpActive ? "text-[#34D399]" : "text-gray-400"} />
-                <span className={`text-xs font-medium ${xpActive ? "text-[#34D399]" : "text-gray-400"}`}>{xpActive?"XP Given":"Give XP"}</span>
+                <Zap size={22} className={xpActive ? "text-[#34D399]" : "text-gray-500"} />
+                <span className={`text-xs font-medium ${xpActive ? "text-[#34D399]" : "text-gray-500"}`}>{xpActive?"XP Given":"Give XP"}</span>
             </button>
         </div>
     );
