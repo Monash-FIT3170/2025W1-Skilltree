@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import "../globals.css";
+import "./globals.css"; 
 import { Providers } from "@/components/shared/providers";
-// TODO: guarding
-const geistSans = Montserrat({
+
+const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
 });
@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} antialiased`}>
+      <body className={`${montserrat.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>
