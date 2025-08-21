@@ -37,12 +37,16 @@ export default function PostDetail({ post }: PostDetailProps) {
 
   return (
     <div className="p-6 space-y-4 w-full">
-      <h2 className="flex text-2xl font-bold">
-        {post.community || "Post Title"}
-      </h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">{post.community || "Post Title"}</h2>
+        <Button onClick={() => router.push(`/communities/members`)}>
+          View Community Members
+        </Button>
+      </div>
       <Button onClick={() => router.push(`/communities/posts/proof`)}>
         Upload Proof of Completion
       </Button>
+
       {/* image */}
       <div className="w-full space-y-4 mt-4">
         <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center">
