@@ -2621,8 +2621,13 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
+<<<<<<< HEAD
   libphonenumber-js@1.12.12:
     resolution: {integrity: sha512-aWVR6xXYYRvnK0v/uIwkf5Lthq9Jpn0N8TISW/oDTWlYB2sOimuiLn9Q26aUw4KxkJoiT8ACdiw44Y8VwKFIfQ==}
+=======
+  libphonenumber-js@1.12.13:
+    resolution: {integrity: sha512-QZXnR/OGiDcBjF4hGk0wwVrPcZvbSSyzlvkjXv5LFfktj7O2VZDrt4Xs8SgR/vOFco+qk1i8J43ikMXZoTrtPw==}
+>>>>>>> backend
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -5438,7 +5443,11 @@ snapshots:
   class-validator@0.14.2:
     dependencies:
       '@types/validator': 13.15.2
+<<<<<<< HEAD
       libphonenumber-js: 1.12.12
+=======
+      libphonenumber-js: 1.12.13
+>>>>>>> backend
       validator: 13.15.15
 
   cli-cursor@3.1.0:
@@ -6629,7 +6638,11 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
+<<<<<<< HEAD
   libphonenumber-js@1.12.12: {}
+=======
+  libphonenumber-js@1.12.13: {}
+>>>>>>> backend
 
   lines-and-columns@1.2.4: {}
 
