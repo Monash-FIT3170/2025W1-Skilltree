@@ -15,7 +15,8 @@ import {
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-import { HomeIcon, AwardIcon} from "lucide-react";
+import { HomeIcon, AwardIcon, PlusIcon, SlidersHorizontalIcon, LayoutDashboard} from "lucide-react";
+import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -83,6 +84,12 @@ function AppSidebar() {
                   <Link href="/">
                     <HomeIcon size={48} />
                     <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild tooltip="Dashboard">
+                  <Link href="/dashboard">
+                    <LayoutDashboard size={48} />
+                    <span>Dashboard</span>
                   </Link>
                 </SidebarMenuButton>
                 <SidebarMenuButton asChild tooltip="Add a Community">
