@@ -7,314 +7,335 @@ import { CreateLeaderboardEntryDto } from './dto/create-leaderboard-entry.dto';
 
 @Injectable()
 export class LeaderboardService {
-  constructor(private prismaService: PrismaService) {}
+	constructor(private prismaService: PrismaService) {}
 
-  async getLeaderboards(communityId: string): Promise<ApiResponseType<Leaderboard[]>> {
-    const leaderboards = await this.prismaService.leaderboard.findMany({
-      where: { communityId },
-      include: {
-        entries: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                profilePicture: true,
-              },
-            },
-          },
-          orderBy: { rank: 'asc' },
-        },
-      },
-    });
+	async getLeaderboards(
+		communityId: string,
+	): Promise<ApiResponseType<Leaderboard[]>> {
+		const leaderboards = await this.prismaService.leaderboard.findMany({
+			where: { communityId },
+			include: {
+				entries: {
+					include: {
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+								profilePicture: true,
+							},
+						},
+					},
+					orderBy: { rank: 'asc' },
+				},
+			},
+		});
 
-    return {
-      ok: true,
-      message: leaderboards,
-      status: 200,
-    };
-  }
+		return {
+			ok: true,
+			message: leaderboards,
+			status: 200,
+		};
+	}
 
-  async getLeaderboardById(id: string): Promise<ApiResponseType<Leaderboard | null>> {
-    const leaderboard = await this.prismaService.leaderboard.findUnique({
-      where: { id },
-      include: {
-        entries: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
-          },
-          orderBy: { rank: 'asc' },
-        },
-      },
-    });
+	async getLeaderboardById(
+		id: string,
+	): Promise<ApiResponseType<Leaderboard | null>> {
+		const leaderboard = await this.prismaService.leaderboard.findUnique({
+			where: { id },
+			include: {
+				entries: {
+					include: {
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+							},
+						},
+					},
+					orderBy: { rank: 'asc' },
+				},
+			},
+		});
 
-    if (!leaderboard) {
-      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
-    }
+		if (!leaderboard) {
+			throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+		}
 
-    return {
-      ok: true,
-      message: leaderboard,
-      status: 200,
-    };
-  }
+		return {
+			ok: true,
+			message: leaderboard,
+			status: 200,
+		};
+	}
 
-  async createLeaderboard(dto: CreateLeaderboardDto): Promise<ApiResponseType<Leaderboard>> {
-    const community = await this.prismaService.community.findUnique({
-      where: { id: dto.communityId },
-    });
+	async createLeaderboard(
+		dto: CreateLeaderboardDto,
+	): Promise<ApiResponseType<Leaderboard>> {
+		const community = await this.prismaService.community.findUnique({
+			where: { id: dto.communityId },
+		});
 
-    if (!community) {
-      throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
-    }
+		if (!community) {
+			throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
+		}
 
-    const leaderboard = await this.prismaService.leaderboard.create({
-      data: {
-        name: dto.name,
-        metric: dto.metric,
-        communityId: dto.communityId,
-      },
-    });
+		const leaderboard = await this.prismaService.leaderboard.create({
+			data: {
+				name: dto.name,
+				metric: dto.metric,
+				communityId: dto.communityId,
+			},
+		});
 
-    return {
-      ok: true,
-      message: leaderboard,
-      status: 201,
-    };
-  }
+		return {
+			ok: true,
+			message: leaderboard,
+			status: 201,
+		};
+	}
 
-  async updateLeaderboard(
-    id: string, 
-    updateData: { name?: string; metric?: string }
-  ): Promise<ApiResponseType<Leaderboard>> {
+	async updateLeaderboard(
+		id: string,
+		updateData: { name?: string; metric?: string },
+	): Promise<ApiResponseType<Leaderboard>> {
+		const existingLeaderboard = await this.prismaService.leaderboard.findUnique(
+			{
+				where: { id },
+			},
+		);
 
-    const existingLeaderboard = await this.prismaService.leaderboard.findUnique({
-      where: { id },
-    });
+		if (!existingLeaderboard) {
+			throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+		}
 
-    if (!existingLeaderboard) {
-      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
-    }
+		const leaderboard = await this.prismaService.leaderboard.update({
+			where: { id },
+			data: updateData,
+		});
 
-    const leaderboard = await this.prismaService.leaderboard.update({
-      where: { id },
-      data: updateData,
-    });
+		return {
+			ok: true,
+			message: leaderboard,
+			status: 200,
+		};
+	}
 
-    return {
-      ok: true,
-      message: leaderboard,
-      status: 200,
-    };
-  }
+	async deleteLeaderboard(id: string): Promise<ApiResponseType<Leaderboard>> {
+		const existingLeaderboard = await this.prismaService.leaderboard.findUnique(
+			{
+				where: { id },
+			},
+		);
 
-  async deleteLeaderboard(id: string): Promise<ApiResponseType<Leaderboard>> {
+		if (!existingLeaderboard) {
+			throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+		}
 
-    const existingLeaderboard = await this.prismaService.leaderboard.findUnique({
-      where: { id },
-    });
+		const leaderboard = await this.prismaService.leaderboard.delete({
+			where: { id },
+		});
 
-    if (!existingLeaderboard) {
-      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
-    }
+		return {
+			ok: true,
+			message: leaderboard,
+			status: 200,
+		};
+	}
+	// for leaderboard enteries
 
-    const leaderboard = await this.prismaService.leaderboard.delete({
-      where: { id },
-    });
+	async createLeaderboardEntry(
+		dto: CreateLeaderboardEntryDto,
+	): Promise<ApiResponseType<LeaderboardEntry>> {
+		const leaderboard = await this.prismaService.leaderboard.findUnique({
+			where: { id: dto.leaderboardId },
+		});
 
-    return {
-      ok: true,
-      message: leaderboard,
-      status: 200,
-    };
-  }
-  // for leaderboard enteries
+		if (!leaderboard) {
+			throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
+		}
 
-  async createLeaderboardEntry(dto: CreateLeaderboardEntryDto): Promise<ApiResponseType<LeaderboardEntry>> {
-    const leaderboard = await this.prismaService.leaderboard.findUnique({
-      where: { id: dto.leaderboardId },
-    });
+		const user = await this.prismaService.user.findUnique({
+			where: { id: dto.userId },
+		});
 
-    if (!leaderboard) {
-      throw new HttpException('Leaderboard not found', HttpStatus.NOT_FOUND);
-    }
+		if (!user) {
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		}
 
-    const user = await this.prismaService.user.findUnique({
-      where: { id: dto.userId },
-    });
+		const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
+			where: {
+				leaderboardId_userId: {
+					leaderboardId: dto.leaderboardId,
+					userId: dto.userId,
+				},
+			},
+		});
 
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+		if (existingEntry) {
+			throw new HttpException(
+				'User already has an entry in this leaderboard',
+				HttpStatus.CONFLICT,
+			);
+		}
 
-    const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
-      where: {
-        leaderboardId_userId: {
-          leaderboardId: dto.leaderboardId,
-          userId: dto.userId,
-        },
-      },
-    });
+		const entry = await this.prismaService.leaderboardEntry.create({
+			data: {
+				leaderboardId: dto.leaderboardId,
+				userId: dto.userId,
+				rank: dto.rank,
+				score: dto.score,
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+					},
+				},
+				leaderboard: {
+					select: {
+						id: true,
+						name: true,
+						metric: true,
+					},
+				},
+			},
+		});
 
-    if (existingEntry) {
-      throw new HttpException('User already has an entry in this leaderboard', HttpStatus.CONFLICT);
-    }
+		return {
+			ok: true,
+			message: entry,
+			status: 201,
+		};
+	}
 
-    const entry = await this.prismaService.leaderboardEntry.create({
-      data: {
-        leaderboardId: dto.leaderboardId,
-        userId: dto.userId,
-        rank: dto.rank,
-        score: dto.score,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        leaderboard: {
-          select: {
-            id: true,
-            name: true,
-            metric: true,
-          },
-        },
-      },
-    });
+	async updateLeaderboardEntry(
+		leaderboardId: string,
+		userId: string,
+		updateData: { rank?: number; score?: number },
+	): Promise<ApiResponseType<LeaderboardEntry>> {
+		const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
+			where: {
+				leaderboardId_userId: {
+					leaderboardId,
+					userId,
+				},
+			},
+		});
 
-    return {
-      ok: true,
-      message: entry,
-      status: 201,
-    };
-  }
+		if (!existingEntry) {
+			throw new HttpException(
+				'Leaderboard entry not found',
+				HttpStatus.NOT_FOUND,
+			);
+		}
 
-  async updateLeaderboardEntry(
-    leaderboardId: string,
-    userId: string,
-    updateData: { rank?: number; score?: number }
-  ): Promise<ApiResponseType<LeaderboardEntry>> {
-    const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
-      where: {
-        leaderboardId_userId: {
-          leaderboardId,
-          userId,
-        },
-      },
-    });
+		const entry = await this.prismaService.leaderboardEntry.update({
+			where: {
+				leaderboardId_userId: {
+					leaderboardId,
+					userId,
+				},
+			},
+			data: updateData,
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+					},
+				},
+			},
+		});
 
-    if (!existingEntry) {
-      throw new HttpException('Leaderboard entry not found', HttpStatus.NOT_FOUND);
-    }
+		return {
+			ok: true,
+			message: entry,
+			status: 200,
+		};
+	}
 
-    const entry = await this.prismaService.leaderboardEntry.update({
-      where: {
-        leaderboardId_userId: {
-          leaderboardId,
-          userId,
-        },
-      },
-      data: updateData,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
+	async deleteLeaderboardEntry(
+		leaderboardId: string,
+		userId: string,
+	): Promise<ApiResponseType<LeaderboardEntry>> {
+		const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
+			where: {
+				leaderboardId_userId: {
+					leaderboardId,
+					userId,
+				},
+			},
+		});
 
-    return {
-      ok: true,
-      message: entry,
-      status: 200,
-    };
-  }
+		if (!existingEntry) {
+			throw new HttpException(
+				'Leaderboard entry not found',
+				HttpStatus.NOT_FOUND,
+			);
+		}
 
-  async deleteLeaderboardEntry(
-    leaderboardId: string,
-    userId: string
-  ): Promise<ApiResponseType<LeaderboardEntry>> {
-    const existingEntry = await this.prismaService.leaderboardEntry.findUnique({
-      where: {
-        leaderboardId_userId: {
-          leaderboardId,
-          userId,
-        },
-      },
-    });
+		const entry = await this.prismaService.leaderboardEntry.delete({
+			where: {
+				leaderboardId_userId: {
+					leaderboardId,
+					userId,
+				},
+			},
+		});
 
-    if (!existingEntry) {
-      throw new HttpException('Leaderboard entry not found', HttpStatus.NOT_FOUND);
-    }
+		return {
+			ok: true,
+			message: entry,
+			status: 200,
+		};
+	}
 
-    const entry = await this.prismaService.leaderboardEntry.delete({
-      where: {
-        leaderboardId_userId: {
-          leaderboardId,
-          userId,
-        },
-      },
-    });
+	async getLeaderboardEntry(
+		leaderboardId: string,
+		userId: string,
+	): Promise<ApiResponseType<LeaderboardEntry>> {
+		const entry = await this.prismaService.leaderboardEntry.findUnique({
+			where: {
+				leaderboardId_userId: {
+					leaderboardId,
+					userId,
+				},
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+						profilePicture: true,
+					},
+				},
+				leaderboard: {
+					select: {
+						id: true,
+						name: true,
+						metric: true,
+					},
+				},
+			},
+		});
 
-    return {
-      ok: true,
-      message: entry,
-      status: 200,
-    };
-  }
+		if (!entry) {
+			throw new HttpException(
+				'Leaderboard entry not found',
+				HttpStatus.NOT_FOUND,
+			);
+		}
 
-  async getLeaderboardEntry(
-    leaderboardId: string,
-    userId: string
-  ): Promise<ApiResponseType<LeaderboardEntry>> {
-    const entry = await this.prismaService.leaderboardEntry.findUnique({
-      where: {
-        leaderboardId_userId: {
-          leaderboardId,
-          userId,
-        },
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profilePicture: true,
-          },
-        },
-        leaderboard: {
-          select: {
-            id: true,
-            name: true,
-            metric: true,
-          },
-        },
-      },
-    });
-
-    if (!entry) {
-      throw new HttpException('Leaderboard entry not found', HttpStatus.NOT_FOUND);
-    }
-
-    return {
-      ok: true,
-      message: entry,
-      status: 200,
-    };
-  }
+		return {
+			ok: true,
+			message: entry,
+			status: 200,
+		};
+	}
 }
-

@@ -40,7 +40,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 		EventModule,
 		PostModule,
 		CommonModule,
-		LeaderboardModule
+		LeaderboardModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],
