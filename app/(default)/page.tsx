@@ -12,9 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Users, MessageSquare, Calendar } from "lucide-react";
 import { communities } from "@/lib/mocks";
 import { useRouter } from "next/navigation";
+import React, {useState} from "react";
 
 export default function CommunitiesPage() {
   const router = useRouter();
+  const [joined, setJoined] = useState<{ [key: string]: boolean }>({});
+
+  const handleJoin = (communityName: string) => {
+    setJoined((prev) => ({ ...prev, [communityName]: true }));
+    setTimeout(() => {
+      setJoined((prev) => ({ ...prev, [communityName]: false }));
+    }, 1200);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -67,16 +76,18 @@ export default function CommunitiesPage() {
             <CardFooter className="pt-0">
               <div className="flex gap-2 w-full">
                 <Button
-                  onClick={() => alert(`Joining ${community.community}`)}
-                  className="flex-1"
+                  onClick={() => handleJoin(community.community)}
+                  className="flex-1 transition-transform duration-150 hover:scale-105"
                   size="sm"
+                  disabled={joined[community.community]}
                 >
-                  Join Community
+                  {joined[community.community] ? "Community Joined" : "Join Community"}
                 </Button>
                 <Button
                   onClick={() => router.push("/communities/posts")}
                   variant="outline"
                   size="sm"
+                  className="transition-transform duration-150 hover:scale-105"
                 >
                   View Details
                 </Button>
