@@ -3,11 +3,8 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
@@ -18,9 +15,7 @@ import {
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-import { HomeIcon, AwardIcon, PlusIcon, SlidersHorizontalIcon} from "lucide-react";
-import { Navbar } from "../Navbar";
-import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
+import { HomeIcon, AwardIcon} from "lucide-react";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -91,7 +86,7 @@ function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
                 <SidebarMenuButton asChild tooltip="Add a Community">
-                  <Link href="/communities/add">
+                  <Link href="/communities/add/createcommunity">
                     <AwardIcon size={48} />
                     <span>Add a Community</span>
                   </Link>
