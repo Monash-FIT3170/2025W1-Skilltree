@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+} from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 
@@ -12,22 +20,25 @@ export class EventController {
 	}
 
 	@Get(':id')
-	async getEventById(id: string) {
+	async getEventById(@Param('id') id: string) {
 		return this.eventService.getEventById(id);
 	}
 
 	@Post()
-	async createEvent(createEventDto: CreateEventDto) {
+	async createEvent(@Body() createEventDto: CreateEventDto) {
 		return this.eventService.createEvent(createEventDto);
 	}
 
 	@Patch(':id')
-	async updateEvent(id: string, createEventDto: Partial<CreateEventDto>) {
+	async updateEvent(
+		@Param('id') id: string,
+		@Body() createEventDto: Partial<CreateEventDto>,
+	) {
 		return this.eventService.updateEvent(id, createEventDto);
 	}
 
 	@Delete(':id')
-	async deleteEvent(id: string) {
+	async deleteEvent(@Param('id') id: string) {
 		return this.eventService.deleteEvent(id);
 	}
 }

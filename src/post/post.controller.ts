@@ -1,7 +1,9 @@
 import {
+	Body,
 	Controller,
 	Delete,
 	Get,
+	Param,
 	Patch,
 	Post,
 	UseGuards,
@@ -10,7 +12,7 @@ import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetUser } from '../_utils/decorator';
 import { User } from '@prisma/client';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtGuard } from '../_utils/guards/jwt.guard';
 
 @Controller('post')
 export class PostController {
@@ -22,38 +24,41 @@ export class PostController {
 	}
 
 	@Get(':id')
-	async getPostById(id: string) {
+	async getPostById(@Param('id') id: string) {
 		return this.postService.getPostById(id);
 	}
 
-	@UseGuards(AuthGuard)
+	@UseGuards(JwtGuard)
 	@Post()
-	async createPost(data: CreatePostDto, @GetUser() user: User) {
+	async createPost(@Body() data: CreatePostDto, @GetUser() user: User) {
 		return this.postService.createPost(data, user.id);
 	}
 
+	@UseGuards(JwtGuard)
 	@Delete(':id')
-	async deletePost(id: string, @GetUser() user: User) {
+	async deletePost(@Param('id') id: string, @GetUser() user: User) {
 		return this.postService.deletePost(id, user.id);
 	}
 
-	@UseGuards(AuthGuard)
+	@UseGuards(JwtGuard)
 	@Patch(':id')
 	async updatePost(
-		id: string,
-		data: Partial<CreatePostDto>,
+		@Param('id') id: string,
+		@Body() data: Partial<CreatePostDto>,
 		@GetUser() user: User,
 	) {
 		return this.postService.updatePost(id, data, user.id);
 	}
 
+	@UseGuards(JwtGuard)
 	@Post(':id/like')
-	async likePost(id: string, @GetUser() user: User) {
+	async likePost(@Param('id') id: string, @GetUser() user: User) {
 		return this.postService.likePost(id, user.id);
 	}
 
+	@UseGuards(JwtGuard)
 	@Post(':id/unlike')
-	async unlikePost(id: string, @GetUser() user: User) {
+	async unlikePost(@Param('id') id: string, @GetUser() user: User) {
 		return this.postService.unlikePost(id, user.id);
 	}
 }
