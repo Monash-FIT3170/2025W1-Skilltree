@@ -1,0 +1,5 @@
+body{
+    background-color: var(--background-color);
+    color: var(--foreground-color);
+    border-color: var(--foreground-color);
+}

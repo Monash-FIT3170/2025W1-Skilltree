@@ -1,0 +1,33 @@
+/* src/styles/variables.css */
+
+/* === Primary Color === */
+:root {
+  --primary-color: #34D399; /* Main brand color */
+  --primary-fg-color:#064E3B; /* Foreground color for primary elements */
+  --secondary-color: #2A2C33; /* Secondary color */
+  --secondary-fg-color: #F0F0F0; /* Foreground color for secondary elements */
+  --accent-color: #13CD2E; /* Accent color for highlights */
+  --accent-fg-color: #6EE7B7; /* Foreground color for accent elements */
+  --destructive-color: #F87171; /* Destructive actions color */
+  --destructive-fg-color: #F87171; /* Foreground color for destructive elements */
+  --border-color: #F0F0F0; /* Border color for UI elements */
+
+/* === Background Colors === */
+  --background-color: #1A1B1E; /* Dark background for the app */
+  --foreground-color: #F0F0F0; /* Foreground color for contrast */
+
+/* === Status Colors === */
+  --success-color: #2ecc71; /* Color for success messages or indicators */
+  --error-color: #e74c3c; /* Color for error messages or indicators */
+  --warning-color: #f39c12; /* Warning color */
+
+/* === Neutral and Miscellaneous === */
+  --black: #000000;
+  --white: #ffffff;
+  --gray-light: #f1f1f1; /* Light gray for backgrounds */
+  --gray-dark: #7f8c8d; /* Dark gray for text and other UI elements */
+
+/* === Interactive Colors === */
+  --link-color: #3498db; /* Link color */
+  --hover-color: #2980b9; /* Hover color for buttons, links */
+}
