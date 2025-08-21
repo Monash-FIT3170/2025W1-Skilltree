@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import "./globals.css"; 
+import '@xyflow/react/dist/style.css';
+import '@/app/globals.css';
 import { Providers } from "@/components/shared/providers";
 
 const montserrat = Montserrat({
