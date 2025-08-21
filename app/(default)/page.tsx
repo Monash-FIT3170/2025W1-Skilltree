@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Users, MessageSquare, Calendar } from "lucide-react";
 import { communities } from "@/lib/mocks";
 import { useRouter } from "next/navigation";
+import '../../styles/variables.css';
+import '../../styles/main.css';
+import '../../styles/global.css';
 
 export default function CommunitiesPage() {
   const router = useRouter();
@@ -36,7 +39,7 @@ export default function CommunitiesPage() {
                   </CardTitle>
                 </div>
               </div>
-              <CardDescription className="line-clamp-3">
+              <CardDescription className="text-foreground-color line-clamp-3">
                 {community.text}
               </CardDescription>
             </CardHeader>
@@ -68,7 +71,7 @@ export default function CommunitiesPage() {
               <div className="flex gap-2 w-full">
                 <Button
                   onClick={() => alert(`Joining ${community.community}`)}
-                  className="flex-1"
+                  className="flex-1 default"
                   size="sm"
                 >
                   Join Community
