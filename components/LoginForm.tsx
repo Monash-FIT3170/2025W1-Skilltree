@@ -5,6 +5,9 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
+import '../styles/variables.css';
+import '../styles/main.css';
+import '../styles/global.css';
 
 const LoginForm = () => {
   const router = useRouter();
@@ -80,12 +83,12 @@ const LoginForm = () => {
       {/* <Link href="/forgetpass">Forget Password?</Link> */}
 
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between">
-        <Button className="flex-1" type="submit" disabled={loading}>
+        <Button className="flex-1 default" type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Submit"}
         </Button>
         <Button
           onClick={() => router.push("/forgot-password")}
-          className="flex-1"
+          className="flex-1 text-secondary-fg-color"
           variant="link"
           type="button"
         >
@@ -98,10 +101,10 @@ const LoginForm = () => {
       <Button
         type="button"
         onClick={() => router.push("/signup")}
-        className="w-full"
+        className="w-full text-secondary-fg-color"
         variant="link"
       >
-        Don&apos;t have an account? Sign Up
+        Dont have an account? Sign Up
       </Button>
     </form>
   );

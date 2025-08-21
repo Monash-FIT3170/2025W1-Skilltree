@@ -1,6 +1,9 @@
 // components/PostSidebar.tsx
 import { PostType } from "@/models/Post";
 import Image from "next/image";
+import '../styles/variables.css';
+import '../styles/main.css';
+import '../styles/global.css';
 
 type SidebarProps = {
   posts: PostType[];

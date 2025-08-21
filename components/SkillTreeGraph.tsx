@@ -2,6 +2,9 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
+import '../styles/variables.css';
+import '../styles/main.css';
+import '../styles/global.css';
 
 const SkillTree = () => {
   const { id } = useParams();

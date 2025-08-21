@@ -11,6 +11,9 @@ import {
 } from "./ui/dialog";
 import { Card } from "./ui/card";
 import toast, { Toaster } from "react-hot-toast";
+import '../styles/variables.css';
+import '../styles/main.css';
+import '../styles/global.css';
 
 type Course = {
   id: string;
