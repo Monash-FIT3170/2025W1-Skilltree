@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import CommunitySkillTree from "@/components/CommunitySkillTree";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import RecentEvents from "@/components/RecentEvents";
-import AddPostProofPrac from "@/components/AddPostProofPrac";
 import PostProofPracButton from "@/components/PostProofPracButton";
 import PostFeedbackForm from "@/components/PostFeedbackForm";
 import PostView from "@/components/PostView";

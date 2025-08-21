@@ -25,7 +25,7 @@ export default function Page() {
 
   const handleCreate = useCallback(() => {
     const id = makeId();
-    router.push(`/communities/${id}/skilltree`); // route groups like (default) don't appear in the URL
+    router.push(`/communities/${id}`); // route groups like (default) don't appear in the URL
   }, [router]);
 
   return (
