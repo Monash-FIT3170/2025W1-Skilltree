@@ -1,51 +1,148 @@
 "use client";
-import React, {useState} from "react";
-import { Send, XCircle, Zap } from "lucide-react";
-import AddPostProofPrac from "./AddPostProofPrac";
+import React, { useState } from "react";
+import { Camera, Send, XCircle, Zap } from "lucide-react";
+// import AddPostProofPrac from "./AddPostProofPrac";
+import { Button } from "./ui/button";
+import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 const userImage = "/placeholder.png";
 
+const skillNodes = [
+  "React Basics",
+  "State Management",
+  "Component Composition",
+  "Hooks Mastery",
+  "TypeScript Integration",
+  "API Handling",
+  "Testing & Debugging",
+  "UI/UX Best Practices",
+];
+
 export default function PostProofPracButton() {
-    const [feedback, setFeedback] = useState("");
-    const [xpActive, setXpActive] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [xpActive, setXpActive] = useState(false);
+  const [title, setTitle] = useState("");
+  const [tags, setTags] = useState("");
+  const [body, setBody] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
 
+  const [form, setForm] = useState({
+    node: "",
+    media: "",
+    description: "",
+  });
 
-    return (
-        <>
-        <div className="w-full max-w-2xl mx-auto bg-white p-4 rounded-2xl shadow flex items-center gap-4">
-            {/* Avatar */}
-            <img src={userImage} alt="User" className="w-10 h-10 rounded-full" />
+  const [allowVerification, setAllowVerification] = useState(false);
 
-            {/* Feedback input and send button */}
-            <div className="flex flex-1 items-center bg-gray-100 rounded-2xl px-3 py-2 gap-2">
-                <button
-                    className="bg-transparent items-left outline-none text-gray-800 placeholder-gray-500"
-                    onClick={e =>setShowModal(true)}
-                >
-                    Upload some Proof of Practice...
-                </button>
-            
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = () => {
+    console.log({ title, tags, body, allowVerification });
+  };
+
+  const handleCancel = () => {
+    //TODO add redirect to community page
+  };
+
+  return (
+    <>
+      <div className="w-full flex items-center justify-between gap-4">
+        <Avatar>
+          <AvatarFallback>U</AvatarFallback>
+          <AvatarImage className="border" src={userImage} />
+        </Avatar>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant={"secondary"} className="flex-1">
+              Upload some Proof of Practice...
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>TitUpload Proof of Practicele</DialogTitle>
+              <DialogDescription>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde,
+                accusantium.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-2 w-full text-sm">
+              <Label htmlFor="skill-tree-node">Select Skill Tree</Label>
+              <Select>
+                <SelectTrigger id="skill-tree-node" className="w-full">
+                  <SelectValue placeholder="Select skill tree node" />
+                </SelectTrigger>
+                <SelectContent>
+                  {skillNodes.map((node) => (
+                    <SelectItem key={node} value={node}>
+                      {node}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-        </div>
 
-       
-        {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-start pt-20 z-50">
-            {/* Modal container */}
-            <div className="relative w-full max-w-2xl mx-4">
-            {/* The modal content */}
-            <AddPostProofPrac />
+            <div className="space-y-2 w-full py-2">
+              <Label>Upload Media</Label>
 
-            {/* Close button in top-right corner of modal */}
-            <button
-                onClick={() => setShowModal(false)}
-                className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
-            >
-                <XCircle className="w-6 h-6 text-gray-700" />
-            </button>
+              <Input type="file" />
+              {preview && (
+                <Image
+                  width={720}
+                  height={720}
+                  src={preview}
+                  alt="Preview"
+                  className="mt-2 max-h-60 object-contain rounded-xl border border-gray-200"
+                />
+              )}
             </div>
-        </div>
-        )}
+
+            <div className="space-y-2 w-full">
+              <Label>Description</Label>
+              <Textarea
+                rows={5}
+                className="w-full"
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder="Write about what you practiced today..."
+              />
+            </div>
+
+            <DialogFooter>
+              <Button variant={"destructive"}>Cancel</Button>
+              <Button onClick={handleSubmit}>Confirm</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </>
-    );
+  );
 }

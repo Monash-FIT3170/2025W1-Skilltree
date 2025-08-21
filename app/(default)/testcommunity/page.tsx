@@ -82,6 +82,7 @@ export default function CommunityPage() {
             >
               <PostProofPracButton />
               <PostView userRole={"normal"}/>
+              <PostView userRole={"normal"}/>
             </article>
           ))}
         </section>
