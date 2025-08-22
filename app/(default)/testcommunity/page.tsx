@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import CommunitySkillTree from "@/components/CommunitySkillTree";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import RecentEvents from "@/components/RecentEvents";
-import AddPostProofPrac from "@/components/AddPostProofPrac";
 import PostProofPracButton from "@/components/PostProofPracButton";
 import PostFeedbackForm from "@/components/PostFeedbackForm";
 import PostView from "@/components/PostView";
 import { PostInteractionPanel } from "@/components/PostInteractionPanel";
+import {Button} from "@/components/ui/button";
 
 export default function CommunityPage() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
@@ -28,6 +28,8 @@ export default function CommunityPage() {
       ],
     },
   ];
+
+  const isMember = true;
 
   // example skill tree
   const exampleSkillTree = {
@@ -51,8 +53,10 @@ export default function CommunityPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Title */}
-      <header className="bg-white shadow p-6">
+      <header className="flex bg-white shadow p-6 gap-3">
         <h1 className="text-3xl font-bold">Snowboarding Community</h1>
+        {isMember?<Button className="ml-auto" variant={"destructive"}>Leave</Button>:<Button className="ml-auto">Join</Button>}
+        
       </header>
 
       {/* SkillTree */}
