@@ -29,7 +29,7 @@ export default function CommunityPage() {
     },
   ];
 
-  const isMember = true;
+  const isMember = false;
 
   // example skill tree
   const exampleSkillTree = {
@@ -54,7 +54,7 @@ export default function CommunityPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Title */}
       <header className="flex bg-white shadow p-6 gap-3">
-        <h1 className="text-3xl font-bold">Snowboarding Community</h1>
+        <h1 className="text-3xl font-bold">Snowboarding Community Tree</h1>
         {isMember?<Button className="ml-auto" variant={"destructive"}>Leave</Button>:<Button className="ml-auto">Join</Button>}
         
       </header>
@@ -65,7 +65,11 @@ export default function CommunityPage() {
       </section>
 
       {/* Scrollable area */}
-      <main className="flex-1 container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className = "flex justify-center w-full items-center border-3 rounded-3xl border-grey-500 bg-white">
+        <h2 className="flex justify-center text-3xl font-bold p-6">Snowboarding Community Interaction</h2>
+      </div>
+      <main className="flex-1 container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8 py-15">
+        
         {/* Side */}
         <aside className="space-y-6">
           <div className="bg-white rounded-xl shadow-sm p-4">
@@ -78,13 +82,14 @@ export default function CommunityPage() {
         </aside>
 
         {/* Posts feed */}
-        <section className="md:col-span-2 space-y-6">
+        <section className="md:col-span-2 space-y-6 overflow-y-auto max-h-[100vh]">
           {posts.map((post) => (
             <article
               key={post.id}
               className="bg-white rounded-xl shadow-sm p-4 space-y-4"
             >
               <PostProofPracButton />
+              <PostView userRole={"normal"}/>
               <PostView userRole={"normal"}/>
               <PostView userRole={"normal"}/>
             </article>
