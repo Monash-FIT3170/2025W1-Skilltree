@@ -11,221 +11,154 @@ datasource db {
 enum Role {
   MEMBER
   ADMIN
-  EXPERT
 }
 
 enum VerificationStatus {
   PENDING
   VERIFIED
-  REJECTED
-}
-
-enum EventType {
-  RANKED
-  UNRANKED
 }
 
 model User {
-  id                   String                @id @default(cuid())
-  email                String                @unique
-  hash                 String?
-  name                 String?
-  profilePicture       String?
-  communityMemberships CommunityMembership[]
-  posts                Post[]
-  verifications        Verification[]
-  experiencePoints     ExperiencePoint[]
-  followedSkillTrees   SkillTree[]           @relation("SkillTreeFollowers")
-  customSkillForests   SkillForest[]
-  leaderboardEntries   LeaderboardEntry[]
-  likedPosts           Post[]                @relation("LikedPosts")
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  dateOfBirth DateTime
+  hash        String
+  pfp         String   @default("")
+  xpPoint     Int      @default(0)
+
+  skillTrees    SkillTree[]
+  skillTreeUser SkillTreeUser[]
+  post          Post[]          @relation("PostLikes")
+  feedback      Feedback[]
+  event         Event[]         @relation("EventParticipants")
+  winnerOf      Event[]
+  skillNodeUser SkillNodeUser[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([createdAt])
-}
-
-model Community {
-  id           String                @id @default(cuid())
-  name         String                @unique
-  slug         String                @unique
-  description  String?
-  icon         String?
-  tags         String[]
-  creatorId    String
-  members      CommunityMembership[]
-  skillTrees   SkillTree[]
-  posts        Post[]
-  leaderboards Leaderboard[]
-  events       Event[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([creatorId])
-}
-
-model CommunityMembership {
-  communityId String
-  community   Community @relation(fields: [communityId], references: [id])
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  role        Role      @default(MEMBER)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@id([communityId, userId])
-  @@index([userId])
+  @@index([name])
+  @@index([email])
 }
 
 model SkillTree {
-  id           String          @id @default(cuid())
-  name         String
-  description  String?
-  communityId  String
-  community    Community       @relation(fields: [communityId], references: [id])
-  nodes        SkillTreeNode[]
-  followers    User[]          @relation("SkillTreeFollowers")
-  skillForests SkillForest[]   @relation("SkillForestTrees")
+  id          String @id @default(cuid())
+  name        String
+  description String @default("")
+
+  skillNodes    SkillNode[]
+  tags          Tag[]           @relation("SkillTreeTags")
+  creator       User            @relation(fields: [creatorId], references: [id])
+  creatorId     String
+  skillTreeUser SkillTreeUser[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([communityId])
+  @@index([name])
 }
 
-model SkillTreeNode {
-  id              String          @id @default(cuid())
-  skillTreeId     String
-  skillTree       SkillTree       @relation(fields: [skillTreeId], references: [id])
-  name            String
-  description     String
-  masteryCriteria String
-  parentId        String?
-  parent          SkillTreeNode?  @relation("NodeHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children        SkillTreeNode[] @relation("NodeHierarchy")
-  Post            Post[]
+model SkillNode {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  xpPoint     Int     @default(100)
+
+  skillTree   SkillTree? @relation(fields: [skillTreeId], references: [id])
+  skillTreeId String?
+
+  parentNode    SkillNode?      @relation("SkillNodeParent", fields: [parentNodeId], references: [id])
+  parentNodeId  String?
+  childNode     SkillNode[]     @relation("SkillNodeParent")
+  post          Post[]
+  skillNodeUser SkillNodeUser[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([skillTreeId])
+  @@index([name])
+  @@index([description])
 }
 
 model Post {
-  id                 String             @id @default(cuid())
-  content            String
-  attachmentUrl      String?
-  authorId           String
-  author             User               @relation(fields: [authorId], references: [id])
-  communityId        String
-  community          Community          @relation(fields: [communityId], references: [id])
-  skillTreeNodeId    String?
-  skillTreeNode      SkillTreeNode?     @relation(fields: [skillTreeNodeId], references: [id])
-  verifications      Verification[]
+  id         String @id @default(cuid())
+  content    String
+  proofMedia String
+
+  skillNode   SkillNode? @relation(fields: [skillNodeId], references: [id])
+  skillNodeId String?
+  likes       User[]     @relation("PostLikes")
+  feedback    Feedback[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([content])
+}
+
+model SkillTreeUser {
+  skillTree          SkillTree          @relation(fields: [skillTreeId], references: [id])
+  skillTreeId        String
+  user               User               @relation(fields: [userId], references: [id])
+  userId             String
+  role               Role               @default(MEMBER)
   verificationStatus VerificationStatus @default(PENDING)
-  likes              User[]             @relation("LikedPosts")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([authorId])
-  @@index([communityId])
-  @@index([skillTreeNodeId])
+  @@id([skillTreeId, userId])
 }
 
-model Verification {
-  postId       String
-  post         Post    @relation(fields: [postId], references: [id])
-  verifierId   String
-  verifier     User    @relation(fields: [verifierId], references: [id])
-  feedbackText String?
-  isApproved   Boolean
-  weight       Int     @default(1)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@id([postId, verifierId])
-  @@index([verifierId])
-}
-
-model ExperiencePoint {
-  id          String  @id @default(cuid())
+model SkillNodeUser {
+  skillNode   SkillNode @relation(fields: [skillNodeId], references: [id])
+  skillNodeId String
+  user        User      @relation(fields: [userId], references: [id])
   userId      String
-  user        User    @relation(fields: [userId], references: [id])
-  communityId String
-  amount      Int
-  metric      String
-  description String
-  postId      String?
-  eventId     String?
+  xpPoint     Int       @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-  @@index([communityId])
+  @@id([skillNodeId, userId])
 }
 
-model SkillForest {
-  id          String      @id @default(cuid())
-  name        String
-  description String?
-  creatorId   String
-  creator     User        @relation(fields: [creatorId], references: [id])
-  skillTrees  SkillTree[] @relation("SkillForestTrees")
+model Feedback {
+  verifier     User   @relation(fields: [verifierId], references: [id])
+  verifierId   String
+  post         Post   @relation(fields: [postId], references: [id])
+  postId       String
+  feedbackText String
+  multiplier   Int    @default(1)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([creatorId])
+  @@id([verifierId, postId])
+  @@index([feedbackText])
 }
 
-model Leaderboard {
-  id          String             @id @default(cuid())
-  communityId String
-  community   Community          @relation(fields: [communityId], references: [id])
-  name        String
-  metric      String
-  entries     LeaderboardEntry[]
+model Tag {
+  id                     String  @id @default(cuid())
+  name                   String  @unique
+  isRestricted           Boolean @default(false)
+  restrictionDescription String  @default("You are not allowed to view the SkillTree because of community restrictions.")
+
+  skillTrees SkillTree[] @relation("SkillTreeTags")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([communityId, name])
-}
-
-model LeaderboardEntry {
-  leaderboardId String
-  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id])
-  userId        String
-  user          User        @relation(fields: [userId], references: [id])
-  rank          Int
-  score         Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@id([leaderboardId, userId])
-  @@index([userId])
+  @@index([name])
 }
 
 model Event {
-  id               String    @id @default(cuid())
-  name             String
-  description      String?
-  eventType        EventType @default(UNRANKED)
-  communityId      String
-  community        Community @relation(fields: [communityId], references: [id])
-  experiencePayout Int?
-  startTime        DateTime
-  endTime          DateTime
+  id        String   @id @default(cuid())
+  title     String
+  isRanked  Boolean  @default(false)
+  xpPayout  Int      @default(0)
+  users     User[]   @relation("EventParticipants")
+  startDate DateTime @default(now())
+  endDate   DateTime
+
+  winner   User?   @relation(fields: [winnerId], references: [id])
+  winnerId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([communityId])
+  @@index([title])
+  @@index([startDate])
 }

@@ -12,9 +12,6 @@ import { CommonModule } from './common/common.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './_utils/strategy/jwt.strategy';
 import { diskStorage } from 'multer';
-import { PostModule } from './post/post.module';
-import { EventModule } from './event/event.module';
-import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
 	imports: [
@@ -37,10 +34,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 		PassportModule,
 		PrismaModule,
 		UserModule,
-		EventModule,
-		PostModule,
 		CommonModule,
-		LeaderboardModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],
