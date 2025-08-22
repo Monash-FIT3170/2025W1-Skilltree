@@ -62,7 +62,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
   };
 
   return (
-    <section className="container mx-auto px-6 pb-10">
+    <section className="container mx-auto">
       <div className="text-center mb-4">
         <h2 className="text-lg font-semibold">Recent Events</h2>
       </div>
