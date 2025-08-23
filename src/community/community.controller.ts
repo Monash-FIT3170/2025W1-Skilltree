@@ -24,7 +24,7 @@ export class CommunityController {
 
   @Post('')
   @UseGuards(JwtGuard)
-  //Have put optional icon upload in controller, not dto. can change
+  //optional icon upload in controller; not in DTO
   @UseInterceptors(FileInterceptor('icon'))
   createCommunity(
     @Body() dto: CommunityCreationDto,
@@ -42,6 +42,11 @@ export class CommunityController {
   @Get(':id')
   getCommunityById(@Param('id') id: string) {
     return this.communityService.getCommunityById(id);
+  }
+
+  @Get('slug/:slug')
+  getCommunityBySlug(@Param('slug') slug: string) {
+    return this.communityService.getCommunityBySlug(slug);
   }
 
   @Delete(':id')
@@ -74,10 +79,10 @@ export class CommunityController {
 
   @Put(':id')
   @UseGuards(JwtGuard)
-  @UseInterceptors(FileInterceptor('file')) // optional file upload for icon updates
+  @UseInterceptors(FileInterceptor('icon'))
   updateCommunity(
     @Param('id') id: string,
-    @Body() dto: UpdateCommunityDto, // no icon field here
+    @Body() dto: UpdateCommunityDto,
     @GetUser() user: User,
     @UploadedFile() file?: Express.Multer.File,
   ) {

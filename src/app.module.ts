@@ -15,34 +15,33 @@ import { diskStorage } from 'multer';
 import { PostModule } from './post/post.module';
 import { EventModule } from './event/event.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { CommunityModule } from './community/community.module';
 
 @Module({
-	imports: [
-		ConfigModule.forRoot({
-			isGlobal: true,
-		}),
-		ServeStaticModule.forRoot({
-			rootPath: join(__dirname, '..', 'uploads'),
-		}),
-		MulterModule.register({
-			dest: join(__dirname, '..', 'uploads'),
-			storage: diskStorage({
-				destination: join(__dirname, '..', 'uploads'),
-				filename(req, file, callback) {
-					callback(null, file.originalname);
-				},
-			}),
-		}),
-		JwtModule.register({}),
-		PassportModule,
-		PrismaModule,
-		UserModule,
-		EventModule,
-		PostModule,
-		CommonModule,
-		LeaderboardModule,
-	],
-	controllers: [AppController],
-	providers: [AppService, JwtStrategy],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ServeStaticModule.forRoot({ rootPath: join(__dirname, '..', 'uploads') }),
+    MulterModule.register({
+      dest: join(__dirname, '..', 'uploads'),
+      storage: diskStorage({
+        destination: join(__dirname, '..', 'uploads'),
+        filename(req, file, callback) {
+          callback(null, file.originalname);
+        },
+      }),
+    }),
+    JwtModule.register({}),
+    PassportModule,
+    PrismaModule,
+    CommonModule,
+
+    UserModule,
+    PostModule,
+    EventModule,
+    LeaderboardModule,
+    CommunityModule, 
+  ],
+  controllers: [AppController],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}
