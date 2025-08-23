@@ -2,24 +2,19 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
-
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from './prisma/prisma.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { AuthModule } from './_oldCode/auth/auth.module';
-import { CommunityModule } from './_oldCode/community/community.module';
 import { UserModule } from './user/user.module';
-import { EventModule } from './_oldCode/event/event.module';
-import { PostModule } from './_oldCode/post/post.module';
-import { FeedbackModule } from './_oldCode/feedback/feedback.module';
-import { AnnouncementModule } from './_oldCode/announcement/announcement.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { CommonModule } from './common/common.module';
-import { CommonService } from './common/common.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './_utils/strategy/jwt.strategy';
 import { diskStorage } from 'multer';
 import { PostModule } from './post/post.module';
 import { EventModule } from './event/event.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
 	imports: [
@@ -39,17 +34,15 @@ import { EventModule } from './event/event.module';
 			}),
 		}),
 		JwtModule.register({}),
+		PassportModule,
 		PrismaModule,
-		AuthModule,
-		CommunityModule,
 		UserModule,
 		EventModule,
 		PostModule,
-		FeedbackModule,
-		AnnouncementModule,
 		CommonModule,
+		LeaderboardModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, CommonService],
+	providers: [AppService, JwtStrategy],
 })
 export class AppModule {}
