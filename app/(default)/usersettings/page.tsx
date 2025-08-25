@@ -25,9 +25,9 @@ export default function UserSettingsPage() {
 
         <div className="flex items-center gap-2">
           <Button asChild variant="outline">
-            <Link href="/settings/password">
-              <KeyRound className="mr-2 h-4 w-4" />
-              Change password
+            <Link href="/change-password">   {/* file lives at app/(auth)/change-password/page.tsx */}
+                <KeyRound className="mr-2 h-4 w-4" />
+                Change password
             </Link>
           </Button>
 
