@@ -77,17 +77,18 @@ export default function DetailsForm({
   return (
     <form onSubmit={handleSubmit}>
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl md:text-3xl">Your Details</CardTitle>
+        <CardHeader className="justify-left">
+          <CardTitle className="text-2xl md:text-2xl space-y6">Your Details</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6">
           {/* Avatar centered */}
-          <div className="flex justify-center">
-            <div
-              role={!readOnly ? "button" : undefined}
-              tabIndex={!readOnly ? 0 : -1}
-              onClick={onPickImage}
+          <div className="flex justify-left">
+              <span className="text-xl p-9 text-muted-foreground">Profile Pic:</span>
+              <div
+                role={!readOnly ? "button" : undefined}
+                tabIndex={!readOnly ? 0 : -1}
+                onClick={onPickImage}
               onKeyDown={onAvatarKeyDown}
               title={readOnly ? undefined : "Click to change photo"}
               className={`rounded-full ${!readOnly ? "cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring" : "cursor-default"}`}
@@ -176,7 +177,7 @@ export default function DetailsForm({
         </CardContent>
 
         {!readOnly && (
-          <CardFooter className="flex gap-2">
+          <CardFooter className="flex gap-2 justify-center p-5">
             <Button type="button" variant="ghost" onClick={handleCancel}>
               <X className="mr-2 h-4 w-4" />
               Cancel

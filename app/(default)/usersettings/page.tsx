@@ -19,7 +19,7 @@ export default function UserSettingsPage() {
   const [editMode, setEditMode] = useState(false);
 
   return (
-    <div className="container mx-auto p-10 m-0 h-screen">
+    <div className="container mx-auto p-20 m-0 h-screen">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">User Settings</h1>
 
