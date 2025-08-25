@@ -59,14 +59,32 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
-        ),
-      }}
+      components={
+        {
+          Navbar: ({ onPreviousClick, onNextClick, className, ...props }: { onPreviousClick: () => void; onNextClick: () => void; className?: string } & React.HTMLAttributes<HTMLDivElement>) => (
+            <div className={cn("flex items-center gap-1", className)} {...props}>
+              <button
+                onClick={onPreviousClick}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+                )}
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <button
+                onClick={onNextClick}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+                )}
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            </div>
+          ),
+        } as any
+      }
       {...props}
     />
   )
