@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
+import type { ApiResponseType } from 'src/types';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
 	constructor(private prisma: PrismaService) {}
 
-	async getMe(user: User) {
+	async getMe(user: User): Promise<ApiResponseType<User>> {
 		const userData = await this.prisma.user.findUnique({
 			where: {
 				id: user.id,
@@ -14,12 +15,17 @@ export class UserService {
 		});
 
 		if (!userData) {
-			throw new HttpException(
-				'The user was not found. Please sign up.',
-				HttpStatus.NOT_FOUND,
-			);
+			return {
+				ok: false,
+				message: 'User not found',
+				status: HttpStatus.NOT_FOUND,
+			}
 		}
 
-		return userData;
+		return {
+			ok: true,
+			message: userData,
+			status: HttpStatus.OK,
+		};
 	}
 }
