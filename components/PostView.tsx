@@ -9,7 +9,7 @@ const postTimeAgo = "5h ago"; // Placeholder for time since post was made
 const postText = "this is me doing a jump. how good!";
 const postImage = "/placeholder.png"; // Placeholder image path
 
-type UserRole = 'admin' | 'verified' | 'normal';
+type UserRole = 'admin' | 'verified' | 'normal' | 'nonMember';
 interface PostViewPanelProps {
     userRole: UserRole;
 }
@@ -53,7 +53,7 @@ export default function PostView({userRole}: PostViewPanelProps) {
 
 
       {/* Action panel */}
-      <PostInteractionPanel userRole={userRole} />
+      {<PostInteractionPanel userRole={userRole} />}
       <br></br>
     </div>
   );

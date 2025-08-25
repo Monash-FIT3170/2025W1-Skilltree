@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import PostFeedbackForm from "./PostFeedbackForm";
 import PostFeedback from "./PostFeedback"
 
-type UserRole = 'admin' | 'verified' | 'normal';
+type UserRole = 'admin' | 'verified' | 'normal' | 'nonMember';
 interface PostInteractionPanelProps {
     userRole: UserRole;
 }
@@ -119,30 +119,36 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
             </div>
             <button className = "hover:underline" onClick = {handleCommentClick}>{postComments} comments</button>
         </div>
-        <div className="p-4 bg-white shadow rounded-lg w-full max-w-4xl mx-auto">
-            <div className="flex flex-row justify-center items-center gap-4">
-                {actions.map((action) => (
-                    <React.Fragment key={action.key}>{action.element}</React.Fragment>
-                ))}
-            </div>
-            
-        </div>
-        <br></br>
-        
-        <div className = {`transition-all duration-300 ease-in-out ${commentsClicked ? "translate-y-0" : "-translate-y-2 pointer-events-none"}`}>
-            {(commentsClicked) && comments.map((comment) => (
-                <PostFeedback {...comment} />
-                ))}
-        </div>
+        {(userRole == 'nonMember') && <div> 
 
-        <div
-            className = {`transition-all duration-300 ease-in-out 
-                ${feedbackClicked? "translate-y-0" : "-translate-y-2 pointer-events-none"}
-            `}
-        >
-            {feedbackClicked && <PostFeedbackForm />}
-        </div>
+            <div className="p-4 bg-white shadow rounded-lg w-full max-w-4xl mx-auto">
+                <div className="flex flex-row justify-center items-center gap-4">
+                    {actions.map((action) => (
+                        <React.Fragment key={action.key}>{action.element}</React.Fragment>
+                    ))}
+                </div>
+                
+            </div>
+            <br></br>
+            
+            <div className = {`transition-all duration-300 ease-in-out ${commentsClicked ? "translate-y-0" : "-translate-y-2 pointer-events-none"}`}>
+                {(commentsClicked) && comments.map((comment) => (
+                    <PostFeedback {...comment} />
+                    ))}
+            </div>
+
+            <div
+                className = {`transition-all duration-300 ease-in-out 
+                    ${feedbackClicked? "translate-y-0" : "-translate-y-2 pointer-events-none"}
+                `}
+            >
+                {feedbackClicked && <PostFeedbackForm />}
+            </div>
+
+        </div>}
         
+        
+            
         </div>
     );
 }

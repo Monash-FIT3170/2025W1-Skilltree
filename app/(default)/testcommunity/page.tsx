@@ -82,14 +82,15 @@ export default function CommunityPage() {
         </aside>
 
         {/* Posts feed */}
+      
         <section className="md:col-span-2 space-y-6 overflow-y-auto max-h-[100vh]">
           {posts.map((post) => (
             <article
               key={post.id}
               className="bg-white rounded-xl shadow-sm p-4 space-y-4"
             >
-              <PostProofPracButton />
-              <PostView userRole={"normal"}/>
+              {isMember && <PostProofPracButton />}
+              <PostView userRole={"nonMember"}/>
               <PostView userRole={"normal"}/>
               <PostView userRole={"normal"}/>
             </article>
