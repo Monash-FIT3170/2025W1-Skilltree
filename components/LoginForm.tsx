@@ -34,7 +34,7 @@ const LoginForm = () => {
       const data = await res.json();
       if (data?.success) {
         setMessage("Login successful");
-        // router.push("/dashboard"); // <- uncomment when you have a target
+        router.replace("/"); // <- uncomment when you have a target
       } else {
         setMessage("Login failed: " + (data?.message || "Unknown error"));
       }
