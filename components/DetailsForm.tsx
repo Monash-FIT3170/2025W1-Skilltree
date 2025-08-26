@@ -30,14 +30,11 @@ type User = {
 };
 
 export default function DetailsForm({
-    readOnly = false,
   initialUser,
   onSave,
 }: {
-    readOnly?: boolean;
   initialUser: User;
-  onSave?: (updated: { name: string; image: string | null }) => void ;
-  onCancel?: () => void;
+  onSave?: (updated: { name: string; image: string | null }) => void;
 }) {
   // internal edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -46,29 +43,21 @@ export default function DetailsForm({
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [name, setName] = useState(initialUser.name);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialUser.image ?? null);
-
-  // DOB/Email are non-editable by spec; we only show them
-  const dobDate = parseISODate(initialUser.dob);
-
-  useEffect(() => {
-    // reset local state if initial user changes
-    setName(initialUser.name);
-    setPreviewUrl(initialUser.image ?? null);
-  }, [initialUser]);
-
-  const resetEdits = () => {
-    setName(initialUser.name);
-    setPreviewUrl(initialUser.image ?? null);
-  };
-
   const [dob, setDob] = useState<Date | null>(parseISODate(initialUser.dob));
   const [dobOpen, setDobOpen] = useState(false);
 
+  // reset local state if initial user changes
   useEffect(() => {
     setName(initialUser.name);
     setPreviewUrl(initialUser.image ?? null);
     setDob(parseISODate(initialUser.dob));
   }, [initialUser]);
+
+  const resetEdits = () => {
+    setName(initialUser.name);
+    setPreviewUrl(initialUser.image ?? null);
+    setDob(parseISODate(initialUser.dob)); // ← also reset DOB
+  };
 
   const onPickImage = () => isEditing && fileRef.current?.click();
 
@@ -120,7 +109,6 @@ export default function DetailsForm({
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-2xl md:text-2xl">Your Details</CardTitle>
 
-        {/* When not editing -> Edit button; When editing -> Save (opens confirm) */}
         {!isEditing ? (
           <Button
             type="button"
@@ -156,7 +144,6 @@ export default function DetailsForm({
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                {/* Cancel now exits edit mode and discards changes */}
                 <AlertDialogCancel
                   disabled={saving}
                   onClick={() => {
@@ -177,11 +164,6 @@ export default function DetailsForm({
       </CardHeader>
 
       <CardContent>
-        {/* Grid:
-            Col1 (row-span-2): Profile Pic label + Avatar (clickable in edit mode)
-            Col2: Name (editable), then Email (ro)
-            Col3: Total XP (ro), then DOB (ro, calendar UI but disabled)
-        */}
         <div className="grid gap-4 md:grid-cols-3 items-start">
           {/* Col 1: Profile Pic */}
           <div className="md:row-span-2">
@@ -243,49 +225,59 @@ export default function DetailsForm({
             <Input id="email" value={initialUser.email} readOnly disabled className="mt-2" />
           </div>
 
-          {/* Col 3 / Row 2: DOB (calendar UI, but disabled permanently per spec) */}
+          {/* Col 3 / Row 2: DOB (calendar; disabled unless editing) */}
           <div>
-              <Label>Date of birth</Label>
-              <Popover open={dobOpen} onOpenChange={(o) => !readOnly && setDobOpen(o)}>
-                <PopoverTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled={readOnly}
-                    className="mt-2 w-full justify-start text-left font-normal"
-                    onClick={() => !readOnly && setDobOpen(true)}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dob ? formatDate(dob) : (
-                      <span className="text-muted-foreground">Pick a date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0 z-50"
-                  align="start"
-                  side="bottom"
-                  sideOffset={6}
+            <Label>Date of birth</Label>
+
+            {/* Controlled popover; only opens/works in edit mode */}
+            <Popover
+              open={isEditing ? dobOpen : false}
+              onOpenChange={(o) => {
+                if (isEditing) setDobOpen(o);
+              }}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!isEditing}
+                  className="mt-2 w-full justify-start text-left font-normal"
+                  onClick={() => {
+                    if (isEditing) setDobOpen(true);
+                  }}
                 >
-                  <Calendar
-                    mode="single"
-                    numberOfMonths={1}
-                    captionLayout="dropdown"
-                    hideNavigation
-                    fromYear={1900}
-                    toYear={new Date().getFullYear()}
-                    selected={dob ?? undefined}
-                    onSelect={(d) => {
-                      if (readOnly || !d) return;
-                      setDob(d);
-                      setDobOpen(false);
-                    }}
-                    initialFocus
-                    disabled={(date) => readOnly || date > new Date()}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dob ? formatDate(dob) : (
+                    <span className="text-muted-foreground">Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent
+                className="w-auto p-0 z-50"
+                align="start"
+                side="bottom"
+                sideOffset={6}
+              >
+                <Calendar
+                  mode="single"
+                  numberOfMonths={1}
+                  captionLayout="dropdown"
+                  hideNavigation
+                  fromYear={1900}
+                  toYear={new Date().getFullYear()}
+                  selected={dob ?? undefined}
+                  onSelect={(d) => {
+                    if (!isEditing || !d) return;
+                    setDob(d);
+                    setDobOpen(false);
+                  }}
+                  initialFocus
+                  disabled={(date) => !isEditing || date > new Date()}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
       </CardContent>
     </Card>
