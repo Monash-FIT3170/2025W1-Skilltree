@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -13,96 +13,129 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setMessage("");
 
     try {
-      // TODO: use axios instead of fetch
-      // await axios.post("/api/login", {body}, {headers})
       const res = await fetch("/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
       });
-
       const data = await res.json();
-      if (data.success) {
+      if (data?.success) {
         setMessage("Login successful");
+        // router.push("/dashboard"); // <- uncomment when you have a target
       } else {
-        setMessage("Login failed: " + data.message);
+        setMessage("Login failed: " + (data?.message || "Unknown error"));
       }
-    } catch (error) {
-      postMessage("Error occured.");
+    } catch (err) {
+      console.error(err);
+      setMessage("Error occurred.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full flex flex-col justify-center items-stretch gap-5"
-    >
-      <Input
-        value={form.email}
-        onChange={handleChange}
-        name="email"
-        type="text"
-        placeholder="Enter your email"
-        required
-      />
-      <Input
-        value={form.password}
-        onChange={handleChange}
-        name="password"
-        type="password"
-        placeholder="Enter your password"
-        required
-      />
+    <form onSubmit={handleSubmit}>
+      {/* Card-like container */}
+      <div className="rounded-md border bg-muted shadow-sm p-6">
+        {/* Email */}
+        <div className="space-y-2 mb-4">
+          <label htmlFor="email" className="text-sm font-medium">
+            Email
+          </label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Enter your email address"
+            required
+            className="bg-white"
+          />
+        </div>
 
-      {/* <Link href="/forgetpass">Forget Password?</Link> */}
+        {/* Password */}
+        <div className="space-y-2 mb-5">
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            required
+            className="bg-white"
+          />
+        </div>
 
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between">
-        <Button className="flex-1" type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Submit"}
-        </Button>
+        {/* Primary login button (dark) */}
         <Button
-          onClick={() => router.push("/forgot-password")}
-          className="flex-1"
-          variant="link"
-          type="button"
+          type="submit"
+          disabled={loading}
+          className="w-full bg-slate-900 text-white hover:bg-slate-900/90"
         >
-          Forgot Password? Click here.
+          {loading ? "Logging in..." : "Log In"}
         </Button>
+
+        {/* Divider with 'Or' */}
+        <div className="relative my-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-300" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="px-2 bg-muted ">Or</span>
+          </div>
+        </div>
+
+        {/* Forgot password link (centered, subtle) */}
+        <div className="mb-4 text-center">
+          <Button
+            type="button"
+            variant="link"
+            className="p-0 h-auto underline"
+            onClick={() => router.push("/forgot-password")}
+          >
+            Forgot Password
+          </Button>
+        </div>
+
+        {/* New user text */}
+        <p className="text-center text-sm text-muted-foreground mb-3">
+          New to SkillTree ?
+        </p>
+
+        {/* Sign Up button (dark, full width) */}
+        <Button
+          type="button"
+          onClick={() => router.push("/signup")}
+          className="w-full bg-slate-900 text-white hover:bg-slate-900/90"
+        >
+          Sign Up
+        </Button>
+
+        {/* Message */}
+        {message && (
+          <p className="mt-4 text-center text-sm" aria-live="polite">
+            {message}
+          </p>
+        )}
       </div>
-
-      {message && <p className="message">{message}</p>}
-
-      <Button
-        type="button"
-        onClick={() => router.push("/signup")}
-        className="w-full"
-        variant="link"
-      >
-        Don&apos;t have an account? Sign Up
-      </Button>
     </form>
   );
 };
