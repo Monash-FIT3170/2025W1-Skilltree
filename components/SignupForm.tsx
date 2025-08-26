@@ -92,6 +92,7 @@ const SignupForm = () => {
               placeholder="Enter your full name"
               value={form.name}
               onChange={handleChange}
+              className="bg-white"  
               required
             />
           </div>
@@ -106,6 +107,7 @@ const SignupForm = () => {
               placeholder="Enter your email address"
               value={form.email}
               onChange={handleChange}
+              className="bg-white"  
               required
             />
           </div>
@@ -120,6 +122,7 @@ const SignupForm = () => {
               placeholder="Enter your password"
               value={form.password}
               onChange={handleChange}
+              className="bg-white"  
               required
             />
           </div>
@@ -134,6 +137,7 @@ const SignupForm = () => {
               placeholder="Re-Enter your password"
               value={form.confirm}
               onChange={handleChange}
+              className="bg-white"  
               required
             />
           </div>
@@ -147,6 +151,7 @@ const SignupForm = () => {
               type="date"
               value={form.dob}
               onChange={handleChange}
+              className="bg-white"  
               required
             />
           </div>
@@ -160,6 +165,7 @@ const SignupForm = () => {
               type="file"
               accept="image/*"
               onChange={handleFile}
+              className="bg-white"  
             />
             {/* Optional tiny filename text */}
             {form.profile && (
