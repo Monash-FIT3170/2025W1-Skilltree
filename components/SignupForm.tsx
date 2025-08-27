@@ -71,7 +71,7 @@ const SignupForm = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email (first, to match your mock) */}
           <div className="space-y-1">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
             <Input
               id="email"
               name="email"
@@ -86,7 +86,7 @@ const SignupForm = () => {
 
           {/* Name */}
           <div className="space-y-1">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="text-sm font-medium">Name</Label>
             <Input
               id="name"
               name="name"
@@ -101,7 +101,7 @@ const SignupForm = () => {
 
           {/* Password */}
           <div className="space-y-1">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-sm font-medium">Password</Label>
             <Input
               id="password"
               name="password"
@@ -116,7 +116,7 @@ const SignupForm = () => {
 
           {/* Re-Enter Password */}
           <div className="space-y-1">
-            <Label htmlFor="confirm">Re-Enter Password</Label>
+            <Label htmlFor="confirm" className="text-sm font-medium">Re-Enter Password</Label>
             <Input
               id="confirm"
               name="confirm"
@@ -131,7 +131,7 @@ const SignupForm = () => {
 
           {/* DOB - single date component: Popover + Calendar (shadcn) */}
           <div className="space-y-1">
-            <Label htmlFor="dob">DOB</Label>
+            <Label htmlFor="dob" className="text-sm font-medium">DOB</Label>
             <div className="relative">
               <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Popover>
