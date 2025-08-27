@@ -13,7 +13,7 @@
 ############################################
 
 ### Get the current user
-GET http://localhost:6969/user/me
+GET http://localhost:3000/user/me
 Authorization: Bearer {{bearerToken}}
 
 ############################################
@@ -21,7 +21,7 @@ Authorization: Bearer {{bearerToken}}
 ############################################
 
 ### Login the user
-POST http://localhost:6969/auth/signin
+POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### Register the user
-POST http://localhost:6969/auth/signup
+POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ### Forgot password
-PATCH http://localhost:6969/auth/forgot-password
+PATCH http://localhost:3000/auth/forgot-password
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
@@ -52,10 +52,10 @@ Authorization: Bearer {{bearerToken}}
 ############################################
 
 ### Get all communities
-GET http://localhost:6969/community
+GET http://localhost:3000/community
 
 ### Create community
-POST http://localhost:6969/community
+POST http://localhost:3000/community
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
@@ -69,38 +69,38 @@ Authorization: Bearer {{bearerToken}}
 }
 
 ### Get community by id
-GET http://localhost:6969/community/{{communityId}}
+GET http://localhost:3000/community/{{communityId}}
 
 ### Delete community by id
-DELETE http://localhost:6969/community/{{communityId}}
+DELETE http://localhost:3000/community/{{communityId}}
 Authorization: Bearer {{bearerToken}}
 
 ### Join a community
-POST http://localhost:6969/community/join/{{communityId}}
+POST http://localhost:3000/community/join/{{communityId}}
 Authorization: Bearer {{bearerToken}}
 
 ### Leave a community
-POST http://localhost:6969/community/leave/{{communityId}}
+POST http://localhost:3000/community/leave/{{communityId}}
 Authorization: Bearer {{bearerToken}}
 
 ### Get community members
-GET http://localhost:6969/community/{{communityId}}/members
+GET http://localhost:3000/community/{{communityId}}/members
 
 ### Get community admins
-GET http://localhost:6969/community/{{communityId}}/admins
+GET http://localhost:3000/community/{{communityId}}/admins
 
 ####################
 # Event
 ####################
 
 ### Get all events
-GET http://localhost:6969/event
+GET http://localhost:3000/event
 
 ### Get event by id
-GET http://localhost:6969/event/{{eventId}}
+GET http://localhost:3000/event/{{eventId}}
 
 ### Create a event
-POST http://localhost:6969/event
+POST http://localhost:3000/event
 Authorization: Bearer {{bearerToken}}
 Content-Type: application/json
 
@@ -111,7 +111,7 @@ Content-Type: application/json
 }
 
 ### Update event
-PATCH http://localhost:6969/event/{{eventId}}
+PATCH http://localhost:3000/event/{{eventId}}
 Authorization: Bearer {{bearerToken}}
 Content-Type: application/json
 
@@ -126,13 +126,13 @@ Content-Type: application/json
 ####################
 
 ### Get all announcement
-GET http://localhost:6969/announcement
+GET http://localhost:3000/announcement
 
 ### Get announcement by id
-GET http://localhost:6969/announcement/{{announcementId}}
+GET http://localhost:3000/announcement/{{announcementId}}
 
 ### Create a event
-POST http://localhost:6969/announcement
+POST http://localhost:3000/announcement
 Authorization: Bearer {{bearerToken}}
 Content-Type: application/json
 
