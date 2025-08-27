@@ -195,7 +195,7 @@ export class SkilltreeService {
 			});
 		} catch (error) {
 			if (error instanceof ForbiddenException) throw error;
-			if ((error as any).code === 'P2025') {
+			if (error.code === 'P2025') {
 				throw new NotFoundException('Skill tree not found');
 			}
 			throw new InternalServerErrorException('Failed to update skill tree');
@@ -236,7 +236,7 @@ export class SkilltreeService {
 			return { message: 'Skill tree deleted successfully' };
 		} catch (error) {
 			if (error instanceof ForbiddenException) throw error;
-			if ((error as any).code === 'P2025') {
+			if (error.code === 'P2025') {
 				throw new NotFoundException('Skill tree not found');
 			}
 			throw new InternalServerErrorException('Failed to delete skill tree');
