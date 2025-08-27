@@ -19,7 +19,7 @@ enum VerificationStatus {
 }
 
 model User {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   name        String
   email       String   @unique
   dateOfBirth DateTime
@@ -43,7 +43,7 @@ model User {
 }
 
 model SkillTree {
-  id          String @id @default(cuid())
+  id          String @id @default(uuid())
   name        String
   description String @default("")
 
@@ -60,7 +60,7 @@ model SkillTree {
 }
 
 model SkillNode {
-  id          String  @id @default(cuid())
+  id          String  @id @default(uuid())
   name        String
   description String?
   xpPoint     Int     @default(100)
@@ -82,7 +82,7 @@ model SkillNode {
 }
 
 model Post {
-  id         String @id @default(cuid())
+  id         String @id @default(uuid())
   content    String
   proofMedia String
 
@@ -131,7 +131,7 @@ model Feedback {
 }
 
 model Tag {
-  id                     String  @id @default(cuid())
+  id                     String  @id @default(uuid())
   name                   String  @unique
   isRestricted           Boolean @default(false)
   restrictionDescription String  @default("You are not allowed to view the SkillTree because of community restrictions.")
@@ -145,7 +145,7 @@ model Tag {
 }
 
 model Event {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   title     String
   isRanked  Boolean  @default(false)
   xpPayout  Int      @default(0)

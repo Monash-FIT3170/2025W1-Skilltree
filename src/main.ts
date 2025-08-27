@@ -67,6 +67,7 @@ async function bootstrap() {
 		console.log(
 			'📚 Swagger documentation available at: http://localhost:3000/api',
 		);
+		console.log('🔌 API endpoints available at: http://localhost:3000/');
 	} catch (error) {
 		console.error('❌ Failed to load swagger.json:', error.message);
 
@@ -97,6 +98,7 @@ async function bootstrap() {
 		console.log(
 			'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
 		);
+		console.log('🔌 API endpoints available at: http://localhost:3000/');
 	}
 
 	await app.listen(process.env.PORT || 3000);

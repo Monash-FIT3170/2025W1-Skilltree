@@ -300,6 +300,192 @@
 						"type": "integer"
 					}
 				}
+			},
+			"AuthSignupDto": {
+				"type": "object",
+				"required": ["name", "email", "password", "dateOfBirth"],
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"password": {
+						"type": "string",
+						"minLength": 6,
+						"description": "User's password (minimum 6 characters)"
+					},
+					"dateOfBirth": {
+						"type": "string",
+						"format": "date",
+						"description": "User's date of birth"
+					}
+				}
+			},
+			"AuthSigninDto": {
+				"type": "object",
+				"required": ["email", "password"],
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"password": {
+						"type": "string",
+						"description": "User's password"
+					}
+				}
+			},
+			"AuthResponse": {
+				"type": "object",
+				"properties": {
+					"access_token": {
+						"type": "string",
+						"description": "JWT access token"
+					},
+					"user": {
+						"$ref": "#/components/schemas/UserProfile"
+					}
+				}
+			},
+			"UserProfile": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string",
+						"format": "email"
+					},
+					"dateOfBirth": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					},
+					"xpPoint": {
+						"type": "integer"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"UpdateUserDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"dateOfBirth": {
+						"type": "string",
+						"format": "date",
+						"description": "User's date of birth"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			},
+			"UserStatsDto": {
+				"type": "object",
+				"properties": {
+					"totalXP": {
+						"type": "integer",
+						"description": "Total experience points"
+					},
+					"skillTreesJoined": {
+						"type": "integer",
+						"description": "Number of skill trees joined"
+					},
+					"skillTreesCreated": {
+						"type": "integer",
+						"description": "Number of skill trees created"
+					},
+					"skillNodesCompleted": {
+						"type": "integer",
+						"description": "Number of skill nodes completed"
+					},
+					"postsCreated": {
+						"type": "integer",
+						"description": "Number of posts created"
+					},
+					"eventsWon": {
+						"type": "integer",
+						"description": "Number of events won"
+					},
+					"joinDate": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Date when user joined"
+					},
+					"lastActive": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last activity date"
+					}
+				}
+			},
+			"ChangePasswordDto": {
+				"type": "object",
+				"required": ["currentPassword", "newPassword"],
+				"properties": {
+					"currentPassword": {
+						"type": "string",
+						"description": "Current password"
+					},
+					"newPassword": {
+						"type": "string",
+						"minLength": 6,
+						"description": "New password (minimum 6 characters)"
+					}
+				}
+			},
+			"ForgotPasswordDto": {
+				"type": "object",
+				"required": ["email"],
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "Email address to send password reset link"
+					}
+				}
+			},
+			"MessageResponse": {
+				"type": "object",
+				"properties": {
+					"message": {
+						"type": "string"
+					}
+				}
+			},
+			"TokenResponse": {
+				"type": "object",
+				"properties": {
+					"access_token": {
+						"type": "string"
+					}
+				}
 			}
 		},
 		"responses": {
@@ -329,6 +515,21 @@
 							"ok": false,
 							"message": "You must be an admin to perform this action",
 							"status": 403
+						}
+					}
+				}
+			},
+			"BadRequest": {
+				"description": "Bad request - Invalid input data",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/Error"
+						},
+						"example": {
+							"ok": false,
+							"message": "Validation failed",
+							"status": 400
 						}
 					}
 				}
@@ -1057,9 +1258,563 @@
 					}
 				}
 			}
+		},
+		"/auth/signup": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "User registration",
+				"description": "Register a new user account",
+				"security": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthSignupDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "User registered successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/AuthResponse"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"409": {
+						"$ref": "#/components/responses/Conflict"
+					},
+					"400": {
+						"$ref": "#/components/responses/BadRequest"
+					}
+				}
+			}
+		},
+		"/auth/signin": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "User login",
+				"description": "Authenticate user and return JWT token",
+				"security": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthSigninDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User authenticated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/AuthResponse"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					}
+				}
+			}
+		},
+		"/auth/profile": {
+			"get": {
+				"tags": ["Authentication"],
+				"summary": "Get current user profile",
+				"description": "Get the profile of the currently authenticated user",
+				"responses": {
+					"200": {
+						"description": "User profile retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/UserProfile"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					}
+				}
+			}
+		},
+		"/auth/change-password": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "Change user password",
+				"description": "Change the password of the currently authenticated user",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ChangePasswordDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Password changed successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/MessageResponse"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					}
+				}
+			}
+		},
+		"/auth/forgot-password": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "Request password reset",
+				"description": "Request a password reset link to be sent to email",
+				"security": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ForgotPasswordDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Password reset request processed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/MessageResponse"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/refresh-token": {
+			"post": {
+				"tags": ["Authentication"],
+				"summary": "Refresh JWT token",
+				"description": "Generate a new JWT token for the authenticated user",
+				"responses": {
+					"200": {
+						"description": "Token refreshed successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/TokenResponse"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					}
+				}
+			}
+		},
+		"/user/me": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get current user information",
+				"description": "Get detailed information about the currently authenticated user",
+				"responses": {
+					"200": {
+						"description": "User information retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/UserProfile"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					}
+				}
+			}
+		},
+		"/user/profile": {
+			"put": {
+				"tags": ["User"],
+				"summary": "Update user profile",
+				"description": "Update the profile information of the currently authenticated user",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateUserDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Profile updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/UserProfile"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					},
+					"400": {
+						"$ref": "#/components/responses/BadRequest"
+					}
+				}
+			}
+		},
+		"/user/{id}": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get user by ID",
+				"description": "Get public information about a specific user",
+				"security": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User information retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "string",
+															"format": "uuid"
+														},
+														"name": {
+															"type": "string"
+														},
+														"pfp": {
+															"type": "string"
+														},
+														"xpPoint": {
+															"type": "integer"
+														},
+														"createdAt": {
+															"type": "string",
+															"format": "date-time"
+														},
+														"updatedAt": {
+															"type": "string",
+															"format": "date-time"
+														}
+													}
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					}
+				}
+			}
+		},
+		"/user": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get all users",
+				"description": "Get a list of all users ordered by XP points",
+				"security": [],
+				"responses": {
+					"200": {
+						"description": "Users retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"id": {
+																"type": "string",
+																"format": "uuid"
+															},
+															"name": {
+																"type": "string"
+															},
+															"pfp": {
+																"type": "string"
+															},
+															"xpPoint": {
+																"type": "integer"
+															},
+															"createdAt": {
+																"type": "string",
+																"format": "date-time"
+															},
+															"updatedAt": {
+																"type": "string",
+																"format": "date-time"
+															}
+														}
+													}
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"500": {
+						"$ref": "#/components/responses/InternalServerError"
+					}
+				}
+			}
+		},
+		"/user/stats/me": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get current user statistics",
+				"description": "Get detailed statistics for the currently authenticated user",
+				"responses": {
+					"200": {
+						"description": "User statistics retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/UserStatsDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"401": {
+						"$ref": "#/components/responses/Unauthorized"
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					}
+				}
+			}
+		},
+		"/user/stats/{id}": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Get user statistics by ID",
+				"description": "Get statistics for a specific user",
+				"security": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User statistics retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ApiResponse"
+										},
+										{
+											"properties": {
+												"message": {
+													"$ref": "#/components/schemas/UserStatsDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"$ref": "#/components/responses/NotFound"
+					},
+					"500": {
+						"$ref": "#/components/responses/InternalServerError"
+					}
+				}
+			}
 		}
 	},
 	"tags": [
+		{
+			"name": "Authentication",
+			"description": "User authentication and account management endpoints"
+		},
+		{
+			"name": "User",
+			"description": "User profile and statistics endpoints"
+		},
 		{
 			"name": "SkillTree - Public",
 			"description": "Public endpoints that don't require authentication"
