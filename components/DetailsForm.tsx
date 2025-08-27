@@ -167,7 +167,7 @@ export default function DetailsForm({
         <div className="grid gap-4 md:grid-cols-3 items-start">
           {/* Col 1: Profile Pic */}
           <div className="md:row-span-2">
-            <Label className="text-sm text-muted-foreground">Profile Pic:</Label>
+            <Label className="text-m ml-2">Profile Pic:</Label>
             <div
               role={isEditing ? "button" : undefined}
               tabIndex={isEditing ? 0 : -1}
@@ -263,7 +263,6 @@ export default function DetailsForm({
                   mode="single"
                   numberOfMonths={1}
                   captionLayout="dropdown"
-                  hideNavigation
                   fromYear={1900}
                   toYear={new Date().getFullYear()}
                   selected={dob ?? undefined}

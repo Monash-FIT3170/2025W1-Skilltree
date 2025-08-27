@@ -158,7 +158,7 @@ const SignupForm = () => {
                         dob: d ? format(d, "yyyy-MM-dd") : "",
                       }))
                     }
-                    captionLayout="dropdown-buttons"
+                    captionLayout="dropdown"
                     fromYear={1950}
                     toYear={new Date().getFullYear()}
                     initialFocus
