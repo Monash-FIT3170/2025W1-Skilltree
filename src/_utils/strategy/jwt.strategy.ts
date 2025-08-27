@@ -22,8 +22,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 				id: payload.sub,
 			},
 		});
-		// @ts-expect-error password_hash is not optional
-		delete user?.password_hash;
+		// Remove sensitive information
+		if (user) {
+			delete (user as any).hash;
+		}
 		return user;
 	}
 }

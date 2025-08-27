@@ -1,5 +1,5 @@
-export type ApiResponseType<T> = {
-	message: T | undefined | null | string;
-	status: number;
+export type TApiResponse<T = any> = {
 	ok: boolean;
+	message: T | string;
+	status: number;
 };

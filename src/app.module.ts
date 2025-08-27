@@ -12,6 +12,7 @@ import { CommonModule } from './common/common.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './_utils/strategy/jwt.strategy';
 import { diskStorage } from 'multer';
+import { SkilltreeModule } from './skilltree/skilltree.module';
 
 @Module({
 	imports: [
@@ -35,6 +36,7 @@ import { diskStorage } from 'multer';
 		PrismaModule,
 		UserModule,
 		CommonModule,
+		SkilltreeModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],
