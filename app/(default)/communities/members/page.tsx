@@ -1,5 +1,7 @@
 "use client";
 
+import { CommunityType } from "@/models/Community";
+import { UserType } from "@/models/User";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -19,39 +21,67 @@ export default function ViewMembers() {
   const router = useRouter();
   const communityId = params.id;
 
-  // === Members ===
-  const [members, setMembers] = useState<
-    { id: number; name: string; role: string }[]
-  >([{ id: 1, name: "John Doe", role: "admin" },
-        { id: 2, name: "Jane Smith", role: "moderator" },
-        { id: 3, name: "Alex Johnson", role: "member" },]);
+  // === States ===
+  const [community, setCommunity] = useState<CommunityType | null>(null); // Store community details
+  const [members, setMembers] = useState<UserType[]>([]); // Store members list
   const [loading, setLoading] = useState(false); // Loading state
 
+  // Fetch community details
+  useEffect(() => {
+    if (communityId) {
+      const fetchCommunity = async () => {
+        setLoading(true);
+        const response = await fetch(`/api/communities/${communityId}`);
+        const data = await response.json();
+        setCommunity(data); // Set community data
+        setLoading(false);
+      };
+
+      fetchCommunity();
+    }
+  }, [communityId]);
+
+  // Fetch members for the specific community
+  useEffect(() => {
+    if (!communityId) return;
+
+    const fetchMembers = async () => {
+      setLoading(true);
+      const response = await fetch(`/api/communities/${communityId}/members`);
+      const data = await response.json();
+      setMembers(data); // Set members list
+      setLoading(false);
+    };
+
+    fetchMembers();
+  }, [communityId]);
+
   // === Handlers ===
-  // Update member role
-  const updateMemberRole = (id: number, newRole: string) => {
+  const updateMemberRole = (id: string, newRole: string) => {
     setMembers((prev) =>
       prev.map((m) => {
-        if (m.id !== id) return m;
+        if (m._id !== id) return m;
         return { ...m, role: newRole };
       })
     );
   };
 
-  // Remove member
-  const removeMember = (id: number) => {
-    setMembers((prev) => prev.filter((m) => m.id !== id));
+  const removeMember = (id: string) => {
+    setMembers((prev) => prev.filter((m) => m._id !== id));
   };
 
-  // Simulate fetching members (using mock data here)
-  useEffect(() => {
-    if (!communityId) return;
+  // === Rendering ===
+  if (loading) {
+    return <div>Loading...</div>; // Show loading while fetching data
+  }
 
-    console.log("Fetching members for community:", communityId); // Debugging log
-  }, [communityId]);
+  if (!community) {
+    return <div>No community found.</div>; // Handle case if no community data
+  }
 
   return (
     <div className="min-h-screen min-w-full flex flex-col">
+      {/* Community Details Section */}
       <header className="w-full px-8 py-4 border-b flex justify-between items-center">
         <Button
           variant="ghost"
@@ -59,23 +89,29 @@ export default function ViewMembers() {
           onClick={() => router.back()}
           className="mb-4 flex items-center space-x-1"
         >
-          <span>Back to Community</span>
+          <span>Back to Communities</span>
         </Button>
-        <h2 className="text-2xl font-semibold">View All Members</h2>
+        <h2 className="text-2xl font-semibold">Community Details</h2>
       </header>
 
       <main className="flex-1 p-8">
-        {/* Loading State */}
-        {loading && <p>Loading members...</p>}
+        <div className="mb-8">
+          <h3 className="text-xl font-medium">{community.name}</h3>
+          <p><strong>ID:</strong> {community._id}</p>
+          <p><strong>Creator:</strong> {community.creator}</p>
+          <p><strong>Admins:</strong> {community.admins.join(", ")}</p>
+          <p><strong>Verified Users:</strong> {community.verifiedUsers.join(", ")}</p>
+        </div>
 
-        {/* Members List */}
+        {/* Members List Section */}
+        <h3 className="text-xl font-medium mb-4">Manage Members</h3>
         <div className="space-y-4">
           {members.length === 0 && !loading && (
             <p>No members in the community yet.</p>
           )}
           {members.map((member) => (
             <div
-              key={member.id}
+              key={member._id}
               className="flex items-center justify-between border p-2 rounded"
             >
               <div className="flex items-center space-x-3">
@@ -89,19 +125,6 @@ export default function ViewMembers() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <span
-                  className={`font-semibold px-2 py-1 rounded ${
-                    member.role === "admin"
-                      ? "bg-red-500 text-white"
-                      : member.role === "moderator"
-                      ? "bg-yellow-500 text-white"
-                      : "bg-green-500 text-white"
-                  }`}
-                >
-                  {member.role.toUpperCase()}
-                </span>
-
                 {/* Dropdown Menu for Role Change */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -113,8 +136,8 @@ export default function ViewMembers() {
                     {roles.map((role) => (
                       <DropdownMenuItem
                         key={role}
-                        onSelect={() => updateMemberRole(member.id, role)}
-                        className="w-full" // Ensures the button inside the dropdown takes full width
+                        onSelect={() => updateMemberRole(member._id, role)}
+                        className="w-full"
                       >
                         {role.charAt(0).toUpperCase() + role.slice(1)}
                       </DropdownMenuItem>
@@ -126,15 +149,14 @@ export default function ViewMembers() {
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => removeMember(member.id)}
+                  onClick={() => removeMember(member._id)}
                 >
                   Remove
                 </Button>
-              </div>
-            </div>
-          ))}
+              </div>)
+          )}
         </div>
       </main>
     </div>
-  );
-}
+    )
+  };
