@@ -6,7 +6,8 @@
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
-		"db:dev:migrate": "prisma migrate dev",
+		"prisma:migrate:dev": "prisma migrate dev",
+		"prisma:seed": "ts-node prisma/seed.ts",
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "nest start",
@@ -18,7 +19,9 @@
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-		"test:e2e": "jest --config ./test/jest-e2e.json"
+		"test:e2e": "jest --config ./test/jest-e2e.json",
+		"swagger:validate": "node validate-swagger.js",
+		"new:module": "read -p \"Enter module name: \" moduleName && nest g mo $moduleName; nest g service $moduleName --no-spec; nest g controller $moduleName --no-spec"
 	},
 	"dependencies": {
 		"@nestjs/common": "^11.0.1",
@@ -37,7 +40,8 @@
 		"passport": "^0.7.0",
 		"passport-jwt": "^4.0.1",
 		"reflect-metadata": "^0.2.2",
-		"rxjs": "^7.8.1"
+		"rxjs": "^7.8.1",
+		"swagger-ui-express": "^5.0.1"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.2.0",
