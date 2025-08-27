@@ -149,7 +149,7 @@ export default function CommunitiesPage() {
               className="bg-slate-900 text-white hover:bg-slate-900/90"
               onClick={confirmJoin}
             >
-              Confirm Join
+              Confirm
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
