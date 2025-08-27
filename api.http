@@ -3,24 +3,25 @@
 ############################################
 
 @bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bnJodmMwMDAwN2JieDJmaXMyMzRkIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzM2NjQsImV4cCI6MTc0NzYzNzI2NH0.7B9u1WExQtQz6L8QMNUIevhtV-xwKu1G5s4aKI9PRBo
-@communityId = 64b0f3c1d2e4a7f8b8c4e5a1
-@eventId = 64b0f3c1d2e4a7f8b8c4e5a2
-@experienceId = 64b0f3c1d2e4a7f8b8c4e5a3
-
+@skillTreeId = 64b0f3c1d2e4a7f8b8c4e5a1
+@userId = 64b0f3c1d2e4a7f8b8c4e5a2
 
 ############################################
-# User
+# Authentication
 ############################################
 
-### Get the current user
-GET http://localhost:3000/user/me
-Authorization: Bearer {{bearerToken}}
+### User registration
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
 
-############################################
-# Auth
-############################################
+{
+  "name": "John Doe",
+  "email": "john@doe.com",
+  "password": "John@Doe@New@123",
+  "dateOfBirth": "1990-01-01"
+}
 
-### Login the user
+### User login
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
@@ -29,114 +30,150 @@ Content-Type: application/json
   "password": "JohnNew@123"
 }
 
-### Register the user
-POST http://localhost:3000/auth/signup
-Content-Type: application/json
+### Get current user profile
+GET http://localhost:3000/auth/profile
+Authorization: Bearer {{bearerToken}}
 
-{
-  "email": "john@doe.com",
-  "password": "John@Doe@New@123"
-}
-
-### Forgot password
-PATCH http://localhost:3000/auth/forgot-password
+### Change password
+POST http://localhost:3000/auth/change-password
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
 {
-  "password": "JohnNew@123"
+  "currentPassword": "JohnNew@123",
+  "newPassword": "NewPassword@123"
 }
+
+### Request password reset
+POST http://localhost:3000/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "john@doe.com"
+}
+
+### Refresh JWT token
+POST http://localhost:3000/auth/refresh-token
+Authorization: Bearer {{bearerToken}}
 
 ############################################
-# Community
+# User
 ############################################
 
-### Get all communities
-GET http://localhost:3000/community
+### Get current user information
+GET http://localhost:3000/user/me
+Authorization: Bearer {{bearerToken}}
 
-### Create community
-POST http://localhost:3000/community
+### Update user profile
+PUT http://localhost:3000/user/profile
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
 {
-  "name": "Comm1",
-  "skill": "Web Development",
-  "tags": [
-    "react",
-    "next"
-  ]
+  "name": "John Updated",
+  "dateOfBirth": "1990-01-01",
+  "pfp": "https://example.com/profile.jpg"
 }
 
-### Get community by id
-GET http://localhost:3000/community/{{communityId}}
+### Get user by ID
+GET http://localhost:3000/user/{{userId}}
 
-### Delete community by id
-DELETE http://localhost:3000/community/{{communityId}}
+### Get all users (leaderboard)
+GET http://localhost:3000/user
+
+### Get current user statistics
+GET http://localhost:3000/user/stats/me
 Authorization: Bearer {{bearerToken}}
 
-### Join a community
-POST http://localhost:3000/community/join/{{communityId}}
+### Get user statistics by ID
+GET http://localhost:3000/user/stats/{{userId}}
+
+############################################
+# SkillTree - Public
+############################################
+
+### Get all skill trees (public)
+GET http://localhost:3000/skilltree
+
+### Get skill tree by ID (public)
+GET http://localhost:3000/skilltree/{{skillTreeId}}
+
+############################################
+# SkillTree - Authenticated
+############################################
+
+### Get all skill trees (authenticated)
+GET http://localhost:3000/skilltree/auth/all
 Authorization: Bearer {{bearerToken}}
 
-### Leave a community
-POST http://localhost:3000/community/leave/{{communityId}}
+### Get skill tree by ID (authenticated)
+GET http://localhost:3000/skilltree/auth/{{skillTreeId}}
 Authorization: Bearer {{bearerToken}}
 
-### Get community members
-GET http://localhost:3000/community/{{communityId}}/members
-
-### Get community admins
-GET http://localhost:3000/community/{{communityId}}/admins
-
-####################
-# Event
-####################
-
-### Get all events
-GET http://localhost:3000/event
-
-### Get event by id
-GET http://localhost:3000/event/{{eventId}}
-
-### Create a event
-POST http://localhost:3000/event
-Authorization: Bearer {{bearerToken}}
+### Create a new skill tree
+POST http://localhost:3000/skilltree
 Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
 
 {
-  "name": "Event1",
-  "commmunityId": "{{communityId}}",
-  "experienceId": "{{experienceId}}"
+  "name": "Web Development Fundamentals",
+  "description": "A comprehensive skill tree for learning web development",
+  "tagIds": []
 }
 
-### Update event
-PATCH http://localhost:3000/event/{{eventId}}
-Authorization: Bearer {{bearerToken}}
+### Update skill tree
+PATCH http://localhost:3000/skilltree/{{skillTreeId}}
 Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
 
 {
-  "name": "Event 1",
-  "commmunityId": "{{communityId}}",
-  "experienceId": "{{experienceId}}"
+  "name": "Updated Web Development",
+  "description": "Updated description for web development skill tree",
+  "tagIds": []
 }
 
-####################
-# Announcement
-####################
-
-### Get all announcement
-GET http://localhost:3000/announcement
-
-### Get announcement by id
-GET http://localhost:3000/announcement/{{announcementId}}
-
-### Create a event
-POST http://localhost:3000/announcement
+### Delete skill tree
+DELETE http://localhost:3000/skilltree/{{skillTreeId}}
 Authorization: Bearer {{bearerToken}}
+
+############################################
+# SkillTree - Membership
+############################################
+
+### Join a skill tree
+POST http://localhost:3000/skilltree/{{skillTreeId}}/join
+Authorization: Bearer {{bearerToken}}
+
+### Leave a skill tree
+DELETE http://localhost:3000/skilltree/{{skillTreeId}}/leave
+Authorization: Bearer {{bearerToken}}
+
+### Get skill tree members
+GET http://localhost:3000/skilltree/{{skillTreeId}}/members
+Authorization: Bearer {{bearerToken}}
+
+### Update user role or verification status
+PATCH http://localhost:3000/skilltree/{{skillTreeId}}/members/{{userId}}
 Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
 
 {
-  "text": "announcement",
-  "commmunityId": "{{communityId}}",
+  "role": "ADMIN",
+  "verificationStatus": "VERIFIED"
 }
+
+### Remove user from skill tree
+DELETE http://localhost:3000/skilltree/{{skillTreeId}}/members/{{userId}}
+Authorization: Bearer {{bearerToken}}
+
+############################################
+# SkillTree - User
+############################################
+
+### Get my skill trees
+GET http://localhost:3000/skilltree/user/my-skilltrees
+Authorization: Bearer {{bearerToken}}
+
+### Get user's skill trees
+GET http://localhost:3000/skilltree/user/{{userId}}/skilltrees
+Authorization: Bearer {{bearerToken}}

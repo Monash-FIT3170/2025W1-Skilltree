@@ -6,13 +6,14 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from './prisma/prisma.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { UserModule } from './user/user.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { CommonModule } from './common/common.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './_utils/strategy/jwt.strategy';
 import { diskStorage } from 'multer';
 import { SkilltreeModule } from './skilltree/skilltree.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { SkilltreeModule } from './skilltree/skilltree.module';
 		}),
 		ServeStaticModule.forRoot({
 			rootPath: join(__dirname, '..', 'uploads'),
+			serveRoot: '/uploads',
 		}),
 		MulterModule.register({
 			dest: join(__dirname, '..', 'uploads'),
@@ -34,8 +36,9 @@ import { SkilltreeModule } from './skilltree/skilltree.module';
 		JwtModule.register({}),
 		PassportModule,
 		PrismaModule,
-		UserModule,
 		CommonModule,
+		AuthModule,
+		UserModule,
 		SkilltreeModule,
 	],
 	controllers: [AppController],

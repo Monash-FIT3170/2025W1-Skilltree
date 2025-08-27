@@ -20,10 +20,10 @@ async function main() {
 
 	const user1 = await prisma.user.create({
 		data: {
-			name: 'Alice',
-			email: 'alice@example.com',
+			name: 'User',
+			email: 'user@example.com',
 			dateOfBirth: new Date('1990-01-01'),
-			hash: await argon2.hash('password123'),
+			hash: await argon2.hash('string'),
 			pfp: '',
 		},
 	});
