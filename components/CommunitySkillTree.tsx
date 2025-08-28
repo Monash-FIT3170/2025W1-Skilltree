@@ -186,6 +186,8 @@ export default function CommunitySkillTree({
         nodesDraggable={false}
         nodesConnectable={false} 
         onInit={setReactFlowInstance}
+        zoomOnScroll={false}
+        panOnScroll={true}
       >
         <Controls />
       </ReactFlow>
