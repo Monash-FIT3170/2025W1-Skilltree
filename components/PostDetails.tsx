@@ -5,9 +5,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import '../styles/variables.css';
-import '../styles/main.css';
-import '../styles/global.css';
 
 type PostDetailProps = {
   post: PostType;
@@ -42,11 +39,11 @@ export default function PostDetail({ post }: PostDetailProps) {
     <div className="p-6 space-y-4 w-full">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{post.community || "Post Title"}</h2>
-        <Button className = "default" onClick={() => router.push(`/communities/members`)}>
+        <Button onClick={() => router.push(`/communities/members`)}>
           View Community Members
         </Button>
       </div>
-      <Button className = "default" onClick={() => router.push(`/communities/posts/proof`)}>
+      <Button onClick={() => router.push(`/communities/posts/proof`)}>
         Upload Proof of Completion
       </Button>
 
@@ -88,7 +85,7 @@ export default function PostDetail({ post }: PostDetailProps) {
           rows={3}
           placeholder="Write your feedback here..."
         />
-        <button className="mt-2 px-4 py-2 default rounded-lg hover:bg-gray-900">
+        <button className="mt-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900">
           Post Feedback
         </button>
       </div>
@@ -106,7 +103,7 @@ export default function PostDetail({ post }: PostDetailProps) {
             feedbackList.map((item, idx) => (
               <div
                 key={idx}
-                className="p-3 border rounded-lg default"
+                className="p-3 border rounded-lg bg-gray-50 text-sm text-gray-800"
               >
                 {item}
               </div>

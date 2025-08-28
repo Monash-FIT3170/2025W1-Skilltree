@@ -5,9 +5,6 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
-import '../styles/variables.css';
-import '../styles/main.css';
-import '../styles/global.css';
 
 const SignupForm = () => {
   const router = useRouter();
@@ -88,7 +85,7 @@ const SignupForm = () => {
           />
         </div>
 
-        <Button className="flex-1 default" type="submit" disabled={loading}>
+        <Button className="flex-1" type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Submit"}
         </Button>
 
@@ -97,7 +94,7 @@ const SignupForm = () => {
         <Button
           type="button"
           onClick={() => router.push("/login")}
-          className="w-full text-secondary-fg-color"
+          className="w-full"
           variant="link"
         >
           Already have an account? Log in

@@ -2,9 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import '../styles/variables.css';
-import '../styles/main.css';
-import '../styles/global.css';
 
 const SubmitResetEmailForm = () => {
   const [form, setForm] = useState({
@@ -73,7 +70,7 @@ const SubmitResetEmailForm = () => {
       />
       <button
         type="submit"
-        className="default px-4 py-2 rounded"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
       >
         Reset Password
       </button>

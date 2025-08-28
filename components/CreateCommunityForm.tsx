@@ -16,7 +16,6 @@ import {
 import { X, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-
 export default function CreateCommunityForm() {
   const [form, setForm] = useState({
     communityName: "",
