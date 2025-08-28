@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import SubmitResetEmailForm from "@/components/SubmitResetEmailForm";
+import ResetPasswordForm from "@/components/ResetPasswordForm";
 
-export default function ForgetPage() {
+export default function ResetPasswordPage() {
   return (
     <div className="min-h-[80vh] w-full flex flex-col items-center justify-start pt-10 px-4">
       {/* Logo */}
@@ -18,12 +18,12 @@ export default function ForgetPage() {
 
       {/* Title */}
       <h1 className="mt-4 mb-8 text-2xl md:text-3xl font-semibold text-center">
-        Forgot Password ?
+        Reset Your Password
       </h1>
 
-      {/* Card + form */}
+      {/* Form Card */}
       <div className="w-full max-w-md">
-        <SubmitResetEmailForm />
+        <ResetPasswordForm />
       </div>
     </div>
   );

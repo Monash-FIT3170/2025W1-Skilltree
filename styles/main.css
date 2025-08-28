@@ -1,0 +1,9 @@
+.destructive {
+  color: var(--destructive-fg-color);
+  background-color: var(--destructive-color);
+}
+
+.default{
+    color: var(--fg-color);
+    background-color: var(--primary-color);
+}

@@ -1,35 +1,19 @@
+"use client";
+
 import React from "react";
 
-const OurFooter = () => {
+export default function OurFooter() {
   return (
-    <footer className="border-t border-black bg-white text-black px-8 py-12">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Site name + Social Icons */}
-        <div className="flex flex-col justify-between">
-          <div className="text-xl font-semibold mb-4">Footer</div>
-
-          <div className="flex space-x-4 text-gray-500 text-lg">
-            <a href="#"><i className="fab fa-facebook-f" /></a>
-            <a href="#"><i className="fab fa-linkedin-in" /></a>
-            <a href="#"><i className="fab fa-youtube" /></a>
-            <a href="#"><i className="fab fa-instagram" /></a>
+    <footer className="bg-white border-t mt-12">
+      <div className="container mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">ST</div>
+          <div>
+            <div className="font-semibold">SkillTree</div>
+            <div className="text-sm text-gray-500">© {new Date().getFullYear()}</div>
           </div>
         </div>
-
-        {/* 3 Link Columns */}
-        {[1, 2, 3].map((col) => (
-          <div key={col}>
-            <div className="font-semibold mb-2">Topic</div>
-            <ul className="space-y-1 text-gray-600">
-              <li><a href="#">Page</a></li>
-              <li><a href="#">Page</a></li>
-              <li><a href="#">Page</a></li>
-            </ul>
-          </div>
-        ))}
       </div>
     </footer>
   );
-};
-
-export default OurFooter;
+}

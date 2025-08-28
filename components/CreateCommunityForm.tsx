@@ -22,7 +22,7 @@ export default function CreateCommunityForm() {
     communityDesc: "",
     isAdultOnly: false,
   });
-  const [category, setCategory] = useState<string>("");
+  //const [category, setCategory] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagDraft, setTagDraft] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function CreateCommunityForm() {
   // Helper to reset form state
   const resetForm = () => {
   setForm({ communityName: "", communityDesc: "", isAdultOnly: false });
-    setCategory("");
+    //setCategory("");
     setTags([]);
     setTagDraft("");
     setMessage("");
@@ -152,20 +152,6 @@ export default function CreateCommunityForm() {
                   className="hidden"
                 />
               </button>
-            </div>
-
-            <div className="ml-auto">
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-44">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="technology">Technology</SelectItem>
-                  <SelectItem value="arts">Arts</SelectItem>
-                  <SelectItem value="sports">Sports</SelectItem>
-                  <SelectItem value="study">Study</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 

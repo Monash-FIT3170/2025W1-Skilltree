@@ -1,31 +1,40 @@
+"use client";
+
+import React from "react";
 import Image from "next/image";
-import SignInButton from "./buttons/SignInButton";
+import { Button } from "../ui/button";
 
-const Hero = () => {
+export default function Hero() {
   return (
-    <section className="pb-16 text-center container mx-auto px-6">
-      {/* Hero Banner */}
-      <div className="w-full h-96 mb-10">
-        <Image
-          width={1200}
-          height={600}
-          src="/images/herobanner.jpg"
-          alt="Hero Banner"
-          className="w-full h-full object-cover rounded-lg"
-        />
-      </div>
+    <section className="w-full bg-white">
+      <div className="container mx-auto px-6 py-16 flex flex-col items-center text-center gap-8">
+        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight max-w-4xl">
+          A Platform for Learning and Showcasing Skills
+        </h1>
 
-      {/* Text content below the image */}
-      <h1 className="text-4xl md:text-5xl font-bold mb-4">
-        An app for your creativity
-      </h1>
-      <p className="text-gray-600 mb-6 text-lg max-w-xl mx-auto">
-        Everything you need to spark your imagination and connect with
-        like-minded people.
-      </p>
-      <SignInButton label="Get Started" />
+        <div className="w-full max-w-5xl">
+          <div className="bg-gray-50 rounded-lg p-6 flex items-center justify-center">
+            <Image
+              src="/images/herobanner.jpg"
+              alt="SkillTree illustration"
+              width={1200}
+              height={420}
+              className="w-full h-auto object-contain"
+              unoptimized={true}
+            />
+          </div>
+        </div>
+
+        <p className="text-gray-600 max-w-3xl">
+          For creators, learners, and competitors levelling up skills together.
+        </p>
+
+        <div>
+          <Button>
+            Get Started
+          </Button>
+        </div>
+      </div>
     </section>
   );
-};
-
-export default Hero;
+}

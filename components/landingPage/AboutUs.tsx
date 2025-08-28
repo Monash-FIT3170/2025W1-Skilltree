@@ -1,49 +1,41 @@
-import Image from "next/image";
+"use client";
 
-const FEATURE_CARDS = [
+import React from "react";
+
+const items = [
   {
-    img: "/images/aboutus1.jpg",
-    title: "Discover Opportunities",
-    desc: "Explore new paths and find the right project for your skillset.",
+    title: "Create/Join and Build Communities",
+    text: "Where skills spark and squads grow.",
+    img: "/images/build-your-communities.jpg",
   },
   {
-    img: "/images/aboutus2.jpg",
     title: "Learn From The Experts",
-    desc: "Get insights and tutorials from industry leaders and professionals.",
+    text: "Get real feedback from the those who have mastered the game.",
+    img: "/images/build-your-communities.jpg",
   },
   {
-    img: "/images/aboutus3.jpg",
-    title: "Connect Communities",
-    desc: "Join groups to collaborate, share, and grow together.",
+    title: "Compete Against Others",
+    text: "Gamify your experience, top the leaderboards.",
+    img: "/images/build-your-communities.jpg",
   },
 ];
 
-const AboutUs = () => {
+export default function AboutUs() {
   return (
-    <div>
-      <h2 className="text-4xl md:text-5xl font-bold mb-8 ">About Us</h2>
-      <div className="text-4xl md:text-5xl font-bold mb-4 grid gap-8 md:grid-cols-3">
-        {FEATURE_CARDS.map(({ img, title, desc }) => (
-          <div
-            key={title}
-            className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-          >
-            <Image
-              height={300}
-              width={400}
-              src={img}
-              alt={title}
-              className="w-full h-80 object-cover"
-            />
-            <div className="p-6 text-center">
-              <h3 className="text-xl font-medium mb-2">{title}</h3>
-              <p className="text-gray-600 text-sm">{desc}</p>
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold">About Us</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {items.map((it, i) => (
+          <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <img src={it.img} alt={it.title} className="w-full h-40 object-cover" />
+            <div className="p-4">
+              <h3 className="font-semibold">{it.title}</h3>
+              <p className="text-sm text-gray-600 mt-2">{it.text}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-export default AboutUs;
+}
