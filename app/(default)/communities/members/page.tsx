@@ -137,8 +137,4 @@ export default function ViewMembers() {
       </main>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> parent of 38007a0 (jf-updated view community members page)
