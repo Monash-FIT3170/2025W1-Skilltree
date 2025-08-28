@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useCallback, useState } from "react";
-import ReactFlow, {
+import {
+  ReactFlow,
   Controls,
   Handle,
   Position,
@@ -10,8 +11,8 @@ import ReactFlow, {
   Node,
   Edge,
   ReactFlowInstance,
-} from "reactflow";
-import "reactflow/dist/style.css";
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 
 type SkillNode = {
   id: string;
@@ -64,8 +65,8 @@ export default function CommunitySkillTree({
   const nodeTypes = { skillNode: SkillNodeComponent };
 
   // for dragging
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
 
