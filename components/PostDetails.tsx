@@ -28,8 +28,17 @@ export default function PostDetail({ post }: PostDetailProps) {
     setNewFeedback("");
   };
 
+  const [liked, setLiked] = useState(false);
+
   const handleLike = () => {
-    setLikes((prev) => prev + 1);
+    if (!liked) {
+      setLikes((prev) => prev + 1);
+      setLiked(true);
+    } else {
+
+      setLikes((prev) => prev - 1);
+      setLiked(false);
+    }
   };
 
   if (!post)
@@ -43,10 +52,11 @@ export default function PostDetail({ post }: PostDetailProps) {
           View Community Members
         </Button>
       </div>
-      <Button onClick={() => router.push(`/communities/posts/proof`)}>
+      <div className = "flex items-center"> 
+      <Button className = "transition-transform hover:scale-110 active:scale-95" onClick={() => router.push(`/communities/posts/proof`)}>
         Upload Proof of Completion
       </Button>
-
+      </div>
       {/* image */}
       <div className="w-full space-y-4 mt-4">
         <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center">
@@ -60,15 +70,20 @@ export default function PostDetail({ post }: PostDetailProps) {
         </div>
 
         {/* likes */}
-        <div className="flex justify-end">
-          <div className="flex items-center gap-2">
-            <button onClick={handleLike}>
-              <ThumbsUp />
-            </button>
-            <span className="text-sm text-gray-600">
-              {likes} {likes === 1 ? "like" : "likes"}
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleLike}
+            className={`p-3 rounded-full transition-colors duration-150 transition-transform hover:scale-110 active:scale-95 ${
+              liked ? "bg-blue-100 text-blue-600" : "hover:bg-gray-100"
+            }`}
+            title={liked ? "You liked this post" : "Like this post"}
+            style = {{minWidth: 48, minHeight: 48}}
+          >
+            <ThumbsUp className={liked ? "fill-blue-600" : ""} />
+          </button>
+          <span className="text-sm text-gray-600">
+            {likes} {likes === 1 ? "like" : "likes"}
+          </span>
         </div>
       </div>
 
@@ -84,10 +99,22 @@ export default function PostDetail({ post }: PostDetailProps) {
           className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
           rows={3}
           placeholder="Write your feedback here..."
-        />
-        <button className="mt-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900">
-          Post Feedback
-        </button>
+          value = {newFeedback}
+          onChange={(e) => setNewFeedback(e.target.value)}
+        ></textarea>
+  
+        <button
+        className={`mt-2 px-4 py-2 rounded-lg 
+          ${newFeedback.trim() === "" 
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+            : "bg-black text-white hover:bg-gray-900 transition-transform hover:scale-110 active:scale-95"}
+        `}
+        onClick={handleAddFeedback}
+        disabled={newFeedback.trim() === ""}
+        type="button"
+      >
+        Post Feedback
+      </button>
       </div>
 
       {/* comment section */}
