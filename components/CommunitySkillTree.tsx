@@ -13,6 +13,7 @@ import {
   ReactFlowInstance,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { Button } from "./ui/button";
 
 type SkillNode = {
   id: string;
@@ -144,9 +145,10 @@ export default function CommunitySkillTree({
   // for search
   const handleSearch = () => {
     if (!searchTerm || !reactFlowInstance) return;
-    const targetNode = nodes.find((n) =>
-      n.data.label.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const targetNode = nodes.find((n) => {
+      const label = n.data.label;
+      return typeof label === "string" && label.toLowerCase().includes(searchTerm.toLowerCase());
+    });
     if (targetNode) {
       reactFlowInstance.fitView({ nodes: [targetNode], padding: 0.4, duration: 800 });
     }
@@ -164,12 +166,11 @@ export default function CommunitySkillTree({
           placeholder="Search skill..."
           className="border rounded px-3 py-1 w-64"
         />
-        <button
+        <Button
           onClick={handleSearch}
-          className="bg-emerald-600 text-white px-3 py-1 rounded"
         >
           Go
-        </button>
+        </Button>
     </div>
 
     <div style={{ flex: 1  }}>
