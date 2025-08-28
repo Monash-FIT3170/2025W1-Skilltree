@@ -37,20 +37,20 @@ export default function CommunityPage() {
       {
         id: "jump",
         label: "Jumping",
-        unlocked: true,
+        unlocked: false,
         children: [
           { id: "grab", label: "Grab Tricks", unlocked: false },
           { id: "spin", label: "Spin Tricks", unlocked: false },
         ],
       },
-      { id: "grind", label: "Rails / Boxes", unlocked: false },
+      { id: "grind", label: "Rails / Boxes", unlocked: true },
     ],
   };
 // integrate events, skilltree, posts here
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Title */}
-      <header className="bg-white shadow p-6">
+      <header className="bg-white">
         <h1 className="text-3xl font-bold">Snowboarding Community</h1>
       </header>
 
