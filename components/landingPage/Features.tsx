@@ -1,34 +1,25 @@
-import Image from "next/image";
+"use client";
 
-interface AppFeatures {
+import React from "react";
+
+type Props = {
   image: string;
-  label: string;
+  title: string;
   text: string;
-}
-
-const Features = ({ image, label, text }: AppFeatures) => {
-  return (
-    <section id="build" className="container mx-auto px-6 py-16">
-      <div className="flex flex-col md:flex-row items-center gap-8">
-        {/* Text block */}
-        <div className="flex-1 text-center md:text-left">
-          <h2 className="text-3xl font-semibold mb-4">{label}</h2>
-          <p className="text-gray-600 text-base">{text}</p>
-        </div>
-
-        {/* Image block */}
-        <div className="flex-1">
-          <Image
-            width={600}
-            height={400}
-            src={image}
-            alt="Knitting Collective"
-            className="w-full h-auto rounded-lg shadow"
-          />
-        </div>
-      </div>
-    </section>
-  );
+  reverse?: boolean;
 };
 
-export default Features;
+export default function FeatureBlock({ image, title, text, reverse = false }: Props) {
+  return (
+    <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${reverse ? "md:grid-flow-col-dense" : ""}`}>
+      <div className={reverse ? "order-2 md:order-1" : ""}>
+        <img src={image} alt={title} className="w-full h-64 object-cover rounded-lg shadow" />
+      </div>
+
+      <div className="space-y-4">
+        <h3 className="text-2xl font-semibold">{title}</h3>
+        <p className="text-gray-600 max-w-xl">{text}</p>
+      </div>
+    </div>
+  );
+}
