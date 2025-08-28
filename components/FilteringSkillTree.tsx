@@ -1,7 +1,8 @@
 "use client";
-//TODO: I need to fix this, currently isnt functional
-import React, { useEffect, useCallback, useState } from "react";
-import ReactFlow, {
+
+import React, { useEffect, useCallback, useRef, useState } from "react";
+import {
+  ReactFlow,
   Handle,
   Position,
   useNodesState,
@@ -9,8 +10,8 @@ import ReactFlow, {
   Node,
   Edge,
   Background,
-} from "reactflow";
-import "reactflow/dist/style.css";
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
 type SkillNode = {
   id: string;
@@ -29,27 +30,34 @@ const NODE_HEIGHT = 70;
 const H_SPACING = NODE_WIDTH * 1.4;
 const V_SPACING = NODE_HEIGHT * 1.8;
 
-// 🔹 Custom node that handles its own click
-const FilterNode = ({ id, data }: any) => {
-  const bgColor = data.selected
-    ? "#2563eb" // blue for selected
-    : data.unlocked
-    ? "#34d399" // green for unlocked
-    : "#d1d5db"; // grey default
+type FilterNodeData = {
+  label: string;
+  unlocked: boolean;
+  selected: boolean;
+  onClickRef?: React.RefObject<((id: string) => void) | null>;
+};
 
+// custom node component to handle its own clicks
+// TODO: pick a colour
+const FilterNode = ({ id, data }: { id: string; data: FilterNodeData }) => {
+  const bgColor = data.selected ? "#2563eb" : data.unlocked ? "#34d399" : "#d1d5db";
   const textColor = data.selected ? "white" : data.unlocked ? "white" : "#374151";
+
+  // make the selected border explicit so it always shows
+  const selectedBorder = data.selected ? "1px solid #1d4ed8" : "1px solid transparent";
 
   return (
     <div
-      onClick={() => data.onClick?.(id)} // ✅ click handler
-      className="px-3 py-1 rounded-md font-medium text-center shadow-sm border"
+      onClick={() => data.onClickRef?.current?.(id)}
+      className="px-3 py-1 rounded-md font-medium text-center"
       style={{
         backgroundColor: bgColor,
         color: textColor,
-        borderColor: data.selected ? "#1d4ed8" : "transparent",
+        border: selectedBorder,
         minWidth: 100,
         maxWidth: 140,
         cursor: "pointer",
+        userSelect: "none",
       }}
     >
       <Handle
@@ -58,7 +66,7 @@ const FilterNode = ({ id, data }: any) => {
         isConnectable={false}
         style={{ pointerEvents: "none" }}
       />
-      {data.label}
+      <div style={{ pointerEvents: "none" }}>{data.label}</div>
       <Handle
         type="source"
         position={Position.Bottom}
@@ -72,33 +80,42 @@ const FilterNode = ({ id, data }: any) => {
 export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilterProps) {
   const nodeTypes = { filterNode: FilterNode };
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([] as Node<FilterNodeData>[]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([] as Edge[]);
+
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
-  // TODO: Fix this
-  // selection logic
+  // stable ref for click handler
+  const selectRef = useRef<((id: string) => void) | null>(null);
+
   const handleSelect = useCallback(
     (id: string) => {
       const newSelectedId = id === selectedNodeId ? null : id;
       setSelectedNodeId(newSelectedId);
 
+      // Update both the node.selected property (React Flow internals)
       setNodes((nds) =>
         nds.map((n) => ({
           ...n,
+          selected: n.id === newSelectedId,
           data: {
             ...n.data,
             selected: n.id === newSelectedId,
-            onClick: handleSelect, // keep passing the handler
           },
         }))
       );
 
       onSelect(newSelectedId);
     },
-    [selectedNodeId, onSelect]
+    [selectedNodeId, onSelect, setNodes]
   );
 
+  // keep the ref pointing to the latest handler
+  useEffect(() => {
+    selectRef.current = handleSelect;
+  }, [handleSelect]);
+
+  // build the tree -> nodes/edges
   const generateElements = useCallback(
     (
       skill: SkillNode,
@@ -111,16 +128,18 @@ export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilter
       const x = (index - (siblingCount - 1) / 2) * H_SPACING;
       const y = depth * V_SPACING;
 
-      const node: Node = {
+      const node: Node<FilterNodeData> = {
         id,
         type: "filterNode",
         position: { x, y },
         data: {
           label: skill.label,
           unlocked: skill.unlocked,
-          selected: false,
-          onClick: handleSelect,
+          selected: id === selectedNodeId,
+          onClickRef: selectRef,
         },
+        // keep node.selected aligned too
+        selected: id === selectedNodeId,
         draggable: false,
       };
 
@@ -137,7 +156,7 @@ export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilter
             ]
           : [];
 
-      let allNodes: Node[] = [node];
+      let allNodes: Node<FilterNodeData>[] = [node];
       let allEdges: Edge[] = [...edgeList];
 
       if (skill.children && skill.children.length > 0) {
@@ -156,14 +175,15 @@ export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilter
 
       return { nodes: allNodes, edges: allEdges };
     },
-    [handleSelect]
+    [selectedNodeId]
   );
 
+  // regene nodes when tree or selection changes
   useEffect(() => {
     const { nodes: flatNodes, edges: flatEdges } = generateElements(rootSkill, null);
     setNodes(flatNodes);
     setEdges(flatEdges);
-  }, [rootSkill, generateElements]);
+  }, [rootSkill, generateElements, setNodes, setEdges]);
 
   return (
     <div style={{ width: "100%", height: "300px" }}>
@@ -176,9 +196,13 @@ export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilter
         fitView
         nodesDraggable={false}
         nodesConnectable={false}
-        elementsSelectable={false}
+        elementsSelectable={true}
+        panOnDrag={false}
+        zoomOnScroll={false}
+        zoomOnPinch={false}
+        zoomOnDoubleClick={false}
+        selectionOnDrag={false}
       >
-        <Background gap={16} />
       </ReactFlow>
     </div>
   );
