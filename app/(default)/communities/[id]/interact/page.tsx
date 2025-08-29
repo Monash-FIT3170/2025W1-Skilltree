@@ -9,6 +9,8 @@ import PostFeedbackForm from "@/components/PostFeedbackForm";
 import PostView from "@/components/PostView";
 import { PostInteractionPanel } from "@/components/PostInteractionPanel";
 import { Button } from "@/components/ui/button";
+import { View } from "lucide-react";
+import ViewCommunityMembersButton from "@/components/ViewCommunityMembersButton";
 
 export default function CommunityPage() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
@@ -79,6 +81,7 @@ export default function CommunityPage() {
       <header className="flex bg-white p-10 gap-3">
         <h1 className="text-3xl font-bold">Snowboarding Community</h1>
         <div className = "flex ml-auto gap-3">
+        <ViewCommunityMembersButton/>
         <Button>View Skill Tree</Button>
         {isAdmin && <Button>Settings</Button>}
         {isMember?<Button variant={"destructive"}>Leave</Button>:<Button>Join</Button>}
