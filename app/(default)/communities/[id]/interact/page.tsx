@@ -8,10 +8,12 @@ import PostProofPracButton from "@/components/PostProofPracButton";
 import PostFeedbackForm from "@/components/PostFeedbackForm";
 import PostView from "@/components/PostView";
 import { PostInteractionPanel } from "@/components/PostInteractionPanel";
+import { Button } from "@/components/ui/button";
 
 export default function CommunityPage() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
-
+  const isMember = true;
+  const isAdmin = true;
   // for an example
   const posts = [
     {
@@ -72,16 +74,17 @@ export default function CommunityPage() {
   };
 // integrate events, skilltree, posts here
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="flex flex-col w-full">
       {/* Title */}
-      <header className="bg-white">
+      <header className="flex bg-white p-10 gap-3">
         <h1 className="text-3xl font-bold">Snowboarding Community</h1>
-      </header>
+        <div className = "flex ml-auto gap-3">
+        <Button>View Skill Tree</Button>
+        {isAdmin && <Button>Settings</Button>}
+        {isMember?<Button variant={"destructive"}>Leave</Button>:<Button>Join</Button>}
+        </div>
 
-      {/* SkillTree */}
-      <section className="flex justify-center py-12">
-        <CommunitySkillTree rootSkill={exampleSkillTree} />
-      </section>
+      </header>
 
       {/* Scrollable area */}
       <main className="flex-1 container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -98,13 +101,14 @@ export default function CommunityPage() {
         
 
         {/* Posts feed */}
-        <section className="md:col-span-2 space-y-6 overflow-y-auto max-h-[100vh]">
+        <section className="md:col-span-2 space-y-6 overflow-y-auto max-h-[100vh] py-5">
+          <PostProofPracButton />
           {posts.map((post) => ( // integrate posts here
             <article
               key={post.id}
               className="bg-white rounded-xl shadow-sm p-4 space-y-4"
             >
-              <PostProofPracButton />
+              
               <PostView userRole={"normal"}/>
             </article>
           ))}
