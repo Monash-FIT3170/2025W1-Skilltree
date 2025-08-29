@@ -26,6 +26,30 @@ export default function CommunityPage() {
         { id: "c2", user: "User 1", text: "I wish I could do that….." },
       ],
     },
+        {
+      id: "2",
+      user: "Example User",
+      title: "Snowboarding Jump Node",
+      body: "this is me doing a jump. how good!",
+      image: "/snowboard.jpg",
+      likes: 59,
+      comments: [
+        { id: "c1", user: "User 1", text: "Wow very cool jump example user!" },
+        { id: "c2", user: "User 1", text: "I wish I could do that….." },
+      ],
+    },
+        {
+      id: "3",
+      user: "Example User",
+      title: "Snowboarding Jump Node",
+      body: "this is me doing a jump. how good!",
+      image: "/snowboard.jpg",
+      likes: 59,
+      comments: [
+        { id: "c1", user: "User 1", text: "Wow very cool jump example user!" },
+        { id: "c2", user: "User 1", text: "I wish I could do that….." },
+      ],
+    },
   ];
 
   // example skill tree
@@ -74,7 +98,7 @@ export default function CommunityPage() {
         
 
         {/* Posts feed */}
-        <section className="md:col-span-2 space-y-6">
+        <section className="md:col-span-2 space-y-6 overflow-y-auto max-h-[100vh]">
           {posts.map((post) => ( // integrate posts here
             <article
               key={post.id}
