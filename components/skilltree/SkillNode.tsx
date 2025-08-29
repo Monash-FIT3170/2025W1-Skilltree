@@ -8,7 +8,6 @@ import { Check, Lock, Unlock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { SkillNodeData } from './types';
 
-// Version-agnostic: keep NodeProps unparameterized and narrow locally
 type Props = NodeProps;
 
 const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
@@ -20,16 +19,25 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
   const isUnlocked = status === 'unlocked';
   const isLocked = status === 'locked';
 
+  const [desc, setDesc] = React.useState<string>((d as any).description ?? '');
+  React.useEffect(() => {
+    setDesc((d as any).description ?? '');
+  }, [(d as any).description]);
+
   return (
     <div
       className={cn(
-        'rounded-lg border bg-card text-card-foreground shadow-sm w-[260px] transition',
-        selected ? 'ring-2 ring-primary' : '',
+        'rounded-lg bg-card text-card-foreground shadow-sm w-[260px] transition',
+        'border-2', // base thickness for all nodes
+        selected && 'ring-2 ring-primary',
+        // ✅ Primary border only when NOT completed
+        d.isPrimary && !isCompleted && 'border-2 border-red-500',
+        // ✅ Completed wins and becomes the normal green like others
         isCompleted && 'border-green-500',
         isLocked && 'opacity-90'
       )}
     >
-      {/* Header: editable title */}
+      {/* Header: title + XP */}
       <div className="flex items-center justify-between px-3 py-2 border-b gap-2">
         <input
           className={cn(
@@ -43,40 +51,54 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
           onChange={(e) => d.onRename?.(nodeId, e.target.value)}
           onMouseDown={(e) => e.stopPropagation()}
         />
-        {d.isPrimary && (
-          <span className="text-xs rounded bg-primary/10 text-primary px-2 py-0.5 shrink-0">
-            Primary
-          </span>
-        )}
-      </div>
-
-      {/* XP input: numbers only with “XP” suffix */}
-      <div className="px-3 py-2">
-        <label className="sr-only" htmlFor={`xp-${nodeId}`}>XP</label>
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center gap-1 shrink-0">
           <input
             id={`xp-${nodeId}`}
             className={cn(
               'nodrag nowheel',
-              'w-24 bg-transparent outline-none border rounded px-2 py-1 text-center text-sm'
+              'w-16 bg-transparent outline-none border rounded px-2 py-1 text-center text-xs'
             )}
             inputMode="numeric"
             pattern="[0-9]*"
             placeholder="0"
             value={d.xp === undefined ? '' : String(d.xp)}
             onChange={(e) => {
-              // keep only digits
               const digits = e.target.value.replace(/\D/g, '');
               const next = digits === '' ? 0 : parseInt(digits, 10);
               d.onChangeXp?.(nodeId, isNaN(next) ? 0 : next);
             }}
             onMouseDown={(e) => e.stopPropagation()}
+            aria-label="XP"
+            title="XP"
           />
-          <span className="text-xs text-muted-foreground">XP</span>
+          <span className="text-[10px] text-muted-foreground">XP</span>
         </div>
       </div>
 
-      {/* Footer: status + action */}
+      {/* Description */}
+      <div className="px-3 py-2">
+        <label className="sr-only" htmlFor={`desc-${nodeId}`}>Description</label>
+        <textarea
+          id={`desc-${nodeId}`}
+          className={cn(
+            'nodrag nowheel',
+            'w-full bg-transparent outline-none border rounded px-2 py-1 text-xs resize-none'
+          )}
+          rows={2}
+          placeholder="Add a description..."
+          value={desc}
+          onChange={(e) => {
+            setDesc(e.target.value);
+            (d as any).onChangeDescription?.(nodeId, e.target.value);
+          }}
+          onBlur={() => (d as any).onChangeDescription?.(nodeId, desc)}
+          onMouseDown={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        />
+      </div>
+
+      {/* Footer */}
       <div className="flex items-center justify-between px-3 py-2 border-t">
         <div className="flex items-center gap-2 text-xs">
           {isCompleted ? <Check className="h-4 w-4" /> : isUnlocked ? <Unlock className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
@@ -109,7 +131,6 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
         </button>
       </div>
 
-      {/* handles: child -> parent (edge up), so source on top, target on bottom */}
       <Handle type="source" position={Position.Top} />
       <Handle type="target" position={Position.Bottom} />
     </div>

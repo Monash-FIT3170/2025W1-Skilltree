@@ -36,7 +36,7 @@ export default function Page() {
           onClick={handleCreate}
           className="px-3 py-2 rounded-md border bg-primary text-primary-foreground hover:opacity-90"
         >
-          Create skilltree
+          Create Skilltree
         </button>
       </div>
 
