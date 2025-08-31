@@ -56,4 +56,12 @@ export class PostController {
 	deletePost(@Param('id', ParseUUIDPipe) id: string, @GetUser() user: User) {
 		return this.postService.deletePost(id, user.id);
 	}
+
+	@UseGuards(JwtGuard)
+	@Post(':id/like')
+	likePost(@Param('id', ParseUUIDPipe) postId: string, @GetUser() user: User) {
+		return this.postService.likePost(postId, user.id);
+	}
+
+	
 }
