@@ -47,17 +47,9 @@ export default function UserSettingsPage() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full container mx-auto px-2 md:px-6">
+    <div className="flex flex-col w-full h-full container mx-auto">
       <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold tracking-tight">User Settings</h1>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline" className="whitespace-nowrap">
-            <Link href="/change-password">
-              <KeyRound className="mr-2 h-4 w-4" />
-              Change password
-            </Link>
-          </Button>
-        </div>
       </header>
       <div>
         <div className="flex flex-col md:flex-row gap-5 md:items-stretch items-start w-full">

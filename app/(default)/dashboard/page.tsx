@@ -147,7 +147,9 @@ export default function DashboardPage() {
     <div
       className={`h-full mt-0 grid gap-6 p lg:grid-cols-[minmax(0,1fr)_1px_360px]`}
     >
-      <ScrollArea className={`h-[${columnHeight}] flex flex-col px-2`}>
+      <ScrollArea
+        className={`h-full max-h-[${columnHeight}] flex flex-col pr-5`}
+      >
         <header className="flex flex-col items-baseline justify-between pb-5">
           <h2 className="text-2xl font-bold tracking-tight">
             Subscribed Communities
@@ -211,9 +213,11 @@ export default function DashboardPage() {
         </div>
       </ScrollArea>
 
-      <div className="hidden lg:block bg-border h-[85vh]" />
+      <div className="hidden lg:block bg-border h-[${calc(100vh-6.5rem)}]" />
 
-      <ScrollArea className={`h-[${columnHeight}] flex flex-col px-2`}>
+      <ScrollArea
+        className={`h-full max-h-[${columnHeight}] flex flex-col pr-5`}
+      >
         <header className="flex flex-col items-baseline justify-between pb-5">
           <h2 className="text-2xl font-bold tracking-tight">Upcoming Events</h2>
           <span className="text-sm text-muted-foreground">

@@ -79,7 +79,7 @@ export default function CreateCommunityPage() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full container mx-auto px-2 md:px-6">
+    <div className="flex flex-col w-full h-full container mx-auto">
       <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Create Community</h1>
       </header>

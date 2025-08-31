@@ -61,7 +61,7 @@ export const Providers = ({
   const handleLogout = async () => {
     setLogoutOpen(true);
     setTimeout(() => {
-      router.replace("/login");
+      router.replace("/auth/signin");
     }, 1100);
   };
 
@@ -145,7 +145,7 @@ export const Providers = ({
               Logging out…
             </AlertDialogTitle>
             <AlertDialogDescription>
-              You’ll be redirected to the login page.
+              You&apos;ll be redirected to the login page.
             </AlertDialogDescription>
           </AlertDialogHeader>
         </AlertDialogContent>
