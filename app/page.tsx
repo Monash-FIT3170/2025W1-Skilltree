@@ -64,7 +64,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full border-b z-50 h-24">
+      <nav className="fixed top-0 w-full bg-background border-b z-50 h-24">
         <div className="container mx-auto h-full flex items-center justify-between px-4">
           <Link href="/">
             <Image
@@ -126,16 +126,17 @@ export default function LandingPage() {
               <Card key={idx} className="flex flex-col">
                 <CardHeader>
                   <CardTitle>{item.title}</CardTitle>
-                </CardHeader>
-                <Image
-                  src={item.img}
-                  alt={item.title}
-                  width={400}
-                  height={200}
-                  className="object-cover w-full h-40"
-                />
-                <CardContent>
                   <CardDescription>{item.text}</CardDescription>
+                </CardHeader>
+
+                <CardContent>
+                  <Image
+                    src={item.img}
+                    alt={item.title}
+                    width={400}
+                    height={200}
+                    className="object-cover rounded w-full h-40"
+                  />
                 </CardContent>
               </Card>
             ))}
@@ -143,7 +144,7 @@ export default function LandingPage() {
         </section>
 
         {/* Feature Blocks */}
-        <section className="py-16 px-4 bg-muted">
+        <section className="py-16 px-4">
           <div className="container mx-auto space-y-12">
             {featureBlocks.map((fb, idx) => (
               <div
@@ -153,15 +154,13 @@ export default function LandingPage() {
                 }`}
               >
                 <div className={fb.reverse ? "order-2" : ""}>
-                  <Card>
-                    <Image
-                      src={fb.image}
-                      alt={fb.title}
-                      width={600}
-                      height={350}
-                      className="object-cover w-full h-64 rounded-lg"
-                    />
-                  </Card>
+                  <Image
+                    src={fb.image}
+                    alt={fb.title}
+                    width={600}
+                    height={350}
+                    className="object-cover w-full h-64 rounded-lg"
+                  />
                 </div>
                 <div className="space-y-4">
                   <h3 className="text-2xl font-semibold">{fb.title}</h3>

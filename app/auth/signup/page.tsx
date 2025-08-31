@@ -3,17 +3,65 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { format } from "date-fns";
+import DatePicker from "@/components/comp-497";
+import { toast } from "sonner";
+import { userStore } from "@/stores";
+import { signUpAction } from "@/actions/signup-action";
+import { TSignUpResponse } from "@/actions/types";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [form, setForm] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    dateOfBirth: new Date(),
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const response = await signUpAction({
+      name: `${form.firstname} ${form.lastname}`,
+      email: form.email,
+      password: form.password,
+      dateOfBirth: form.dateOfBirth,
+    });
+
+    if (!response.ok) {
+      return toast.error(response.message as string);
+    }
+
+    let { user, access_token } = response.message as TSignUpResponse;
+    userStore.setState((state) => ({
+      ...state,
+      userId: user.id,
+      accessToken: access_token,
+    }));
+
+    router.push("/dashboard");
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <section className="flex w-full min-h-screen">
       <form
-        action=""
+        onSubmit={handleSubmit}
         className="bg-card m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]"
       >
         <div className="p-8 pb-6">
@@ -26,7 +74,7 @@ export default function LoginPage() {
                 alt="Logo"
               />
             </Link>
-            <h1 className="mb-1 mt-4 text-xl font-semibold">
+            <h1 className="mt-4 mb-1 text-xl font-semibold">
               Create a SkillTree Account
             </h1>
             <p className="text-sm">Welcome! Create an account to get started</p>
@@ -40,32 +88,79 @@ export default function LoginPage() {
                 <Label htmlFor="firstname" className="block text-sm">
                   Firstname
                 </Label>
-                <Input type="text" required name="firstname" id="firstname" />
+                <Input
+                  value={form.firstname}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  name="firstname"
+                  id="firstname"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lastname" className="block text-sm">
                   Lastname
                 </Label>
-                <Input type="text" required name="lastname" id="lastname" />
+                <Input
+                  value={form.lastname}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  name="lastname"
+                  id="lastname"
+                />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="block text-sm">
-                Username
+              <Label htmlFor="dateOfBirth" className="block text-sm">
+                Date of Birth
               </Label>
-              <Input type="email" required name="email" id="email" />
+              <Popover>
+                <PopoverTrigger className="w-full">
+                  <Input
+                    readOnly
+                    value={format(form.dateOfBirth, "PPP") || "Select your DOB"}
+                  />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <DatePicker
+                    date={form.dateOfBirth}
+                    setDate={(date) => {
+                      if (date) {
+                        setForm((prev) => ({ ...prev, dateOfBirth: date }));
+                      }
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pwd" className="text-sm">
+              <Label htmlFor="email" className="block text-sm">
+                Email
+              </Label>
+              <Input
+                value={form.email}
+                onChange={handleChange}
+                type="email"
+                required
+                name="email"
+                id="email"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm">
                 Password
               </Label>
               <Input
+                value={form.password}
+                onChange={handleChange}
                 type="password"
                 required
-                name="pwd"
-                id="pwd"
+                name="password"
+                id="password"
                 className="input sz-md variant-mixed"
               />
             </div>
@@ -75,7 +170,7 @@ export default function LoginPage() {
         </div>
 
         <div className="bg-muted rounded-(--radius) border p-3">
-          <p className="text-accent-foreground text-center text-sm">
+          <p className="text-sm text-center text-accent-foreground">
             Have an account ?
             <Button
               onClick={() => router.push("/auth/signin")}

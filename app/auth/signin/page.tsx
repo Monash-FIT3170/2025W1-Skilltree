@@ -16,34 +16,69 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { userStore } from "@/stores";
+import { signInAction } from "../../../actions/signin-action";
+import { TSignInResponse } from "@/actions/types";
+import { getUserAction } from "@/actions/get-user-action";
+import { TUser } from "@/types";
 
 export default function LogInPage() {
   const router = useRouter();
   const [form, setForm] = useState({
-    email: "",
-    password: "",
+    email: "user@example.com",
+    password: "string",
   });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const [isPending, setIsPending] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
+    setIsPending(true);
+    try {
+      const response = await signInAction(form);
+      if (!response.ok) {
+        toast.error(response.message as string);
+        setIsPending(false);
+        return;
+      }
+      const { access_token, user } = response.message as TSignInResponse;
+
+      const userProfile = await getUserAction();
+      if (!userProfile.ok) {
+        toast.error(userProfile.message as string);
+        setIsPending(false);
+        return;
+      }
+
+      userStore.setState((pv) => ({
+        ...pv,
+        userId: user.id,
+        accessToken: access_token,
+        user: userProfile.message as TUser,
+      }));
+
+      router.push("/dashboard");
+    } catch (err) {
+      toast.error("Something went wrong");
+      setIsPending(false);
+    }
+    setIsPending(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <section className="flex w-full min-h-screen">
       <form
-        action=""
+        onSubmit={handleSubmit}
         className="bg-card m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]"
       >
         <div className="p-8 pb-6">
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col items-center justify-center">
             <Link href="/" aria-label="go home">
               <Image
                 src="/images/logo.png"
@@ -52,7 +87,7 @@ export default function LogInPage() {
                 alt="Logo"
               />
             </Link>
-            <h1 className="mb-1 mt-4 text-xl font-semibold">
+            <h1 className="mt-4 mb-1 text-xl font-semibold">
               Sign In to SkillTree
             </h1>
             <p className="text-sm">Welcome back! Sign in to continue</p>
@@ -63,14 +98,21 @@ export default function LogInPage() {
           <div className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="block text-sm">
-                Username
+                Email
               </Label>
-              <Input type="email" required name="email" id="email" />
+              <Input
+                value={form.email}
+                type="email"
+                required
+                name="email"
+                id="email"
+                onChange={handleChange}
+              />
             </div>
 
             <div className="space-y-0.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="pwd" className="text-sm">
+                <Label htmlFor="password" className="text-sm">
                   Password
                 </Label>
                 <Dialog>
@@ -103,20 +145,25 @@ export default function LogInPage() {
               <Input
                 type="password"
                 required
-                name="pwd"
-                id="pwd"
+                name="password"
+                id="password"
                 className="input sz-md variant-mixed"
+                onChange={handleChange}
+                value={form.password}
               />
             </div>
 
-            <Button className="w-full">Sign In</Button>
+            <Button disabled={isPending} type="submit" className="w-full">
+              {isPending ? <Loader2 className="animate-spin" /> : "Sign In"}
+            </Button>
           </div>
         </div>
 
         <div className="bg-muted rounded-(--radius) border p-3">
-          <p className="text-accent-foreground text-center text-sm">
+          <p className="text-sm text-center text-accent-foreground">
             Don&apos;t have an account ?
             <Button
+              type="button"
               onClick={() => router.push("/auth/signup")}
               variant="link"
               className="px-2"

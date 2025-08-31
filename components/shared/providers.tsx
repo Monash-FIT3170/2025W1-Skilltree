@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
@@ -36,7 +36,6 @@ import {
 } from "../ui/dropdown-menu";
 
 import {
-  HomeIcon,
   AwardIcon,
   LayoutDashboard,
   LogOut,
@@ -45,6 +44,9 @@ import {
   SearchIcon,
   CogIcon,
 } from "lucide-react";
+import { userStore } from "@/stores";
+import { Button } from "../ui/button";
+import { initials } from "@/lib/utils";
 
 export const Providers = ({
   children,
@@ -53,6 +55,23 @@ export const Providers = ({
 }) => {
   const router = useRouter();
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [pfp, setPfp] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = userStore.subscribe((state) => {
+      if (!state.userId || !state.accessToken) {
+        router.replace("/auth/signin");
+      }
+
+      setName(state.user?.name || "");
+      setPfp(state.user?.pfp || "");
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const handleSettings = () => {
     router.push("/user/settings");
@@ -60,9 +79,11 @@ export const Providers = ({
 
   const handleLogout = async () => {
     setLogoutOpen(true);
-    setTimeout(() => {
-      router.replace("/auth/signin");
-    }, 1100);
+    userStore.setState({
+      accessToken: undefined,
+      userId: undefined,
+      user: undefined,
+    });
   };
 
   return (
@@ -70,7 +91,7 @@ export const Providers = ({
       <AppSidebar />
       <SidebarInset>
         <header className="border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
-          <div className="w-full flex items-center justify-between gap-2 px-4">
+          <div className="flex items-center justify-between w-full gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
 
             <Input
@@ -80,54 +101,40 @@ export const Providers = ({
             />
 
             <div className="flex items-center justify-start gap-2">
-              <Tooltip>
-                <TooltipContent>User</TooltipContent>
-                <TooltipTrigger asChild>
-                  {/* Avatar dropdown */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring"
-                        aria-label="Open user menu"
-                      >
-                        <Avatar className="size-[32px]">
-                          <AvatarImage
-                            height={32}
-                            width={32}
-                            src="/images/avatar.png"
-                            alt="Avatar"
-                          />
-                          <AvatarFallback className="bg-primary text-primary-foreground">
-                            U
-                          </AvatarFallback>
-                        </Avatar>
-                      </button>
-                    </DropdownMenuTrigger>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className="flex-1 w-full flex items-center justify-between !p-4"
+                  >
+                    {userStore.getState().user?.name || "User"}
+                  </Button>
+                </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuLabel className="truncate">
-                        Signed in as{" "}
-                        <span className="font-medium">user@example.com</span>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={handleSettings}
-                        className="cursor-pointer"
-                      >
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={handleLogout}
-                        className="cursor-pointer text-red-600 focus:text-red-600"
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Logout</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TooltipTrigger>
-              </Tooltip>
+                <DropdownMenuContent align="end" className="w-72">
+                  <DropdownMenuLabel className="truncate">
+                    Signed in as{" "}
+                    <span className="font-medium">
+                      {userStore.getState().user?.email || "user@example.com"}
+                    </span>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSettings}
+                    className="cursor-pointer"
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="text-red-600 cursor-pointer focus:text-red-600"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
@@ -141,7 +148,7 @@ export const Providers = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
               Logging out…
             </AlertDialogTitle>
             <AlertDialogDescription>
