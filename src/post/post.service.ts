@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto, UpdatePostDto } from './dto';
@@ -273,6 +273,46 @@ export class PostService {
 				throw new NotFoundException('Post not found');
 			}
 			throw new InternalServerErrorException('Failed to delete post');
+		}
+	}
+
+	async likePost(postId: string, userId: string) {
+		try {
+			const post = await this.prismaService.post.findUnique({
+				where: { id: postId },
+				include: {
+					likes: {
+						where: { id: userId },
+					},
+				},
+			});
+
+			if (!post) {
+				throw new NotFoundException('Post not found');
+			}
+
+			if (post.likes.length > 0) {
+				throw new ConflictException('You have already liked this post');
+			}
+
+			await this.prismaService.post.update({
+				where: { id: postId },
+				data: {
+					likes: {
+						connect: { id: userId },
+					},
+				},
+			});
+
+			return { message: 'Post liked successfully' };
+		} catch (error) {
+			if (
+				error instanceof NotFoundException ||
+				error instanceof ConflictException
+			) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to like post');
 		}
 	}
 
