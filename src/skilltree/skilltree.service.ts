@@ -35,8 +35,16 @@ export class SkilltreeService {
 					},
 					skillTreeUser: user
 						? {
-								where: { userId: user.id },
-								select: { role: true, verificationStatus: true },
+								select: {
+									user: {
+										select: {
+											id: true,
+											name: true,
+										},
+									},
+									role: true,
+									verificationStatus: true,
+								},
 							}
 						: false,
 					_count: { select: { skillNodes: true, skillTreeUser: true } },

@@ -31,6 +31,7 @@ async function bootstrap() {
 	app.use(urlencoded({ extended: true, limit: '50mb' }));
 	app.enableCors({
 		origin: '*',
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 	});
 	app.useStaticAssets(join(__dirname, '..', 'uploads'), {
 		prefix: '/static/',
@@ -71,6 +72,6 @@ async function bootstrap() {
 	);
 	console.log('🔌 API endpoints available at: http://localhost:3000/');
 
-	await app.listen(process.env.PORT || 3000);
+	await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();

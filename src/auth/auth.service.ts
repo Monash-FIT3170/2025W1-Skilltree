@@ -16,6 +16,7 @@ import {
 	ChangePasswordDto,
 	ForgotPasswordDto,
 } from './dto';
+import { format } from 'date-fns';
 
 export interface AuthResponse {
 	access_token: string;
@@ -47,7 +48,7 @@ export class AuthService {
 					name: dto.name,
 					email: dto.email,
 					hash,
-					dateOfBirth: new Date(dto.dateOfBirth),
+					dateOfBirth: dto.dateOfBirth,
 				},
 			});
 
@@ -160,8 +161,6 @@ export class AuthService {
 		const payload = { sub: userId, email };
 		const secret = this.config.get('JWT_SECRET');
 
-		return this.jwt.sign(payload, {
-			expiresIn: '24h',
-		});
+		return this.jwt.sign(payload);
 	}
 }

@@ -15,6 +15,7 @@ import { SkilltreeModule } from './skilltree/skilltree.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
+import { EventModule } from './event/event.module';
 
 @Module({
 	imports: [
@@ -42,6 +43,7 @@ import { PostModule } from './post/post.module';
 		UserModule,
 		SkilltreeModule,
 		PostModule,
+		EventModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],

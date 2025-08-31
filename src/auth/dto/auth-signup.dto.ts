@@ -4,6 +4,7 @@ import {
 	IsString,
 	MinLength,
 	IsDateString,
+	IsDate,
 } from 'class-validator';
 
 export class AuthSignupDto {
@@ -20,7 +21,7 @@ export class AuthSignupDto {
 	@MinLength(6, { message: 'Password must be at least 6 characters long' })
 	password: string;
 
-	@IsDateString({}, { message: 'Date of birth must be a valid date' })
+	@IsDate({})
 	@IsNotEmpty()
-	dateOfBirth: string;
+	dateOfBirth: Date;
 }
