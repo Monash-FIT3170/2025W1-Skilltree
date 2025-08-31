@@ -78,7 +78,7 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
-		const token = await this.signToken(user.id, user.email);
+		const token = this.signToken(user.id, user.email);
 		const { hash: _, ...userWithoutHash } = user;
 
 		return {

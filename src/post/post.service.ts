@@ -1,9 +1,9 @@
-import { 
-	ConflictException, 
-	ForbiddenException, 
-	Injectable, 
-	InternalServerErrorException, 
-	NotFoundException 
+import {
+	ConflictException,
+	ForbiddenException,
+	Injectable,
+	InternalServerErrorException,
+	NotFoundException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -11,7 +11,7 @@ import { CreatePostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class PostService {
-    constructor(private readonly prismaService: PrismaService) {}
+	constructor(private readonly prismaService: PrismaService) {}
 
 	async getAllPosts(user?: User) {
 		try {

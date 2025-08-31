@@ -42,34 +42,34 @@ async function bootstrap() {
 		index: false,
 	});
 
-		// Fallback to auto-generated documentation
-		const config = new DocumentBuilder()
-			.setTitle('SkillTree API')
-			.setDescription(
-				'A comprehensive API for managing skill trees, users, and learning progress.',
-			)
-			.setVersion('1.0.0')
-			.addBearerAuth(
-				{
-					type: 'http',
-					scheme: 'bearer',
-					bearerFormat: 'JWT',
-					name: 'JWT',
-					description: 'Enter JWT token',
-					in: 'header',
-				},
-				'JWT-auth',
-			)
-			.addServer('http://localhost:3000', 'Local development server')
-			.build();
+	// Fallback to auto-generated documentation
+	const config = new DocumentBuilder()
+		.setTitle('SkillTree API')
+		.setDescription(
+			'A comprehensive API for managing skill trees, users, and learning progress.',
+		)
+		.setVersion('1.0.0')
+		.addBearerAuth(
+			{
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+				name: 'JWT',
+				description: 'Enter JWT token',
+				in: 'header',
+			},
+			'JWT-auth',
+		)
+		.addServer('http://localhost:3000', 'Local development server')
+		.build();
 
-		const documentFactory = () => SwaggerModule.createDocument(app, config);
-		SwaggerModule.setup('api', app, documentFactory);
+	const documentFactory = () => SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup('api', app, documentFactory);
 
-		console.log(
-			'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
-		);
-		console.log('🔌 API endpoints available at: http://localhost:3000/');
+	console.log(
+		'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
+	);
+	console.log('🔌 API endpoints available at: http://localhost:3000/');
 
 	await app.listen(process.env.PORT || 3000);
 }
