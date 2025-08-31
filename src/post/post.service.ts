@@ -316,4 +316,46 @@ export class PostService {
 		}
 	}
 
+	async unlikePost(postId: string, userId: string) {
+		try {
+			const post = await this.prismaService.post.findUnique({
+				where: { id: postId },
+				include: {
+					likes: {
+						where: { id: userId },
+					},
+				},
+			});
+
+			if (!post) {
+				throw new NotFoundException('Post not found');
+			}
+
+			if (post.likes.length === 0) {
+				throw new ConflictException('You have not liked this post');
+			}
+
+			await this.prismaService.post.update({
+				where: { id: postId },
+				data: {
+					likes: {
+						disconnect: { id: userId },
+					},
+				},
+			});
+
+			return { message: 'Post unliked successfully' };
+		} catch (error) {
+			if (
+				error instanceof NotFoundException ||
+				error instanceof ConflictException
+			) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to unlike post');
+		}
+	}
+
+
+
 }
