@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { APIResponse, TSkillTree } from "@/types";
+import { APIResponse, TAuthSkillTree } from "@/types";
 
 export async function getCommunitiesAction() {
   const cookieStore = await cookies();
@@ -15,13 +15,13 @@ export async function getCommunitiesAction() {
       },
     }
   );
-  const data = (await response.json()) as APIResponse<TSkillTree[]>;
+  const data = (await response.json()) as APIResponse<TAuthSkillTree[]>;
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
 
-  const message = data.message as TSkillTree[];
+  const message = data.message as TAuthSkillTree[];
 
   return { ok: true, message };
 }

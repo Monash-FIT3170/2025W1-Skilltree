@@ -23,7 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { TAuthSkillTree, TSkillTree } from "@/types";
+import { TAuthSkillTree } from "@/types";
 
 export default function CommunitiesPageClient({
   communities,
@@ -41,6 +41,7 @@ export default function CommunitiesPageClient({
   };
 
   const confirmJoin = () => {};
+  console.log(communities);
 
   return (
     <>

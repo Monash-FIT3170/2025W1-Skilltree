@@ -27,10 +27,10 @@ const DashboardPageClient = ({
 
   return (
     <div
-      className={`h-full mt-0 grid gap-6 p lg:grid-cols-[minmax(0,1fr)_1px_360px]`}
+      className={`w-full h-full mt-0 grid gap-6 p lg:grid-cols-[minmax(0,1fr)_1px_360px]`}
     >
       <ScrollArea
-        className={`h-full max-h-[${columnHeight}] flex flex-col pr-5`}
+        className={`!w-full flex-1 h-full max-h-[${columnHeight}] flex flex-col pr-5`}
       >
         <header className="flex flex-col items-baseline justify-between pb-5">
           <h2 className="text-2xl font-bold tracking-tight">
@@ -40,7 +40,7 @@ const DashboardPageClient = ({
             {response.message.length} total
           </span>
         </header>
-        <div className="flex-1 pr-2 overflow-y-auto">
+        <div className="flex-1 pr-2 overflow-y-auto w-full ">
           {response.message.length === 0 ? (
             <div>Woah. Such empty.</div>
           ) : (
@@ -99,31 +99,35 @@ const DashboardPageClient = ({
         </header>
         <div className="flex flex-col gap-5">
           {" "}
-          {events.message.map((ev) => {
-            return (
-              <Card
-                key={ev.id}
-                className="w-full transition border rounded-lg hover:bg-accent/40"
-              >
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {ev.title}
-                    <Badge variant={ev.isRanked ? "default" : "destructive"}>
-                      {ev.isRanked ? "Ranked" : "Unranked"}
-                    </Badge>
-                  </CardTitle>
-                  <CardDescription>
-                    {ev.xpPayout ? ev.xpPayout : 0} XP
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="mt-1 text-sm w-fit text-muted-foreground line-clamp-2">
-                    {ev.title}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {response.message.length === 0 ? (
+            <div>Woah. Such empty.</div>
+          ) : (
+            events.message.map((ev) => {
+              return (
+                <Card
+                  key={ev.id}
+                  className="w-full transition border rounded-lg hover:bg-accent/40"
+                >
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      {ev.title}
+                      <Badge variant={ev.isRanked ? "default" : "destructive"}>
+                        {ev.isRanked ? "Ranked" : "Unranked"}
+                      </Badge>
+                    </CardTitle>
+                    <CardDescription>
+                      {ev.xpPayout ? ev.xpPayout : 0} XP
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="mt-1 text-sm w-fit text-muted-foreground line-clamp-2">
+                      {ev.title}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
         </div>
       </ScrollArea>
     </div>
