@@ -1,4 +1,10 @@
-import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { 
+	ConflictException, 
+	ForbiddenException, 
+	Injectable, 
+	InternalServerErrorException, 
+	NotFoundException 
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto, UpdatePostDto } from './dto';
@@ -412,6 +418,32 @@ export class PostService {
 		}
 	}
 
+	async getPostLikes(postId: string) {
+		try {
+			const post = await this.prismaService.post.findUnique({
+				where: { id: postId },
+				include: {
+					likes: {
+						select: {
+							id: true,
+							name: true,
+							email: true,
+							xpPoint: true,
+						},
+					},
+				},
+			});
 
+			if (!post) {
+				throw new NotFoundException('Post not found');
+			}
 
+			return post.likes;
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch post likes');
+		}
+	}
 }

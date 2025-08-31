@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { 
+	Body, 
+	Controller, 
+	Delete, 
+	Get, 
+	HttpCode, 
+	HttpStatus, 
+	Param, 
+	ParseUUIDPipe, 
+	Patch, 
+	Post, 
+	UseGuards 
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { GetUser } from 'src/_utils/decorator/get-user.decorator';
 import { User } from '@prisma/client';
@@ -63,5 +75,34 @@ export class PostController {
 		return this.postService.likePost(postId, user.id);
 	}
 
-	
+	@UseGuards(JwtGuard)
+	@Delete(':id/like')
+	@HttpCode(HttpStatus.NO_CONTENT)
+	unlikePost(
+		@Param('id', ParseUUIDPipe) postId: string,
+		@GetUser() user: User,
+	) {
+		return this.postService.unlikePost(postId, user.id);
+	}
+
+	@Get(':id/likes')
+	getPostLikes(@Param('id', ParseUUIDPipe) postId: string) {
+		return this.postService.getPostLikes(postId);
+	}
+
+	@Get('skillnode/:skillNodeId')
+	getPostsBySkillNode(
+		@Param('skillNodeId', ParseUUIDPipe) skillNodeId: string,
+	) {
+		return this.postService.getPostsBySkillNode(skillNodeId);
+	}
+
+	@UseGuards(JwtGuard)
+	@Get('auth/skillnode/:skillNodeId')
+	getPostsBySkillNodeAuthenticated(
+		@Param('skillNodeId', ParseUUIDPipe) skillNodeId: string,
+		@GetUser() user: User,
+	) {
+		return this.postService.getPostsBySkillNode(skillNodeId, user);
+	}
 }
