@@ -42,64 +42,34 @@ async function bootstrap() {
 		index: false,
 	});
 
-	// Setup Swagger using the custom swagger.json file
-	try {
-		const swaggerJsonPath = join(process.cwd(), 'swagger.json');
-		const swaggerDocument = JSON.parse(
-			fs.readFileSync(swaggerJsonPath, 'utf8'),
-		);
-
-		// Setup main API documentation
-		SwaggerModule.setup('api', app, swaggerDocument, {
-			customSiteTitle: 'SkillTree API Documentation',
-			customCss: `
-				.swagger-ui .topbar { display: none }
-				.swagger-ui .info .title { color: #3b82f6; }
-			`,
-			customfavIcon: '/favicon.ico',
-			swaggerOptions: {
-				docExpansion: 'list',
-				filter: true,
-				showRequestDuration: true,
+	// Fallback to auto-generated documentation
+	const config = new DocumentBuilder()
+		.setTitle('SkillTree API')
+		.setDescription(
+			'A comprehensive API for managing skill trees, users, and learning progress.',
+		)
+		.setVersion('1.0.0')
+		.addBearerAuth(
+			{
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+				name: 'JWT',
+				description: 'Enter JWT token',
+				in: 'header',
 			},
-		});
+			'JWT-auth',
+		)
+		.addServer('http://localhost:3000', 'Local development server')
+		.build();
 
-		console.log(
-			'📚 Swagger documentation available at: http://localhost:3000/api',
-		);
-		console.log('🔌 API endpoints available at: http://localhost:3000/');
-	} catch (error) {
-		console.error('❌ Failed to load swagger.json:', error.message);
+	const documentFactory = () => SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup('api', app, documentFactory);
 
-		// Fallback to auto-generated documentation
-		const config = new DocumentBuilder()
-			.setTitle('SkillTree API')
-			.setDescription(
-				'A comprehensive API for managing skill trees, users, and learning progress.',
-			)
-			.setVersion('1.0.0')
-			.addBearerAuth(
-				{
-					type: 'http',
-					scheme: 'bearer',
-					bearerFormat: 'JWT',
-					name: 'JWT',
-					description: 'Enter JWT token',
-					in: 'header',
-				},
-				'JWT-auth',
-			)
-			.addServer('http://localhost:3000', 'Local development server')
-			.build();
-
-		const documentFactory = () => SwaggerModule.createDocument(app, config);
-		SwaggerModule.setup('api', app, documentFactory);
-
-		console.log(
-			'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
-		);
-		console.log('🔌 API endpoints available at: http://localhost:3000/');
-	}
+	console.log(
+		'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
+	);
+	console.log('🔌 API endpoints available at: http://localhost:3000/');
 
 	await app.listen(process.env.PORT || 3000);
 }

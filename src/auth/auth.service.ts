@@ -51,7 +51,7 @@ export class AuthService {
 				},
 			});
 
-			const token = await this.signToken(user.id, user.email);
+			const token = this.signToken(user.id, user.email);
 			const { hash: _, ...userWithoutHash } = user;
 
 			return {
@@ -78,7 +78,7 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
-		const token = await this.signToken(user.id, user.email);
+		const token = this.signToken(user.id, user.email);
 		const { hash: _, ...userWithoutHash } = user;
 
 		return {
@@ -152,17 +152,16 @@ export class AuthService {
 			throw new UnauthorizedException('User not found');
 		}
 
-		const token = await this.signToken(user.id, user.email);
+		const token = this.signToken(user.id, user.email);
 		return { access_token: token };
 	}
 
-	private async signToken(userId: string, email: string): Promise<string> {
+	private signToken(userId: string, email: string): string {
 		const payload = { sub: userId, email };
 		const secret = this.config.get('JWT_SECRET');
 
-		return this.jwt.signAsync(payload, {
+		return this.jwt.sign(payload, {
 			expiresIn: '24h',
-			secret,
 		});
 	}
 }
