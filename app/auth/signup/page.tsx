@@ -43,7 +43,7 @@ export default function LoginPage() {
       return toast.error(response.message as string);
     }
 
-    let { user, access_token } = response.message as TSignUpResponse;
+    const { user, access_token } = response.message as TSignUpResponse;
     userStore.setState((state) => ({
       ...state,
       userId: user.id,

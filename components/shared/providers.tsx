@@ -46,7 +46,6 @@ import {
 } from "lucide-react";
 import { userStore } from "@/stores";
 import { Button } from "../ui/button";
-import { initials } from "@/lib/utils";
 
 export const Providers = ({
   children,

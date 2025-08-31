@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Send, Zap } from "lucide-react";
+import Image from "next/image";
 const userImage = "/placeholder.png";
 
 export default function PostFeedbackForm() {
@@ -10,7 +11,13 @@ export default function PostFeedbackForm() {
   return (
     <div className="w-full max-w-4xl mx-auto p-4 rounded-lg shadow flex items-center gap-4">
       {/* Avatar */}
-      <img src={userImage} alt="User" className="w-10 h-10 rounded-full" />
+      <Image
+        height={40}
+        width={40}
+        src={userImage}
+        alt="User"
+        className="w-10 h-10 rounded-full"
+      />
 
       {/* Feedback input and send button */}
       <div className="flex flex-1 items-center rounded-xl px-3 py-2 gap-2">

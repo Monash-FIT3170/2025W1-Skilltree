@@ -7,7 +7,7 @@ export default async function DashboardPage() {
 
   console.log(cookieStore.get("access_token")?.value);
 
-  let skilltreeResponse = await fetch(
+  const skilltreeResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/skilltree/user/my-skilltrees`,
     {
       method: "GET",
@@ -18,9 +18,12 @@ export default async function DashboardPage() {
   );
   const skilltreeJson = (await skilltreeResponse.json()) as TSkillTreeResponse;
 
-  let eventResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/event`, {
-    method: "GET",
-  });
+  const eventResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/event`,
+    {
+      method: "GET",
+    }
+  );
   const eventJson = (await eventResponse.json()) as TEventResponse;
 
   console.log(eventJson);

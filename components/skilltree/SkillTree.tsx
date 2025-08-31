@@ -1,4 +1,3 @@
-// components/skilltree/SkillTree.tsx
 "use client";
 
 import React, {

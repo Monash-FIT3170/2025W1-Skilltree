@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  Plus,
-  UserCheck,
-  UserX,
-  ArrowLeft,
-  MoreHorizontal,
-} from "lucide-react";
+import { Plus, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,11 +38,6 @@ const TextEditor = ({
     className="mb-2"
   />
 );
-
-type Community = {
-  id: number;
-  name: string;
-};
 
 export default function ManageCommunities() {
   const params = useParams();

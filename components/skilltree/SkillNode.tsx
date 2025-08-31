@@ -1,4 +1,3 @@
-// components/skilltree/SkillNode.tsx
 "use client";
 
 import React from "react";
