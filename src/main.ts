@@ -42,35 +42,6 @@ async function bootstrap() {
 		index: false,
 	});
 
-	// Setup Swagger using the custom swagger.json file
-	try {
-		const swaggerJsonPath = join(process.cwd(), 'swagger.json');
-		const swaggerDocument = JSON.parse(
-			fs.readFileSync(swaggerJsonPath, 'utf8'),
-		);
-
-		// Setup main API documentation
-		SwaggerModule.setup('api', app, swaggerDocument, {
-			customSiteTitle: 'SkillTree API Documentation',
-			customCss: `
-				.swagger-ui .topbar { display: none }
-				.swagger-ui .info .title { color: #3b82f6; }
-			`,
-			customfavIcon: '/favicon.ico',
-			swaggerOptions: {
-				docExpansion: 'list',
-				filter: true,
-				showRequestDuration: true,
-			},
-		});
-
-		console.log(
-			'📚 Swagger documentation available at: http://localhost:3000/api',
-		);
-		console.log('🔌 API endpoints available at: http://localhost:3000/');
-	} catch (error) {
-		console.error('❌ Failed to load swagger.json:', error.message);
-
 		// Fallback to auto-generated documentation
 		const config = new DocumentBuilder()
 			.setTitle('SkillTree API')
@@ -99,7 +70,6 @@ async function bootstrap() {
 			'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
 		);
 		console.log('🔌 API endpoints available at: http://localhost:3000/');
-	}
 
 	await app.listen(process.env.PORT || 3000);
 }

@@ -1,15 +1,15 @@
-import { 
-	Body, 
-	Controller, 
-	Delete, 
-	Get, 
-	HttpCode, 
-	HttpStatus, 
-	Param, 
-	ParseUUIDPipe, 
-	Patch, 
-	Post, 
-	UseGuards 
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	ParseUUIDPipe,
+	Patch,
+	Post,
+	UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { GetUser } from 'src/_utils/decorator/get-user.decorator';
@@ -19,7 +19,7 @@ import { CreatePostDto, UpdatePostDto } from './dto';
 
 @Controller('post')
 export class PostController {
-    constructor(private readonly postService: PostService) {}
+	constructor(private readonly postService: PostService) {}
 
 	@Get()
 	getAllPosts() {
@@ -51,7 +51,7 @@ export class PostController {
 	createPost(@Body() dto: CreatePostDto, @GetUser() user: User) {
 		return this.postService.createPost(dto, user.id);
 	}
-	
+
 	@UseGuards(JwtGuard)
 	@Patch(':id')
 	updatePost(
