@@ -1,8 +1,8 @@
 export type TSkillTrees = {
   skillTreeId: string;
   userId: string;
-  role: String;
-  verificationStatus: String;
+  role: string;
+  verificationStatus: string;
   skillTree: TSkillTree;
 };
 

@@ -13,6 +13,7 @@ import { Users, MessageSquare } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TEventResponse, TSkillTreeResponse } from "./types";
 import { useRouter } from "next/navigation";
+import { TSkillTree, TSkillTrees } from "@/types";
 
 const DashboardPageClient = ({
   response,
