@@ -250,4 +250,30 @@ export class PostService {
 		}
 	}
 
+	async deletePost(id: string, userId: string) {
+		try {
+			const post = await this.prismaService.post.findUnique({
+				where: { id },
+			});
+
+			if (!post) {
+				throw new NotFoundException('Post not found');
+			}
+
+			await this.prismaService.post.delete({
+				where: { id },
+			});
+
+			return { message: 'Post deleted successfully' };
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			if (error.code === 'P2025') {
+				throw new NotFoundException('Post not found');
+			}
+			throw new InternalServerErrorException('Failed to delete post');
+		}
+	}
+
 }
