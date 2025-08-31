@@ -23,4 +23,13 @@ export class PostController {
 	getAllPostsAuthenticated(@GetUser() user: User) {
 		return this.postService.getAllPosts(user);
 	}
+
+	@UseGuards(JwtGuard)
+	@Get('auth/:id')
+	getPostByIdAuthenticated(
+		@Param('id', ParseUUIDPipe) id: string,
+		@GetUser() user: User,
+	) {
+		return this.postService.getPostById(id, user);
+	}
 }

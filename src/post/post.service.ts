@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreatePostDto } from './dto';
+import { CreatePostDto, UpdatePostDto } from './dto';
 
 @Injectable()
 export class PostService {
@@ -167,4 +167,87 @@ export class PostService {
 			throw new InternalServerErrorException('Failed to create post');
 		}
 	}
+
+	async updatePost(id: string, updatePostDto: UpdatePostDto, userId: string) {
+		try {
+			const existingPost = await this.prismaService.post.findUnique({
+				where: { id },
+			});
+
+			if (!existingPost) {
+				throw new NotFoundException('Post not found');
+			}
+
+			// Verify skill node exists if provided
+			if (updatePostDto.skillNodeId) {
+				const skillNode = await this.prismaService.skillNode.findUnique({
+					where: { id: updatePostDto.skillNodeId },
+					include: {
+						skillTree: {
+							include: {
+								skillTreeUser: {
+									where: { userId },
+								},
+							},
+						},
+					},
+				});
+
+				if (!skillNode) {
+					throw new NotFoundException('Skill node not found');
+				}
+
+				// Check if user is a member of the skill tree
+				if (
+					skillNode.skillTree &&
+					skillNode.skillTree.skillTreeUser.length === 0
+				) {
+					throw new ForbiddenException(
+						'You must be a member of the skill tree to post to this skill node',
+					);
+				}
+			}
+
+			return this.prismaService.post.update({
+				where: { id },
+				data: updatePostDto,
+				include: {
+					skillNode: {
+						select: {
+							id: true,
+							name: true,
+							skillTree: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					likes: {
+						select: { id: true, name: true },
+					},
+					feedback: {
+						include: {
+							verifier: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					_count: {
+						select: { likes: true, feedback: true },
+					},
+				},
+			});
+		} catch (error) {
+			if (
+				error instanceof NotFoundException ||
+				error instanceof ForbiddenException
+			) {
+				throw error;
+			}
+			if (error.code === 'P2025') {
+				throw new NotFoundException('Post not found');
+			}
+			throw new InternalServerErrorException('Failed to update post');
+		}
+	}
+
 }
