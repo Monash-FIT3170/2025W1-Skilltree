@@ -1,6 +1,7 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePostDto } from './dto';
 
 @Injectable()
 export class PostService {
@@ -98,6 +99,72 @@ export class PostService {
 				throw error;
 			}
 			throw new InternalServerErrorException('Failed to fetch post');
+		}
+	}
+
+	async createPost(createPostDto: CreatePostDto, userId: string) {
+		try {
+			// Verify skill node exists if provided
+			if (createPostDto.skillNodeId) {
+				const skillNode = await this.prismaService.skillNode.findUnique({
+					where: { id: createPostDto.skillNodeId },
+					include: {
+						skillTree: {
+							include: {
+								skillTreeUser: {
+									where: { userId },
+								},
+							},
+						},
+					},
+				});
+
+				if (!skillNode) {
+					throw new NotFoundException('Skill node not found');
+				}
+
+				// Check if user is a member of the skill tree
+				if (
+					skillNode.skillTree &&
+					skillNode.skillTree.skillTreeUser.length === 0
+				) {
+					throw new ForbiddenException(
+						'You must be a member of the skill tree to post to this skill node',
+					);
+				}
+			}
+
+			const post = await this.prismaService.post.create({
+				data: {
+					content: createPostDto.content,
+					proofMedia: createPostDto.proofMedia,
+					skillNodeId: createPostDto.skillNodeId,
+				},
+				include: {
+					skillNode: {
+						select: {
+							id: true,
+							name: true,
+							skillTree: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					_count: {
+						select: { likes: true, feedback: true },
+					},
+				},
+			});
+
+			return post;
+		} catch (error) {
+			if (
+				error instanceof NotFoundException ||
+				error instanceof ForbiddenException
+			) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to create post');
 		}
 	}
 }
