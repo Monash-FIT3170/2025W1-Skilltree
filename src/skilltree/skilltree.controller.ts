@@ -25,22 +25,34 @@ import {
 export class SkilltreeController {
 	constructor(private readonly skilltreeService: SkilltreeService) {}
 
+	/**
+	 * Get all skill trees (public, restricted filtered out for unauthenticated users)
+	 */
 	@Get()
 	getAllSkillTrees() {
 		return this.skilltreeService.getAllSkillTrees();
 	}
 
+	/**
+	 * Get a skill tree by its ID (public, restricted filtered out for unauthenticated users)
+	 */
 	@Get(':id')
 	getSkillTreeById(@Param('id', ParseUUIDPipe) id: string) {
 		return this.skilltreeService.getSkillTreeById(id);
 	}
 
+	/**
+	 * Get all skill trees (authenticated, includes restricted if user is verified)
+	 */
 	@UseGuards(JwtGuard)
 	@Get('auth/all')
 	getAllSkillTreesAuthenticated(@GetUser() user: User) {
 		return this.skilltreeService.getAllSkillTrees(user);
 	}
 
+	/**
+	 * Get a skill tree by its ID (authenticated, includes restricted if user is verified)
+	 */
 	@UseGuards(JwtGuard)
 	@Get('auth/:id')
 	getSkillTreeByIdAuthenticated(
@@ -50,12 +62,18 @@ export class SkilltreeController {
 		return this.skilltreeService.getSkillTreeById(id, user);
 	}
 
+	/**
+	 * Create a new skill tree (authenticated)
+	 */
 	@UseGuards(JwtGuard)
 	@Post()
 	createSkillTree(@Body() dto: CreateSkillTreeDto, @GetUser() user: User) {
 		return this.skilltreeService.createSkillTree(dto, user.id);
 	}
 
+	/**
+	 * Update a skill tree (admin only)
+	 */
 	@UseGuards(JwtGuard)
 	@Patch(':id')
 	updateSkillTree(
@@ -66,6 +84,9 @@ export class SkilltreeController {
 		return this.skilltreeService.updateSkillTree(id, dto, user.id);
 	}
 
+	/**
+	 * Delete a skill tree (admin only)
+	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
@@ -76,6 +97,9 @@ export class SkilltreeController {
 		return this.skilltreeService.deleteSkillTree(id, user.id);
 	}
 
+	/**
+	 * Join a skill tree (authenticated)
+	 */
 	@UseGuards(JwtGuard)
 	@Post(':id/join')
 	joinSkillTree(
@@ -85,6 +109,9 @@ export class SkilltreeController {
 		return this.skilltreeService.joinSkillTree(skillTreeId, user.id);
 	}
 
+	/**
+	 * Leave a skill tree (authenticated, creator cannot leave their own tree)
+	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id/leave')
 	@HttpCode(HttpStatus.NO_CONTENT)
@@ -95,6 +122,9 @@ export class SkilltreeController {
 		return this.skilltreeService.leaveSkillTree(skillTreeId, user.id);
 	}
 
+	/**
+	 * Get all members of a skill tree (authenticated, must be a member)
+	 */
 	@UseGuards(JwtGuard)
 	@Get(':id/members')
 	getSkillTreeMembers(
@@ -104,6 +134,9 @@ export class SkilltreeController {
 		return this.skilltreeService.getSkillTreeMembers(skillTreeId, user.id);
 	}
 
+	/**
+	 * Update a user's role or verification status in a skill tree (admin only)
+	 */
 	@UseGuards(JwtGuard)
 	@Patch(':id/members/:userId')
 	updateSkillTreeUser(
@@ -120,6 +153,9 @@ export class SkilltreeController {
 		);
 	}
 
+	/**
+	 * Remove a user from a skill tree (admin only, cannot remove creator)
+	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id/members/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
@@ -135,12 +171,18 @@ export class SkilltreeController {
 		);
 	}
 
+	/**
+	 * Get all skill trees the authenticated user is a member of
+	 */
 	@UseGuards(JwtGuard)
 	@Get('user/my-skilltrees')
 	getUserSkillTrees(@GetUser() user: User) {
 		return this.skilltreeService.getUserSkillTrees(user.id);
 	}
 
+	/**
+	 * Get all skill trees a user (by ID) is a member of
+	 */
 	@UseGuards(JwtGuard)
 	@Get('user/:userId/skilltrees')
 	getUserSkillTreesById(@Param('userId', ParseUUIDPipe) userId: string) {

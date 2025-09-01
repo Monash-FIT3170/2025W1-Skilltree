@@ -16,6 +16,7 @@ import {
 	ChangePasswordDto,
 	ForgotPasswordDto,
 } from './dto';
+import { format } from 'date-fns';
 
 export interface AuthResponse {
 	access_token: string;
@@ -47,11 +48,11 @@ export class AuthService {
 					name: dto.name,
 					email: dto.email,
 					hash,
-					dateOfBirth: new Date(dto.dateOfBirth),
+					dateOfBirth: dto.dateOfBirth,
 				},
 			});
 
-			const token = await this.signToken(user.id, user.email);
+			const token = this.signToken(user.id, user.email);
 			const { hash: _, ...userWithoutHash } = user;
 
 			return {
@@ -78,7 +79,7 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
-		const token = await this.signToken(user.id, user.email);
+		const token = this.signToken(user.id, user.email);
 		const { hash: _, ...userWithoutHash } = user;
 
 		return {
@@ -152,17 +153,14 @@ export class AuthService {
 			throw new UnauthorizedException('User not found');
 		}
 
-		const token = await this.signToken(user.id, user.email);
+		const token = this.signToken(user.id, user.email);
 		return { access_token: token };
 	}
 
-	private async signToken(userId: string, email: string): Promise<string> {
+	private signToken(userId: string, email: string): string {
 		const payload = { sub: userId, email };
 		const secret = this.config.get('JWT_SECRET');
 
-		return this.jwt.signAsync(payload, {
-			expiresIn: '24h',
-			secret,
-		});
+		return this.jwt.sign(payload);
 	}
 }

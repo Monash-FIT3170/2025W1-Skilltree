@@ -17,6 +17,8 @@ import { UserModule } from './user/user.module';
 import { VerificationModule } from './verification/verification.module';
 import { CommunityModule } from './community/community.module';
 
+import { PostModule } from './post/post.module';
+import { EventModule } from './event/event.module';
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -44,6 +46,8 @@ import { CommunityModule } from './community/community.module';
 		SkilltreeModule,
 		VerificationModule,
 		CommunityModule
+		PostModule,
+		EventModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],
