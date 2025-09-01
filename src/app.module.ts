@@ -15,7 +15,6 @@ import { SkilltreeModule } from './skilltree/skilltree.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { VerificationModule } from './verification/verification.module';
-import { CommunityModule } from './community/community.module';
 
 import { PostModule } from './post/post.module';
 import { EventModule } from './event/event.module';
@@ -45,7 +44,6 @@ import { EventModule } from './event/event.module';
 		UserModule,
 		SkilltreeModule,
 		VerificationModule,
-		CommunityModule,
 		PostModule,
 		EventModule,
 	],
