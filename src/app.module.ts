@@ -14,6 +14,8 @@ import { diskStorage } from 'multer';
 import { SkilltreeModule } from './skilltree/skilltree.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { VerificationModule } from './verification/verification.module';
+import { CommunityModule } from './community/community.module';
 
 @Module({
 	imports: [
@@ -40,6 +42,8 @@ import { UserModule } from './user/user.module';
 		AuthModule,
 		UserModule,
 		SkilltreeModule,
+		VerificationModule,
+		CommunityModule
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],
