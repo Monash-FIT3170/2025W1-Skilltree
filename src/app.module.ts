@@ -45,7 +45,7 @@ import { EventModule } from './event/event.module';
 		UserModule,
 		SkilltreeModule,
 		VerificationModule,
-		CommunityModule
+		CommunityModule,
 		PostModule,
 		EventModule,
 	],

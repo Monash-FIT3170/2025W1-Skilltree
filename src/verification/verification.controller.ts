@@ -7,22 +7,20 @@ import { VerifyPostDto } from './dto/verify-post.dto';
 
 @Controller('verification')
 export class VerificationController {
-  constructor(private readonly service: VerificationService) {}
+	constructor(private readonly service: VerificationService) {}
 
-  // POST /verification/:postId  (JWT required)
-  @Post(':postId')
-  @UseGuards(JwtGuard)
-  verifyPost(
-    @Param('postId') postId: string,
-    @GetUser() user: User,
-    @Body() dto: VerifyPostDto,
-  ) {
-    return this.service.verifyPost(postId, user, dto);
-  }
+	@Post(':postId')
+	@UseGuards(JwtGuard)
+	verifyPost(
+		@Param('postId') postId: string,
+		@GetUser() user: User,
+		@Body() dto: VerifyPostDto,
+	) {
+		return this.service.verifyPost(postId, user, dto);
+	}
 
-  // GET /verification/post/:postId
-  @Get('post/:postId')
-  listForPost(@Param('postId') postId: string) {
-    return this.service.listForPost(postId);
-  }
+	@Get('post/:postId')
+	listForPost(@Param('postId') postId: string) {
+		return this.service.listForPost(postId);
+	}
 }
