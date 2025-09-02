@@ -2,16 +2,17 @@
 # Variables, change them as per your need
 ############################################
 
-@bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWF1bnJodmMwMDAwN2JieDJmaXMyMzRkIiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NDc2MzM2NjQsImV4cCI6MTc0NzYzNzI2NH0.7B9u1WExQtQz6L8QMNUIevhtV-xwKu1G5s4aKI9PRBo
-@skillTreeId = 64b0f3c1d2e4a7f8b8c4e5a1
-@userId = 64b0f3c1d2e4a7f8b8c4e5a2
+@bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWV6eG92b2EwMDAwNWN1eWdvZGJ6Z2N5IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NTY2NTk0Njd9.IlQXRBb8tLZOK9ZYq52AAz51NmRGHnz-Y5BohOnLPHc
+@skillTreeId = 04a7e7ef-1584-4c8a-97bd-c5a6757543ce
+@userId = 971e694a-5859-49e6-84b0-4a39b56ba3e7
+@postId = 69250fee-d4d8-4b78-b1cc-f290a1525ad3
 
 ############################################
 # Authentication
 ############################################
 
 ### User registration
-POST http://localhost:3000/auth/signup
+POST http://localhost:3001/auth/signup
 Content-Type: application/json
 
 {
@@ -22,20 +23,20 @@ Content-Type: application/json
 }
 
 ### User login
-POST http://localhost:3000/auth/signin
+POST http://localhost:3001/auth/signin
 Content-Type: application/json
 
 {
   "email": "john@doe.com",
-  "password": "JohnNew@123"
+  "password": "John@Doe@New@123"
 }
 
 ### Get current user profile
-GET http://localhost:3000/auth/profile
+GET http://localhost:3001/user/me
 Authorization: Bearer {{bearerToken}}
 
 ### Change password
-POST http://localhost:3000/auth/change-password
+POST http://localhost:3001/auth/change-password
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
@@ -45,7 +46,7 @@ Authorization: Bearer {{bearerToken}}
 }
 
 ### Request password reset
-POST http://localhost:3000/auth/forgot-password
+POST http://localhost:3001/auth/forgot-password
 Content-Type: application/json
 
 {
@@ -53,7 +54,7 @@ Content-Type: application/json
 }
 
 ### Refresh JWT token
-POST http://localhost:3000/auth/refresh-token
+POST http://localhost:3001/auth/refresh-token
 Authorization: Bearer {{bearerToken}}
 
 ############################################
@@ -61,11 +62,11 @@ Authorization: Bearer {{bearerToken}}
 ############################################
 
 ### Get current user information
-GET http://localhost:3000/user/me
+GET http://localhost:3001/user/me
 Authorization: Bearer {{bearerToken}}
 
 ### Update user profile
-PUT http://localhost:3000/user/profile
+PUT http://localhost:3001/user/profile
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
@@ -76,53 +77,111 @@ Authorization: Bearer {{bearerToken}}
 }
 
 ### Get user by ID
-GET http://localhost:3000/user/{{userId}}
+GET http://localhost:3001/user/{{userId}}
 
 ### Get all users (leaderboard)
-GET http://localhost:3000/user
+GET http://localhost:3001/user
 
 ### Get current user statistics
-GET http://localhost:3000/user/stats/me
+GET http://localhost:3001/user/stats/me
 Authorization: Bearer {{bearerToken}}
 
 ### Get user statistics by ID
-GET http://localhost:3000/user/stats/{{userId}}
+GET http://localhost:3001/user/stats/{{userId}}
+
+############################################
+# Posts - Public
+############################################
+
+### Get all posts (public)
+GET http://localhost:3001/post
+
+### Get post by ID (public)
+GET http://localhost:3001/post/{{postId}}
+
+############################################
+# Posts - Authenticated
+############################################
+
+### Get all posts (authenticated)
+GET http://localhost:3001/post/auth/all
+Authorization: Bearer {{bearerToken}}
+
+### Get post by ID (authenticated)
+GET http://localhost:3001/post/auth/{{postId}}
+Authorization: Bearer {{bearerToken}}
+
+### Create a new post
+POST http://localhost:3001/post
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "content": "This is the content of my first post",
+  "proofMedia": "some media"
+}
+
+### Update post
+PATCH http://localhost:3001/post/{{postId}}
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "content": "Updated content for the post"
+}
+
+### Delete post
+DELETE http://localhost:3001/post/{{postId}}
+Authorization: Bearer {{bearerToken}}
+
+### Like a post
+POST http://localhost:3001/post/{{postId}}/like
+Authorization: Bearer {{bearerToken}}
+
+### Unlike a post
+DELETE http://localhost:3001/post/{{postId}}/like
+Authorization: Bearer {{bearerToken}}
+
+### Get post likes
+GET http://localhost:3001/post/{{postId}}/likes
 
 ############################################
 # SkillTree - Public
 ############################################
 
 ### Get all skill trees (public)
-GET http://localhost:3000/skilltree
+GET http://localhost:3001/skilltree
 
 ### Get skill tree by ID (public)
-GET http://localhost:3000/skilltree/{{skillTreeId}}
+GET http://localhost:3001/skilltree/{{skillTreeId}}
 
 ############################################
 # SkillTree - Authenticated
 ############################################
 
 ### Get all skill trees (authenticated)
-GET http://localhost:3000/skilltree/auth/all
+GET http://localhost:3001/skilltree/auth/all
 Authorization: Bearer {{bearerToken}}
 
 ### Get skill tree by ID (authenticated)
-GET http://localhost:3000/skilltree/auth/{{skillTreeId}}
+GET http://localhost:3001/skilltree/auth/{{skillTreeId}}
 Authorization: Bearer {{bearerToken}}
 
 ### Create a new skill tree
-POST http://localhost:3000/skilltree
+POST http://localhost:3001/skilltree
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
 {
-  "name": "Web Development Fundamentals",
-  "description": "A comprehensive skill tree for learning web development",
-  "tagIds": []
+  "name": "DS",
+  "description": "DS means Data Science",
+  "tagIds": [
+    "67e24342-19cc-4ea5-8faf-e74899424521"
+  ]
 }
 
 ### Update skill tree
-PATCH http://localhost:3000/skilltree/{{skillTreeId}}
+PATCH http://localhost:3001/skilltree/{{skillTreeId}}
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
@@ -133,7 +192,7 @@ Authorization: Bearer {{bearerToken}}
 }
 
 ### Delete skill tree
-DELETE http://localhost:3000/skilltree/{{skillTreeId}}
+DELETE http://localhost:3001/skilltree/{{skillTreeId}}
 Authorization: Bearer {{bearerToken}}
 
 ############################################
@@ -141,19 +200,19 @@ Authorization: Bearer {{bearerToken}}
 ############################################
 
 ### Join a skill tree
-POST http://localhost:3000/skilltree/{{skillTreeId}}/join
+POST http://localhost:3001/skilltree/{{skillTreeId}}/join
 Authorization: Bearer {{bearerToken}}
 
 ### Leave a skill tree
-DELETE http://localhost:3000/skilltree/{{skillTreeId}}/leave
+DELETE http://localhost:3001/skilltree/{{skillTreeId}}/leave
 Authorization: Bearer {{bearerToken}}
 
 ### Get skill tree members
-GET http://localhost:3000/skilltree/{{skillTreeId}}/members
+GET http://localhost:3001/skilltree/{{skillTreeId}}/members
 Authorization: Bearer {{bearerToken}}
 
 ### Update user role or verification status
-PATCH http://localhost:3000/skilltree/{{skillTreeId}}/members/{{userId}}
+PATCH http://localhost:3001/skilltree/{{skillTreeId}}/members/{{userId}}
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
@@ -163,7 +222,7 @@ Authorization: Bearer {{bearerToken}}
 }
 
 ### Remove user from skill tree
-DELETE http://localhost:3000/skilltree/{{skillTreeId}}/members/{{userId}}
+DELETE http://localhost:3001/skilltree/{{skillTreeId}}/members/{{userId}}
 Authorization: Bearer {{bearerToken}}
 
 ############################################
@@ -171,9 +230,9 @@ Authorization: Bearer {{bearerToken}}
 ############################################
 
 ### Get my skill trees
-GET http://localhost:3000/skilltree/user/my-skilltrees
+GET http://localhost:3001/skilltree/user/my-skilltrees
 Authorization: Bearer {{bearerToken}}
 
 ### Get user's skill trees
-GET http://localhost:3000/skilltree/user/{{userId}}/skilltrees
+GET http://localhost:3001/skilltree/user/{{userId}}/skilltrees
 Authorization: Bearer {{bearerToken}}

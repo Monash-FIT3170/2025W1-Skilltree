@@ -15,7 +15,10 @@ import { SkillnodeModule } from './skillnode/skillnode.module';
 import { SkilltreeModule } from './skilltree/skilltree.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { VerificationModule } from './verification/verification.module';
 
+import { PostModule } from './post/post.module';
+import { EventModule } from './event/event.module';
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -44,7 +47,9 @@ import { UserModule } from './user/user.module';
 		AuthModule,
 		UserModule,
 		SkilltreeModule,
->>>>>>> origin/backend
+		VerificationModule,
+		PostModule,
+		EventModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, JwtStrategy],

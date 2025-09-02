@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -22,10 +22,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 				id: payload.sub,
 			},
 		});
-		// Remove sensitive information
-		if (user) {
-			delete (user as any).hash;
+
+		if (!user) {
+			throw new UnauthorizedException('User not found');
 		}
-		return user;
+
+		const { hash, ...userWithoutHash } = user;
+		return userWithoutHash;
 	}
 }
