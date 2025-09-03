@@ -11,6 +11,7 @@ import { CommonModule } from './common/common.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './_utils/strategy/jwt.strategy';
 import { diskStorage } from 'multer';
+import { SkillnodeModule } from './skillnode/skillnode.module';
 import { SkilltreeModule } from './skilltree/skilltree.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
@@ -40,6 +41,7 @@ import { EventModule } from './event/event.module';
 		PassportModule,
 		PrismaModule,
 		CommonModule,
+		SkillnodeModule,
 		AuthModule,
 		UserModule,
 		SkilltreeModule,
