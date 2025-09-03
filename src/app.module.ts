@@ -41,9 +41,7 @@ import { EventModule } from './event/event.module';
 		PassportModule,
 		PrismaModule,
 		CommonModule,
-<<<<<<< HEAD
 		SkillnodeModule,
-=======
 		AuthModule,
 		UserModule,
 		SkilltreeModule,

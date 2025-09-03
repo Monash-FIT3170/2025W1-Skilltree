@@ -3,7 +3,7 @@ import { SkillNodeController } from './skillnode.controller';
 import { SkillNodeService } from './skillnode.service';
 
 @Module({
-  controllers: [SkillNodeController],
-  providers: [SkillNodeService]
+	controllers: [SkillNodeController],
+	providers: [SkillNodeService],
 })
 export class SkillnodeModule {}
