@@ -67,10 +67,10 @@ export default function CreateCommunityPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const create = createCommunityAction({
-      ...form,
-      pfp: fileRef.current?.files?.[0] ?? null,
-    });
+    // const create = createCommunityAction({
+    //   ...form,
+    //   pfp: fileRef.current?.files?.[0] ?? null,
+    // });
   };
 
   return (
