@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { createCommunityAction } from "@/actions/create-community-action";
 
 export default function CreateCommunityPage() {
   const [form, setForm] = useState({
@@ -66,32 +67,26 @@ export default function CreateCommunityPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      router.push("/community/add/skilltree");
-    } catch (err) {
-      setMessage("Error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    const create = createCommunityAction({
+      ...form,
+      pfp: fileRef.current?.files?.[0] ?? null,
+    });
   };
 
   return (
-    <div className="flex flex-col w-full h-full container mx-auto">
-      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="container flex flex-col w-full h-full mx-auto">
+      <header className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Create Community</h1>
       </header>
       <div>
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col md:flex-row gap-5 md:items-stretch items-start w-full"
+          className="flex flex-col items-start w-full gap-5 md:flex-row md:items-stretch"
         >
-          <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+          <div className="flex flex-col items-center w-full md:items-start md:w-auto">
             <Avatar
               onClick={handleAvatarClick}
-              className="h-28 w-28 md:h-48 md:w-48 aspect-square cursor-pointer"
+              className="cursor-pointer h-28 w-28 md:h-48 md:w-48 aspect-square"
             >
               <AvatarImage
                 src={iconPreview ?? ""}
@@ -117,8 +112,8 @@ export default function CreateCommunityPage() {
             )}
           </div>
 
-          <div className="flex flex-col gap-5 items-center justify-stretch w-full px-2 md:px-0">
-            <div className="w-full flex flex-col gap-2">
+          <div className="flex flex-col items-center w-full gap-5 px-2 justify-stretch md:px-0">
+            <div className="flex flex-col w-full gap-2">
               <Label className="text-muted-foreground">Community Name</Label>
               <Input
                 className="mt-2"
@@ -129,7 +124,7 @@ export default function CreateCommunityPage() {
               />
             </div>
 
-            <div className="w-full flex flex-col gap-2">
+            <div className="flex flex-col w-full gap-2">
               <Label className="text-muted-foreground">
                 Community Description
               </Label>
@@ -143,7 +138,7 @@ export default function CreateCommunityPage() {
               />
             </div>
 
-            <div className="w-full flex flex-col gap-2">
+            <div className="flex flex-col w-full gap-2">
               <Label className="text-muted-foreground">Community Tags</Label>
               <Input
                 className="mt-2"
@@ -154,20 +149,20 @@ export default function CreateCommunityPage() {
               />
             </div>
 
-            <div className="w-full flex gap-2">
+            <div className="flex w-full gap-2">
               <Input
                 type="checkbox"
                 name="isAdultOnly"
                 checked={form.isAdultOnly}
                 onChange={handleChange}
-                className="h-5 w-5"
+                className="w-5 h-5"
               />
               <Label className="text-muted-foreground">
                 Restricted Community?
               </Label>
             </div>
 
-            <div className="flex w-full justify-end gap-3 flex-wrap">
+            <div className="flex flex-wrap justify-end w-full gap-3">
               <Button type="submit" disabled={loading}>
                 {loading ? "Creating…" : "Create"}
               </Button>

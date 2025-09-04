@@ -36,8 +36,6 @@ export default function CommunitiesPageClient({
   const [pendingCommunity, setPendingCommunity] =
     useState<TAuthSkillTree | null>(null);
 
-  return <pre>{JSON.stringify({ communities }, null, 2)}</pre>;
-
   return (
     <>
       <div className="container h-full mx-auto">
