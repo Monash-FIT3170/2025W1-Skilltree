@@ -63,15 +63,15 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
 
   return (
     <section className="container mx-auto">
-      <div className="text-center mb-4">
+      <div className="mb-4 text-center">
         <h2 className="text-lg font-semibold">Recent Events</h2>
       </div>
 
-      <div className="rounded-2xl p-4 md:p-6">
+      <div className="p-4 rounded-2xl md:p-6">
         <div className="space-y-3">
           {payload.events.map((ev) => (
             <Card key={ev.id} className="rounded-xl">
-              <CardContent className="p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+              <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h3 className="font-semibold">{ev.title}</h3>
                   <p className="text-sm text-muted-foreground">
@@ -91,12 +91,6 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
             </Card>
           ))}
         </div>
-
-        <div className="grid place-items-center mt-5">
-          <Link href={`/community/${Math.random().toString()}`}>
-            <Button variant="secondary">See More</Button>
-          </Link>
-        </div>
       </div>
     </section>
   );
@@ -106,7 +100,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
 // Simple page that displays the RecentEvents list. Place this in app/events/page.tsx
 export function RecentEventsPageWrapper() {
   return (
-    <main className="container mx-auto px-6 py-8">
+    <main className="container px-6 py-8 mx-auto">
       <RecentEvents limit={8} />
     </main>
   );

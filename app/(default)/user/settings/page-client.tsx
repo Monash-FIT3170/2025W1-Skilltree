@@ -55,21 +55,13 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
       return toast.error(updateUser.message as string);
     }
 
-    const user = await getUserAction();
-    if (!user) {
-      return toast.error("Failed to fetch user data");
-    }
-
-    console.log((user.message as TUser).pfp);
-    userStore.setState((pv) => ({
-      ...pv,
-      user: user.message as TUser,
+    userStore.setState((state) => ({
+      user: { ...state.user, ...(updateUser.message as TUser) },
     }));
 
     setFile(null);
     setPreviewUrl(null);
     toast.success("Profile updated successfully");
-    router.replace("/dashboard");
   };
 
   return (
@@ -138,25 +130,16 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
 
             <div className="flex flex-wrap justify-end w-full gap-3">
               <Button onClick={handleSubmit}>Save Changes</Button>
-              <Button variant="outline">Go Back</Button>
+              <Button
+                onClick={() => router.push("/dashboard")}
+                variant="outline"
+              >
+                Go Back
+              </Button>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-/** Helpers */
-function parseISODate(s: string | null | undefined): Date | null {
-  if (!s) return null;
-  const [y, m, d] = s.split("-").map(Number);
-  if (!y || !m || !d) return null;
-  return new Date(y, (m as number) - 1, d as number);
-}
-function formatDate(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
 }

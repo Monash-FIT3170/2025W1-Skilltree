@@ -8,6 +8,6 @@ const LogInButton = () => {
     router.push("/community/members");
   };
 
-  return <Button onClick={handleViewCommunity}>View Community Members</Button>;
+  return;
 };
 export default LogInButton;

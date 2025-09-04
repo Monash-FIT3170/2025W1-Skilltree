@@ -9,8 +9,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, MessageSquare } from "lucide-react";
-import { communities } from "@/lib/mocks";
+import { Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
@@ -22,8 +21,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { TAuthSkillTree } from "@/types";
+import { toast } from "sonner";
+import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 
 export default function CommunitiesPageClient({
   communities,
@@ -31,17 +33,10 @@ export default function CommunitiesPageClient({
   communities: TAuthSkillTree[];
 }) {
   const router = useRouter();
+  const [pendingCommunity, setPendingCommunity] =
+    useState<TAuthSkillTree | null>(null);
 
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pendingCommunity, setPendingCommunity] = useState<any | null>(null);
-
-  const openJoinConfirm = (community: any) => {
-    setPendingCommunity(community);
-    setConfirmOpen(true);
-  };
-
-  const confirmJoin = () => {};
-  console.log(communities);
+  return <pre>{JSON.stringify({ communities }, null, 2)}</pre>;
 
   return (
     <>
@@ -77,19 +72,55 @@ export default function CommunitiesPageClient({
               </CardContent>
 
               <CardFooter className="pt-0">
-                <div className="flex w-full gap-2">
-                  <Button
-                    onClick={() => openJoinConfirm(community)}
-                    className="flex-1 transition-transform duration-150 hover:scale-105"
-                    size="sm"
-                  >
-                    Join Community
-                  </Button>
+                <div className="flex flex-col w-full gap-2 md:w-full md:flex-row">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        onClick={() => {
+                          setPendingCommunity(community);
+                        }}
+                        className="flex-1 transition-transform duration-150 hover:scale-105"
+                        size="sm"
+                      >
+                        Join Community
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Join {pendingCommunity?.name}?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You&apos;re about to join this community. You&apos;ll
+                          be redirected to its page.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={async () => {
+                            const response = await joinSkillTreeAction(
+                              community.id
+                            );
+                            if (response.ok) {
+                              toast.success("Successfully joined skill tree!");
+                            } else {
+                              toast.error("Failed to join skill tree.");
+                            }
+                            router.push(`/community/${community.id}`);
+                          }}
+                        >
+                          Confirm
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+
                   <Button
                     onClick={() => router.push(`/community/${community.id}`)}
                     variant="outline"
                     size="sm"
-                    className="transition-transform duration-150 hover:scale-105"
+                    className="flex-1 transition-transform duration-150 hover:scale-105"
                   >
                     View Details
                   </Button>
@@ -109,24 +140,6 @@ export default function CommunitiesPageClient({
           </div>
         )}
       </div>
-
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Join {pendingCommunity?.community}?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              You&apos;re about to join this community. You&apos;ll be
-              redirected to its page.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmJoin}>Confirm</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 }

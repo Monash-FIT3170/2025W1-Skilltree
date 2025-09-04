@@ -16,9 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -43,6 +41,7 @@ import {
   Loader2,
   SearchIcon,
   CogIcon,
+  SlidersHorizontalIcon,
 } from "lucide-react";
 import { userStore } from "@/stores";
 import { Button } from "../ui/button";
@@ -86,12 +85,12 @@ export const Providers = ({
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <AppSidebar />
       <SidebarInset>
         <header className="border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
           <div className="flex items-center justify-between w-full gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
+            <SidebarTrigger />
 
             <Input
               className="w-[300px] md:w-[400px] lg:w-[500px]"
@@ -138,7 +137,7 @@ export const Providers = ({
           </div>
         </header>
 
-        <main className="p-5 flex items-center justify-center min-h-[calc(100vh-4rem)]">
+        <main className="p-5 flex container mx-auto items-center justify-center min-h-[calc(100vh-4rem)]">
           {children}
         </main>
       </SidebarInset>
@@ -170,7 +169,7 @@ function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Home">
+                <SidebarMenuButton asChild tooltip="Discover">
                   <Link href="/discover">
                     <SearchIcon size={48} />
                     <span>Discover</span>
@@ -197,15 +196,6 @@ function AppSidebar() {
                     <span>User Settings</span>
                   </Link>
                 </SidebarMenuButton>
-
-                {/* Example for future:
-                <SidebarMenuButton asChild tooltip="Manage Communities">
-                  <Link href="/communities/manage">
-                    <SlidersHorizontalIcon size={48} />
-                    <span>Manage Communities</span>
-                  </Link>
-                </SidebarMenuButton>
-                */}
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

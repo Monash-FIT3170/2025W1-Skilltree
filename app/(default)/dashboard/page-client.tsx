@@ -9,18 +9,26 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, MessageSquare } from "lucide-react";
+import {
+  Users,
+  MessageSquare,
+  GitGraphIcon,
+  UserIcon,
+  Clock1,
+  Clock12,
+  Clock6,
+} from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { TEventResponse, TSkillTreeResponse } from "./types";
 import { useRouter } from "next/navigation";
-import { TSkillTree, TSkillTrees } from "@/types";
+import { TSkillTree } from "@/types";
+import { TSkillTrees } from "@/actions/get-my-skilltrees";
 
 const DashboardPageClient = ({
-  response,
+  skilltrees,
   events,
 }: {
-  response: TSkillTreeResponse;
-  events: TEventResponse;
+  skilltrees: TSkillTrees[];
+  events: TEvents[];
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
   const router = useRouter();
@@ -37,44 +45,41 @@ const DashboardPageClient = ({
             Subscribed Communities
           </h2>
           <span className="text-sm text-muted-foreground">
-            {response.message.length} total
+            {skilltrees.length} total
           </span>
         </header>
-        <div className="flex-1 pr-2 overflow-y-auto w-full ">
-          {response.message.length === 0 ? (
+        <div className="flex-1 w-full pr-2 overflow-y-auto ">
+          {skilltrees.length === 0 ? (
             <div>Woah. Such empty.</div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {response.message.map((skillTree: TSkillTrees) => {
-                const tree: TSkillTree = skillTree.skillTree;
-
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {skilltrees.map((tree: TSkillTrees) => {
                 return (
                   <Card
-                    onClick={() => router.push(`/community/${tree.id}`)}
-                    key={tree.id}
+                    className="transition-colors cursor-pointer hover:bg-primary/10"
+                    onClick={() =>
+                      router.push(`/community/${tree.skillTree.id}`)
+                    }
+                    key={tree.skillTree.id}
                   >
                     <CardHeader className="!flex items-center gap-2">
-                      <CardTitle>{tree.name}</CardTitle>
+                      <CardTitle>{tree.skillTree.name}</CardTitle>
                       <CardDescription></CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="w-full text-sm whitespace-pre-wrap text-muted-foreground line-clamp-3">
-                        {tree.description}
+                        {tree.skillTree.description}
                       </p>
                     </CardContent>
                     <CardFooter>
                       <div className="flex items-center justify-between w-full gap-4 text-xs text-muted-foreground">
                         <span className="inline-flex items-center gap-1">
-                          <Users className="w-4 h-4" />
-                          {Math.round(
-                            Math.random() * 900 + 1000
-                          ).toLocaleString()}
+                          <GitGraphIcon className="w-4 h-4" />
+                          {tree.skillTree._count.skillNodes}
                         </span>
                         <span className="inline-flex items-center gap-1">
-                          <MessageSquare className="w-4 h-4" />
-                          {Math.round(
-                            Math.random() * 900 + 1000
-                          ).toLocaleString()}
+                          <UserIcon className="w-4 h-4" />
+                          {tree.skillTree._count.skillTreeUser}
                         </span>
                       </div>
                     </CardFooter>
@@ -94,15 +99,15 @@ const DashboardPageClient = ({
         <header className="flex flex-col items-baseline justify-between pb-5">
           <h2 className="text-2xl font-bold tracking-tight">Upcoming Events</h2>
           <span className="text-sm text-muted-foreground">
-            {events.message.length} total
+            {events.length} total
           </span>
         </header>
         <div className="flex flex-col gap-5">
           {" "}
-          {response.message.length === 0 ? (
+          {skilltrees.length === 0 ? (
             <div>Woah. Such empty.</div>
           ) : (
-            events.message.map((ev) => {
+            events.map((ev) => {
               return (
                 <Card
                   key={ev.id}
@@ -124,6 +129,16 @@ const DashboardPageClient = ({
                       {ev.title}
                     </p>
                   </CardContent>
+                  <CardFooter className="flex items-center justify-between w-full text-xs text-muted-foreground">
+                    <div className="inline-flex items-center gap-2">
+                      <Clock12 />
+                      {new Date(ev.startDate).toLocaleDateString("en-AU")}
+                    </div>
+                    <div className="inline-flex items-center gap-2">
+                      <Clock6 />
+                      {new Date(ev.endDate).toLocaleDateString("en-AU")}
+                    </div>
+                  </CardFooter>
                 </Card>
               );
             })
@@ -131,7 +146,6 @@ const DashboardPageClient = ({
         </div>
       </ScrollArea>
     </div>
-    // <pre>{JSON.stringify(response, null, 4)}</pre>
   );
 };
 

@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html suppressContentEditableWarning suppressHydrationWarning lang="en">
       <body className={`${spaceGrotesk.variable} dark antialiased`}>
         <Suspense fallback={<Loading />}>
           <TanStackProvider>

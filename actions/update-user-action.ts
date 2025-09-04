@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { APIResponse } from "@/types";
 import { TGetUserProfileResponse } from "./types";
+import { revalidatePath } from "next/cache";
 
 export async function updateUserAction({
   name,
@@ -28,6 +29,9 @@ export async function updateUserAction({
     }
   );
   const data = (await response.json()) as APIResponse<TGetUserProfileResponse>;
+
+  // revalidatePath("/user/settings");
+  revalidatePath("/(default)", "layout");
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };

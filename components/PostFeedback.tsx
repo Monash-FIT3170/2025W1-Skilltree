@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 interface PostFeedbackProps {
   id: number;
@@ -11,18 +12,20 @@ export default function PostFeedback({
   timeAgo,
 }: PostFeedbackProps) {
   return (
-    <div className="w-full max-w-4xl mx-auto flex items-start gap-4 mb-4">
-      <img
+    <div className="flex items-start w-full max-w-4xl gap-4 mx-auto mb-4">
+      <Image
+        height={40}
+        width={40}
         src="/placeholder.png"
         alt={user}
         className="w-10 h-10 rounded-full"
       />
-      <div className="flex-1 rounded-xl px-4 py-2 shadow">
+      <div className="flex-1 px-4 py-2 shadow rounded-xl">
         <div className="flex items-center gap-2 mb-1">
-          <span className="font-semibold text-sm text-gray-500">{user}</span>
+          <span className="text-sm font-semibold text-gray-500">{user}</span>
           <span className="text-xs text-gray-400">{timeAgo}</span>
         </div>
-        <div className="text-gray-700 text-sm">{text}</div>
+        <div className="text-sm text-gray-700">{text}</div>
       </div>
     </div>
   );

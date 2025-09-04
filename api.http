@@ -1,0 +1,23 @@
+############################################
+# Variables, change them as per your need
+############################################
+
+@bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MmYyM2ZjOS1iNDFlLTQ1MGItOWJlNi0wMDAxOGFhZjdjMDQiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTcwMTI5ODl9.fqZEHsLOPDsIOO5oFmPlARzVhYV378nlm9OJ9Al8KdM
+@skillTreeId = 2766ae60-7270-4836-89e9-53a306a28950
+
+### User login
+POST http://localhost:6969/auth/signin
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "string"
+}
+
+### Join a skill tree
+POST http://localhost:6969/skilltree/{{skillTreeId}}/join
+Authorization: Bearer {{bearerToken}}
+
+### Leave a skill tree
+DELETE http://localhost:6969/skilltree/{{skillTreeId}}/leave
+Authorization: Bearer {{bearerToken}}

@@ -34,6 +34,8 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
   const postLikes = 59; // Placeholder for number of likes
   const postComments = comments.length; // Placeholder for number of comments
 
+  return <pre>{JSON.stringify({ userRole }, null, 2)}</pre>;
+
   const handleLike = () => {
     if (!liked) {
       setLikes((prev) => prev + 1);
@@ -67,7 +69,7 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
       element: (
         <button
           onClick={handleLike}
-          className={`flex-1 min-w-0 flex items-center justify-center px-4 py-2 rounded transition-colors transition-transform 
+          className={`flex-1 min-w-0 flex items-center justify-center px-4 py-2 rounded transition-all 
                         ${liked ? "text-[#34D399]" : "text-gray-600"}
                         hover:scale-105 active:scale-95`}
           style={{ minWidth: 0 }}
@@ -88,7 +90,7 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
       element: (
         <button
           onClick={handleFeedback}
-          className="flex-1 min-w-0 flex items-center justify-center px-4 py-2 rounded transition-colors truncate text-gray-600 hover:text-gray-900 hover:scale-105 active:scale-95 transition-transform"
+          className="flex items-center justify-center flex-1 min-w-0 px-4 py-2 text-gray-600 truncate transition-all rounded hover:text-gray-900 hover:scale-105 active:scale-95"
           style={{ minWidth: 0 }}
         >
           <MessageCircle className="mr-2" size={iconSize} />
@@ -103,7 +105,7 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
       key: "delete",
       element: (
         <button
-          className="flex-1 min-w-0 flex items-center justify-center px-4 py-2 rounded transition-colors truncate text-gray-600 hover:text-red-900 hover:scale-105 active:transform-scale-95 transition-transform "
+          className="flex items-center justify-center flex-1 min-w-0 px-4 py-2 text-gray-600 truncate transition-all rounded hover:text-red-900 hover:scale-105 active:transform-scale-95 "
           style={{ minWidth: 0 }}
         >
           <Delete className="mr-2" size={iconSize} />
@@ -116,7 +118,7 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
   return (
     <div>
       {/* Like/people summary and comment count */}
-      <div className="flex items-center justify-between px-4 py-2 border-b text-sm text-gray-600">
+      <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-600 border-b">
         <div>
           <span className="inline-flex items-center">
             <ThumbsUp
@@ -134,8 +136,8 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
       </div>
       {userRole == "nonMember" && (
         <div>
-          <div className="p-4 shadow rounded-lg w-full max-w-4xl mx-auto">
-            <div className="flex flex-row justify-center items-center gap-4">
+          <div className="w-full max-w-4xl p-4 mx-auto rounded-lg shadow">
+            <div className="flex flex-row items-center justify-center gap-4">
               {actions.map((action) => (
                 <React.Fragment key={action.key}>
                   {action.element}

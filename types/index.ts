@@ -15,6 +15,7 @@ export type TSkillTree = {
   updatedAt: string;
   creator: TCreator;
   tags: TTag[];
+  skillNodes: TSkillNode[];
 };
 
 export type TCreator = {
@@ -60,6 +61,7 @@ export type TSkillNode = {
   name: string;
   description: string;
   xpPoint: number;
+  skillTreeId: string;
 };
 
 export type TSkillTreeUser = {
