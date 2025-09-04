@@ -71,6 +71,7 @@ export default function CreateCommunityPage() {
     //   ...form,
     //   pfp: fileRef.current?.files?.[0] ?? null,
     // });
+    router.push("/community/add/skilltree");
   };
 
   return (
