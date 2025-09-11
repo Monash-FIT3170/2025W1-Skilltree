@@ -21,10 +21,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressContentEditableWarning suppressHydrationWarning lang="en">
-      <body className={`${spaceGrotesk.variable} dark antialiased`}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <Providers>{children}</Providers>
   );
 }
