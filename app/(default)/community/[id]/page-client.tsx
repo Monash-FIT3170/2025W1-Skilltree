@@ -25,7 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import PostView from "@/components/PostView";
 import { userStore } from "@/stores";
 import { useRouter } from "next/navigation";
 import { TSkillTree } from "@/actions/get-community-action";
@@ -40,9 +39,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
 const userImage = "/placeholder.png";
@@ -68,6 +65,8 @@ const ViewCommunityClient = ({
   const router = useRouter();
 
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [openPostId, setOpenPostId] = useState<string | null>(null);
+
   const isAdmin = community.skillTreeUser.some(
     (u) => u.user.id === user.user!.id && u.role === "ADMIN"
   );
@@ -80,7 +79,11 @@ const ViewCommunityClient = ({
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
 
-  const handleSubmit = () => {
+  const handlePostSubmit = () => {
+    // console.log({ title, tags, body, allowVerification });
+  };
+  const handleCommentSubmit = () => {
+    //here we need to add the submission of a comment
     // console.log({ title, tags, body, allowVerification });
   };
 
@@ -236,7 +239,7 @@ const ViewCommunityClient = ({
 
                 <DialogFooter>
                   <Button variant="destructive">Cancel</Button>
-                  <Button onClick={handleSubmit}>Confirm</Button>
+                  <Button onClick={handlePostSubmit}>Confirm</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -267,38 +270,81 @@ const ViewCommunityClient = ({
                   />
                 </div>
               </CardContent>
-              <CardFooter className="flex items-center justify-between w-full">
-                <Button variant={"default"} className="flex items-center gap-2">
+              <CardFooter className="flex flex-col w-full gap-4">
+              <div className="flex items-center justify-between w-full">
+                <Button variant="default" className="flex items-center gap-2">
                   <ThumbsUp />
                   {post.likes.length} Like(s)
                 </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="flex items-center gap-2">
-                      <MessagesSquareIcon />
-                      <span>{post.feedback.length} Feedback(s)</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    {post.feedback.map((fb) => (
-                      <Card
-                        key={`${fb.postId}_${fb.verifierId}`}
-                        className="flex flex-col gap-5 text-sm font-bold"
+                <Button
+                  className="flex items-center gap-2"
+                  onClick={() =>
+                    setOpenPostId(openPostId === post.id ? null : post.id)
+                  }
+                >
+                  <MessagesSquareIcon />
+                  <span>{post.feedback.length} Feedback(s)</span>
+                </Button>
+              </div>
+
+              {/* Feedback shown inline below post when open */}
+              {openPostId === post.id && (
+                <div className="w-full mt-4 space-y-3">
+                  {post.feedback.map((fb) => (
+                    <Card
+                      key={`${fb.postId}_${fb.verifierId}`}
+                      className="flex flex-col gap-3 text-sm font-bold"
+                    >
+                      <CardHeader className="flex items-center gap-2">
+                        Verified by {fb.verifier.name}
+                        <CardDescription>
+                          <Badge>{fb.multiplier}x</Badge>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>{fb.feedbackText}</CardContent>
+                    </Card>
+                  ))}
+
+                  {/* Feedback box */}
+                  <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
+                    <Label htmlFor={`comment-${post.id}`}>Leave some feedback</Label>
+                    <Textarea
+                      id={`comment-${post.id}`}
+                      placeholder="Write your feedback..."
+                      className="mt-2"
+                      rows={3}
+                    />
+                    <div className="flex justify-end mt-2 gap-2">
+                      <Button variant="outline" onClick={() => setOpenPostId(null)}>
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleCommentSubmit();
+                          toast.success("Comment submitted!");
+                        }}
                       >
-                        <CardHeader className="flex items-center gap-2">
-                          Verified by {fb.verifier.name}
-                          <CardDescription>
-                            <Badge>{fb.multiplier}x</Badge>
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>{fb.feedbackText}</CardContent>
-                      </Card>
-                    ))}
-                  </DialogContent>
-                </Dialog>
-              </CardFooter>
+                        Submit
+                      </Button>
+                      {/* <Button 
+                        variant = "destructive"
+                        onClick={() => {
+                          handleCommentSubmit();
+                          toast.success("Comment submitted!");
+                        }}
+                      >
+                        Submit Without XP
+                      </Button> */}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </CardFooter>
+
             </Card>
           ))}
+
         </section>
       </main>
     </div>
