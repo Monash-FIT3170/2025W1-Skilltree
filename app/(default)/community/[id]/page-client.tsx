@@ -318,6 +318,15 @@ const ViewCommunityClient = ({
                       <Button variant="outline" onClick={() => setOpenPostId(null)}>
                         Cancel
                       </Button>
+                      <Button 
+                        variant = "destructive"
+                        onClick={() => {
+                          handleCommentSubmit();
+                          toast.success("Comment submitted!");
+                        }}
+                      >
+                        Submit Without XP
+                      </Button> 
                       <Button
                         onClick={() => {
                           handleCommentSubmit();
@@ -326,15 +335,6 @@ const ViewCommunityClient = ({
                       >
                         Submit
                       </Button>
-                      {/* <Button 
-                        variant = "destructive"
-                        onClick={() => {
-                          handleCommentSubmit();
-                          toast.success("Comment submitted!");
-                        }}
-                      >
-                        Submit Without XP
-                      </Button> */}
                     </div>
                   </div>
                 </div>
