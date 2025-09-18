@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 // Types
 export type RecentEvent = {
@@ -69,10 +70,25 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
     console.log(`Joining event: ${eventId}`);
   };
 
+  const handleAddEvent = () => {
+    // Handle add event logic here
+    console.log("Adding new event");
+  };
+
   return (
     <section className="container mx-auto">
-      <div className="mb-4 text-center">
-        <h2 className="text-lg font-semibold">Recent Events</h2>
+      <div className="mb-4">
+        <h2 className="flex items-center justify-center relative text-lg font-semibold">
+          <span>Events</span>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={handleAddEvent}
+            className="h-8 w-8 p-0 absolute right-0"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </h2>
       </div>
 
       <div className="p-4 rounded-2xl md:p-6">
