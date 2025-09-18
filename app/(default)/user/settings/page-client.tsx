@@ -147,7 +147,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
                 </Label>
               </div>
               <p className="text-xs text-muted-foreground">
-                Private profiles can't be followed
+                Private profiles cannot be followed
               </p>
             </div>
 
