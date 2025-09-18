@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 export type RecentEvent = {
   id: string;
   title: string; // e.g., "Livery Jam - 800 XP"
-  mode: "ranked" | "unranked";
   club: string; // e.g., "Fan Garage"
   category: string; // e.g., "Race Strategy"
+  userRank?: number; // User's rank position if joined
+  isJoined: boolean; // Whether the user has joined this event
 };
 
 export type RecentEventsPayload = {
@@ -33,32 +34,39 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
       {
         id: "1",
         title: "Race Day Bingo",
-        mode: "unranked",
         club: "Fan Garage",
         category: "Community Engagement",
+        isJoined: false,
       },
       {
         id: "2",
         title: "Livery Jam - 800 XP",
-        mode: "ranked",
         club: "Fan Garage",
         category: "Race Strategy",
+        isJoined: true,
+        userRank: 7,
       },
       {
         id: "3",
         title: "100m Sprint Ladder - 1000 XP",
-        mode: "ranked",
         club: "Swim Circle",
         category: "Freestyle Sprint",
+        isJoined: true,
+        userRank: 23,
       },
       {
         id: "4",
         title: "Backyard Six Fest",
-        mode: "unranked",
         club: "Cricket Corner",
         category: "Hits Showcase",
+        isJoined: false,
       },
     ],
+  };
+
+  const handleJoinEvent = (eventId: string) => {
+    // Handle join event logic here
+    console.log(`Joining event: ${eventId}`);
   };
 
   return (
@@ -78,15 +86,21 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
                     {ev.club} · {ev.category}
                   </p>
                 </div>
-                <Badge
-                  className={`shrink-0 self-start sm:self-center ${
-                    ev.mode === "ranked"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-emerald-100 text-emerald-700"
-                  }`}
-                >
-                  {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
-                </Badge>
+                <div className="shrink-0 self-start sm:self-center">
+                  {ev.isJoined ? (
+                    <Badge className="bg-blue-100 text-blue-700">
+                      Rank #{ev.userRank}
+                    </Badge>
+                  ) : (
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleJoinEvent(ev.id)}
+                      className="h-7 px-3 text-xs"
+                    >
+                      Join
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
