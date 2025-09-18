@@ -129,13 +129,14 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
             </div>
 
             <div className="flex flex-wrap justify-end w-full gap-3">
-              <Button onClick={handleSubmit}>Save Changes</Button>
+              <Button variant="outline" onClick={() => router.push("/user/profile")}>Go to Profile</Button>
               <Button
                 onClick={() => router.push("/dashboard")}
                 variant="outline"
               >
                 Go Back
               </Button>
+              <Button onClick={handleSubmit}>Save Changes</Button>
             </div>
           </div>
         </div>

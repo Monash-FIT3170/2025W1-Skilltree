@@ -73,7 +73,7 @@ export default function UserProfileClient({
   };
 
   const handleEditProfile = () => {
-    router.push("/settings");
+    router.push("/user/settings");
   };
 
   return (
@@ -102,7 +102,7 @@ export default function UserProfileClient({
             {/* Action Buttons */}
             <div className="flex gap-3">
               {isOwnProfile ? (
-                <Button onClick={handleEditProfile}>
+                <Button onClick={handleEditProfile} variant ="outline">
                   Edit Profile
                 </Button>
               ) : (
