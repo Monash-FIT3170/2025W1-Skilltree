@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Timer } from "lucide-react";
 
 // Types
 export type RecentEvent = {
@@ -16,6 +16,7 @@ export type RecentEvent = {
   category: string; // e.g., "Race Strategy"
   userRank?: number; // User's rank position if joined
   isJoined: boolean; // Whether the user has joined this event
+  endDate: string; // Event end date
 };
 
 export type RecentEventsPayload = {
@@ -38,6 +39,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
         club: "Fan Garage",
         category: "Community Engagement",
         isJoined: false,
+        endDate: "2025-09-25T15:00:00Z",
       },
       {
         id: "2",
@@ -46,6 +48,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
         category: "Race Strategy",
         isJoined: true,
         userRank: 7,
+        endDate: "2025-09-20T18:00:00Z",
       },
       {
         id: "3",
@@ -54,6 +57,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
         category: "Freestyle Sprint",
         isJoined: true,
         userRank: 23,
+        endDate: "2025-09-19T12:00:00Z",
       },
       {
         id: "4",
@@ -61,6 +65,7 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
         club: "Cricket Corner",
         category: "Hits Showcase",
         isJoined: false,
+        endDate: "2025-09-30T20:00:00Z",
       },
     ],
   };
@@ -75,11 +80,27 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
     console.log("Adding new event");
   };
 
+  const getTimeRemaining = (endDate: string) => {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = end.getTime() - now.getTime();
+    
+    if (diff <= 0) return "Ended";
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) return `${days}d left`;
+    if (hours > 0) return `${hours}h left`;
+    return "< 1h left";
+  };
+
   return (
     <section className="container mx-auto">
       <div className="mb-4">
         <h2 className="flex items-center justify-center relative text-lg font-semibold">
-          <span>Events</span>
+          <span>Recent Events</span>
+          {/* Option 1: Plus icon button */}
           <Button 
             size="sm" 
             variant="outline" 
@@ -101,6 +122,10 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
                   <p className="text-sm text-muted-foreground">
                     {ev.club} · {ev.category}
                   </p>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                    <Timer className="w-3 h-3" />
+                    <span>{getTimeRemaining(ev.endDate)}</span>
+                  </div>
                 </div>
                 <div className="shrink-0 self-start sm:self-center">
                   {ev.isJoined ? (

@@ -9,6 +9,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Users,
   MessageSquare,
@@ -17,6 +18,8 @@ import {
   Clock1,
   Clock12,
   Clock6,
+  Plus,
+  Timer,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
@@ -32,6 +35,29 @@ const DashboardPageClient = ({
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
   const router = useRouter();
+
+  const handleJoinEvent = (eventId: string) => {
+    console.log(`Joining event: ${eventId}`);
+  };
+
+  const handleAddEvent = () => {
+    console.log("Adding new event");
+  };
+
+  const getTimeRemaining = (endDate: string) => {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = end.getTime() - now.getTime();
+    
+    if (diff <= 0) return "Ended";
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) return `${days}d left`;
+    if (hours > 0) return `${hours}h left`;
+    return "< 1h left";
+  };
 
   return (
     <div
@@ -96,49 +122,54 @@ const DashboardPageClient = ({
       <ScrollArea
         className={`h-full max-h-[${columnHeight}] flex flex-col pr-5`}
       >
-        <header className="flex flex-col items-baseline justify-between pb-5">
-          <h2 className="text-2xl font-bold tracking-tight">Upcoming Events</h2>
-          <span className="text-sm text-muted-foreground">
-            {events.length} total
-          </span>
-        </header>
-        <div className="flex flex-col gap-5">
-          {" "}
-          {skilltrees.length === 0 ? (
+        <div className="mb-4">
+          <h2 className="flex items-center justify-center relative text-lg font-semibold">
+            <span>Upcoming Events</span>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={handleAddEvent}
+              className="h-8 w-8 p-0 absolute right-0"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </h2>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {events.length === 0 ? (
             <div>Woah. Such empty.</div>
           ) : (
             events.map((ev) => {
               return (
-                <Card
-                  key={ev.id}
-                  className="w-full transition border rounded-lg hover:bg-accent/40"
-                >
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      {ev.title}
-                      <Badge variant={ev.isRanked ? "default" : "destructive"}>
-                        {ev.isRanked ? "Ranked" : "Unranked"}
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      {ev.xpPayout ? ev.xpPayout : 0} XP
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="mt-1 text-sm w-fit text-muted-foreground line-clamp-2">
-                      {ev.title}
-                    </p>
+                <Card key={ev.id} className="rounded-xl">
+                  <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 className="font-semibold">{ev.title}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {ev.xpPayout ? ev.xpPayout : 0} XP
+                      </p>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                        <Timer className="w-3 h-3" />
+                        <span>{getTimeRemaining(ev.endDate)}</span>
+                      </div>
+                    </div>
+                    <div className="shrink-0 self-start sm:self-center">
+                      {(ev as any).userRank ? (
+                        <Badge className="bg-blue-100 text-blue-700">
+                          Rank #{(ev as any).userRank}
+                        </Badge>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleJoinEvent(ev.id)}
+                          className="h-7 px-3 text-xs"
+                        >
+                          Join
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
-                  <CardFooter className="flex items-center justify-between w-full text-xs text-muted-foreground">
-                    <div className="inline-flex items-center gap-2">
-                      <Clock12 />
-                      {new Date(ev.startDate).toLocaleDateString("en-AU")}
-                    </div>
-                    <div className="inline-flex items-center gap-2">
-                      <Clock6 />
-                      {new Date(ev.endDate).toLocaleDateString("en-AU")}
-                    </div>
-                  </CardFooter>
                 </Card>
               );
             })
