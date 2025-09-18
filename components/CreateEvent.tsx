@@ -11,6 +11,13 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,27 +25,28 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 
 type CreateEventModalProps = {
+  skillNodes: string[];
   onSubmit: (data: {
     name: string;
     description: string;
     start: string;
     end: string;
+    skillNode: string;
   }) => void;
 };
 
-const CreateEventModal = ({ onSubmit }: CreateEventModalProps) => {
+const CreateEventModal = ({ skillNodes, onSubmit }: CreateEventModalProps) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [start, setStart] = useState(
     new Date().toISOString().slice(0, 16) // default current day + time
   );
-  const [end, setEnd] = useState(
-    new Date().toISOString().slice(0, 16)
-  );
+  const [end, setEnd] = useState(new Date().toISOString().slice(0, 16));
+  const [skillNode, setSkillNode] = useState("");
 
   const handleSubmit = () => {
-    if (name && description && start && end) {
-      onSubmit({ name, description, start, end });
+    if (name && description && start && end && skillNode) {
+      onSubmit({ name, description, start, end, skillNode });
     }
   };
 
@@ -81,6 +89,23 @@ const CreateEventModal = ({ onSubmit }: CreateEventModalProps) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+        </div>
+
+        {/* skill tree node - check this */}
+        <div className="w-full space-y-2">
+          <Label htmlFor="skill-node">Skill Tree Node</Label>
+          <Select onValueChange={setSkillNode}>
+            <SelectTrigger id="skill-node" className="w-full">
+              <SelectValue placeholder="Select skill node" />
+            </SelectTrigger>
+            <SelectContent>
+              {skillNodes.map((node) => (
+                <SelectItem key={node} value={node}>
+                  {node}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="w-full space-y-2">
