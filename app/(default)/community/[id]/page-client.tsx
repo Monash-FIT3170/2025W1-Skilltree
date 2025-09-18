@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -244,7 +245,9 @@ const ViewCommunityClient = ({
                   </div>
 
                   <DialogFooter>
+                    <DialogClose asChild>
                     <Button variant="destructive">Cancel</Button>
+                    </DialogClose>
                     <Button onClick={handlePostSubmit}>Confirm</Button>
                   </DialogFooter>
                 </DialogContent>
