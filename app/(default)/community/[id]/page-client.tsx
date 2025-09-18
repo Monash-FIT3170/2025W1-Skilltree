@@ -32,7 +32,7 @@ import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
 import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
-import { Clock12, MessagesSquareIcon, ThumbsUp } from "lucide-react";
+import { Clock12, MessagesSquareIcon, ThumbsUp, Plus } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -85,6 +85,11 @@ const ViewCommunityClient = ({
   const handleCommentSubmit = () => {
     //here we need to add the submission of a comment
     // console.log({ title, tags, body, allowVerification });
+  };
+
+  const handleCreatePost = () => {
+    // Handle create post logic here
+    console.log("Creating new post");
   };
 
   const exampleSkillTree = {
@@ -175,74 +180,76 @@ const ViewCommunityClient = ({
 
         {/* Posts feed */}
         <section className="py-5 space-y-6 md:col-span-1">
-          <div className="flex items-center justify-between w-full gap-4">
-            <Avatar>
-              <AvatarFallback>U</AvatarFallback>
-              <AvatarImage className="border" src={userImage} />
-            </Avatar>
+          <div className="mb-4">
+            <h2 className="flex items-center justify-center relative text-lg font-semibold">
+              <span>Posts</span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-8 w-8 p-0 absolute right-0"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button disabled variant="secondary" className="flex-1">
-                  Upload some Proof of Practice (WIP)
-                </Button>
-              </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Upload Proof of Practice</DialogTitle>
+                    <DialogDescription>
+                      Share your progress and get feedback from the community.
+                    </DialogDescription>
+                  </DialogHeader>
 
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Upload Proof of Practice</DialogTitle>
-                  <DialogDescription>
-                    Share your progress and get feedback from the community.
-                  </DialogDescription>
-                </DialogHeader>
+                  <div className="w-full space-y-2 text-sm">
+                    <Label htmlFor="skill-tree-node">Select Skill Tree</Label>
+                    <Select>
+                      <SelectTrigger id="skill-tree-node" className="w-full">
+                        <SelectValue placeholder="Select skill tree node" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {skillNodes.map((node) => (
+                          <SelectItem key={node} value={node}>
+                            {node}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="w-full space-y-2 text-sm">
-                  <Label htmlFor="skill-tree-node">Select Skill Tree</Label>
-                  <Select>
-                    <SelectTrigger id="skill-tree-node" className="w-full">
-                      <SelectValue placeholder="Select skill tree node" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {skillNodes.map((node) => (
-                        <SelectItem key={node} value={node}>
-                          {node}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                  <div className="w-full py-2 space-y-2">
+                    <Label>Upload Media</Label>
+                    <Input type="file" />
+                    {preview && (
+                      <Image
+                        width={720}
+                        height={720}
+                        src={preview}
+                        alt="Preview"
+                        className="object-contain mt-2 border max-h-60 rounded-xl"
+                      />
+                    )}
+                  </div>
 
-                <div className="w-full py-2 space-y-2">
-                  <Label>Upload Media</Label>
-                  <Input type="file" />
-                  {preview && (
-                    <Image
-                      width={720}
-                      height={720}
-                      src={preview}
-                      alt="Preview"
-                      className="object-contain mt-2 border max-h-60 rounded-xl"
+                  <div className="w-full space-y-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      rows={5}
+                      className="w-full"
+                      value={body}
+                      onChange={(e) => setBody(e.target.value)}
+                      placeholder="Write about what you practiced today..."
                     />
-                  )}
-                </div>
+                  </div>
 
-                <div className="w-full space-y-2">
-                  <Label>Description</Label>
-                  <Textarea
-                    rows={5}
-                    className="w-full"
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    placeholder="Write about what you practiced today..."
-                  />
-                </div>
-
-                <DialogFooter>
-                  <Button variant="destructive">Cancel</Button>
-                  <Button onClick={handlePostSubmit}>Confirm</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  <DialogFooter>
+                    <Button variant="destructive">Cancel</Button>
+                    <Button onClick={handlePostSubmit}>Confirm</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </h2>
           </div>
 
           {posts.map((post) => (
