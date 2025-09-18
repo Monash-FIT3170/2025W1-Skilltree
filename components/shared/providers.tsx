@@ -42,6 +42,7 @@ import {
   SearchIcon,
   CogIcon,
   SlidersHorizontalIcon,
+  User,
 } from "lucide-react";
 import { userStore } from "@/stores";
 import { Button } from "../ui/button";
@@ -73,6 +74,10 @@ export const Providers = ({
 
   const handleSettings = () => {
     router.push("/user/settings");
+  };
+
+  const handleProfile = () => {
+    router.push("/user/profile");
   };
 
   const handleLogout = async () => {
@@ -117,6 +122,13 @@ export const Providers = ({
                     </span>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleProfile}
+                    className="cursor-pointer"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={handleSettings}
                     className="cursor-pointer"
