@@ -204,7 +204,7 @@ const ViewCommunityClient = ({
                   </DialogHeader>
 
                   <div className="w-full space-y-2 text-sm">
-                    <Label htmlFor="skill-tree-node">Select Skill Tree</Label>
+                    <Label htmlFor="skill-tree-node">Select Skill Tree Node</Label>
                     <Select>
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
