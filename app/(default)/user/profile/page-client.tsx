@@ -102,9 +102,10 @@ export default function UserProfileClient({
             {/* Action Buttons */}
             <div className="flex gap-3">
               {isOwnProfile ? (
-                <Button onClick={handleEditProfile} variant ="outline">
+                <><Button onClick={handleEditProfile} variant ="outline">
                   Edit Profile
                 </Button>
+                </>
               ) : (
                 <Button 
                   onClick={handleFollowToggle}

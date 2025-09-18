@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { KeyRound } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { TUser } from "@/types";
 import { format } from "date-fns";
@@ -21,6 +22,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
   const [name, setName] = useState(user.name);
   const [previewUrl, setPreviewUrl] = useState<string | null>(user.pfp ?? null);
   const [file, setFile] = useState<File | null>(null);
+  const [isPrivate, setIsPrivate] = useState(false); // Add this to your TUser type or get from user.isPrivate
   const editRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -49,6 +51,8 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
     const updateUser = await updateUserAction({
       name,
       pfp: previewUrl ?? "",
+      // Add isPrivate to your updateUserAction
+      // isPrivate,
     });
 
     if (!updateUser.ok) {
@@ -128,8 +132,29 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
               />
             </div>
 
+            <div className="flex flex-col w-full gap-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="private-account"
+                  checked={isPrivate}
+                  onCheckedChange={(checked) => setIsPrivate(checked as boolean)}
+                />
+                <Label
+                  htmlFor="private-account"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Make my profile private
+                </Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Private profiles can only be viewed by users you approve
+              </p>
+            </div>
+
             <div className="flex flex-wrap justify-end w-full gap-3">
-              <Button variant="outline" onClick={() => router.push("/user/profile")}>Go to Profile</Button>
+              <Button variant="outline" onClick={() => router.push("/user/profile")}>
+                Go to Profile
+              </Button>
               <Button
                 onClick={() => router.push("/dashboard")}
                 variant="outline"
