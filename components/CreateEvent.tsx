@@ -33,9 +33,16 @@ type CreateEventModalProps = {
     end: string;
     skillNode: string;
   }) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const CreateEventModal = ({ skillNodes, onSubmit }: CreateEventModalProps) => {
+const CreateEventModal = ({
+  skillNodes,
+  onSubmit,
+  open,
+  onOpenChange,
+}: CreateEventModalProps) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [start, setStart] = useState(
@@ -51,17 +58,7 @@ const CreateEventModal = ({ skillNodes, onSubmit }: CreateEventModalProps) => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-8 w-8 p-0 absolute right-0"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Event</DialogTitle>

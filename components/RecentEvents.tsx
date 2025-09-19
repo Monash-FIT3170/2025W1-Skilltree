@@ -1,22 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, Timer } from "lucide-react";
+import CreateEventModal from "@/components/CreateEvent";
 
 // Types
 export type RecentEvent = {
   id: string;
-  title: string; // e.g., "Livery Jam - 800 XP"
-  club: string; // e.g., "Fan Garage"
-  category: string; // e.g., "Race Strategy"
-  userRank?: number; // User's rank position if joined
-  isJoined: boolean; // Whether the user has joined this event
-  endDate: string; // Event end date
+  title: string;
+  club: string;
+  category: string;
+  userRank?: number;
+  isJoined: boolean;
+  endDate: string;
+  skillNodes?: string[];
 };
 
 export type RecentEventsPayload = {
@@ -26,6 +28,8 @@ export type RecentEventsPayload = {
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function RecentEvents({ limit = 4 }: { limit?: number }) {
+  const [modalOpen, setModalOpen] = useState(false);
+
   const { data } = useSWR<RecentEventsPayload>(
     `/api/events/recent?limit=${limit}`,
     fetcher
@@ -71,39 +75,44 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
   };
 
   const handleJoinEvent = (eventId: string) => {
-    // Handle join event logic here
     console.log(`Joining event: ${eventId}`);
   };
 
   const handleAddEvent = () => {
-    // Handle add event logic here
-    console.log("Adding new event");
+    setModalOpen(true);
   };
 
   const getTimeRemaining = (endDate: string) => {
     const now = new Date();
     const end = new Date(endDate);
     const diff = end.getTime() - now.getTime();
-    
+
     if (diff <= 0) return "Ended";
-    
+
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
+
     if (days > 0) return `${days}d left`;
     if (hours > 0) return `${hours}h left`;
     return "< 1h left";
   };
 
+  // Example skill nodes, you can pass these from props or context if needed
+  const skillNodes = [
+    "Snowboarding",
+    "Jumping",
+    "Spin Trick",
+    "Endurance"
+  ];
+
   return (
     <section className="container mx-auto">
       <div className="mb-4">
         <h2 className="flex items-center justify-center relative text-lg font-semibold">
-          <span>Recent Events</span>
-          {/* Option 1: Plus icon button */}
-          <Button 
-            size="sm" 
-            variant="outline" 
+          <span>Events</span>
+          <Button
+            size="sm"
+            variant="outline"
             onClick={handleAddEvent}
             className="h-8 w-8 p-0 absolute right-0"
           >
@@ -111,6 +120,23 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
           </Button>
         </h2>
       </div>
+
+      {/* Modal rendered here, controlled by modalOpen */}
+      <CreateEventModal
+        skillNodes={skillNodes}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onSubmit={({ name, description, start, end, skillNode }) => {
+          console.log("Event submitted:", {
+            name,
+            description,
+            start,
+            end,
+            skillNode,
+          });
+          setModalOpen(false); // Close modal after submit
+        }}
+      />
 
       <div className="p-4 rounded-2xl md:p-6">
         <div className="space-y-3">
@@ -133,8 +159,8 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
                       Rank #{ev.userRank}
                     </Badge>
                   ) : (
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       onClick={() => handleJoinEvent(ev.id)}
                       className="h-7 px-3 text-xs"
                     >
@@ -148,15 +174,5 @@ export default function RecentEvents({ limit = 4 }: { limit?: number }) {
         </div>
       </div>
     </section>
-  );
-}
-
-// PAGE: /app/events/page.tsx
-// Simple page that displays the RecentEvents list. Place this in app/events/page.tsx
-export function RecentEventsPageWrapper() {
-  return (
-    <main className="container px-6 py-8 mx-auto">
-      <RecentEvents limit={8} />
-    </main>
   );
 }
