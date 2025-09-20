@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
-import RecentEvents from "@/components/RecentEvents";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
@@ -42,7 +41,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
 const userImage = "/placeholder.png";
@@ -55,6 +53,36 @@ const skillNodes = [
   "API Handling",
   "Testing & Debugging",
   "UI/UX Best Practices",
+];
+const events = [
+  {
+    id: "1",
+    title: "Race Day Bingo",
+    mode: "unranked",
+    club: "Fan Garage",
+    category: "Community Engagement",
+  },
+  {
+    id: "2",
+    title: "Livery Jam - 800 XP",
+    mode: "ranked",
+    club: "Fan Garage",
+    category: "Race Strategy",
+  },
+  {
+    id: "3",
+    title: "100m Sprint Ladder - 1000 XP",
+    mode: "ranked",
+    club: "Swim Circle",
+    category: "Freestyle Sprint",
+  },
+  {
+    id: "4",
+    title: "Backyard Six Fest",
+    mode: "unranked",
+    club: "Cricket Corner",
+    category: "Hits Showcase",
+  },
 ];
 
 const ViewCommunityClient = ({
@@ -160,27 +188,55 @@ const ViewCommunityClient = ({
       <main className="container grid flex-1 grid-cols-1 gap-8 px-6 py-8 mx-auto md:grid-cols-2">
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
-            <div className="p-4 shadow-sm rounded-xl">
+            <div className="p-4 rounded shadow-sm">
               <FilteringSkillTree
                 rootSkill={exampleSkillTree}
                 onSelect={(nodeId) => setSelectedSkill(nodeId)}
               />
             </div>
-            <RecentEvents />
+            <section className="w-full">
+              <div className="w-full text-center">
+                <h2 className="text-lg font-semibold">Recent Events</h2>
+              </div>
+
+              <div className="flex flex-col items-stretch w-full gap-4 rounded">
+                {events.map((ev) => (
+                  <Card key={ev.id} className="w-full rounded">
+                    <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <h3 className="font-semibold">{ev.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {ev.club} · {ev.category}
+                        </p>
+                      </div>
+                      <Badge
+                        className={`shrink-0 self-start sm:self-center ${
+                          ev.mode === "ranked"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-emerald-100 text-emerald-700"
+                        }`}
+                      >
+                        {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
           </div>
         </aside>
 
         {/* Posts feed */}
         <section className="py-5 space-y-6 md:col-span-1">
-          <div className="flex items-center justify-between w-full gap-4">
+          <div className="flex items-center justify-between w-full gap-4 p-4 border rounded shadow bg-card">
             <Avatar>
               <AvatarFallback>U</AvatarFallback>
-              <AvatarImage className="border" src={userImage} />
+              <AvatarImage className="border" src={""} />
             </Avatar>
 
             <Dialog>
               <DialogTrigger asChild>
-                <Button disabled variant="secondary" className="flex-1">
+                <Button variant="outline" className="flex-1">
                   Upload some Proof of Practice (WIP)
                 </Button>
               </DialogTrigger>
@@ -218,7 +274,7 @@ const ViewCommunityClient = ({
                       height={720}
                       src={preview}
                       alt="Preview"
-                      className="object-contain mt-2 border max-h-60 rounded-xl"
+                      className="object-contain mt-2 border rounded max-h-60"
                     />
                   )}
                 </div>

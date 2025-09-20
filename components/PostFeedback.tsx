@@ -20,7 +20,7 @@ export default function PostFeedback({
         alt={user}
         className="w-10 h-10 rounded-full"
       />
-      <div className="flex-1 px-4 py-2 shadow rounded-xl">
+      <div className="flex-1 px-4 py-2 shadow rounded">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm font-semibold text-gray-500">{user}</span>
           <span className="text-xs text-gray-400">{timeAgo}</span>

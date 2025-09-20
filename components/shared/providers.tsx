@@ -3,6 +3,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarInset,
@@ -14,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { Input } from "../ui/input";
 import {
@@ -45,6 +46,8 @@ import {
 } from "lucide-react";
 import { userStore } from "@/stores";
 import { Button } from "../ui/button";
+import Loading from "../../app/loading";
+import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 
 export const Providers = ({
   children,
@@ -133,6 +136,8 @@ export const Providers = ({
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <AnimatedThemeToggler className="text-sm" />
             </div>
           </div>
         </header>

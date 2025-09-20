@@ -64,8 +64,8 @@ export default function LandingPage() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full bg-background border-b z-50 h-24">
-        <div className="container mx-auto h-full flex items-center justify-between px-4">
+      <nav className="fixed top-0 z-50 w-full h-24 border-b bg-background">
+        <div className="container flex items-center justify-between h-full px-4 mx-auto">
           <Link href="/">
             <Image
               src="/images/logo.png"
@@ -95,21 +95,21 @@ export default function LandingPage() {
 
       <main className="pt-32">
         {/* Hero */}
-        <section className="text-center py-16 px-4">
-          <h1 className="text-4xl md:text-6xl font-extrabold">
+        <section className="px-4 py-16 text-center">
+          <h1 className="text-4xl font-extrabold md:text-6xl">
             A Platform for Learning and Showcasing Skills
           </h1>
-          <div className="mt-6 inline-block rounded-lg overflow-hidden shadow-lg">
+          <div className="inline-block mt-6 overflow-hidden rounded shadow-lg">
             <Image
               src="/images/herobanner.jpg"
               alt="SkillTree illustration"
               width={1200}
               height={420}
-              className="w-full object-cover"
+              className="object-cover w-full"
               unoptimized
             />
           </div>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto mt-4 text-gray-600">
             For creators, learners, and competitors levelling up skills
             together.
           </p>
@@ -117,11 +117,11 @@ export default function LandingPage() {
         </section>
 
         {/* About Us */}
-        <section className="py-16 px-4">
-          <h2 id="about" className="text-3xl font-bold text-center mb-8">
+        <section className="px-4 py-16">
+          <h2 id="about" className="mb-8 text-3xl font-bold text-center">
             About Us
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
             {aboutItems.map((item, idx) => (
               <Card key={idx} className="flex flex-col">
                 <CardHeader>
@@ -135,7 +135,7 @@ export default function LandingPage() {
                     alt={item.title}
                     width={400}
                     height={200}
-                    className="object-cover rounded w-full h-40"
+                    className="object-cover w-full h-40 rounded"
                   />
                 </CardContent>
               </Card>
@@ -144,7 +144,7 @@ export default function LandingPage() {
         </section>
 
         {/* Feature Blocks */}
-        <section className="py-16 px-4">
+        <section className="px-4 py-16">
           <div className="container mx-auto space-y-12">
             {featureBlocks.map((fb, idx) => (
               <div
@@ -159,7 +159,7 @@ export default function LandingPage() {
                     alt={fb.title}
                     width={600}
                     height={350}
-                    className="object-cover w-full h-64 rounded-lg"
+                    className="object-cover w-full h-64 rounded"
                   />
                 </div>
                 <div className="space-y-4">
@@ -173,8 +173,8 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t mt-12 py-6">
-        <div className="container mx-auto flex items-center justify-center space-x-3 px-4">
+      <footer className="py-6 mt-12 border-t">
+        <div className="container flex items-center justify-center px-4 mx-auto space-x-3">
           <Avatar>
             <AvatarImage src="/images/logo.png" alt="SkillTree Logo" />
             <AvatarFallback>ST</AvatarFallback>

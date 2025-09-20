@@ -9,7 +9,7 @@ export default function PostFeedbackForm() {
   const [xpActive, setXpActive] = useState(false);
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 rounded-lg shadow flex items-center gap-4">
+    <div className="w-full max-w-4xl mx-auto p-4 rounded shadow flex items-center gap-4">
       {/* Avatar */}
       <Image
         height={40}
@@ -20,7 +20,7 @@ export default function PostFeedbackForm() {
       />
 
       {/* Feedback input and send button */}
-      <div className="flex flex-1 items-center rounded-xl px-3 py-2 gap-2">
+      <div className="flex flex-1 items-center rounded px-3 py-2 gap-2">
         <input
           type="text"
           placeholder="Write some feedback..."
@@ -39,7 +39,7 @@ export default function PostFeedbackForm() {
 
       {/* Give XP button */}
       <button
-        className={`flex flex-col items-center justify-center w-20 h-12 ml-2 rounded-xl border transition-all hover:transform hover:scale-105
+        className={`flex flex-col items-center justify-center w-20 h-12 ml-2 rounded border transition-all hover:transform hover:scale-105
                                         ${
                                           xpActive
                                             ? "border-transparent bg-transparent"
