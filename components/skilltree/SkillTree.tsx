@@ -43,7 +43,7 @@ function pickRootId(
   const candidates = nodes.filter((n) => !sources.has(String(n.id)));
   return candidates.length
     ? String(candidates[0].id)
-    : (preferredRootId ?? "root");
+    : preferredRootId ?? "root";
 }
 
 function ensureRoot(
@@ -346,19 +346,17 @@ export default function SkillTree({
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
 
   return (
-    <div
-      className={className ?? "h-full w-full rounded-md border flex flex-col"}
-    >
+    <div className={className ?? "h-full w-full rounded border flex flex-col"}>
       {/* Toolbar — no "Add root" */}
       <div className="flex items-center gap-2 p-2 border-b bg-muted/30">
         <button
-          className="px-2 py-1 border rounded-md text-xs hover:bg-muted disabled:opacity-50"
+          className="px-2 py-1 border rounded text-xs hover:bg-muted disabled:opacity-50"
           onClick={addChild}
         >
           + Add child
         </button>
         <button
-          className="px-2 py-1 border rounded-md text-xs hover:bg-destructive/20 disabled:opacity-50"
+          className="px-2 py-1 border rounded text-xs hover:bg-destructive/20 disabled:opacity-50"
           onClick={deleteSelected}
           disabled={
             selectedIds.length === 0 ||
@@ -370,7 +368,9 @@ export default function SkillTree({
 
         <div className="ml-auto text-xs text-muted-foreground">
           {selectedIds.length
-            ? `${selectedIds.length} selected${selectedIds.includes(rootId) ? " (root protected)" : ""}`
+            ? `${selectedIds.length} selected${
+                selectedIds.includes(rootId) ? " (root protected)" : ""
+              }`
             : "No selection"}
         </div>
       </div>

@@ -11,8 +11,11 @@ export default async function ViewCommunity({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const community = await getCommunityAction(id);
-  const posts = await getAllPostsForSkillTree(id);
+
+  const [community, posts] = await Promise.all([
+    getCommunityAction(id),
+    getAllPostsForSkillTree(id),
+  ]);
 
   return (
     <ViewCommunityClient

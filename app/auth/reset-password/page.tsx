@@ -50,7 +50,7 @@ export default function ResetPasswordPage() {
         className="bg-card m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]"
       >
         <div className="p-8 pb-6">
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col items-center justify-center">
             <Link href="/" aria-label="go home">
               <Image
                 src="/images/logo.png"
@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
                 alt="Logo"
               />
             </Link>
-            <h1 className="mb-1 mt-4 text-xl font-semibold">
+            <h1 className="mt-4 mb-1 text-xl font-semibold">
               Sign In to SkillTree
             </h1>
             <p className="text-sm">Welcome back! Sign in to continue</p>
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="bg-muted rounded-(--radius) border p-3">
-          <p className="text-accent-foreground text-center text-sm">
+          <p className="text-sm text-center text-accent-foreground">
             No need?
             <Button
               onClick={() => router.push("/auth/signin")}
