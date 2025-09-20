@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
-import RecentEvents from "@/components/RecentEvents";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
