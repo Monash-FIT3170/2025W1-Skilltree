@@ -1,13 +1,22 @@
 import { getCommunitiesAction } from "@/actions/get-communities-action";
 import CommunitiesPageClient from "./page-client";
 import { TAuthSkillTree } from "@/types";
+import CommonError from "@/components/CommonError";
 
 export default async function CommunitiesPage() {
-  const communities = await getCommunitiesAction();
+  try {
+    const communities = await getCommunitiesAction();
 
-  return (
-    <CommunitiesPageClient
-      communities={communities.message as TAuthSkillTree[]}
-    />
-  );
+    if (!communities.ok) {
+      return <CommonError errorDescription="Could not load communities" />;
+    }
+
+    return (
+      <CommunitiesPageClient
+        communities={communities.message as TAuthSkillTree[]}
+      />
+    );
+  } catch (error) {
+    return <CommonError errorDescription="Could not load communities" />;
+  }
 }

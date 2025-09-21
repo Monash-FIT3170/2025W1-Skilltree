@@ -2,13 +2,20 @@ import { getUserAction } from "@/actions/get-user-action";
 import React from "react";
 import UserProfileClient from "./page-client";
 import { TUser } from "@/types";
+import CommonError from "@/components/CommonError";
 
 const UserSettingsPage = async () => {
-  const user = await getUserAction();
+  try {
+    const user = await getUserAction();
 
-  console.log(user.message);
+    if (!user.ok) {
+      return <CommonError errorDescription="Could not load user profile" />;
+    }
 
-  return <UserProfileClient user={user.message as TUser} />;
+    return <UserProfileClient user={user.message as TUser} />;
+  } catch (error) {
+    return <CommonError errorDescription="Could not load user profile" />;
+  }
 };
 
 export default UserSettingsPage;

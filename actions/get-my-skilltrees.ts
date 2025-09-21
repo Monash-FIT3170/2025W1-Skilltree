@@ -1,5 +1,6 @@
 "use server";
 
+import { APIResponse } from "@/types";
 import { cookies } from "next/headers";
 
 export const getMySkillTreesAction = async () => {
@@ -16,7 +17,7 @@ export const getMySkillTreesAction = async () => {
   );
   const skilltreeJson = await skilltreeResponse.json();
 
-  return skilltreeJson.message as TSkillTrees[];
+  return skilltreeJson as APIResponse<TSkillTrees[]>;
 };
 
 export type TSkillTrees = {

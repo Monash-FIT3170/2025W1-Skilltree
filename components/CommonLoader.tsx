@@ -19,7 +19,7 @@ const LOADING_PHRASES = [
 const CommonLoader = () => {
   return (
     <div className="z-[100000] bg-background fixed top-0 left-0 right-0 bottom-0 min-h-screen w-full flex flex-col gap-3 items-center justify-center">
-      <div className="w-full bg-primary p-5 flex flex-col items-center justify-center">
+      <div className="w-full h-40 bg-primary p-5 flex flex-col items-center justify-center">
         <Loader2 className="animate-spin" size={48} />
         <p className="text-xl font-bold">
           {LOADING_PHRASES[Math.floor(Math.random() * LOADING_PHRASES.length)]}
