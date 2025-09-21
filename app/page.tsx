@@ -14,17 +14,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function LandingPage() {
   const router = useRouter();
-  const isMobile = useIsMobile();
-
-  const NAV_ITEMS = [
-    { label: "About Us", href: "#about" },
-    { label: "Communities", href: "#communities" },
-  ];
 
   const aboutItems = [
     {
@@ -78,17 +70,6 @@ export default function LandingPage() {
               className="rounded-full"
             />
           </Link>
-          {!isMobile && (
-            <ul className="flex space-x-6">
-              {NAV_ITEMS.map(({ label, href }) => (
-                <li key={href}>
-                  <a href={href} className="font-medium">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
           <div className="flex space-x-4">
             <Button variant="link" onClick={() => router.push("/auth/signin")}>
               Sign In
@@ -109,7 +90,9 @@ export default function LandingPage() {
                 For creators, learners, and competitors levelling up skills
                 together.
               </p>
-              <Button>Get Started</Button>
+              <Button onClick={() => router.push("/auth/signup")}>
+                Get Started
+              </Button>
             </div>
             <Image
               src="/images/landing1.jpg"
