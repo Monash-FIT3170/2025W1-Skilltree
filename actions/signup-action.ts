@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { TSignUpResponse } from "./types";
 import { APIResponse } from "@/types";
+import { revalidatePath } from "next/cache";
 
 export async function signUpAction(form: {
   name: string;
@@ -36,6 +37,8 @@ export async function signUpAction(form: {
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 7, // 1 week
   });
+
+  revalidatePath("/(default)", "layout");
 
   return { ok: true, message: signUpData };
 }

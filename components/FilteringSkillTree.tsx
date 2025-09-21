@@ -40,16 +40,26 @@ type FilterNodeData = {
 // custom node component to handle its own clicks
 // TODO: pick a colour
 const FilterNode = ({ id, data }: { id: string; data: FilterNodeData }) => {
-  const bgColor = data.selected ? "#2563eb" : data.unlocked ? "#34d399" : "#d1d5db";
-  const textColor = data.selected ? "white" : data.unlocked ? "white" : "#374151";
+  const bgColor = data.selected
+    ? "#2563eb"
+    : data.unlocked
+    ? "#34d399"
+    : "#d1d5db";
+  const textColor = data.selected
+    ? "white"
+    : data.unlocked
+    ? "white"
+    : "#374151";
 
   // make the selected border explicit so it always shows
-  const selectedBorder = data.selected ? "1px solid #1d4ed8" : "1px solid transparent";
+  const selectedBorder = data.selected
+    ? "1px solid #1d4ed8"
+    : "1px solid transparent";
 
   return (
     <div
       onClick={() => data.onClickRef?.current?.(id)}
-      className="px-3 py-1 rounded-md font-medium text-center"
+      className="px-3 py-1 rounded font-medium text-center"
       style={{
         backgroundColor: bgColor,
         color: textColor,
@@ -77,10 +87,15 @@ const FilterNode = ({ id, data }: { id: string; data: FilterNodeData }) => {
   );
 };
 
-export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilterProps) {
+export default function SkillTreeFilter({
+  rootSkill,
+  onSelect,
+}: SkillTreeFilterProps) {
   const nodeTypes = { filterNode: FilterNode };
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([] as Node<FilterNodeData>[]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(
+    [] as Node<FilterNodeData>[]
+  );
   const [edges, setEdges, onEdgesChange] = useEdgesState([] as Edge[]);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -180,7 +195,10 @@ export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilter
 
   // regene nodes when tree or selection changes
   useEffect(() => {
-    const { nodes: flatNodes, edges: flatEdges } = generateElements(rootSkill, null);
+    const { nodes: flatNodes, edges: flatEdges } = generateElements(
+      rootSkill,
+      null
+    );
     setNodes(flatNodes);
     setEdges(flatEdges);
   }, [rootSkill, generateElements, setNodes, setEdges]);
@@ -202,8 +220,7 @@ export default function SkillTreeFilter({ rootSkill, onSelect }: SkillTreeFilter
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
         selectionOnDrag={false}
-      >
-      </ReactFlow>
+      ></ReactFlow>
     </div>
   );
 }

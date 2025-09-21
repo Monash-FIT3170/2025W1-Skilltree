@@ -18,44 +18,39 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function LandingPage() {
   const router = useRouter();
 
-  const NAV_ITEMS = [
-    { label: "About Us", href: "#about" },
-    { label: "Communities", href: "#communities" },
-  ];
-
   const aboutItems = [
     {
       title: "Create/Join and Build Communities",
       text: "Where skills spark and squads grow.",
-      img: "/images/build-your-communities.jpg",
+      img: "/images/landing2.jpg",
     },
     {
       title: "Learn From The Experts",
       text: "Get real feedback from the those who have mastered the game.",
-      img: "/images/build-your-communities.jpg",
+      img: "/images/landing3.jpg",
     },
     {
       title: "Compete Against Others",
       text: "Gamify your experience, top the leaderboards.",
-      img: "/images/build-your-communities.jpg",
+      img: "/images/landing4.jpg",
     },
   ];
 
   const featureBlocks = [
     {
-      image: "/images/build-your-communities.jpg",
+      image: "/images/landing5.jpg",
       title: "Create / Join and Build Communities",
       text: "SkillTree enables users to create and join skill-focused communities …",
       reverse: false,
     },
     {
-      image: "/images/build-your-communities.jpg",
+      image: "/images/landing6.jpg",
       title: "Learn From The Experts",
       text: "SkillTree connects users with verified experts who guide …",
       reverse: true,
     },
     {
-      image: "/images/build-your-communities.jpg",
+      image: "/images/landing7.jpg",
       title: "Compete against others",
       text: "SkillTree lets users participate in ranked and unranked events …",
       reverse: false,
@@ -65,7 +60,7 @@ export default function LandingPage() {
   return (
     <>
       <nav className="fixed top-0 w-full bg-background border-b z-50 h-24">
-        <div className="container mx-auto h-full flex items-center justify-between px-4">
+        <div className="container mx-auto h-full flex items-center justify-between">
           <Link href="/">
             <Image
               src="/images/logo.png"
@@ -75,15 +70,6 @@ export default function LandingPage() {
               className="rounded-full"
             />
           </Link>
-          <ul className="flex space-x-6">
-            {NAV_ITEMS.map(({ label, href }) => (
-              <li key={href}>
-                <a href={href} className="font-medium">
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
           <div className="flex space-x-4">
             <Button variant="link" onClick={() => router.push("/auth/signin")}>
               Sign In
@@ -93,38 +79,40 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <main className="pt-32">
-        {/* Hero */}
-        <section className="text-center py-16 px-4">
-          <h1 className="text-4xl md:text-6xl font-extrabold">
+      <main className="mt-24 container mx-auto">
+        <section className="flex flex-col items-center justify-center gap-4 text-center">
+          <h1 className="mt-4 text-4xl md:text-6xl font-extrabold">
             A Platform for Learning and Showcasing Skills
           </h1>
-          <div className="mt-6 inline-block rounded-lg overflow-hidden shadow-lg">
+          <div className="relative w-full h-auto aspect-video mt-6 inline-block rounded-lg overflow-hidden shadow-lg">
+            <div className="absolute bg-background w-full py-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-4">
+              <p>
+                For creators, learners, and competitors levelling up skills
+                together.
+              </p>
+              <Button onClick={() => router.push("/auth/signup")}>
+                Get Started
+              </Button>
+            </div>
             <Image
-              src="/images/herobanner.jpg"
+              src="/images/landing1.jpg"
               alt="SkillTree illustration"
               width={1200}
               height={420}
-              className="w-full object-cover"
+              className="object-cover w-full"
               unoptimized
             />
           </div>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            For creators, learners, and competitors levelling up skills
-            together.
-          </p>
-          <Button className="mt-6">Get Started</Button>
         </section>
 
-        {/* About Us */}
-        <section className="py-16 px-4">
-          <h2 id="about" className="text-3xl font-bold text-center mb-8">
+        <section className="pt-8">
+          <h2 id="about" className="text-3xl font-bold text-center pb-8">
             About Us
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
             {aboutItems.map((item, idx) => (
               <Card key={idx} className="flex flex-col">
-                <CardHeader>
+                <CardHeader className="h-full flex flex-col items-start gap-4">
                   <CardTitle>{item.title}</CardTitle>
                   <CardDescription>{item.text}</CardDescription>
                 </CardHeader>
@@ -135,7 +123,7 @@ export default function LandingPage() {
                     alt={item.title}
                     width={400}
                     height={200}
-                    className="object-cover rounded w-full h-40"
+                    className="object-cover w-full h-40 rounded"
                   />
                 </CardContent>
               </Card>
@@ -143,38 +131,37 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Feature Blocks */}
-        <section className="py-16 px-4">
-          <div className="container mx-auto space-y-12">
-            {featureBlocks.map((fb, idx) => (
-              <div
-                key={idx}
-                className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${
-                  fb.reverse ? "md:grid-flow-col-dense" : ""
-                }`}
-              >
-                <div className={fb.reverse ? "order-2" : ""}>
-                  <Image
-                    src={fb.image}
-                    alt={fb.title}
-                    width={600}
-                    height={350}
-                    className="object-cover w-full h-64 rounded-lg"
-                  />
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-2xl font-semibold">{fb.title}</h3>
-                  <p className="text-gray-600">{fb.text}</p>
-                </div>
+        <section className="pt-8">
+          <h2 id="features" className="text-3xl font-bold text-center pb-8">
+            Features
+          </h2>
+          {featureBlocks.map((fb, idx) => (
+            <div
+              key={idx}
+              className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center ${
+                fb.reverse ? "md:grid-flow-col-dense" : ""
+              }`}
+            >
+              <div className={fb.reverse ? "order-2" : ""}>
+                <Image
+                  src={fb.image}
+                  alt={fb.title}
+                  width={600}
+                  height={350}
+                  className="object-cover w-full h-64 rounded-lg"
+                />
               </div>
-            ))}
-          </div>
+              <div className="space-y-4">
+                <h3 className="text-2xl font-semibold">{fb.title}</h3>
+                <p className="text-gray-600">{fb.text}</p>
+              </div>
+            </div>
+          ))}
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t mt-12 py-6">
-        <div className="container mx-auto flex items-center justify-center space-x-3 px-4">
+      <footer className="border-t py-6 mt-8">
+        <div className="container mx-auto flex items-center justify-center space-x-3">
           <Avatar>
             <AvatarImage src="/images/logo.png" alt="SkillTree Logo" />
             <AvatarFallback>ST</AvatarFallback>

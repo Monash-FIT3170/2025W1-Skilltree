@@ -17,7 +17,9 @@ import DatePicker from "@/components/comp-497";
 import { toast } from "sonner";
 import { userStore } from "@/stores";
 import { signUpAction } from "@/actions/signup-action";
-import { TSignUpResponse } from "@/actions/types";
+import { TSignInResponse, TSignUpResponse } from "@/actions/types";
+import { signInAction } from "@/actions/signin-action";
+import { getUserAction } from "@/actions/get-user-action";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,6 +30,40 @@ export default function LoginPage() {
     password: "",
     dateOfBirth: new Date(),
   });
+
+  const handleLoginAfterSignUp = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    try {
+      const response = await signInAction({
+        email: form.email,
+        password: form.password,
+      });
+      if (!response.ok) {
+        toast.error(response.message as string);
+        return;
+      }
+      const { access_token, user } = response.message as TSignInResponse;
+
+      const userProfile = await getUserAction();
+      if (!userProfile.ok) {
+        toast.error(userProfile.message as string);
+        return;
+      }
+
+      userStore.setState((pv) => ({
+        ...pv,
+        userId: user.id,
+        accessToken: access_token,
+        user: userProfile.message as TUser,
+      }));
+
+      router.push("/dashboard");
+    } catch (err) {
+      toast.error("Something went wrong");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,6 +86,7 @@ export default function LoginPage() {
       accessToken: access_token,
     }));
 
+    await handleLoginAfterSignUp(e);
     router.push("/dashboard");
   };
 
