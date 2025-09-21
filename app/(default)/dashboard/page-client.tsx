@@ -9,18 +9,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Users,
-  MessageSquare,
-  GitGraphIcon,
-  UserIcon,
-  Clock1,
-  Clock12,
-  Clock6,
-} from "lucide-react";
+import { GitGraphIcon, UserIcon, Clock12, Clock6 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
-import { TSkillTree } from "@/types";
 import { TSkillTrees } from "@/actions/get-my-skilltrees";
 
 const DashboardPageClient = ({
@@ -111,7 +102,7 @@ const DashboardPageClient = ({
               return (
                 <Card
                   key={ev.id}
-                  className="w-full transition border rounded-lg hover:bg-accent/40"
+                  className="w-full transition border rounded hover:bg-accent/40"
                 >
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">

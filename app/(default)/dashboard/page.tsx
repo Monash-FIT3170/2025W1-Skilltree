@@ -3,10 +3,10 @@ import { getMySkillTreesAction } from "@/actions/get-my-skilltrees";
 import { getEventsAction } from "@/actions/get-events";
 
 export default async function DashboardPage() {
-  const skillTrees = await getMySkillTreesAction();
-  const events = await getEventsAction();
-
-  console.log(skillTrees, events);
+  const [skillTrees, events] = await Promise.all([
+    getMySkillTreesAction(),
+    getEventsAction(),
+  ]);
 
   return <DashboardPageClient skilltrees={skillTrees} events={events} />;
 }

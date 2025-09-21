@@ -99,7 +99,7 @@ export default function LandingPage() {
               alt="SkillTree illustration"
               width={1200}
               height={420}
-              className="w-full object-cover"
+              className="object-cover w-full"
               unoptimized
             />
           </div>
@@ -109,7 +109,7 @@ export default function LandingPage() {
           <h2 id="about" className="text-3xl font-bold text-center pb-8">
             About Us
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
             {aboutItems.map((item, idx) => (
               <Card key={idx} className="flex flex-col">
                 <CardHeader className="h-full flex flex-col items-start gap-4">
@@ -123,7 +123,7 @@ export default function LandingPage() {
                     alt={item.title}
                     width={400}
                     height={200}
-                    className="object-cover rounded w-full h-40"
+                    className="object-cover w-full h-40 rounded"
                   />
                 </CardContent>
               </Card>

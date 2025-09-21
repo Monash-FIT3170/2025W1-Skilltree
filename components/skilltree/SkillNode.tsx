@@ -26,7 +26,7 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
   return (
     <div
       className={cn(
-        "rounded-lg bg-card text-card-foreground shadow-sm w-[260px] transition",
+        "rounded bg-card text-card-foreground shadow-sm w-[260px] transition",
         "border-2", // base thickness for all nodes
         selected && "ring-2 ring-primary",
         // ✅ Primary border only when NOT completed
@@ -129,7 +129,7 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
             d.onComplete?.(nodeId);
           }}
           className={cn(
-            "rounded-md text-xs px-2 py-1 border",
+            "rounded text-xs px-2 py-1 border",
             isUnlocked &&
               "bg-primary text-primary-foreground border-primary hover:opacity-90",
             (isCompleted || isLocked) &&

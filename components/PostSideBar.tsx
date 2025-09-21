@@ -16,7 +16,7 @@ export default function PostSidebar({
         <div
           key={post._id}
           onClick={() => onSelectPost(post)}
-          className={`w-full p-4 border rounded-xl cursor-pointer hover:shadow-sm transition ${
+          className={`w-full p-4 border rounded cursor-pointer hover:shadow-sm transition ${
             selectedPostId === post._id ? "border-blue-500" : "border-gray-300"
           }`}
         >
