@@ -3,6 +3,8 @@ import { Space_Grotesk } from "next/font/google";
 import "@xyflow/react/dist/style.css";
 import "@/app/globals.css";
 import { Providers } from "@/components/shared/providers";
+import { Suspense } from "react";
+import Loading from "@/app/loading";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -21,10 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressContentEditableWarning suppressHydrationWarning lang="en">
-      <body className={`${spaceGrotesk.variable} dark antialiased`}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <Suspense fallback={
+      <div>Loading...</div>
+    }>
+      <Providers>{children}</Providers>
+    </Suspense>
   );
 }
