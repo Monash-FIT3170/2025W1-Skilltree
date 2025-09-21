@@ -24,6 +24,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { TSkillTrees } from "@/actions/get-my-skilltrees";
+import { TEvents } from "@/types";
 
 const DashboardPageClient = ({
   skilltrees,

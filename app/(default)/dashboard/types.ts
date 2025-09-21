@@ -1,3 +1,5 @@
+import { TSkillTreeUser } from "@/types";
+
 type TEventResponse = {
   ok: boolean;
   message: TEvents[];

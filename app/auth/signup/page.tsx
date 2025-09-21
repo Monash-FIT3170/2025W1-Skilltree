@@ -20,6 +20,7 @@ import { signUpAction } from "@/actions/signup-action";
 import { TSignInResponse, TSignUpResponse } from "@/actions/types";
 import { signInAction } from "@/actions/signin-action";
 import { getUserAction } from "@/actions/get-user-action";
+import { TUser } from "@/types";
 
 export default function LoginPage() {
   const router = useRouter();
