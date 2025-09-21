@@ -52,6 +52,7 @@ export type TUser = {
   dateOfBirth: string;
   pfp: string;
   xpPoint: number;
+  skillTreeUser: TSkillTreeUser[];
   createdAt: string;
   updatedAt: string;
 };
@@ -65,6 +66,9 @@ export type TSkillNode = {
 };
 
 export type TSkillTreeUser = {
+  skillTreeId: string;
+  skillTree: TSkillTree;
+  userId: string;
   role: "ADMIN" | "MEMBER";
   verificationStatus: "PENDING" | "VERIFIED";
 };

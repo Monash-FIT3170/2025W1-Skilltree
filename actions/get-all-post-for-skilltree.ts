@@ -1,13 +1,13 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { APIResponse, TAuthSkillTree } from "@/types";
+import { APIResponse } from "@/types";
 
 export async function getAllPostsForSkillTree(id: string) {
   const cookieStore = await cookies();
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/post/skillnodes/${id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/post/skilltree/${id}`,
     {
       method: "GET",
       headers: {

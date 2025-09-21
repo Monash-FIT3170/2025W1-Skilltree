@@ -6,6 +6,8 @@ import { TUser } from "@/types";
 const UserSettingsPage = async () => {
   const user = await getUserAction();
 
+  console.log(user.message);
+
   return <UserProfileClient user={user.message as TUser} />;
 };
 

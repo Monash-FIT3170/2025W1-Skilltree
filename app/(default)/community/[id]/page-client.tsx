@@ -42,7 +42,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const userImage = "/placeholder.png";
 const skillNodes = [
   "React Basics",
   "State Management",
@@ -314,108 +313,116 @@ const ViewCommunityClient = ({
             </h2>
           </div>
 
-          {posts.map((post) => (
-            <Card key={post.id} className="w-full my-8">
-              <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
-                <div className="flex items-center justify-between w-full">
-                  <div className="p-0 m-0 text-lg font-bold">
-                    {post.skillNode.name} <br />
-                    <span className="text-sm">in {community.name}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs">
-                    <Clock12 /> {new Date(post.createdAt).toLocaleDateString()}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-base">{post.content}</div>
-                <div className="flex items-center justify-center w-full">
-                  <Image
-                    src={"https://picsum.photos/600/350"}
-                    alt="Post Image"
-                    width={600}
-                    height={350}
-                    className="object-cover rounded"
-                  />
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col w-full gap-4">
-                <div className="flex items-center justify-between w-full">
-                  <Button variant="default" className="flex items-center gap-2">
-                    <ThumbsUp />
-                    {post.likes.length} Like(s)
-                  </Button>
-                  <Button
-                    className="flex items-center gap-2"
-                    onClick={() =>
-                      setOpenPostId(openPostId === post.id ? null : post.id)
-                    }
-                  >
-                    <MessagesSquareIcon />
-                    <span>{post.feedback.length} Feedback(s)</span>
-                  </Button>
-                </div>
-
-                {/* Feedback shown inline below post when open */}
-                {openPostId === post.id && (
-                  <div className="w-full mt-4 space-y-3">
-                    {post.feedback.map((fb) => (
-                      <Card
-                        key={`${fb.postId}_${fb.verifierId}`}
-                        className="flex flex-col gap-3 text-sm font-bold"
-                      >
-                        <CardHeader className="flex items-center gap-2">
-                          Verified by {fb.verifier.name}
-                          <CardDescription>
-                            <Badge>{fb.multiplier}x</Badge>
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>{fb.feedbackText}</CardContent>
-                      </Card>
-                    ))}
-
-                    {/* Feedback box */}
-                    <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
-                      <Label htmlFor={`comment-${post.id}`}>
-                        Leave some feedback
-                      </Label>
-                      <Textarea
-                        id={`comment-${post.id}`}
-                        placeholder="Write your feedback..."
-                        className="mt-2"
-                        rows={3}
-                      />
-                      <div className="flex justify-end mt-2 gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => setOpenPostId(null)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          onClick={() => {
-                            handleCommentSubmit();
-                            toast.success("Comment submitted!");
-                          }}
-                        >
-                          Submit Without XP
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            handleCommentSubmit();
-                            toast.success("Comment submitted!");
-                          }}
-                        >
-                          Submit
-                        </Button>
-                      </div>
+          {posts.length === 0 ? (
+            <div>Woah. Such Empty.</div>
+          ) : (
+            posts.map((post) => (
+              <Card key={post.id} className="w-full my-8">
+                <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="p-0 m-0 text-lg font-bold">
+                      {post.skillNode.name} <br />
+                      <span className="text-sm">in {community.name}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs">
+                      <Clock12 />{" "}
+                      {new Date(post.createdAt).toLocaleDateString()}
                     </div>
                   </div>
-                )}
-              </CardFooter>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-base">{post.content}</div>
+                  <div className="flex items-center justify-center w-full">
+                    <Image
+                      src={"https://picsum.photos/600/350"}
+                      alt="Post Image"
+                      width={600}
+                      height={350}
+                      className="object-cover rounded"
+                    />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-col w-full gap-4">
+                  <div className="flex items-center justify-between w-full">
+                    <Button
+                      variant="default"
+                      className="flex items-center gap-2"
+                    >
+                      <ThumbsUp />
+                      {post.likes.length} Like(s)
+                    </Button>
+                    <Button
+                      className="flex items-center gap-2"
+                      onClick={() =>
+                        setOpenPostId(openPostId === post.id ? null : post.id)
+                      }
+                    >
+                      <MessagesSquareIcon />
+                      <span>{post.feedback.length} Feedback(s)</span>
+                    </Button>
+                  </div>
+
+                  {/* Feedback shown inline below post when open */}
+                  {openPostId === post.id && (
+                    <div className="w-full mt-4 space-y-3">
+                      {post.feedback.map((fb) => (
+                        <Card
+                          key={`${fb.postId}_${fb.verifierId}`}
+                          className="flex flex-col gap-3 text-sm font-bold"
+                        >
+                          <CardHeader className="flex items-center gap-2">
+                            Verified by {fb.verifier.name}
+                            <CardDescription>
+                              <Badge>{fb.multiplier}x</Badge>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>{fb.feedbackText}</CardContent>
+                        </Card>
+                      ))}
+
+                      {/* Feedback box */}
+                      <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
+                        <Label htmlFor={`comment-${post.id}`}>
+                          Leave some feedback
+                        </Label>
+                        <Textarea
+                          id={`comment-${post.id}`}
+                          placeholder="Write your feedback..."
+                          className="mt-2"
+                          rows={3}
+                        />
+                        <div className="flex justify-end mt-2 gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setOpenPostId(null)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={() => {
+                              handleCommentSubmit();
+                              toast.success("Comment submitted!");
+                            }}
+                          >
+                            Submit Without XP
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              handleCommentSubmit();
+                              toast.success("Comment submitted!");
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardFooter>
+              </Card>
+            ))
+          )}
         </section>
       </main>
     </div>

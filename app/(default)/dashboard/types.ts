@@ -62,11 +62,6 @@ type TSkillNode = {
   skillTreeId: string;
 };
 
-type TSkillTreeUser = {
-  role: "ADMIN" | "MEMBER";
-  verificationStatus: "PENDING" | "VERIFIED";
-};
-
 type TAuthSkillTree = {
   id: string;
   name: string;

@@ -17,6 +17,9 @@ export default async function ViewCommunity({
     getAllPostsForSkillTree(id),
   ]);
 
+  console.log(posts, community);
+
+  // return null;
   return (
     <ViewCommunityClient
       community={community.message as TSkillTree}
