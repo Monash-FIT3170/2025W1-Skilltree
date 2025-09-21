@@ -42,6 +42,7 @@ export default function DatePicker({
       captionLayout="dropdown"
       defaultMonth={new Date()}
       startMonth={new Date(new Date().getFullYear() - 100, 1)}
+      endMonth={new Date()}
       hideNavigation
       components={{
         DropdownNav: (props: DropdownNavProps) => {
