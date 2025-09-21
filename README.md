@@ -26,16 +26,18 @@ pnpm add -g @nestjs/cli
 #### Clone the repository
 
 **Frontend (default branch):**
+
 ```bash
 git clone https://www.github.com/Monash-FIT3170/2025W1-Skilltree.git skilltree-frontend
 cd skilltree-frontend
 pnpm install
 cp .env.example .env
 # IMPORTANT for the frontend:
-# Add NEXT_PUBLIC_API_URL=http://localhost:6969
+# Add API_URL=http://localhost:6969
 ```
 
 **(In a separate folder) Backend (backend branch):**
+
 ```bash
 git clone -b backend https://www.github.com/Monash-FIT3170/2025W1-Skilltree.git skilltree-backend
 cd skilltree-backend
@@ -69,6 +71,7 @@ pnpm dev
 ### Root Directories
 
 **Frontend (Next.js):**
+
 - `/app`: Contains Next.js application routes and layouts
 - `/components`: UI components organized by category
 - `/hooks`: Custom React hooks
@@ -77,6 +80,7 @@ pnpm dev
 - `next.config.ts`, `tsconfig.json`, `postcss.config.mjs`, `.eslintrc*`, `components.json`, `.env.example`
 
 **Backend (NestJS + Prisma):**
+
 - `/src`: NestJS source (modules, controllers, services, DTOs, guards, strategies)
 - `/prisma`: Prisma schema and migrations (`schema.prisma`, `/migrations`)
 - `nest-cli.json`, `tsconfig.json`, `eslint.config.mjs`, `.prettierrc`, `pm2.config.json`, `.env.example`, `api.http`
@@ -166,7 +170,9 @@ Example from `use-mobile.ts`:
 
 ```tsx
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+    undefined
+  );
 
   // Hook implementation
 
@@ -259,7 +265,9 @@ const ComponentNameContext = React.createContext<ContextType | null>(null);
 function useComponentName() {
   const context = React.useContext(ComponentNameContext);
   if (!context) {
-    throw new Error("useComponentName must be used within a ComponentNameProvider");
+    throw new Error(
+      "useComponentName must be used within a ComponentNameProvider"
+    );
   }
   return context;
 }
