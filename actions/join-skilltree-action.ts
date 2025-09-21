@@ -18,6 +18,8 @@ export async function joinSkillTreeAction(id: string) {
   const data = await response.json();
 
   revalidatePath(`/community/${id}`);
+  revalidatePath("/dashboard");
+  revalidatePath(`/community/${id}/members`);
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
