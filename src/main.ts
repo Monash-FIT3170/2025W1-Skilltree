@@ -5,7 +5,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import * as fs from 'fs';
 import { GlobalExceptionFilter, ResponseTransformInterceptor } from './_utils';
 
 async function bootstrap() {

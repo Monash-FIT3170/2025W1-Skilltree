@@ -91,6 +91,15 @@ export class AuthService {
 	async getProfile(userId: string): Promise<Omit<User, 'hash'>> {
 		const user = await this.prisma.user.findUnique({
 			where: { id: userId },
+			include: {
+				skillTrees: true,
+				skillTreeUser: {
+					include: {
+						skillTree: true,
+						user: true,
+					},
+				},
+			},
 		});
 
 		if (!user) {

@@ -10,6 +10,7 @@ import {
 	ParseUUIDPipe,
 	HttpCode,
 	HttpStatus,
+	UploadedFile,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/_utils/decorator';

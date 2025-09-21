@@ -12,4 +12,8 @@ export class CreateSkillTreeDto {
 	@IsArray()
 	@IsOptional()
 	tagIds?: string[];
+
+	@IsString()
+	@IsOptional()
+	imageUrl?: string;
 }

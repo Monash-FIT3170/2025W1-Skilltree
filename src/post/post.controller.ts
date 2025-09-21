@@ -27,7 +27,7 @@ export class PostController {
 	}
 
 	@Get(':id')
-	getPostById(@Param('id', ParseUUIDPipe) id: string) {
+	getPostById(@Param('id') id: string) {
 		return this.postService.getPostById(id);
 	}
 
@@ -39,10 +39,7 @@ export class PostController {
 
 	@UseGuards(JwtGuard)
 	@Get('auth/:id')
-	getPostByIdAuthenticated(
-		@Param('id', ParseUUIDPipe) id: string,
-		@GetUser() user: User,
-	) {
+	getPostByIdAuthenticated(@Param('id') id: string, @GetUser() user: User) {
 		return this.postService.getPostById(id, user);
 	}
 
@@ -55,7 +52,7 @@ export class PostController {
 	@UseGuards(JwtGuard)
 	@Patch(':id')
 	updatePost(
-		@Param('id', ParseUUIDPipe) id: string,
+		@Param('id') id: string,
 		@Body() dto: UpdatePostDto,
 		@GetUser() user: User,
 	) {
@@ -65,42 +62,37 @@ export class PostController {
 	@UseGuards(JwtGuard)
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	deletePost(@Param('id', ParseUUIDPipe) id: string, @GetUser() user: User) {
+	deletePost(@Param('id') id: string, @GetUser() user: User) {
 		return this.postService.deletePost(id, user.id);
 	}
 
 	@UseGuards(JwtGuard)
 	@Post(':id/like')
-	likePost(@Param('id', ParseUUIDPipe) postId: string, @GetUser() user: User) {
+	likePost(@Param('id') postId: string, @GetUser() user: User) {
 		return this.postService.likePost(postId, user.id);
 	}
 
 	@UseGuards(JwtGuard)
 	@Delete(':id/like')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	unlikePost(
-		@Param('id', ParseUUIDPipe) postId: string,
-		@GetUser() user: User,
-	) {
+	unlikePost(@Param('id') postId: string, @GetUser() user: User) {
 		return this.postService.unlikePost(postId, user.id);
 	}
 
 	@Get(':id/likes')
-	getPostLikes(@Param('id', ParseUUIDPipe) postId: string) {
+	getPostLikes(@Param('id') postId: string) {
 		return this.postService.getPostLikes(postId);
 	}
 
 	@Get('skillnode/:skillNodeId')
-	getPostsBySkillNode(
-		@Param('skillNodeId', ParseUUIDPipe) skillNodeId: string,
-	) {
+	getPostsBySkillNode(@Param('skillNodeId') skillNodeId: string) {
 		return this.postService.getPostsBySkillNode(skillNodeId);
 	}
 
 	@UseGuards(JwtGuard)
 	@Get('auth/skillnode/:skillNodeId')
 	getPostsBySkillNodeAuthenticated(
-		@Param('skillNodeId', ParseUUIDPipe) skillNodeId: string,
+		@Param('skillNodeId') skillNodeId: string,
 		@GetUser() user: User,
 	) {
 		return this.postService.getPostsBySkillNode(skillNodeId, user);
