@@ -50,7 +50,7 @@ export class SkillNodeService {
 			const node = await this.prisma.skillNode.create({
 				data: {
 					...rest,
-					parentNodeId: parentNodeId
+					parentNodeId,
 				},
 				include: {
 					skillTree: true,
