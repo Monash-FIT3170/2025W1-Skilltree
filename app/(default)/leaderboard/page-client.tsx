@@ -7,8 +7,8 @@ import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
 
 export default function Leaderboard() {
   const data = [
-    { rank: 1, name: "Han", xp: 788890, image: "/avatars/han.png", trend: "up" },
-    { rank: 2, name: "Samaira", xp: 718290, image: "/avatars/samaira.png", trend: "neutral" },
+    { rank: 1, name: "Han Sama", xp: 788890, image: "/avatars/han.png", trend: "up" },
+    { rank: 2, name: "Samaira Ashi", xp: 718290, image: "/avatars/samaira.png", trend: "neutral" },
     { rank: 3, name: "Nilly", xp: 673888, image: "/avatars/nilly.png", trend: "up" },
     { rank: 4, name: "Josh", xp: 658393, image: "/avatars/josh.png", trend: "down" },
   ];
@@ -40,45 +40,58 @@ export default function Leaderboard() {
       {/* Leaderboard Card */}
       <Card className="w-full max-w-2xl">
         <CardContent>
-          <div className="grid grid-cols-3 font-semibold py-2 border-b">
+          <div className="grid grid-cols-[50px_1fr_120px] font-semibold py-2 border-b">
             <span>Rank</span>
-            <span>User Name</span>
-            <span>XP gained</span>
+            <span>Username</span>
+            <span className="text-right">XP gained</span>
           </div>
-
           {data.map((user) => (
-            <div key={user.rank} className="grid grid-cols-3 items-center py-3 border-b last:border-0">
+            <div className="grid grid-cols-[50px_1fr_120px] items-center py-3 border-b last:border-0">
+              {/* Column 1: Rank (fixed 50px) */}
               <span>{user.rank}.</span>
-              <div className="flex items-center gap-2">
-                <Avatar>
-                  <AvatarImage src={user.image} alt={user.name} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+
+              {/* Column 2: Username (flexible) */}
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="truncate">{user.name}</span>
+                <Avatar className="shrink-0">
+                  <AvatarFallback>
+                    {user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
-                <span>{user.name}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span>{user.xp.toLocaleString()}</span>
+
+
+              {/* Column 3: XP (fixed 120px) */}
+              <div className="grid grid-cols-[1fr_20px] items-center justify-end">
+                <span className="tabular-nums text-right inline-block w-full">
+                  {user.xp.toLocaleString()}
+                </span>
                 {user.trend === "up" && <ChevronUp className="text-green-500 w-4 h-4" />}
                 {user.trend === "down" && <ChevronDown className="text-red-500 w-4 h-4" />}
               </div>
             </div>
+
+
           ))}
         </CardContent>
       </Card>
 
       {/* Pagination */}
       <div className="mt-4">
-        <Select defaultValue="25">
+        <Select defaultValue="10">
           <SelectTrigger className="w-[100px]">
-            <SelectValue placeholder="Show 25" />
+            <SelectValue placeholder="Show 10" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="25">Show 25</SelectItem>
             <SelectItem value="50">Show 50</SelectItem>
-            <SelectItem value="100">Show 100</SelectItem>
           </SelectContent>
         </Select>
       </div>
-    </div>
+    </div >
   );
 }
