@@ -1,6 +1,6 @@
 "use server";
 
-import { TEvents } from "@/types";
+import { APIResponse, TEvents } from "@/types";
 
 export const getEventsAction = async () => {
   const eventResponse = await fetch(
@@ -10,5 +10,5 @@ export const getEventsAction = async () => {
     }
   );
   const eventJson = await eventResponse.json();
-  return eventJson.message as TEvents[];
+  return eventJson as APIResponse<TEvents[]>;
 };
