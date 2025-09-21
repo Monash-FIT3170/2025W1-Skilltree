@@ -202,12 +202,12 @@ function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
 
-                <SidebarMenuButton asChild tooltip="User Settings">
+                {/* <SidebarMenuButton asChild tooltip="User Settings">
                   <Link href="/user/settings">
                     <CogIcon size={48} />
                     <span>User Settings</span>
                   </Link>
-                </SidebarMenuButton>
+                </SidebarMenuButton> */}
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

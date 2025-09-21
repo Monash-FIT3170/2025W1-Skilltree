@@ -269,7 +269,7 @@ export default function UserProfileClient({
 
           <div className="space-y-4">
             <Input
-              placeholder="Search followers..."
+              placeholder="Search ..."
               value={followersQuery}
               onChange={(e) => setFollowersQuery(e.target.value)}
             />
@@ -319,7 +319,7 @@ export default function UserProfileClient({
 
           <div className="space-y-4">
             <Input
-              placeholder="Search following..."
+              placeholder="Search ..."
               value={followingQuery}
               onChange={(e) => setFollowingQuery(e.target.value)}
             />
