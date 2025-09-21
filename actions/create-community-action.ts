@@ -20,17 +20,14 @@ export async function createCommunityAction(data: CreateCommunityData) {
   formData.append("pfp", data.pfp);
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/skilltree`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
-          // Remove Content-Type header - let browser set it for FormData
-        },
-        body: formData,
-      }
-    );
+    const response = await fetch(`${process.env.API_URL}/skilltree`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
+        // Remove Content-Type header - let browser set it for FormData
+      },
+      body: formData,
+    });
 
     if (!response.ok) {
       let errorMessage = "Something went wrong";

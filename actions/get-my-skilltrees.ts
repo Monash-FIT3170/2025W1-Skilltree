@@ -7,7 +7,7 @@ export const getMySkillTreesAction = async () => {
   const cookieStore = await cookies();
 
   const skilltreeResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/skilltree/user/my-skilltrees`,
+    `${process.env.API_URL}/skilltree/user/my-skilltrees`,
     {
       method: "GET",
       headers: {

@@ -11,16 +11,13 @@ export async function signUpAction(form: {
   email: string;
   password: string;
 }) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/signup`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    }
-  );
+  const response = await fetch(`${process.env.API_URL}/auth/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(form),
+  });
   const data = (await response.json()) as APIResponse<TSignUpResponse>;
 
   if (!response.ok) {

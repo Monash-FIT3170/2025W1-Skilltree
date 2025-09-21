@@ -7,7 +7,7 @@ export async function getCommunityMembersAction(id: string) {
   const cookieStore = await cookies();
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/skilltree/${id}/members`,
+    `${process.env.API_URL}/skilltree/${id}/members`,
     {
       method: "GET",
       headers: {
