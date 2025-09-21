@@ -22,11 +22,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <Suspense fallback={
-      <div>Loading...</div>
-    }>
-      <Providers>{children}</Providers>
-    </Suspense>
-  );
+  return <Providers>{children}</Providers>;
 }
