@@ -6,7 +6,17 @@ import { TUser } from "@/types";
 const UserSettingsPage = async () => {
   const user = await getUserAction();
 
-  return <UserProfileClient user={user.message as TUser} />;
+  // If you have actions for completed/joined/owned, pass them in here:
+  // const { completed, joined, owned } = await getUserCommunitiesAction(userId);
+
+  return (
+    <UserProfileClient
+      user={user.message as TUser}
+      // completedSkilltrees={completed}
+      // joinedSkilltrees={joined}
+      // ownedSkilltrees={owned}
+    />
+  );
 };
 
 export default UserSettingsPage;

@@ -1,27 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Users, 
-  UserPlus, 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Users,
+  UserPlus,
   UserMinus,
-  GitGraphIcon, 
-  UserIcon, 
+  GitGraphIcon,
+  UserIcon,
   Trophy,
   Calendar,
-  MapPin,
-  Mail
+  Mail,
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
 import { TUser } from "@/types";
 import { TSkillTrees } from "@/actions/get-my-skilltrees";
 import { format } from "date-fns";
 import { initials } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 
 // Mock types for profile data
 type TFollower = {
@@ -40,15 +61,23 @@ type TProfileStats = {
 
 export default function UserProfileClient({
   user,
+  // If you only have one list now, pass it as `skilltrees` and it will appear under "Joined"
   skilltrees = [],
+  completedSkilltrees = [],
+  joinedSkilltrees = undefined, // if undefined, we’ll fall back to `skilltrees`
+  ownedSkilltrees = [],
   followers = [],
   following = [],
   profileStats,
   isOwnProfile = true,
-  isFollowing = false
+  isFollowing = false,
 }: {
   user: TUser;
+  /** Backward-compat: treated as "Joined" if joinedSkilltrees is not provided */
   skilltrees?: TSkillTrees[];
+  completedSkilltrees?: TSkillTrees[];
+  joinedSkilltrees?: TSkillTrees[];
+  ownedSkilltrees?: TSkillTrees[];
   followers?: TFollower[];
   following?: TFollower[];
   profileStats?: TProfileStats;
@@ -58,68 +87,95 @@ export default function UserProfileClient({
   const router = useRouter();
   const [currentlyFollowing, setCurrentlyFollowing] = useState(isFollowing);
 
+  // Dialog state for followers/following popups
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followingOpen, setFollowingOpen] = useState(false);
+  const [followersQuery, setFollowersQuery] = useState("");
+  const [followingQuery, setFollowingQuery] = useState("");
+
   // Default profile stats if not provided
   const stats = profileStats || {
     followersCount: followers.length,
     followingCount: following.length,
-    communitiesJoined: skilltrees.length,
-    totalXP: user.xpPoint
+    communitiesJoined:
+      (joinedSkilltrees ?? skilltrees).length +
+      completedSkilltrees.length +
+      ownedSkilltrees.length,
+    totalXP: user.xpPoint,
   };
+
+  const actualJoined = (joinedSkilltrees ?? skilltrees) as TSkillTrees[];
 
   const handleFollowToggle = () => {
     // Handle follow/unfollow logic here
     setCurrentlyFollowing(!currentlyFollowing);
-    console.log(currentlyFollowing ? "Unfollowing user" : "Following user");
+    // TODO: call API here
   };
 
   const handleEditProfile = () => {
     router.push("/user/settings");
   };
 
+  // Filtered lists for dialogs
+  const filteredFollowers = useMemo(() => {
+    const q = followersQuery.trim().toLowerCase();
+    if (!q) return followers;
+    return followers.filter((f) => f.name.toLowerCase().includes(q));
+  }, [followers, followersQuery]);
+
+  const filteredFollowing = useMemo(() => {
+    const q = followingQuery.trim().toLowerCase();
+    if (!q) return following;
+    return following.filter((f) => f.name.toLowerCase().includes(q));
+  }, [following, followingQuery]);
+
   return (
-    <div className="container flex flex-col w-full h-full mx-auto">
-      <header className="flex flex-col gap-6 mb-8">
+    <div className="container mx-auto flex h-full w-full flex-col">
+      <header className="mb-8 flex flex-col gap-6">
         {/* Profile Header */}
         <div className="flex flex-col items-center gap-6 md:flex-row md:items-start">
           <Avatar className="h-32 w-32 md:h-40 md:w-40">
             <AvatarImage src={user.pfp ?? ""} alt={user.name || "User"} />
-            <AvatarFallback className="text-2xl">{initials(user.name)}</AvatarFallback>
+            <AvatarFallback className="text-2xl">
+              {initials(user.name)}
+            </AvatarFallback>
           </Avatar>
-          
-          <div className="flex flex-col items-center gap-4 md:items-start md:flex-1">
+
+          <div className="flex flex-1 flex-col items-center gap-4 md:items-start">
             <div className="text-center md:text-left">
               <h1 className="text-3xl font-bold tracking-tight">{user.name}</h1>
-              <div className="flex items-center gap-2 mt-2 text-muted-foreground">
-                <Mail className="w-4 h-4" />
+              <div className="mt-2 flex items-center gap-2 text-muted-foreground">
+                <Mail className="h-4 w-4" />
                 <span className="text-sm">{user.email}</span>
               </div>
-              <div className="flex items-center gap-2 mt-1 text-muted-foreground">
-                <Calendar className="w-4 h-4" />
-                <span className="text-sm">Joined {format(user.dateOfBirth, "MMMM yyyy")}</span>
+              <div className="mt-1 flex items-center gap-2 text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                <span className="text-sm">
+                  Joined {format(user.dateOfBirth, "MMMM yyyy")}
+                </span>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="flex gap-3">
               {isOwnProfile ? (
-                <><Button onClick={handleEditProfile} variant ="outline">
+                <Button onClick={handleEditProfile} variant="outline">
                   Edit Profile
                 </Button>
-                </>
               ) : (
-                <Button 
+                <Button
                   onClick={handleFollowToggle}
                   variant={currentlyFollowing ? "outline" : "default"}
                   className="flex items-center gap-2"
                 >
                   {currentlyFollowing ? (
                     <>
-                      <UserMinus className="w-4 h-4" />
+                      <UserMinus className="h-4 w-4" />
                       Unfollow
                     </>
                   ) : (
                     <>
-                      <UserPlus className="w-4 h-4" />
+                      <UserPlus className="h-4 w-4" />
                       Follow
                     </>
                   )}
@@ -129,158 +185,223 @@ export default function UserProfileClient({
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards (Followers & Following cards are clickable -> open Dialog) */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <Card>
             <CardContent className="flex flex-col items-center p-6">
-              <Trophy className="w-8 h-8 mb-2 text-yellow-500" />
-              <div className="text-2xl font-bold">{stats.totalXP.toLocaleString()}</div>
+              <Trophy className="mb-2 h-8 w-8 text-yellow-500" />
+              <div className="text-2xl font-bold">
+                {stats.totalXP.toLocaleString()}
+              </div>
               <p className="text-sm text-muted-foreground">Total XP</p>
             </CardContent>
           </Card>
-          
-          <Card>
+
+          <Card
+            role="button"
+            onClick={() => setFollowersOpen(true)}
+            className="transition hover:bg-accent/40"
+            title="View Followers"
+          >
             <CardContent className="flex flex-col items-center p-6">
-              <Users className="w-8 h-8 mb-2 text-blue-500" />
+              <Users className="mb-2 h-8 w-8 text-blue-500" />
               <div className="text-2xl font-bold">{stats.followersCount}</div>
               <p className="text-sm text-muted-foreground">Followers</p>
             </CardContent>
           </Card>
-          
-          <Card>
+
+          <Card
+            role="button"
+            onClick={() => setFollowingOpen(true)}
+            className="transition hover:bg-accent/40"
+            title="View Following"
+          >
             <CardContent className="flex flex-col items-center p-6">
-              <UserIcon className="w-8 h-8 mb-2 text-green-500" />
+              <UserIcon className="mb-2 h-8 w-8 text-green-500" />
               <div className="text-2xl font-bold">{stats.followingCount}</div>
               <p className="text-sm text-muted-foreground">Following</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="flex flex-col items-center p-6">
-              <GitGraphIcon className="w-8 h-8 mb-2 text-purple-500" />
-              <div className="text-2xl font-bold">{stats.communitiesJoined}</div>
+              <GitGraphIcon className="mb-2 h-8 w-8 text-purple-500" />
+              <div className="text-2xl font-bold">{actualJoined.length}</div>
               <p className="text-sm text-muted-foreground">Communities</p>
             </CardContent>
           </Card>
         </div>
       </header>
 
-      {/* Tabs Section */}
-      <Tabs defaultValue="communities" className="w-full">
+      {/* Tabs: Communities Completed / Joined / Owned */}
+      <Tabs defaultValue="completed" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="communities">Communities</TabsTrigger>
-          <TabsTrigger value="followers">Followers</TabsTrigger>
-          <TabsTrigger value="following">Following</TabsTrigger>
+          <TabsTrigger value="completed">Communities Completed</TabsTrigger>
+          <TabsTrigger value="joined">Communities Joined</TabsTrigger>
+          <TabsTrigger value="owned">Communities Owned</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="communities" className="mt-6">
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Joined Communities</h2>
-            {skilltrees.length === 0 ? (
-              <Card>
-                <CardContent className="flex items-center justify-center p-8">
-                  <p className="text-muted-foreground">No communities joined yet.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {skilltrees.map((tree: TSkillTrees) => (
-                  <Card
-                    key={tree.skillTree.id}
-                    className="transition-colors cursor-pointer hover:bg-primary/10"
-                    onClick={() => router.push(`/community/${tree.skillTree.id}`)}
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg">{tree.skillTree.name}</CardTitle>
-                      <CardDescription className="line-clamp-2">
-                        {tree.skillTree.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardFooter>
-                      <div className="flex items-center justify-between w-full text-sm text-muted-foreground">
-                        <span className="inline-flex items-center gap-1">
-                          <GitGraphIcon className="w-4 h-4" />
-                          {tree.skillTree._count.skillNodes} nodes
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <UserIcon className="w-4 h-4" />
-                          {tree.skillTree._count.skillTreeUser} members
-                        </span>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+
+        {/* Completed */}
+        <TabsContent value="completed" className="mt-6">
+          <CommunityGrid trees={completedSkilltrees} />
         </TabsContent>
-        
-        <TabsContent value="followers" className="mt-6">
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Followers ({stats.followersCount})</h2>
-            {followers.length === 0 ? (
-              <Card>
-                <CardContent className="flex items-center justify-center p-8">
-                  <p className="text-muted-foreground">No followers yet.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {followers.map((follower) => (
-                  <Card key={follower.id} className="transition-colors cursor-pointer hover:bg-primary/10">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={follower.pfp ?? ""} alt={follower.name} />
-                        <AvatarFallback>{initials(follower.name)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{follower.name}</h3>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Trophy className="w-3 h-3" />
-                          {follower.xpPoint.toLocaleString()} XP
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+
+        {/* Joined */}
+        <TabsContent value="joined" className="mt-6">
+          <CommunityGrid trees={actualJoined} />
         </TabsContent>
-        
-        <TabsContent value="following" className="mt-6">
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Following ({stats.followingCount})</h2>
-            {following.length === 0 ? (
-              <Card>
-                <CardContent className="flex items-center justify-center p-8">
-                  <p className="text-muted-foreground">Not following anyone yet.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {following.map((user) => (
-                  <Card key={user.id} className="transition-colors cursor-pointer hover:bg-primary/10">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={user.pfp ?? ""} alt={user.name} />
-                        <AvatarFallback>{initials(user.name)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{user.name}</h3>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Trophy className="w-3 h-3" />
-                          {user.xpPoint.toLocaleString()} XP
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+
+        {/* Owned */}
+        <TabsContent value="owned" className="mt-6">
+          <CommunityGrid trees={ownedSkilltrees} />
         </TabsContent>
       </Tabs>
+
+      {/* Followers Dialog */}
+      <Dialog open={followersOpen} onOpenChange={setFollowersOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Followers</DialogTitle>
+            <DialogDescription>
+              Search and browse your followers.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <Input
+              placeholder="Search followers..."
+              value={followersQuery}
+              onChange={(e) => setFollowersQuery(e.target.value)}
+            />
+
+            <div className="grid gap-3">
+              {filteredFollowers.length === 0 ? (
+                <Card>
+                  <CardContent className="flex items-center justify-center p-8">
+                    <p className="text-sm text-muted-foreground">
+                      No followers found.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                filteredFollowers.map((f) => (
+                  <Card key={f.id} className="transition hover:bg-accent/40">
+                    <CardContent className="flex items-center gap-4 p-4">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={f.pfp ?? ""} alt={f.name} />
+                        <AvatarFallback>{initials(f.name)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="font-medium leading-tight">{f.name}</p>
+                        <div className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                          <Trophy className="h-3 w-3" />
+                          {f.xpPoint.toLocaleString()} XP
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Following Dialog */}
+      <Dialog open={followingOpen} onOpenChange={setFollowingOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Following</DialogTitle>
+            <DialogDescription>
+              Search and browse people you follow.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <Input
+              placeholder="Search following..."
+              value={followingQuery}
+              onChange={(e) => setFollowingQuery(e.target.value)}
+            />
+
+            <div className="grid gap-3">
+              {filteredFollowing.length === 0 ? (
+                <Card>
+                  <CardContent className="flex items-center justify-center p-8">
+                    <p className="text-sm text-muted-foreground">
+                      No users found.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                filteredFollowing.map((u) => (
+                  <Card key={u.id} className="transition hover:bg-accent/40">
+                    <CardContent className="flex items-center gap-4 p-4">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={u.pfp ?? ""} alt={u.name} />
+                        <AvatarFallback>{initials(u.name)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="font-medium leading-tight">{u.name}</p>
+                        <div className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                          <Trophy className="h-3 w-3" />
+                          {u.xpPoint.toLocaleString()} XP
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/** Grid section reused for the three community tabs */
+function CommunityGrid({ trees }: { trees: TSkillTrees[] }) {
+  const router = useRouter();
+
+  if (!trees || trees.length === 0) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center p-8">
+          <p className="text-muted-foreground">No communities to show.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {trees.map((tree) => (
+        <Card
+          key={tree.skillTree.id}
+          className="cursor-pointer transition-colors hover:bg-primary/10"
+          onClick={() => router.push(`/community/${tree.skillTree.id}`)}
+        >
+          <CardHeader>
+            <CardTitle className="text-lg">{tree.skillTree.name}</CardTitle>
+            <CardDescription className="line-clamp-2">
+              {tree.skillTree.description}
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                <GitGraphIcon className="h-4 w-4" />
+                {tree.skillTree._count.skillNodes} nodes
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <UserIcon className="h-4 w-4" />
+                {tree.skillTree._count.skillTreeUser} members
+              </span>
+            </div>
+          </CardFooter>
+        </Card>
+      ))}
     </div>
   );
 }
