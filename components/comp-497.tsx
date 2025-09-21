@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { DropdownNavProps, DropdownProps } from "react-day-picker";
 
 import { Calendar } from "@/components/ui/calendar";
@@ -42,7 +41,7 @@ export default function DatePicker({
       }}
       captionLayout="dropdown"
       defaultMonth={new Date()}
-      startMonth={new Date(1980, 6)}
+      startMonth={new Date(new Date().getFullYear() - 100, 1)}
       hideNavigation
       components={{
         DropdownNav: (props: DropdownNavProps) => {

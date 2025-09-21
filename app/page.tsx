@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -27,35 +28,35 @@ export default function LandingPage() {
     {
       title: "Create/Join and Build Communities",
       text: "Where skills spark and squads grow.",
-      img: "/images/build-your-communities.jpg",
+      img: "/images/landing2.jpg",
     },
     {
       title: "Learn From The Experts",
       text: "Get real feedback from the those who have mastered the game.",
-      img: "/images/build-your-communities.jpg",
+      img: "/images/landing3.jpg",
     },
     {
       title: "Compete Against Others",
       text: "Gamify your experience, top the leaderboards.",
-      img: "/images/build-your-communities.jpg",
+      img: "/images/landing4.jpg",
     },
   ];
 
   const featureBlocks = [
     {
-      image: "/images/build-your-communities.jpg",
+      image: "/images/landing5.jpg",
       title: "Create / Join and Build Communities",
       text: "SkillTree enables users to create and join skill-focused communities …",
       reverse: false,
     },
     {
-      image: "/images/build-your-communities.jpg",
+      image: "/images/landing6.jpg",
       title: "Learn From The Experts",
       text: "SkillTree connects users with verified experts who guide …",
       reverse: true,
     },
     {
-      image: "/images/build-your-communities.jpg",
+      image: "/images/landing7.jpg",
       title: "Compete against others",
       text: "SkillTree lets users participate in ranked and unranked events …",
       reverse: false,
@@ -93,15 +94,15 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <main className="pt-32">
+      <main className="mt-24">
         {/* Hero */}
-        <section className="text-center py-16 px-4">
+        <section className="text-center p-4">
           <h1 className="text-4xl md:text-6xl font-extrabold">
             A Platform for Learning and Showcasing Skills
           </h1>
           <div className="mt-6 inline-block rounded-lg overflow-hidden shadow-lg">
             <Image
-              src="/images/herobanner.jpg"
+              src="/images/landing1.jpg"
               alt="SkillTree illustration"
               width={1200}
               height={420}
@@ -116,15 +117,16 @@ export default function LandingPage() {
           <Button className="mt-6">Get Started</Button>
         </section>
 
-        {/* About Us */}
-        <section className="py-16 px-4">
+        <Separator className="my-4" />
+
+        <section className="p-4">
           <h2 id="about" className="text-3xl font-bold text-center mb-8">
             About Us
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {aboutItems.map((item, idx) => (
               <Card key={idx} className="flex flex-col">
-                <CardHeader>
+                <CardHeader className="h-full flex flex-col items-start gap-4">
                   <CardTitle>{item.title}</CardTitle>
                   <CardDescription>{item.text}</CardDescription>
                 </CardHeader>
@@ -143,8 +145,9 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Feature Blocks */}
-        <section className="py-16 px-4">
+        <Separator className="my-4" />
+
+        <section className="p-4">
           <div className="container mx-auto space-y-12">
             {featureBlocks.map((fb, idx) => (
               <div
@@ -173,7 +176,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t mt-12 py-6">
+      <footer className="border-t py-6">
         <div className="container mx-auto flex items-center justify-center space-x-3 px-4">
           <Avatar>
             <AvatarImage src="/images/logo.png" alt="SkillTree Logo" />
