@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { APIResponse } from "@/types";
 import { TGetUserProfileResponse } from "./types";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function updateUserAction({
   name,
