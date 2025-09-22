@@ -87,6 +87,7 @@ export default function Leaderboard() {
             <SelectValue placeholder="Show 10" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="10">Show 10</SelectItem>
             <SelectItem value="25">Show 25</SelectItem>
             <SelectItem value="50">Show 50</SelectItem>
           </SelectContent>
