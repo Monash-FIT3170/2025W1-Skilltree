@@ -7,10 +7,10 @@ import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
 
 export default function Leaderboard() {
   const data = [
-    { rank: 1, name: "Han Sama", xp: 788890, image: "/avatars/han.png", trend: "up" },
-    { rank: 2, name: "Samaira Ashi", xp: 718290, image: "/avatars/samaira.png", trend: "neutral" },
-    { rank: 3, name: "Nilly", xp: 673888, image: "/avatars/nilly.png", trend: "up" },
-    { rank: 4, name: "Josh", xp: 658393, image: "/avatars/josh.png", trend: "down" },
+    { rank: 1, name: "Han Sama", xp: 788890, trend: "up" },
+    { rank: 2, name: "Samaira Ashi", xp: 718290, trend: "neutral" },
+    { rank: 3, name: "Nilly", xp: 673888, trend: "up" },
+    { rank: 4, name: "Josh", xp: 658393, trend: "down" },
   ];
 
   return (
