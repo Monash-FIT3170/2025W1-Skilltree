@@ -2,21 +2,20 @@ import { getUserAction } from "@/actions/get-user-action";
 import React from "react";
 import UserProfileClient from "./page-client";
 import { TUser } from "@/types";
+import CommonError from "@/components/CommonError";
 
 const UserSettingsPage = async () => {
-  const user = await getUserAction();
+  try {
+    const user = await getUserAction();
 
-  // If you have actions for completed/joined/owned, pass them in here:
-  // const { completed, joined, owned } = await getUserCommunitiesAction(userId);
+    if (!user.ok) {
+      return <CommonError errorDescription="Could not load user profile" />;
+    }
 
-  return (
-    <UserProfileClient
-      user={user.message as TUser}
-      // completedSkilltrees={completed}
-      // joinedSkilltrees={joined}
-      // ownedSkilltrees={owned}
-    />
-  );
+    return <UserProfileClient user={user.message as TUser} />;
+  } catch (error) {
+    return <CommonError errorDescription="Could not load user profile" />;
+  }
 };
 
 export default UserSettingsPage;

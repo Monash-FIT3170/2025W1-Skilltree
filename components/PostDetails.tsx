@@ -62,13 +62,13 @@ export default function PostDetail({ post }: PostDetailProps) {
       </div>
       {/* image */}
       <div className="w-full space-y-4 mt-4">
-        <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center">
+        <div className="relative w-full rounded overflow-hidden flex items-center justify-center">
           <Image
             src={post.attachment || "/placeholder.png"}
             alt="Post Image"
             width={400}
             height={400}
-            className="w-auto h-auto object-contain rounded-xl"
+            className="w-auto h-auto object-contain rounded"
           />
         </div>
 
@@ -99,7 +99,7 @@ export default function PostDetail({ post }: PostDetailProps) {
       <div>
         <h3 className="text-lg font-semibold">Feedback</h3>
         <textarea
-          className="w-full p-2 mt-2 border border-gray-300 rounded-lg"
+          className="w-full p-2 mt-2 border border-gray-300 rounded"
           rows={3}
           placeholder="Write your feedback here..."
           value={newFeedback}
@@ -107,7 +107,7 @@ export default function PostDetail({ post }: PostDetailProps) {
         ></textarea>
 
         <button
-          className={`mt-2 px-4 py-2 rounded-lg 
+          className={`mt-2 px-4 py-2 rounded 
           ${
             newFeedback.trim() === ""
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -135,7 +135,7 @@ export default function PostDetail({ post }: PostDetailProps) {
             feedbackList.map((item, idx) => (
               <div
                 key={idx}
-                className="p-3 border rounded-lg bg-gray-50 text-sm text-gray-800"
+                className="p-3 border rounded bg-gray-50 text-sm text-gray-800"
               >
                 {item}
               </div>

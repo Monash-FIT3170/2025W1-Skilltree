@@ -23,8 +23,8 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
-import { TSkillTree } from "@/types";
 import { TSkillTrees } from "@/actions/get-my-skilltrees";
+import { TEvents } from "@/types";
 
 const DashboardPageClient = ({
   skilltrees,
@@ -48,12 +48,12 @@ const DashboardPageClient = ({
     const now = new Date();
     const end = new Date(endDate);
     const diff = end.getTime() - now.getTime();
-    
+
     if (diff <= 0) return "Ended";
-    
+
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
+
     if (days > 0) return `${days}d left`;
     if (hours > 0) return `${hours}h left`;
     return "< 1h left";
@@ -125,9 +125,9 @@ const DashboardPageClient = ({
         <div className="mb-4">
           <h2 className="flex items-center justify-center relative text-lg font-semibold">
             <span>Upcoming Events</span>
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={handleAddEvent}
               className="h-8 w-8 p-0 absolute right-0"
             >
@@ -160,8 +160,8 @@ const DashboardPageClient = ({
                           Rank #{(ev as any).userRank}
                         </Badge>
                       ) : (
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => handleJoinEvent(ev.id)}
                           className="h-7 px-3 text-xs"
                         >

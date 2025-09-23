@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
-import RecentEvents from "@/components/RecentEvents";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
@@ -43,7 +42,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const userImage = "/placeholder.png";
 const skillNodes = [
   "React Basics",
   "State Management",
@@ -53,6 +51,36 @@ const skillNodes = [
   "API Handling",
   "Testing & Debugging",
   "UI/UX Best Practices",
+];
+const events = [
+  {
+    id: "1",
+    title: "Race Day Bingo",
+    mode: "unranked",
+    club: "Fan Garage",
+    category: "Community Engagement",
+  },
+  {
+    id: "2",
+    title: "Livery Jam - 800 XP",
+    mode: "ranked",
+    club: "Fan Garage",
+    category: "Race Strategy",
+  },
+  {
+    id: "3",
+    title: "100m Sprint Ladder - 1000 XP",
+    mode: "ranked",
+    club: "Swim Circle",
+    category: "Freestyle Sprint",
+  },
+  {
+    id: "4",
+    title: "Backyard Six Fest",
+    mode: "unranked",
+    club: "Cricket Corner",
+    category: "Hits Showcase",
+  },
 ];
 
 const ViewCommunityClient = ({
@@ -169,13 +197,41 @@ const ViewCommunityClient = ({
       <main className="container grid flex-1 grid-cols-1 gap-8 px-6 py-8 mx-auto md:grid-cols-2">
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
-            <div className="p-4 shadow-sm rounded-xl">
+            <div className="p-4 rounded shadow-sm">
               <FilteringSkillTree
                 rootSkill={exampleSkillTree}
                 onSelect={(nodeId) => setSelectedSkill(nodeId)}
               />
             </div>
-            <RecentEvents />
+            <section className="w-full">
+              <div className="w-full text-center">
+                <h2 className="text-lg font-semibold">Recent Events</h2>
+              </div>
+
+              <div className="flex flex-col items-stretch w-full gap-4 rounded">
+                {events.map((ev) => (
+                  <Card key={ev.id} className="w-full rounded">
+                    <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <h3 className="font-semibold">{ev.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {ev.club} · {ev.category}
+                        </p>
+                      </div>
+                      <Badge
+                        className={`shrink-0 self-start sm:self-center ${
+                          ev.mode === "ranked"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-emerald-100 text-emerald-700"
+                        }`}
+                      >
+                        {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
           </div>
         </aside>
 
@@ -186,9 +242,9 @@ const ViewCommunityClient = ({
               <span>Posts</span>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     className="h-8 w-8 p-0 absolute right-0"
                   >
                     <Plus className="h-4 w-4" />
@@ -204,7 +260,9 @@ const ViewCommunityClient = ({
                   </DialogHeader>
 
                   <div className="w-full space-y-2 text-sm">
-                    <Label htmlFor="skill-tree-node">Select Skill Tree Node</Label>
+                    <Label htmlFor="skill-tree-node">
+                      Select Skill Tree Node
+                    </Label>
                     <Select>
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
@@ -246,7 +304,7 @@ const ViewCommunityClient = ({
 
                   <DialogFooter>
                     <DialogClose asChild>
-                    <Button variant="destructive">Cancel</Button>
+                      <Button variant="destructive">Cancel</Button>
                     </DialogClose>
                     <Button onClick={handlePostSubmit}>Confirm</Button>
                   </DialogFooter>
@@ -255,106 +313,116 @@ const ViewCommunityClient = ({
             </h2>
           </div>
 
-          {posts.map((post) => (
-            <Card key={post.id} className="w-full my-8">
-              <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
-                <div className="flex items-center justify-between w-full">
-                  <div className="p-0 m-0 text-lg font-bold">
-                    {post.skillNode.name} <br />
-                    <span className="text-sm">in {community.name}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs">
-                    <Clock12 /> {new Date(post.createdAt).toLocaleDateString()}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-base">{post.content}</div>
-                <div className="flex items-center justify-center w-full">
-                  <Image
-                    src={"https://picsum.photos/600/350"}
-                    alt="Post Image"
-                    width={600}
-                    height={350}
-                    className="object-cover rounded"
-                  />
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col w-full gap-4">
-              <div className="flex items-center justify-between w-full">
-                <Button variant="default" className="flex items-center gap-2">
-                  <ThumbsUp />
-                  {post.likes.length} Like(s)
-                </Button>
-                <Button
-                  className="flex items-center gap-2"
-                  onClick={() =>
-                    setOpenPostId(openPostId === post.id ? null : post.id)
-                  }
-                >
-                  <MessagesSquareIcon />
-                  <span>{post.feedback.length} Feedback(s)</span>
-                </Button>
-              </div>
-
-              {/* Feedback shown inline below post when open */}
-              {openPostId === post.id && (
-                <div className="w-full mt-4 space-y-3">
-                  {post.feedback.map((fb) => (
-                    <Card
-                      key={`${fb.postId}_${fb.verifierId}`}
-                      className="flex flex-col gap-3 text-sm font-bold"
-                    >
-                      <CardHeader className="flex items-center gap-2">
-                        Verified by {fb.verifier.name}
-                        <CardDescription>
-                          <Badge>{fb.multiplier}x</Badge>
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>{fb.feedbackText}</CardContent>
-                    </Card>
-                  ))}
-
-                  {/* Feedback box */}
-                  <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
-                    <Label htmlFor={`comment-${post.id}`}>Leave some feedback</Label>
-                    <Textarea
-                      id={`comment-${post.id}`}
-                      placeholder="Write your feedback..."
-                      className="mt-2"
-                      rows={3}
-                    />
-                    <div className="flex justify-end mt-2 gap-2">
-                      <Button variant="outline" onClick={() => setOpenPostId(null)}>
-                        Cancel
-                      </Button>
-                      <Button 
-                        variant = "destructive"
-                        onClick={() => {
-                          handleCommentSubmit();
-                          toast.success("Comment submitted!");
-                        }}
-                      >
-                        Submit Without XP
-                      </Button> 
-                      <Button
-                        onClick={() => {
-                          handleCommentSubmit();
-                          toast.success("Comment submitted!");
-                        }}
-                      >
-                        Submit
-                      </Button>
+          {posts.length === 0 ? (
+            <div>Woah. Such Empty.</div>
+          ) : (
+            posts.map((post) => (
+              <Card key={post.id} className="w-full my-8">
+                <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="p-0 m-0 text-lg font-bold">
+                      {post.skillNode.name} <br />
+                      <span className="text-sm">in {community.name}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs">
+                      <Clock12 />{" "}
+                      {new Date(post.createdAt).toLocaleDateString()}
                     </div>
                   </div>
-                </div>
-              )}
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-base">{post.content}</div>
+                  <div className="flex items-center justify-center w-full">
+                    <Image
+                      src={"https://picsum.photos/600/350"}
+                      alt="Post Image"
+                      width={600}
+                      height={350}
+                      className="object-cover rounded"
+                    />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-col w-full gap-4">
+                  <div className="flex items-center justify-between w-full">
+                    <Button
+                      variant="default"
+                      className="flex items-center gap-2"
+                    >
+                      <ThumbsUp />
+                      {post.likes.length} Like(s)
+                    </Button>
+                    <Button
+                      className="flex items-center gap-2"
+                      onClick={() =>
+                        setOpenPostId(openPostId === post.id ? null : post.id)
+                      }
+                    >
+                      <MessagesSquareIcon />
+                      <span>{post.feedback.length} Feedback(s)</span>
+                    </Button>
+                  </div>
 
-            </CardFooter>
+                  {/* Feedback shown inline below post when open */}
+                  {openPostId === post.id && (
+                    <div className="w-full mt-4 space-y-3">
+                      {post.feedback.map((fb) => (
+                        <Card
+                          key={`${fb.postId}_${fb.verifierId}`}
+                          className="flex flex-col gap-3 text-sm font-bold"
+                        >
+                          <CardHeader className="flex items-center gap-2">
+                            Verified by {fb.verifier.name}
+                            <CardDescription>
+                              <Badge>{fb.multiplier}x</Badge>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>{fb.feedbackText}</CardContent>
+                        </Card>
+                      ))}
 
-            </Card>
-          ))}
-
+                      {/* Feedback box */}
+                      <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
+                        <Label htmlFor={`comment-${post.id}`}>
+                          Leave some feedback
+                        </Label>
+                        <Textarea
+                          id={`comment-${post.id}`}
+                          placeholder="Write your feedback..."
+                          className="mt-2"
+                          rows={3}
+                        />
+                        <div className="flex justify-end mt-2 gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setOpenPostId(null)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={() => {
+                              handleCommentSubmit();
+                              toast.success("Comment submitted!");
+                            }}
+                          >
+                            Submit Without XP
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              handleCommentSubmit();
+                              toast.success("Comment submitted!");
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardFooter>
+              </Card>
+            ))
+          )}
         </section>
       </main>
     </div>

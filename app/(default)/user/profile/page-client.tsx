@@ -26,8 +26,11 @@ import {
   UserMinus,
   GitGraphIcon,
   UserIcon,
+  GitGraphIcon,
+  UserIcon,
   Trophy,
   Calendar,
+  Mail,
   Mail,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -44,7 +47,6 @@ import { TSkillTrees } from "@/actions/get-my-skilltrees";
 import { format } from "date-fns";
 import { initials } from "@/lib/utils";
 
-// Mock types for profile data
 type TFollower = {
   id: string;
   name: string;
@@ -70,6 +72,7 @@ export default function UserProfileClient({
   following = [],
   profileStats,
   isOwnProfile = true,
+  isFollowing = false,
   isFollowing = false,
 }: {
   user: TUser;
@@ -107,7 +110,6 @@ export default function UserProfileClient({
   const actualJoined = (joinedSkilltrees ?? skilltrees) as TSkillTrees[];
 
   const handleFollowToggle = () => {
-    // Handle follow/unfollow logic here
     setCurrentlyFollowing(!currentlyFollowing);
     // TODO: call API here
   };
@@ -139,6 +141,9 @@ export default function UserProfileClient({
             <AvatarFallback className="text-2xl">
               {initials(user.name)}
             </AvatarFallback>
+            <AvatarFallback className="text-2xl">
+              {initials(user.name)}
+            </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-1 flex-col items-center gap-4 md:items-start">
@@ -156,13 +161,13 @@ export default function UserProfileClient({
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-3">
               {isOwnProfile ? (
                 <Button onClick={handleEditProfile} variant="outline">
                   Edit Profile
                 </Button>
               ) : (
+                <Button
                 <Button
                   onClick={handleFollowToggle}
                   variant={currentlyFollowing ? "outline" : "default"}
@@ -222,6 +227,7 @@ export default function UserProfileClient({
               <p className="text-sm text-muted-foreground">Following</p>
             </CardContent>
           </Card>
+
 
           <Card>
             <CardContent className="flex flex-col items-center p-6">
@@ -405,3 +411,4 @@ function CommunityGrid({ trees }: { trees: TSkillTrees[] }) {
     </div>
   );
 }
+

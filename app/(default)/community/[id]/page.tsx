@@ -4,6 +4,7 @@ import {
   getAllPostsForSkillTree,
   TSkillNode,
 } from "@/actions/get-all-post-for-skilltree";
+import CommonError from "@/components/CommonError";
 
 export default async function ViewCommunity({
   params,
@@ -11,13 +12,27 @@ export default async function ViewCommunity({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const community = await getCommunityAction(id);
-  const posts = await getAllPostsForSkillTree(id);
 
-  return (
-    <ViewCommunityClient
-      community={community.message as TSkillTree}
-      posts={posts.message as TSkillNode[]}
-    />
-  );
+  try {
+    const [community, posts] = await Promise.all([
+      getCommunityAction(id),
+      getAllPostsForSkillTree(id),
+    ]);
+
+    if (!community.ok) {
+      return <CommonError errorDescription="Community not found" />;
+    }
+    if (!posts.ok) {
+      return <CommonError errorDescription="Posts not found" />;
+    }
+
+    return (
+      <ViewCommunityClient
+        community={community.message as TSkillTree}
+        posts={posts.message as TSkillNode[]}
+      />
+    );
+  } catch (error) {
+    return <CommonError errorDescription="Could not load community or posts" />;
+  }
 }

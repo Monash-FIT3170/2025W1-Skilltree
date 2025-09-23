@@ -1,12 +1,35 @@
 import DashboardPageClient from "./page-client";
-import { getMySkillTreesAction } from "@/actions/get-my-skilltrees";
+import {
+  getMySkillTreesAction,
+  TSkillTrees,
+} from "@/actions/get-my-skilltrees";
 import { getEventsAction } from "@/actions/get-events";
+import CommonError from "@/components/CommonError";
+import { TEvents } from "@/types";
 
 export default async function DashboardPage() {
-  const skillTrees = await getMySkillTreesAction();
-  const events = await getEventsAction();
+  try {
+    const [skillTrees, events] = await Promise.all([
+      getMySkillTreesAction(),
+      getEventsAction(),
+    ]);
 
-  console.log(skillTrees, events);
+    if (!skillTrees.ok) {
+      return <CommonError errorDescription="Could not load skill trees" />;
+    }
+    if (!events.ok) {
+      return <CommonError errorDescription="Could not load events" />;
+    }
 
-  return <DashboardPageClient skilltrees={skillTrees} events={events} />;
+    return (
+      <DashboardPageClient
+        skilltrees={skillTrees.message as TSkillTrees[]}
+        events={events.message as TEvents[]}
+      />
+    );
+  } catch (error) {
+    return (
+      <CommonError errorDescription="Could not load skill trees or events" />
+    );
+  }
 }

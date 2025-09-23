@@ -10,7 +10,7 @@ export async function removeUserFromSkillTree(
   const cookieStore = await cookies();
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/skilltree/${skillTreeId}/members/${userId}`,
+    `${process.env.API_URL}/skilltree/${skillTreeId}/members/${userId}`,
     {
       method: "DELETE",
       headers: {
@@ -25,7 +25,9 @@ export async function removeUserFromSkillTree(
   }
 
   const message = data.message as string;
-  revalidatePath(`/community/[id]`);
+  revalidatePath(`/community/${skillTreeId}`);
+  revalidatePath(`/community/${skillTreeId}/members`);
+  revalidatePath("/dashboard");
 
   return { ok: true, message };
 }

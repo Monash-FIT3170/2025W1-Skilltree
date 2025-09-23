@@ -1,3 +1,5 @@
+import { TSkillTreeUser } from "@/types";
+
 type TEventResponse = {
   ok: boolean;
   message: TEvents[];
@@ -60,11 +62,6 @@ type TSkillNode = {
   description: string;
   xpPoint: number;
   skillTreeId: string;
-};
-
-type TSkillTreeUser = {
-  role: "ADMIN" | "MEMBER";
-  verificationStatus: "PENDING" | "VERIFIED";
 };
 
 type TAuthSkillTree = {

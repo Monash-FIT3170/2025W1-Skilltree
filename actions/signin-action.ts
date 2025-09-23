@@ -5,16 +5,13 @@ import { APIResponse } from "@/types";
 import { TSignInResponse } from "./types";
 
 export async function signInAction(form: { email: string; password: string }) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    }
-  );
+  const response = await fetch(`${process.env.API_URL}/auth/signin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(form),
+  });
   const data = (await response.json()) as APIResponse<TSignInResponse>;
 
   if (!response.ok) {

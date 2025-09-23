@@ -51,11 +51,11 @@ const Legend = () => {
   ];
 
   return (
-    <div className="p-4 flex gap-6 items-center rounded-lg">
+    <div className="p-4 flex gap-6 items-center rounded">
       {items.map((item) => (
         <div key={item.label} className="flex items-center gap-2">
           <div
-            className="rounded-lg shadow-sm border"
+            className="rounded shadow-sm border"
             style={{
               width: 32,
               height: 32,
@@ -82,15 +82,15 @@ const SkillNodeComponent = ({ data }: any) => {
 
   return (
     <div
-      className="px-4 py-2 rounded-lg font-semibold text-center shadow-md border"
+      className="px-4 py-2 rounded font-semibold text-center shadow-md border"
       style={{
         backgroundColor: bgColor,
         color: textColor,
         borderColor: data.unlockable
           ? "#10b981"
           : data.unlocked
-            ? "transparent"
-            : "#9ca3af",
+          ? "transparent"
+          : "#9ca3af",
         borderWidth: data.unlockable ? 3 : 1,
         minWidth: 140,
         maxWidth: 180,

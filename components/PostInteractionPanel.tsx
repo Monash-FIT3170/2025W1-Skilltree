@@ -136,7 +136,7 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
       </div>
       {userRole == "nonMember" && (
         <div>
-          <div className="w-full max-w-4xl p-4 mx-auto rounded-lg shadow">
+          <div className="w-full max-w-4xl p-4 mx-auto rounded shadow">
             <div className="flex flex-row items-center justify-center gap-4">
               {actions.map((action) => (
                 <React.Fragment key={action.key}>
@@ -148,7 +148,11 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
           <br></br>
 
           <div
-            className={`transition-all duration-300 ease-in-out ${commentsClicked ? "translate-y-0" : "-translate-y-2 pointer-events-none"}`}
+            className={`transition-all duration-300 ease-in-out ${
+              commentsClicked
+                ? "translate-y-0"
+                : "-translate-y-2 pointer-events-none"
+            }`}
           >
             {commentsClicked &&
               comments.map((comment) => (
@@ -158,7 +162,11 @@ export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
 
           <div
             className={`transition-all duration-300 ease-in-out 
-                    ${feedbackClicked ? "translate-y-0" : "-translate-y-2 pointer-events-none"}
+                    ${
+                      feedbackClicked
+                        ? "translate-y-0"
+                        : "-translate-y-2 pointer-events-none"
+                    }
                 `}
           >
             {feedbackClicked && <PostFeedbackForm />}

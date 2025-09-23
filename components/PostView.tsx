@@ -15,7 +15,7 @@ interface PostViewPanelProps {
 
 export default function PostView({ userRole }: PostViewPanelProps) {
   return (
-    <div className="rounded-lg border p-5 shadow max-w-2xl mx-auto my-8">
+    <div className="rounded border p-5 shadow max-w-2xl mx-auto my-8">
       {/* Header */}
       <div className="flex items-center gap-4 border-b">
         <Image
