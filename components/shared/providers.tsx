@@ -44,6 +44,7 @@ import {
   CogIcon,
   SlidersHorizontalIcon,
   User,
+  TrophyIcon,
 } from "lucide-react";
 import { userStore } from "@/stores";
 import { Button } from "../ui/button";
@@ -215,7 +216,7 @@ function AppSidebar() {
                 </SidebarMenuButton> */}
                 <SidebarMenuButton asChild tooltip="Global Leaderboard">
                   <Link href="/leaderboard">
-                    <AwardIcon size={48} />
+                    <TrophyIcon size={48} />
                     <span>Global Leaderboard</span>
                   </Link>
                 </SidebarMenuButton>
