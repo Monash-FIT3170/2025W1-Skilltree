@@ -213,6 +213,13 @@ function AppSidebar() {
                     <span>User Settings</span>
                   </Link>
                 </SidebarMenuButton> */}
+                <SidebarMenuButton asChild tooltip="Global Leaderboard">
+                  <Link href="/leaderboard">
+                    <AwardIcon size={48} />
+                    <span>Global Leaderboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
