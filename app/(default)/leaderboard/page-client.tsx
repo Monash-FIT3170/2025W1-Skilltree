@@ -11,12 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Trend = "up" | "down" | "neutral";
 type Row = { rank: number; name: string; xp: number; communities: number; trend: Trend; pfp?: string | null };
 
 export default function Leaderboard() {
   const [pageSize, setPageSize] = useState<"10" | "25" | "50">("25");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const all: Row[] = [
     { rank: 1, name: "Han Sama", xp: 788_890, communities: 42, trend: "up" },
@@ -70,9 +72,20 @@ export default function Leaderboard() {
     { rank: 49, name: "Kim", xp: 401_220, communities: 17, trend: "down" },
     { rank: 50, name: "Neo", xp: 398_000, communities: 16, trend: "neutral" },
   ];
+  
+  const totalPages = Math.ceil(all.length / Number(pageSize));
 
-  const rows = useMemo(() => all.slice(0, Number(pageSize)), [pageSize]);
+  const rows = useMemo(() => {
+    const start = (currentPage - 1) * Number(pageSize);
+    const end = start + Number(pageSize);
+    return all.slice(start, end);
+  }, [all, pageSize, currentPage]);
   const isCompact = rows.length <= 10; // when "Show 10"
+  
+  const handlePageSizeChange = (v: "10" | "25" | "50") => {
+  setPageSize(v);
+  setCurrentPage(1); 
+  };
 
   return (
     <div className={isCompact ? "flex w-full flex-col" : "flex h-screen w-full flex-col"}>
@@ -158,6 +171,29 @@ export default function Leaderboard() {
             ))}
           </div>
         </Card>
+        <div className="mt-4 flex items-center justify-between text-sm">
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
