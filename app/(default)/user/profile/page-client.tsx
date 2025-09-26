@@ -26,11 +26,8 @@ import {
   UserMinus,
   GitGraphIcon,
   UserIcon,
-  GitGraphIcon,
-  UserIcon,
   Trophy,
   Calendar,
-  Mail,
   Mail,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -72,7 +69,6 @@ export default function UserProfileClient({
   following = [],
   profileStats,
   isOwnProfile = true,
-  isFollowing = false,
   isFollowing = false,
 }: {
   user: TUser;
@@ -168,7 +164,7 @@ export default function UserProfileClient({
                 </Button>
               ) : (
                 <Button
-                <Button
+                
                   onClick={handleFollowToggle}
                   variant={currentlyFollowing ? "outline" : "default"}
                   className="flex items-center gap-2"
