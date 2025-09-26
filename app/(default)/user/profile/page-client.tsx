@@ -238,14 +238,13 @@ export default function UserProfileClient({
       {/* Tabs: Communities Completed / Joined / Owned */}
       <Tabs defaultValue="completed" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="completed">Communities Completed</TabsTrigger>
-          <TabsTrigger value="joined">Communities Joined</TabsTrigger>
           <TabsTrigger value="owned">Communities Owned</TabsTrigger>
+          <TabsTrigger value="joined">Communities Joined</TabsTrigger>
+          <TabsTrigger value="completed">Communities Completed</TabsTrigger>
         </TabsList>
-
-        {/* Completed */}
-        <TabsContent value="completed" className="mt-6">
-          <CommunityGrid trees={completedSkilltrees} />
+        {/* Owned */}
+        <TabsContent value="owned" className="mt-6">
+          <CommunityGrid trees={ownedSkilltrees} />
         </TabsContent>
 
         {/* Joined */}
@@ -253,10 +252,11 @@ export default function UserProfileClient({
           <CommunityGrid trees={actualJoined} />
         </TabsContent>
 
-        {/* Owned */}
-        <TabsContent value="owned" className="mt-6">
-          <CommunityGrid trees={ownedSkilltrees} />
+        {/* Completed */}
+        <TabsContent value="completed" className="mt-6">
+          <CommunityGrid trees={completedSkilltrees} />
         </TabsContent>
+        
       </Tabs>
 
       {/* Followers Dialog */}
