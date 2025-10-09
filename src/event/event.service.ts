@@ -22,7 +22,7 @@ export class EventService {
 			});
 
 			if (!user || !userPermitted) {
-				throw new InternalServerErrorException('Only admins can create events');
+				throw new InternalServerErrorException('Validation failed');
 			}
 
 			if (!user || userPermitted.role !== 'ADMIN') {
@@ -56,7 +56,7 @@ export class EventService {
 			});
 
 			if (!user || !userPermitted) {
-				throw new InternalServerErrorException('Only admins can create events');
+				throw new InternalServerErrorException('Validation failed');
 			}
 
 			if (!user || userPermitted.role !== 'ADMIN') {
