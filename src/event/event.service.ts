@@ -12,17 +12,39 @@ export class EventService {
 
 	async createEvent(dto: CreateEventDto, userId: string) {
 		try {
+			const user = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!user || user.role !== 'ADMIN') {
+				throw new InternalServerErrorException('Only admins can create events');
+			}
 			const event = await this.prisma.event.create({
 				data: {
 					title: dto.title,
 					xpPayout: dto.xpPayout,
 					startDate: dto.startDate,
 					endDate: dto.endDate,
+					users: {
+						connect: [{ id: userId }],
+					},
 				},
 			});
 			return event;
 		} catch {
 			throw new InternalServerErrorException('Failed to create event');
+		}
+	}
+
+	async deleteEvent(eventId: string, userId: string) {
+		try {
+			const user = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!user || user.role !== 'ADMIN') {
+				throw new InternalServerErrorException('Only admins can delete events');
+			}
+			await this.prisma.event.delete({
+				where: { id: eventId },
+			});
+			return { success: true };
+		} catch {
+			throw new InternalServerErrorException('Failed to delete event');
 		}
 	}
 
@@ -36,6 +58,19 @@ export class EventService {
 			});
 		} catch {
 			throw new InternalServerErrorException('Failed to join event');
+		}
+	}
+
+	async leaveEvent(eventId: string, userId: string) {
+		try {
+			return await this.prisma.event.update({
+				where: { id: eventId },
+				data: {
+					users: { disconnect: { id: userId } },
+				},
+			});
+		} catch {
+			throw new InternalServerErrorException('Failed to leave event');
 		}
 	}
 }

@@ -24,4 +24,16 @@ export class EventController {
 	joinEvent(@Param('id') eventId: string, @GetUser() user: any) {
 		return this.eventService.joinEvent(eventId, user.id);
 	}
+
+	@UseGuards(JwtGuard)
+	@Post(':id/delete')
+	deleteEvent(@Param('id') eventId: string, @GetUser() user: any) {
+		return this.eventService.deleteEvent(eventId, user.id);
+	}
+
+	@UseGuards(JwtGuard)
+	@Post(':id/leave')
+	leaveEvent(@Param('id') eventId: string, @GetUser() user: any) {
+		return this.eventService.leaveEvent(eventId, user.id);
+	}
 }
