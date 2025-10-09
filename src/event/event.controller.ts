@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { EventService } from './event.service';
 import { JwtGuard } from '../_utils/guards/jwt.guard';
 import { CreateEventDto } from './dto/create-event.dto';
+import { DeleteEventDto } from './dto/delete-event.dto';
 import { GetUser } from '../_utils/decorator/get-user.decorator';
 
 @Controller('event')
@@ -20,15 +21,19 @@ export class EventController {
 	}
 
 	@UseGuards(JwtGuard)
-	@Post(':id/join')
-	joinEvent(@Param('id') eventId: string, @GetUser() user: any) {
-		return this.eventService.joinEvent(eventId, user.id);
+	@Post(':id/delete')
+	deleteEvent(
+		@Param('id') dto: DeleteEventDto,
+		eventId: string,
+		@GetUser() user: any,
+	) {
+		return this.eventService.deleteEvent(dto, eventId, user.id);
 	}
 
 	@UseGuards(JwtGuard)
-	@Post(':id/delete')
-	deleteEvent(@Param('id') eventId: string, @GetUser() user: any) {
-		return this.eventService.deleteEvent(eventId, user.id);
+	@Post(':id/join')
+	joinEvent(@Param('id') eventId: string, @GetUser() user: any) {
+		return this.eventService.joinEvent(eventId, user.id);
 	}
 
 	@UseGuards(JwtGuard)

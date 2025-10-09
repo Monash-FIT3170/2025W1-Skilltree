@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
+import { DeleteEventDto } from './dto/delete-event.dto';
 
 @Injectable()
 export class EventService {
@@ -13,7 +14,18 @@ export class EventService {
 	async createEvent(dto: CreateEventDto, userId: string) {
 		try {
 			const user = await this.prisma.user.findUnique({ where: { id: userId } });
-			if (!user || user.role !== 'ADMIN') {
+			const userPermitted = await this.prisma.skillTreeUser.findFirst({
+				where: {
+					userId: userId,
+					skillTreeId: dto.skillTreeId,
+				},
+			});
+
+			if (!user || !userPermitted) {
+				throw new InternalServerErrorException('Only admins can create events');
+			}
+
+			if (!user || userPermitted.role !== 'ADMIN') {
 				throw new InternalServerErrorException('Only admins can create events');
 			}
 			const event = await this.prisma.event.create({
@@ -33,11 +45,22 @@ export class EventService {
 		}
 	}
 
-	async deleteEvent(eventId: string, userId: string) {
+	async deleteEvent(dto: DeleteEventDto, eventId: string, userId: string) {
 		try {
 			const user = await this.prisma.user.findUnique({ where: { id: userId } });
-			if (!user || user.role !== 'ADMIN') {
-				throw new InternalServerErrorException('Only admins can delete events');
+			const userPermitted = await this.prisma.skillTreeUser.findFirst({
+				where: {
+					userId: userId,
+					skillTreeId: dto.skillTreeId,
+				},
+			});
+
+			if (!user || !userPermitted) {
+				throw new InternalServerErrorException('Only admins can create events');
+			}
+
+			if (!user || userPermitted.role !== 'ADMIN') {
+				throw new InternalServerErrorException('Only admins can create events');
 			}
 			await this.prisma.event.delete({
 				where: { id: eventId },

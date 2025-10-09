@@ -26,8 +26,6 @@ model User {
   hash        String
   pfp         String   @default("")
   xpPoint     Int      @default(0)
-  following    User[]         @relation("UserFollows")
-  followers    User[]         @relation("UserFollows")
 
   skillTrees    SkillTree[]
   skillTreeUser SkillTreeUser[]
