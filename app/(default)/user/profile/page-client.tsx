@@ -14,12 +14,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users,
   UserPlus,
@@ -137,9 +132,6 @@ export default function UserProfileClient({
             <AvatarFallback className="text-2xl">
               {initials(user.name)}
             </AvatarFallback>
-            <AvatarFallback className="text-2xl">
-              {initials(user.name)}
-            </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-1 flex-col items-center gap-4 md:items-start">
@@ -164,7 +156,6 @@ export default function UserProfileClient({
                 </Button>
               ) : (
                 <Button
-                
                   onClick={handleFollowToggle}
                   variant={currentlyFollowing ? "outline" : "default"}
                   className="flex items-center gap-2"
@@ -224,7 +215,6 @@ export default function UserProfileClient({
             </CardContent>
           </Card>
 
-
           <Card>
             <CardContent className="flex flex-col items-center p-6">
               <GitGraphIcon className="mb-2 h-8 w-8 text-purple-500" />
@@ -256,7 +246,6 @@ export default function UserProfileClient({
         <TabsContent value="completed" className="mt-6">
           <CommunityGrid trees={completedSkilltrees} />
         </TabsContent>
-        
       </Tabs>
 
       {/* Followers Dialog */}
@@ -407,4 +396,3 @@ function CommunityGrid({ trees }: { trees: TSkillTrees[] }) {
     </div>
   );
 }
-
