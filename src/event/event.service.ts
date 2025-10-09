@@ -1,4 +1,3 @@
-
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -11,7 +10,6 @@ export class EventService {
 		return this.prisma.event.findMany();
 	}
 
-
 	async createEvent(dto: CreateEventDto, userId: string) {
 		try {
 			const event = await this.prisma.event.create({
@@ -22,7 +20,10 @@ export class EventService {
 					endDate: dto.endDate,
 					winnerId: dto.winnerId ?? null,
 					users: {
-						connect: [{ id: userId }, ...(dto.userIds?.map(id => ({ id })) ?? [])],
+						connect: [
+							{ id: userId },
+							...(dto.userIds?.map((id) => ({ id })) ?? []),
+						],
 					},
 				},
 			});
@@ -31,7 +32,6 @@ export class EventService {
 			throw new InternalServerErrorException('Failed to create event');
 		}
 	}
-
 
 	async joinEvent(eventId: string, userId: string) {
 		try {
