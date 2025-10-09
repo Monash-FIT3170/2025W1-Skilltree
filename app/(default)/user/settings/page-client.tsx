@@ -152,11 +152,8 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
             </div>
 
             <div className="flex flex-wrap justify-end w-full gap-3">
-              <Button variant="outline" onClick={() => router.push("/user/profile")}>
-                Go to Profile
-              </Button>
               <Button
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/user/profile")}
                 variant="outline"
               >
                 Go Back

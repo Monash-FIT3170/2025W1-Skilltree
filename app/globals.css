@@ -59,22 +59,22 @@
 
 .dark {
   --background: rgb(18, 18, 18);
-  --foreground: rgb(226, 232, 240);
-  --card: rgb(23, 23, 23);
-  --card-foreground: rgb(226, 232, 240);
-  --popover: rgb(36, 36, 36);
-  --popover-foreground: rgb(169, 169, 169);
+  --foreground: rgb(244, 247, 255);  
+  --card: rgb(30, 30, 30);
+  --card-foreground: rgb(244, 247, 255);
+  --popover: rgb(32, 32, 32);
+  --popover-foreground: rgb(210, 214, 222);
   --primary: rgb(0, 98, 57);
   --primary-foreground: rgb(221, 232, 227);
   --secondary: rgb(36, 36, 36);
-  --secondary-foreground: rgb(250, 250, 250);
-  --muted: rgb(31, 31, 31);
-  --muted-foreground: rgb(162, 162, 162);
-  --accent: rgb(49, 49, 49);
+  --secondary-foreground: rgb(245, 248, 255);
+  --muted: rgb(34, 34, 34 );
+  --muted-foreground: rgb(198, 203, 212);
+  --accent: rgb(40, 40, 40);
   --accent-foreground: rgb(250, 250, 250);
   --destructive: rgb(84, 28, 21);
   --destructive-foreground: rgb(237, 233, 232);
-  --border: rgb(41, 41, 41);
+  --border: rgb(62, 62, 62);
   --input: rgb(36, 36, 36);
   --ring: rgb(74, 222, 128);
   --chart-1: rgb(74, 222, 128);
