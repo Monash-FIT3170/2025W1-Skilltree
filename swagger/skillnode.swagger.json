@@ -1,0 +1,389 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "SkillNode API",
+		"description": "SkillNode management API endpoints",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/skill-node/{id}": {
+			"get": {
+				"summary": "Get skill node by ID",
+				"description": "Get a specific skill node by its ID",
+				"tags": ["SkillNode"],
+				"operationId": "getSkillNodeById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill node retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillNode"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update skill node",
+				"description": "Update an existing skill node",
+				"tags": ["SkillNode"],
+				"operationId": "updateSkillNode",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateSkillNodeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Skill node updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillNode"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete skill node",
+				"description": "Delete an existing skill node",
+				"tags": ["SkillNode"],
+				"operationId": "deleteSkillNode",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill node deleted successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skill-node": {
+			"post": {
+				"summary": "Create skill node",
+				"description": "Create a new skill node",
+				"tags": ["SkillNode"],
+				"operationId": "createSkillNode",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateSkillNodeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Skill node created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillNode"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Parent skill tree or node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skill-node/{id}/posts": {
+			"get": {
+				"summary": "Get posts for skill node",
+				"description": "Get all posts for a specific skill node",
+				"tags": ["SkillNode"],
+				"operationId": "getSkillNodePosts",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"SkillNode": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Skill node ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description",
+						"nullable": true
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"skillTreeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill tree",
+						"nullable": true
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					},
+					"childNode": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SkillNode"
+						},
+						"description": "Child skill nodes"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"CreateSkillNodeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description"
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"skillTreeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill tree"
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					}
+				},
+				"required": ["name", "skillTreeId"]
+			},
+			"UpdateSkillNodeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description"
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					}
+				}
+			},
+			"Post": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Post ID"
+					},
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					},
+					"skillNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the associated skill node",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Post creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Enter JWT Bearer token"
+			}
+		}
+	}
+}
