@@ -8,10 +8,18 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { TApiResponse } from 'src/types';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
 	private readonly logger = new Logger(GlobalExceptionFilter.name);
+	private readonly logFilePath = path.join(process.cwd(), 'error.log');
+
+	constructor() {
+		// Reset the error log file on server start
+		fs.writeFileSync(this.logFilePath, '');
+	}
 
 	catch(exception: unknown, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();
@@ -62,9 +70,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			status,
 		};
 
-		this.logger.error(
-			`${request.method} ${request.url} - ${status} - ${message}`,
-		);
+		const logMessage = `${new Date().toISOString()} - ${request.method} ${request.url} - ${status} - ${message}`;
+		this.logger.error(logMessage);
+
+		// Append to error log file
+		fs.appendFileSync(this.logFilePath, logMessage + '\n');
 
 		response.status(status).json(errorResponse);
 	}
