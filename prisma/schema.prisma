@@ -34,6 +34,8 @@ model User {
   event         Event[]         @relation("EventParticipants")
   winnerOf      Event[]
   skillNodeUser SkillNodeUser[]
+  following     UserFollow[]    @relation("UserFollowing")
+  followers     UserFollow[]    @relation("UserFollowers")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -161,4 +163,15 @@ model Event {
 
   @@index([title])
   @@index([startDate])
+}
+
+model UserFollow {
+  follower    User   @relation("UserFollowing", fields: [followerId], references: [id])
+  followerId  String
+  following   User   @relation("UserFollowers", fields: [followingId], references: [id])
+  followingId String
+
+  createdAt DateTime @default(now())
+
+  @@id([followerId, followingId])
 }

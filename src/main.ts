@@ -4,8 +4,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
-import * as fs from 'fs';
 import { GlobalExceptionFilter, ResponseTransformInterceptor } from './_utils';
 
 async function bootstrap() {
@@ -33,44 +33,16 @@ async function bootstrap() {
 		origin: '*',
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 	});
-	app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-		prefix: '/static/',
-	});
 
-	// Serve the swagger.json file directly
-	app.useStaticAssets(process.cwd(), {
-		prefix: '/docs/',
-		index: false,
-	});
-
-	// Fallback to auto-generated documentation
-	const config = new DocumentBuilder()
-		.setTitle('SkillTree API')
-		.setDescription(
-			'A comprehensive API for managing skill trees, users, and learning progress.',
-		)
-		.setVersion('1.0.0')
-		.addBearerAuth(
-			{
-				type: 'http',
-				scheme: 'bearer',
-				bearerFormat: 'JWT',
-				name: 'JWT',
-				description: 'Enter JWT token',
-				in: 'header',
-			},
-			'JWT-auth',
-		)
-		.addServer('http://localhost:3000', 'Local development server')
-		.build();
-
-	const documentFactory = () => SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup('api', app, documentFactory);
+	const document = JSON.parse(
+		(await readFile(join(process.cwd(), 'swagger.json'))).toString('utf-8'),
+	);
+	SwaggerModule.setup('api', app, document);
 
 	console.log(
-		'📚 Fallback Swagger documentation available at: http://localhost:3000/api',
+		'📚 Fallback Swagger documentation available at: http://localhost:3001/api',
 	);
-	console.log('🔌 API endpoints available at: http://localhost:3000/');
+	console.log('🔌 API endpoints available at: http://localhost:3001/');
 
 	await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }

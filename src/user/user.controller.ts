@@ -59,4 +59,20 @@ export class UserController {
 	): Promise<Omit<User, 'hash' | 'email'>> {
 		return this.userService.getUserById(id);
 	}
+
+	@Public()
+	@Get(':id/following')
+	async getUserFollowing(
+		@Param('id') id: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
+		return this.userService.getUserFollowing(id);
+	}
+
+	@Public()
+	@Get(':id/followers')
+	async getUserFollowers(
+		@Param('id') id: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
+		return this.userService.getUserFollowers(id);
+	}
 }

@@ -46,14 +46,12 @@ export class SkillNodeService {
 			if (!skillTreeUser || skillTreeUser.role !== 'ADMIN') {
 				throw new ForbiddenException('Only admins can create skill nodes');
 			}
-			const { parentNodeId, ...rest } = dto;
+
+			const { parentNodeId, ...nodeData } = dto;
+
+			// Create the skill node
 			const node = await this.prisma.skillNode.create({
-				data: {
-					...rest,
-					parentNode: parentNodeId
-						? { connect: { id: parentNodeId } }
-						: undefined,
-				},
+				data: nodeData,
 				include: {
 					skillTree: true,
 					parentNode: true,
@@ -61,8 +59,33 @@ export class SkillNodeService {
 					post: true,
 				},
 			});
+
+			// If there's a parent node, update the relationship after creation
+			if (parentNodeId) {
+				await this.prisma.skillNode.update({
+					where: { id: node.id },
+					data: {
+						parentNode: {
+							connect: { id: parentNodeId },
+						},
+					},
+				});
+
+				// Fetch the updated node with relationships
+				return await this.prisma.skillNode.findUnique({
+					where: { id: node.id },
+					include: {
+						skillTree: true,
+						parentNode: true,
+						childNode: true,
+						post: true,
+					},
+				});
+			}
+
 			return node;
-		} catch {
+		} catch (error) {
+			console.error('Error creating skill node:', error);
 			throw new InternalServerErrorException('Failed to create skill node');
 		}
 	}

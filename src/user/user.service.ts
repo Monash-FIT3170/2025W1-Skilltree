@@ -117,4 +117,59 @@ export class UserService {
 			throw new InternalServerErrorException('Failed to fetch user statistics');
 		}
 	}
+
+	async getUserFollowing(
+		userId: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: { id: userId },
+			});
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+
+			const followingRelations = await this.prisma.userFollow.findMany({
+				where: { followerId: userId },
+				include: { following: true },
+			});
+
+			return followingRelations.map((relation) => {
+				const { hash: _, email: __, ...publicUser } = relation.following;
+				return publicUser;
+			});
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch following users');
+		}
+	}
+
+	async getUserFollowers(
+		userId: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: { id: userId },
+			});
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+
+			const followerRelations = await this.prisma.userFollow.findMany({
+				where: { followingId: userId },
+				include: { follower: true },
+			});
+			return followerRelations.map((relation) => {
+				const { hash: _, email: __, ...publicUser } = relation.follower;
+				return publicUser;
+			});
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch followers');
+		}
+	}
 }

@@ -1,627 +1,46 @@
 {
 	"openapi": "3.0.0",
 	"info": {
-		"title": "SkillTree API",
-		"description": "API for managing skill trees, skill nodes, and user progress tracking",
-		"version": "1.0.0",
-		"contact": [
-			{
-				"name": "Aditya Tripathi",
-				"email": "atri0048@student.monash.edu"
-			}
-		]
-	},
-	"servers": [
-		{
-			"url": "http://localhost:3000",
-			"description": "Development server"
-		}
-	],
-	"security": [
-		{
-			"bearerAuth": []
-		}
-	],
-	"components": {
-		"securitySchemes": {
-			"bearerAuth": {
-				"type": "http",
-				"scheme": "bearer",
-				"bearerFormat": "JWT"
-			}
-		},
-		"schemas": {
-			"ApiResponse": {
-				"type": "object",
-				"properties": {
-					"ok": {
-						"type": "boolean"
-					},
-					"message": {
-						"oneOf": [
-							{
-								"type": "string"
-							},
-							{
-								"type": "object"
-							}
-						]
-					},
-					"status": {
-						"type": "integer"
-					}
-				}
-			},
-			"User": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"name": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string",
-						"format": "email"
-					},
-					"xpPoint": {
-						"type": "integer"
-					}
-				}
-			},
-			"Tag": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"name": {
-						"type": "string"
-					},
-					"isRestricted": {
-						"type": "boolean"
-					},
-					"restrictionDescription": {
-						"type": "string"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				}
-			},
-			"SkillNode": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"name": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string",
-						"nullable": true
-					},
-					"xpPoint": {
-						"type": "integer"
-					},
-					"parentNode": {
-						"$ref": "#/components/schemas/SkillNodeBasic"
-					},
-					"childNode": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/SkillNodeBasic"
-						}
-					},
-					"skillNodeUser": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/SkillNodeUser"
-						}
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				}
-			},
-			"SkillNodeBasic": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"name": {
-						"type": "string"
-					}
-				}
-			},
-			"SkillNodeUser": {
-				"type": "object",
-				"properties": {
-					"xpPoint": {
-						"type": "integer"
-					}
-				}
-			},
-			"SkillTree": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"name": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
-					"creator": {
-						"$ref": "#/components/schemas/User"
-					},
-					"tags": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/Tag"
-						}
-					},
-					"skillNodes": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/SkillNode"
-						}
-					},
-					"skillTreeUser": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/SkillTreeUser"
-						}
-					},
-					"_count": {
-						"type": "object",
-						"properties": {
-							"skillNodes": {
-								"type": "integer"
-							},
-							"skillTreeUser": {
-								"type": "integer"
-							}
-						}
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				}
-			},
-			"SkillTreeUser": {
-				"type": "object",
-				"properties": {
-					"userId": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"role": {
-						"type": "string",
-						"enum": ["ADMIN", "MEMBER"]
-					},
-					"verificationStatus": {
-						"type": "string",
-						"enum": ["PENDING", "VERIFIED"]
-					},
-					"user": {
-						"$ref": "#/components/schemas/User"
-					}
-				}
-			},
-			"CreateSkillTreeDto": {
-				"type": "object",
-				"required": ["name"],
-				"properties": {
-					"name": {
-						"type": "string",
-						"minLength": 1
-					},
-					"description": {
-						"type": "string"
-					},
-					"tagIds": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"format": "uuid"
-						}
-					}
-				}
-			},
-			"UpdateSkillTreeDto": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"minLength": 1
-					},
-					"description": {
-						"type": "string"
-					},
-					"tagIds": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"format": "uuid"
-						}
-					}
-				}
-			},
-			"UpdateSkillTreeUserDto": {
-				"type": "object",
-				"properties": {
-					"role": {
-						"type": "string",
-						"enum": ["ADMIN", "MEMBER"]
-					},
-					"verificationStatus": {
-						"type": "string",
-						"enum": ["PENDING", "VERIFIED"]
-					}
-				}
-			},
-			"Error": {
-				"type": "object",
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"example": false
-					},
-					"message": {
-						"type": "string"
-					},
-					"status": {
-						"type": "integer"
-					}
-				}
-			},
-			"AuthSignupDto": {
-				"type": "object",
-				"required": ["name", "email", "password", "dateOfBirth"],
-				"properties": {
-					"name": {
-						"type": "string",
-						"description": "User's full name"
-					},
-					"email": {
-						"type": "string",
-						"format": "email",
-						"description": "User's email address"
-					},
-					"password": {
-						"type": "string",
-						"minLength": 6,
-						"description": "User's password (minimum 6 characters)"
-					},
-					"dateOfBirth": {
-						"type": "string",
-						"format": "date",
-						"description": "User's date of birth"
-					}
-				}
-			},
-			"AuthSigninDto": {
-				"type": "object",
-				"required": ["email", "password"],
-				"properties": {
-					"email": {
-						"type": "string",
-						"format": "email",
-						"description": "User's email address"
-					},
-					"password": {
-						"type": "string",
-						"description": "User's password"
-					}
-				}
-			},
-			"AuthResponse": {
-				"type": "object",
-				"properties": {
-					"access_token": {
-						"type": "string",
-						"description": "JWT access token"
-					},
-					"user": {
-						"$ref": "#/components/schemas/UserProfile"
-					}
-				}
-			},
-			"UserProfile": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
-					"name": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string",
-						"format": "email"
-					},
-					"dateOfBirth": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"pfp": {
-						"type": "string",
-						"description": "Profile picture URL"
-					},
-					"xpPoint": {
-						"type": "integer"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				}
-			},
-			"UpdateUserDto": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"description": "User's full name"
-					},
-					"dateOfBirth": {
-						"type": "string",
-						"format": "date",
-						"description": "User's date of birth"
-					},
-					"pfp": {
-						"type": "string",
-						"description": "Profile picture URL"
-					}
-				}
-			},
-			"UserStatsDto": {
-				"type": "object",
-				"properties": {
-					"totalXP": {
-						"type": "integer",
-						"description": "Total experience points"
-					},
-					"skillTreesJoined": {
-						"type": "integer",
-						"description": "Number of skill trees joined"
-					},
-					"skillTreesCreated": {
-						"type": "integer",
-						"description": "Number of skill trees created"
-					},
-					"skillNodesCompleted": {
-						"type": "integer",
-						"description": "Number of skill nodes completed"
-					},
-					"postsCreated": {
-						"type": "integer",
-						"description": "Number of posts created"
-					},
-					"eventsWon": {
-						"type": "integer",
-						"description": "Number of events won"
-					},
-					"joinDate": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Date when user joined"
-					},
-					"lastActive": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Last activity date"
-					}
-				}
-			},
-			"ChangePasswordDto": {
-				"type": "object",
-				"required": ["currentPassword", "newPassword"],
-				"properties": {
-					"currentPassword": {
-						"type": "string",
-						"description": "Current password"
-					},
-					"newPassword": {
-						"type": "string",
-						"minLength": 6,
-						"description": "New password (minimum 6 characters)"
-					}
-				}
-			},
-			"ForgotPasswordDto": {
-				"type": "object",
-				"required": ["email"],
-				"properties": {
-					"email": {
-						"type": "string",
-						"format": "email",
-						"description": "Email address to send password reset link"
-					}
-				}
-			},
-			"MessageResponse": {
-				"type": "object",
-				"properties": {
-					"message": {
-						"type": "string"
-					}
-				}
-			},
-			"TokenResponse": {
-				"type": "object",
-				"properties": {
-					"access_token": {
-						"type": "string"
-					}
-				}
-			}
-		},
-		"responses": {
-			"Unauthorized": {
-				"description": "Unauthorized - Invalid or missing JWT token",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Error"
-						},
-						"example": {
-							"ok": false,
-							"message": "Unauthorized",
-							"status": 401
-						}
-					}
-				}
-			},
-			"Forbidden": {
-				"description": "Forbidden - Insufficient permissions",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Error"
-						},
-						"example": {
-							"ok": false,
-							"message": "You must be an admin to perform this action",
-							"status": 403
-						}
-					}
-				}
-			},
-			"BadRequest": {
-				"description": "Bad request - Invalid input data",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Error"
-						},
-						"example": {
-							"ok": false,
-							"message": "Validation failed",
-							"status": 400
-						}
-					}
-				}
-			},
-			"NotFound": {
-				"description": "Resource not found",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Error"
-						},
-						"example": {
-							"ok": false,
-							"message": "Skill tree not found",
-							"status": 404
-						}
-					}
-				}
-			},
-			"Conflict": {
-				"description": "Conflict - Resource already exists",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Error"
-						},
-						"example": {
-							"ok": false,
-							"message": "You are already a member of this skill tree",
-							"status": 409
-						}
-					}
-				}
-			},
-			"InternalServerError": {
-				"description": "Internal server error",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Error"
-						},
-						"example": {
-							"ok": false,
-							"message": "Internal server error",
-							"status": 500
-						}
-					}
-				}
-			}
-		}
+		"title": "Skilltree API",
+		"description": "API documentation for the Skilltree application",
+		"version": "1.0.0"
 	},
 	"paths": {
 		"/skilltree": {
 			"get": {
-				"tags": ["SkillTree - Public"],
-				"summary": "Get all skill trees (public)",
-				"description": "Fetch all public skill trees. Excludes restricted skill trees.",
-				"security": [],
+				"summary": "Get all skill trees",
+				"description": "Get a list of all public skill trees",
+				"tags": ["SkillTree"],
+				"operationId": "getAllSkillTrees",
 				"responses": {
 					"200": {
-						"description": "List of skill trees",
+						"description": "List of skill trees retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "array",
-													"items": {
-														"$ref": "#/components/schemas/SkillTree"
-													}
-												}
-											}
-										}
-									]
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
 								}
 							}
 						}
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			},
 			"post": {
-				"tags": ["SkillTree - Authenticated"],
-				"summary": "Create a new skill tree",
-				"description": "Create a new skill tree. Creator automatically becomes admin.",
+				"summary": "Create skill tree",
+				"description": "Create a new skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "createSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -638,40 +57,29 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/SkillTree"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/SkillTree"
 								}
 							}
 						}
 					},
 					"400": {
-						"description": "Invalid input data"
+						"description": "Bad Request - Invalid input data"
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/{id}": {
 			"get": {
-				"tags": ["SkillTree - Public"],
-				"summary": "Get skill tree by ID (public)",
-				"description": "Fetch a specific skill tree by ID. Limited access to restricted content.",
-				"security": [],
+				"summary": "Get skill tree by ID",
+				"description": "Get a specific skill tree by its ID",
+				"tags": ["SkillTree"],
+				"operationId": "getSkillTreeById",
 				"parameters": [
 					{
 						"name": "id",
@@ -686,41 +94,33 @@
 				],
 				"responses": {
 					"200": {
-						"description": "Skill tree details",
+						"description": "Skill tree retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/SkillTree"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/SkillTree"
 								}
 							}
 						}
 					},
-					"403": {
-						"$ref": "#/components/responses/Forbidden"
-					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			},
 			"patch": {
-				"tags": ["SkillTree - Authenticated"],
 				"summary": "Update skill tree",
-				"description": "Update an existing skill tree. Must be admin of the skill tree.",
+				"description": "Update an existing skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "updateSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -749,40 +149,38 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/SkillTree"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/SkillTree"
 								}
 							}
 						}
 					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"403": {
-						"$ref": "#/components/responses/Forbidden"
+						"description": "Forbidden - User does not have permission"
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			},
 			"delete": {
-				"tags": ["SkillTree - Authenticated"],
 				"summary": "Delete skill tree",
-				"description": "Delete a skill tree and all related data. Must be admin of the skill tree.",
+				"description": "Delete an existing skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "deleteSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -796,68 +194,69 @@
 					}
 				],
 				"responses": {
-					"204": {
+					"200": {
 						"description": "Skill tree deleted successfully"
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"403": {
-						"$ref": "#/components/responses/Forbidden"
+						"description": "Forbidden - User does not have permission"
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/auth/all": {
 			"get": {
-				"tags": ["SkillTree - Authenticated"],
 				"summary": "Get all skill trees (authenticated)",
-				"description": "Fetch all skill trees with user-specific information including restricted access.",
+				"description": "Get a list of all skill trees visible to the authenticated user",
+				"tags": ["SkillTree"],
+				"operationId": "getAllSkillTreesAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
-						"description": "List of skill trees with user context",
+						"description": "List of skill trees retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "array",
-													"items": {
-														"$ref": "#/components/schemas/SkillTree"
-													}
-												}
-											}
-										}
-									]
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/auth/{id}": {
 			"get": {
-				"tags": ["SkillTree - Authenticated"],
 				"summary": "Get skill tree by ID (authenticated)",
-				"description": "Fetch detailed skill tree information with user context and progress.",
+				"description": "Get a specific skill tree by its ID with authentication context",
+				"tags": ["SkillTree"],
+				"operationId": "getSkillTreeByIdAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -872,46 +271,38 @@
 				],
 				"responses": {
 					"200": {
-						"description": "Detailed skill tree with user context",
+						"description": "Skill tree retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/SkillTree"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/SkillTree"
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
-					},
-					"403": {
-						"$ref": "#/components/responses/Forbidden"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/{id}/join": {
 			"post": {
-				"tags": ["SkillTree - Membership"],
-				"summary": "Join a skill tree",
-				"description": "Join a skill tree as a member. Status will be VERIFIED for public trees, PENDING for restricted trees.",
+				"summary": "Join skill tree",
+				"description": "Join a specific skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "joinSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -924,84 +315,46 @@
 						"description": "Skill tree ID"
 					}
 				],
-				"responses": {
-					"201": {
-						"description": "Successfully joined the skill tree",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/SkillTreeUser"
-												}
-											}
-										}
-									]
-								}
+				"requestBody": {
+					"required": false,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/JoinSkillTreeDto"
 							}
 						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Skill tree joined successfully"
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree not found"
 					},
 					"409": {
-						"$ref": "#/components/responses/Conflict"
+						"description": "Conflict - Already a member"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/{id}/leave": {
 			"delete": {
-				"tags": ["SkillTree - Membership"],
-				"summary": "Leave a skill tree",
-				"description": "Leave a skill tree. Creator cannot leave their own skill tree.",
-				"parameters": [
+				"summary": "Leave skill tree",
+				"description": "Leave a specific skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "leaveSkillTree",
+				"security": [
 					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						},
-						"description": "Skill tree ID"
+						"bearerAuth": []
 					}
 				],
-				"responses": {
-					"204": {
-						"description": "Successfully left the skill tree"
-					},
-					"401": {
-						"$ref": "#/components/responses/Unauthorized"
-					},
-					"403": {
-						"$ref": "#/components/responses/Forbidden"
-					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
-					},
-					"500": {
-						"$ref": "#/components/responses/InternalServerError"
-					}
-				}
-			}
-		},
-		"/skilltree/{id}/members": {
-			"get": {
-				"tags": ["SkillTree - Membership"],
-				"summary": "Get skill tree members",
-				"description": "Get all members of a skill tree. Must be a member to view.",
 				"parameters": [
 					{
 						"name": "id",
@@ -1016,46 +369,83 @@
 				],
 				"responses": {
 					"200": {
-						"description": "List of skill tree members",
+						"description": "Left skill tree successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - Cannot leave as creator"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found or not a member"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/{id}/members": {
+			"get": {
+				"summary": "Get skill tree members",
+				"description": "Get all members of a specific skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "getSkillTreeMembers",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill tree members retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "array",
-													"items": {
-														"$ref": "#/components/schemas/SkillTreeUser"
-													}
-												}
-											}
-										}
-									]
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTreeUserDto"
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
-					"403": {
-						"$ref": "#/components/responses/Forbidden"
+					"404": {
+						"description": "Not Found - Skill tree not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/{id}/members/{userId}": {
 			"patch": {
-				"tags": ["SkillTree - Membership"],
-				"summary": "Update user role or verification status",
-				"description": "Update a user's role or verification status. Must be admin of the skill tree.",
+				"summary": "Update skill tree member",
+				"description": "Update a member's role in a skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "updateSkillTreeMember",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -1090,44 +480,32 @@
 				},
 				"responses": {
 					"200": {
-						"description": "User membership updated successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/SkillTreeUser"
-												}
-											}
-										}
-									]
-								}
-							}
-						}
+						"description": "Member updated successfully"
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"403": {
-						"$ref": "#/components/responses/Forbidden"
+						"description": "Forbidden - User does not have permission"
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree or user not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			},
 			"delete": {
-				"tags": ["SkillTree - Membership"],
-				"summary": "Remove user from skill tree",
-				"description": "Remove a user from the skill tree. Must be admin. Cannot remove creator.",
+				"summary": "Remove skill tree member",
+				"description": "Remove a member from a skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "removeSkillTreeMember",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -1151,68 +529,69 @@
 					}
 				],
 				"responses": {
-					"204": {
-						"description": "User removed from skill tree successfully"
+					"200": {
+						"description": "Member removed successfully"
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"403": {
-						"$ref": "#/components/responses/Forbidden"
+						"description": "Forbidden - User does not have permission or trying to remove creator"
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Skill tree or user not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/user/my-skilltrees": {
 			"get": {
-				"tags": ["SkillTree - User"],
-				"summary": "Get my skill trees",
-				"description": "Get all skill trees the authenticated user is a member of.",
+				"summary": "Get current user's skill trees",
+				"description": "Get all skill trees the authenticated user is a member of",
+				"tags": ["SkillTree"],
+				"operationId": "getUserSkillTrees",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
-						"description": "List of user's skill trees",
+						"description": "User's skill trees retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "array",
-													"items": {
-														"$ref": "#/components/schemas/SkillTreeUser"
-													}
-												}
-											}
-										}
-									]
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/skilltree/user/{userId}/skilltrees": {
 			"get": {
-				"tags": ["SkillTree - User"],
 				"summary": "Get user's skill trees",
-				"description": "Get all skill trees a specific user is a member of.",
+				"description": "Get all skill trees a specific user is a member of",
+				"tags": ["SkillTree"],
+				"operationId": "getUserSkillTreesByUserId",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "userId",
@@ -1227,44 +606,36 @@
 				],
 				"responses": {
 					"200": {
-						"description": "List of user's skill trees",
+						"description": "User's skill trees retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "array",
-													"items": {
-														"$ref": "#/components/schemas/SkillTreeUser"
-													}
-												}
-											}
-										}
-									]
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/auth/signup": {
 			"post": {
-				"tags": ["Authentication"],
-				"summary": "User registration",
-				"description": "Register a new user account",
-				"security": [],
+				"summary": "Register a new user",
+				"description": "Creates a new user account",
+				"tags": ["Auth"],
+				"operationId": "signup",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1277,41 +648,44 @@
 				},
 				"responses": {
 					"201": {
-						"description": "User registered successfully",
+						"description": "User successfully created",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
+									"type": "object",
+									"properties": {
+										"accessToken": {
+											"type": "string"
 										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/AuthResponse"
-												}
-											}
+										"refreshToken": {
+											"type": "string"
+										},
+										"user": {
+											"$ref": "#/components/schemas/User"
 										}
-									]
+									}
 								}
 							}
 						}
 					},
-					"409": {
-						"$ref": "#/components/responses/Conflict"
-					},
 					"400": {
-						"$ref": "#/components/responses/BadRequest"
+						"description": "Bad Request - Invalid input data"
+					},
+					"409": {
+						"description": "Conflict - Email already exists"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/auth/signin": {
 			"post": {
-				"tags": ["Authentication"],
-				"summary": "User login",
-				"description": "Authenticate user and return JWT token",
-				"security": [],
+				"summary": "Login user",
+				"description": "Authenticates a user and returns tokens",
+				"tags": ["Auth"],
+				"operationId": "signin",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1324,73 +698,80 @@
 				},
 				"responses": {
 					"200": {
-						"description": "User authenticated successfully",
+						"description": "Successfully authenticated",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
+									"type": "object",
+									"properties": {
+										"accessToken": {
+											"type": "string"
 										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/AuthResponse"
-												}
-											}
+										"refreshToken": {
+											"type": "string"
+										},
+										"user": {
+											"$ref": "#/components/schemas/User"
 										}
-									]
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid credentials"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/auth/profile": {
 			"get": {
-				"tags": ["Authentication"],
-				"summary": "Get current user profile",
-				"description": "Get the profile of the currently authenticated user",
+				"summary": "Get user profile",
+				"description": "Get the authenticated user profile information",
+				"tags": ["Auth"],
+				"operationId": "getProfile",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
 						"description": "User profile retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/UserProfile"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/User"
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/auth/change-password": {
 			"post": {
-				"tags": ["Authentication"],
-				"summary": "Change user password",
-				"description": "Change the password of the currently authenticated user",
+				"summary": "Change password",
+				"description": "Change the user's password",
+				"tags": ["Auth"],
+				"operationId": "changePassword",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1403,41 +784,26 @@
 				},
 				"responses": {
 					"200": {
-						"description": "Password changed successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/MessageResponse"
-												}
-											}
-										}
-									]
-								}
-							}
-						}
+						"description": "Password changed successfully"
+					},
+					"400": {
+						"description": "Bad Request - Invalid current password"
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/auth/forgot-password": {
 			"post": {
-				"tags": ["Authentication"],
-				"summary": "Request password reset",
-				"description": "Request a password reset link to be sent to email",
-				"security": [],
+				"summary": "Forgot password",
+				"description": "Request password reset",
+				"tags": ["Auth"],
+				"operationId": "forgotPassword",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1450,103 +816,467 @@
 				},
 				"responses": {
 					"200": {
-						"description": "Password reset request processed",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/MessageResponse"
-												}
-											}
-										}
-									]
-								}
-							}
-						}
+						"description": "Password reset email sent"
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/auth/refresh-token": {
 			"post": {
-				"tags": ["Authentication"],
-				"summary": "Refresh JWT token",
-				"description": "Generate a new JWT token for the authenticated user",
+				"summary": "Refresh token",
+				"description": "Get a new access token using refresh token",
+				"tags": ["Auth"],
+				"operationId": "refreshToken",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
-						"description": "Token refreshed successfully",
+						"description": "New token pair generated",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
+									"type": "object",
+									"properties": {
+										"accessToken": {
+											"type": "string"
 										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/TokenResponse"
-												}
-											}
+										"refreshToken": {
+											"type": "string"
 										}
-									]
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skill-node/{id}": {
+			"get": {
+				"summary": "Get skill node by ID",
+				"description": "Get a specific skill node by its ID",
+				"tags": ["SkillNode"],
+				"operationId": "getSkillNodeById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill node retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillNode"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update skill node",
+				"description": "Update an existing skill node",
+				"tags": ["SkillNode"],
+				"operationId": "updateSkillNode",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateSkillNodeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Skill node updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillNode"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete skill node",
+				"description": "Delete an existing skill node",
+				"tags": ["SkillNode"],
+				"operationId": "deleteSkillNode",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill node deleted successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skill-node": {
+			"post": {
+				"summary": "Create skill node",
+				"description": "Create a new skill node",
+				"tags": ["SkillNode"],
+				"operationId": "createSkillNode",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateSkillNodeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Skill node created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillNode"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Parent skill tree or node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skill-node/{id}/posts": {
+			"get": {
+				"summary": "Get posts for skill node",
+				"description": "Get all posts for a specific skill node",
+				"tags": ["SkillNode"],
+				"operationId": "getSkillNodePosts",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/verification/{postId}": {
+			"post": {
+				"summary": "Verify post",
+				"description": "Verify a post and provide feedback",
+				"tags": ["Verification"],
+				"operationId": "verifyPost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "postId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyPostDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Post verified successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Feedback"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission to verify"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"409": {
+						"description": "Conflict - Already verified by this user"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/verification/post/{postId}": {
+			"get": {
+				"summary": "Get post verification",
+				"description": "Get all verification feedback for a post",
+				"tags": ["Verification"],
+				"operationId": "getPostVerification",
+				"parameters": [
+					{
+						"name": "postId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Verification feedback retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Feedback"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/user/me": {
 			"get": {
+				"summary": "Get current user",
+				"description": "Get the currently authenticated user's profile information",
 				"tags": ["User"],
-				"summary": "Get current user information",
-				"description": "Get detailed information about the currently authenticated user",
+				"operationId": "getMe",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
-						"description": "User information retrieved successfully",
+						"description": "User profile retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/UserProfile"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/User"
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/stats/me": {
+			"get": {
+				"summary": "Get current user stats",
+				"description": "Get the currently authenticated user's statistics",
+				"tags": ["User"],
+				"operationId": "getMyStats",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User stats retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserStatsDto"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/user/profile": {
 			"put": {
-				"tags": ["User"],
 				"summary": "Update user profile",
-				"description": "Update the profile information of the currently authenticated user",
+				"description": "Update the currently authenticated user's profile information",
+				"tags": ["User"],
+				"operationId": "updateProfile",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1559,209 +1289,72 @@
 				},
 				"responses": {
 					"200": {
-						"description": "Profile updated successfully",
+						"description": "User profile updated successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/UserProfile"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/User"
 								}
 							}
 						}
-					},
-					"401": {
-						"$ref": "#/components/responses/Unauthorized"
-					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
 					},
 					"400": {
-						"$ref": "#/components/responses/BadRequest"
-					}
-				}
-			}
-		},
-		"/user/{id}": {
-			"get": {
-				"tags": ["User"],
-				"summary": "Get user by ID",
-				"description": "Get public information about a specific user",
-				"security": [],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						},
-						"description": "User ID"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "User information retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "object",
-													"properties": {
-														"id": {
-															"type": "string",
-															"format": "uuid"
-														},
-														"name": {
-															"type": "string"
-														},
-														"pfp": {
-															"type": "string"
-														},
-														"xpPoint": {
-															"type": "integer"
-														},
-														"createdAt": {
-															"type": "string",
-															"format": "date-time"
-														},
-														"updatedAt": {
-															"type": "string",
-															"format": "date-time"
-														}
-													}
-												}
-											}
-										}
-									]
-								}
-							}
-						}
+						"description": "Bad Request - Invalid input data"
 					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/user": {
 			"get": {
-				"tags": ["User"],
 				"summary": "Get all users",
-				"description": "Get a list of all users ordered by XP points",
-				"security": [],
-				"responses": {
-					"200": {
-						"description": "Users retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"type": "array",
-													"items": {
-														"type": "object",
-														"properties": {
-															"id": {
-																"type": "string",
-																"format": "uuid"
-															},
-															"name": {
-																"type": "string"
-															},
-															"pfp": {
-																"type": "string"
-															},
-															"xpPoint": {
-																"type": "integer"
-															},
-															"createdAt": {
-																"type": "string",
-																"format": "date-time"
-															},
-															"updatedAt": {
-																"type": "string",
-																"format": "date-time"
-															}
-														}
-													}
-												}
-											}
-										}
-									]
-								}
-							}
-						}
-					},
-					"500": {
-						"$ref": "#/components/responses/InternalServerError"
-					}
-				}
-			}
-		},
-		"/user/stats/me": {
-			"get": {
+				"description": "Get a list of all users",
 				"tags": ["User"],
-				"summary": "Get current user statistics",
-				"description": "Get detailed statistics for the currently authenticated user",
+				"operationId": "getAllUsers",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
-						"description": "User statistics retrieved successfully",
+						"description": "List of users retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/UserStatsDto"
-												}
-											}
-										}
-									]
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
 								}
 							}
 						}
 					},
 					"401": {
-						"$ref": "#/components/responses/Unauthorized"
+						"description": "Unauthorized - Invalid or missing token"
 					},
-					"404": {
-						"$ref": "#/components/responses/NotFound"
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
 		"/user/stats/{id}": {
 			"get": {
+				"summary": "Get user stats by ID",
+				"description": "Get a specific user's statistics by their ID",
 				"tags": ["User"],
-				"summary": "Get user statistics by ID",
-				"description": "Get statistics for a specific user",
-				"security": [],
+				"operationId": "getUserStats",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"name": "id",
@@ -1776,60 +1369,1258 @@
 				],
 				"responses": {
 					"200": {
-						"description": "User statistics retrieved successfully",
+						"description": "User stats retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/ApiResponse"
-										},
-										{
-											"properties": {
-												"message": {
-													"$ref": "#/components/schemas/UserStatsDto"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/UserStatsDto"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/{id}": {
+			"get": {
+				"summary": "Get user by ID",
+				"description": "Get a specific user by their ID",
+				"tags": ["User"],
+				"operationId": "getUserById",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/{id}/following": {
+			"get": {
+				"summary": "Get user following",
+				"description": "Get the list of users a user is following",
+				"tags": ["User"],
+				"operationId": "getUserFollowing",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User following list retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/{id}/followers": {
+			"get": {
+				"summary": "Get user followers",
+				"description": "Get the list of users following a specific user",
+				"tags": ["User"],
+				"operationId": "getUserFollowers",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User followers list retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/event": {
+			"get": {
+				"summary": "Get all events",
+				"description": "Get a list of all events",
+				"tags": ["Event"],
+				"operationId": "getAllEvents",
+				"responses": {
+					"200": {
+						"description": "List of events retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Event"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post": {
+			"get": {
+				"summary": "Get all posts",
+				"description": "Get a list of all public posts",
+				"tags": ["Post"],
+				"operationId": "getAllPosts",
+				"responses": {
+					"200": {
+						"description": "List of posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"post": {
+				"summary": "Create post",
+				"description": "Create a new post",
+				"tags": ["Post"],
+				"operationId": "createPost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePostDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Post created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/{id}": {
+			"get": {
+				"summary": "Get post by ID",
+				"description": "Get a specific post by its ID",
+				"tags": ["Post"],
+				"operationId": "getPostById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
 								}
 							}
 						}
 					},
 					"404": {
-						"$ref": "#/components/responses/NotFound"
+						"description": "Not Found - Post not found"
 					},
 					"500": {
-						"$ref": "#/components/responses/InternalServerError"
+						"description": "Internal server error"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update post",
+				"description": "Update an existing post",
+				"tags": ["Post"],
+				"operationId": "updatePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdatePostDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Post updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete post",
+				"description": "Delete an existing post",
+				"tags": ["Post"],
+				"operationId": "deletePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post deleted successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/auth/all": {
+			"get": {
+				"summary": "Get all posts (authenticated)",
+				"description": "Get a list of all posts visible to the authenticated user",
+				"tags": ["Post"],
+				"operationId": "getAllPostsAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "List of posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/auth/{id}": {
+			"get": {
+				"summary": "Get post by ID (authenticated)",
+				"description": "Get a specific post by its ID with authentication context",
+				"tags": ["Post"],
+				"operationId": "getPostByIdAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/{id}/like": {
+			"post": {
+				"summary": "Like post",
+				"description": "Like a specific post",
+				"tags": ["Post"],
+				"operationId": "likePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post liked successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Unlike post",
+				"description": "Remove like from a specific post",
+				"tags": ["Post"],
+				"operationId": "unlikePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post unliked successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/{id}/likes": {
+			"get": {
+				"summary": "Get post likes",
+				"description": "Get all users who liked a specific post",
+				"tags": ["Post"],
+				"operationId": "getPostLikes",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post likes retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/skillnode/{skillNodeId}": {
+			"get": {
+				"summary": "Get posts by skill node",
+				"description": "Get all posts for a specific skill node",
+				"tags": ["Post"],
+				"operationId": "getPostsBySkillNode",
+				"parameters": [
+					{
+						"name": "skillNodeId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/auth/skillnode/{skillNodeId}": {
+			"get": {
+				"summary": "Get posts by skill node (authenticated)",
+				"description": "Get all posts for a specific skill node with authentication context",
+				"tags": ["Post"],
+				"operationId": "getPostsBySkillNodeAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "skillNodeId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		}
 	},
-	"tags": [
-		{
-			"name": "Authentication",
-			"description": "User authentication and account management endpoints"
+	"components": {
+		"schemas": {
+			"SkillTree": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Skill tree ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Skill tree name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill tree description"
+					},
+					"creatorId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the creator user"
+					},
+					"creator": {
+						"$ref": "#/components/schemas/User"
+					},
+					"skillNodes": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SkillNode"
+						},
+						"description": "Skill nodes in this tree"
+					},
+					"tags": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Tag"
+						},
+						"description": "Tags associated with this skill tree"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"SkillNode": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Skill node ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description",
+						"nullable": true
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"skillTreeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill tree",
+						"nullable": true
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"Tag": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Tag ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Tag name"
+					},
+					"isRestricted": {
+						"type": "boolean",
+						"description": "Whether this tag is restricted"
+					},
+					"restrictionDescription": {
+						"type": "string",
+						"description": "Description of the restriction"
+					}
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "User ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			},
+			"CreateSkillTreeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill tree name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill tree description"
+					},
+					"tags": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Tag names for this skill tree"
+					}
+				},
+				"required": ["name"]
+			},
+			"UpdateSkillTreeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill tree name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill tree description"
+					},
+					"tags": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Tag names for this skill tree"
+					}
+				}
+			},
+			"JoinSkillTreeDto": {
+				"type": "object",
+				"properties": {
+					"role": {
+						"type": "string",
+						"enum": ["MEMBER", "ADMIN"],
+						"description": "Role in the skill tree"
+					}
+				}
+			},
+			"UpdateSkillTreeUserDto": {
+				"type": "object",
+				"properties": {
+					"role": {
+						"type": "string",
+						"enum": ["MEMBER", "ADMIN"],
+						"description": "Role in the skill tree"
+					},
+					"verificationStatus": {
+						"type": "string",
+						"enum": ["PENDING", "VERIFIED"],
+						"description": "Verification status"
+					}
+				},
+				"required": ["role"]
+			},
+			"SkillTreeUserDto": {
+				"type": "object",
+				"properties": {
+					"user": {
+						"$ref": "#/components/schemas/User"
+					},
+					"role": {
+						"type": "string",
+						"enum": ["MEMBER", "ADMIN"],
+						"description": "Role in the skill tree"
+					},
+					"verificationStatus": {
+						"type": "string",
+						"enum": ["PENDING", "VERIFIED"],
+						"description": "Verification status"
+					}
+				}
+			},
+			"AuthSignupDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"password": {
+						"type": "string",
+						"minLength": 6,
+						"description": "User's password (min 6 characters)"
+					},
+					"dateOfBirth": {
+						"type": "string",
+						"format": "date-time",
+						"description": "User's date of birth"
+					}
+				},
+				"required": ["name", "email", "password", "dateOfBirth"]
+			},
+			"AuthSigninDto": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"password": {
+						"type": "string",
+						"description": "User's password"
+					}
+				},
+				"required": ["email", "password"]
+			},
+			"ChangePasswordDto": {
+				"type": "object",
+				"properties": {
+					"currentPassword": {
+						"type": "string",
+						"description": "User's current password"
+					},
+					"newPassword": {
+						"type": "string",
+						"minLength": 6,
+						"description": "User's new password (min 6 characters)"
+					}
+				},
+				"required": ["currentPassword", "newPassword"]
+			},
+			"ForgotPasswordDto": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					}
+				},
+				"required": ["email"]
+			},
+			"CreateSkillNodeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description"
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"skillTreeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill tree"
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					}
+				},
+				"required": ["name", "skillTreeId"]
+			},
+			"UpdateSkillNodeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description"
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					}
+				}
+			},
+			"Post": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Post ID"
+					},
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					},
+					"skillNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the associated skill node",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Post creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"VerifyPostDto": {
+				"type": "object",
+				"properties": {
+					"feedbackText": {
+						"type": "string",
+						"description": "Feedback text for the verification"
+					},
+					"multiplier": {
+						"type": "integer",
+						"description": "XP multiplier for the verification (default: 1)"
+					}
+				},
+				"required": ["feedbackText"]
+			},
+			"Feedback": {
+				"type": "object",
+				"properties": {
+					"verifierId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the verifier user"
+					},
+					"postId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the verified post"
+					},
+					"feedbackText": {
+						"type": "string",
+						"description": "Feedback text"
+					},
+					"multiplier": {
+						"type": "integer",
+						"description": "XP multiplier"
+					},
+					"verifier": {
+						"$ref": "#/components/schemas/User"
+					},
+					"post": {
+						"$ref": "#/components/schemas/Post"
+					}
+				}
+			},
+			"UpdateUserDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			},
+			"UserStatsDto": {
+				"type": "object",
+				"properties": {
+					"xpPoint": {
+						"type": "integer",
+						"description": "User's total experience points"
+					},
+					"skillTreeCount": {
+						"type": "integer",
+						"description": "Number of skill trees the user has created"
+					},
+					"skillNodeCount": {
+						"type": "integer",
+						"description": "Number of skill nodes the user has completed"
+					},
+					"postCount": {
+						"type": "integer",
+						"description": "Number of posts the user has made"
+					},
+					"followerCount": {
+						"type": "integer",
+						"description": "Number of followers the user has"
+					},
+					"followingCount": {
+						"type": "integer",
+						"description": "Number of users the user is following"
+					}
+				}
+			},
+			"Event": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Event ID"
+					},
+					"title": {
+						"type": "string",
+						"description": "Event title"
+					},
+					"isRanked": {
+						"type": "boolean",
+						"description": "Whether this is a ranked event"
+					},
+					"xpPayout": {
+						"type": "integer",
+						"description": "XP payout for the event"
+					},
+					"startDate": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Event start date and time"
+					},
+					"endDate": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Event end date and time"
+					},
+					"winnerId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the winner user",
+						"nullable": true
+					},
+					"winner": {
+						"$ref": "#/components/schemas/User",
+						"nullable": true
+					},
+					"users": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"description": "Event participants"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"CreatePostDto": {
+				"type": "object",
+				"properties": {
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					},
+					"skillNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the associated skill node",
+						"nullable": true
+					}
+				},
+				"required": ["content", "proofMedia"]
+			},
+			"UpdatePostDto": {
+				"type": "object",
+				"properties": {
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					}
+				}
+			}
 		},
-		{
-			"name": "User",
-			"description": "User profile and statistics endpoints"
-		},
-		{
-			"name": "SkillTree - Public",
-			"description": "Public endpoints that don't require authentication"
-		},
-		{
-			"name": "SkillTree - Authenticated",
-			"description": "Authenticated endpoints for skill tree CRUD operations"
-		},
-		{
-			"name": "SkillTree - Membership",
-			"description": "Endpoints for managing skill tree memberships"
-		},
-		{
-			"name": "SkillTree - User",
-			"description": "User-specific skill tree endpoints"
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Enter JWT Bearer token"
+			}
 		}
-	]
+	}
 }
