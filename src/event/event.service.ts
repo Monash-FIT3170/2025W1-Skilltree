@@ -18,9 +18,6 @@ export class EventService {
 					xpPayout: dto.xpPayout,
 					startDate: dto.startDate,
 					endDate: dto.endDate,
-					users: {
-						connect: [{ id: userId }],
-					},
 				},
 			});
 			return event;

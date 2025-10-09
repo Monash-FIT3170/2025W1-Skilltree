@@ -19,8 +19,4 @@ export class CreateEventDto {
 
 	@IsDateString()
 	endDate: string;
-
-
-}
-}
 }
