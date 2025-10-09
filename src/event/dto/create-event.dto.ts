@@ -8,6 +8,9 @@ import {
 
 export class CreateEventDto {
 	@IsString()
+	skillTreeId: string;
+
+	@IsString()
 	title: string;
 
 	@IsOptional()

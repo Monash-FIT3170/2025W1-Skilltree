@@ -117,4 +117,36 @@ export class UserService {
 			throw new InternalServerErrorException('Failed to fetch user statistics');
 		}
 	}
+
+	async followUser(userId: string, targetUserId: string) {
+		try {
+			await this.prisma.user.update({
+				where: { id: userId },
+				data: {
+					following: {
+						connect: { id: targetUserId },
+					},
+				},
+			});
+			return { success: true };
+		} catch {
+			throw new InternalServerErrorException('Failed to follow user');
+		}
+	}
+
+	async unfollowUser(userId: string, targetUserId: string) {
+		try {
+			await this.prisma.user.update({
+				where: { id: userId },
+				data: {
+					following: {
+						disconnect: { id: targetUserId },
+					},
+				},
+			});
+			return { success: true };
+		} catch {
+			throw new InternalServerErrorException('Failed to unfollow user');
+		}
+	}
 }
