@@ -8,7 +8,7 @@
 	"scripts": {
 		"prisma:migrate:dev": "prisma migrate dev",
 		"prisma:seed": "ts-node prisma/seed.ts",
-		"build": "nest build",
+		"build": "prisma generate && nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "nest start",
 		"start:dev": "nest start --watch",
@@ -21,6 +21,7 @@
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./test/jest-e2e.json",
 		"swagger:validate": "node validate-swagger.js",
+		"postinstall": "prisma generate",
 		"new:module": "read -p \"Enter module name: \" moduleName && nest g mo $moduleName; nest g service $moduleName --no-spec; nest g controller $moduleName --no-spec"
 	},
 	"dependencies": {
