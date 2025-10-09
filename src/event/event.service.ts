@@ -15,15 +15,11 @@ export class EventService {
 			const event = await this.prisma.event.create({
 				data: {
 					title: dto.title,
-					xpPayout: dto.xpPayout ?? 0,
+					xpPayout: dto.xpPayout,
 					startDate: dto.startDate,
 					endDate: dto.endDate,
-					winnerId: dto.winnerId ?? null,
 					users: {
-						connect: [
-							{ id: userId },
-							...(dto.userIds?.map((id) => ({ id })) ?? []),
-						],
+						connect: [{ id: userId }],
 					},
 				},
 			});

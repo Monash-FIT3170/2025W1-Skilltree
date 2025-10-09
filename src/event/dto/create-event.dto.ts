@@ -20,12 +20,7 @@ export class CreateEventDto {
 	@IsDateString()
 	endDate: string;
 
-	@IsOptional()
-	@IsString()
-	winnerId?: string;
 
-	@IsOptional()
-	@IsArray()
-	@IsString({ each: true })
-	userIds?: string[];
+}
+}
 }
