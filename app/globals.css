@@ -169,6 +169,12 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
+.dark .react-flow__controls-button {
+  background: #23272a !important;
+  color: #e2e8f0 !important; /* light text/icons */
+  border-color: #444 !important;
+}
+
 body {
   letter-spacing: var(--tracking-normal);
 }
