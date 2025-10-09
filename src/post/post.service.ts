@@ -362,6 +362,58 @@ export class PostService {
 		}
 	}
 
+	async getPostsBySkillTree(skillTreeId: string) {
+		try {
+			const skillTree = await this.prismaService.skillTree.findUnique({
+				where: { id: skillTreeId },
+			});
+
+			if (!skillTree) {
+				throw new NotFoundException('Skill tree not found');
+			}
+
+			const posts = await this.prismaService.post.findMany({
+				where: {
+					skillNode: {
+						skillTreeId: skillTreeId,
+					},
+				},
+				include: {
+					skillNode: {
+						select: {
+							id: true,
+							name: true,
+							skillTree: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					likes: {
+						select: { id: true, name: true },
+					},
+					feedback: {
+						include: {
+							verifier: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					_count: {
+						select: { likes: true, feedback: true },
+					},
+				},
+				orderBy: { createdAt: 'desc' },
+			});
+			
+			return posts;
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch posts');
+		}
+	}
+
 	async getPostsBySkillNode(skillNodeId: string, user?: User) {
 		try {
 			const skillNode = await this.prismaService.skillNode.findUnique({
