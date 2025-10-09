@@ -60,22 +60,19 @@ export class UserController {
 		return this.userService.getUserById(id);
 	}
 
-	@UseGuards(JwtGuard)
-	@Put('follow/:id')
-	async followUser(
-		@GetUserId() userId: string,
-		@Param('id') targetUserId: string,
-	) {
-		return this.userService.followUser(userId, targetUserId);
+	@Public()
+	@Get(':id/following')
+	async getUserFollowing(
+		@Param('id') id: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
+		return this.userService.getUserFollowing(id);
 	}
 
-	@UseGuards(JwtGuard)
-	@Put('unfollow/:id')
-	async unfollowUser(
-		@GetUserId() userId: string,
-		@Param('id') targetUserId: string,
-	) {
-		return this.userService.unfollowUser(userId, targetUserId);
+	@Public()
+	@Get(':id/followers')
+	async getUserFollowers(
+		@Param('id') id: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
+		return this.userService.getUserFollowers(id);
 	}
-	
 }

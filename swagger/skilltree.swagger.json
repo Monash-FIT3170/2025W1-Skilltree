@@ -1,0 +1,871 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "SkillTree API",
+		"description": "SkillTree management API endpoints",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/skilltree": {
+			"get": {
+				"summary": "Get all skill trees",
+				"description": "Get a list of all public skill trees",
+				"tags": ["SkillTree"],
+				"operationId": "getAllSkillTrees",
+				"responses": {
+					"200": {
+						"description": "List of skill trees retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"post": {
+				"summary": "Create skill tree",
+				"description": "Create a new skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "createSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateSkillTreeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Skill tree created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillTree"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/{id}": {
+			"get": {
+				"summary": "Get skill tree by ID",
+				"description": "Get a specific skill tree by its ID",
+				"tags": ["SkillTree"],
+				"operationId": "getSkillTreeById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill tree retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillTree"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update skill tree",
+				"description": "Update an existing skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "updateSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateSkillTreeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Skill tree updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillTree"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete skill tree",
+				"description": "Delete an existing skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "deleteSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill tree deleted successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/auth/all": {
+			"get": {
+				"summary": "Get all skill trees (authenticated)",
+				"description": "Get a list of all skill trees visible to the authenticated user",
+				"tags": ["SkillTree"],
+				"operationId": "getAllSkillTreesAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "List of skill trees retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/auth/{id}": {
+			"get": {
+				"summary": "Get skill tree by ID (authenticated)",
+				"description": "Get a specific skill tree by its ID with authentication context",
+				"tags": ["SkillTree"],
+				"operationId": "getSkillTreeByIdAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill tree retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SkillTree"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/{id}/join": {
+			"post": {
+				"summary": "Join skill tree",
+				"description": "Join a specific skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "joinSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"requestBody": {
+					"required": false,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/JoinSkillTreeDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Skill tree joined successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found"
+					},
+					"409": {
+						"description": "Conflict - Already a member"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/{id}/leave": {
+			"delete": {
+				"summary": "Leave skill tree",
+				"description": "Leave a specific skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "leaveSkillTree",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Left skill tree successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - Cannot leave as creator"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found or not a member"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/{id}/members": {
+			"get": {
+				"summary": "Get skill tree members",
+				"description": "Get all members of a specific skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "getSkillTreeMembers",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Skill tree members retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTreeUserDto"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill tree not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/{id}/members/{userId}": {
+			"patch": {
+				"summary": "Update skill tree member",
+				"description": "Update a member's role in a skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "updateSkillTreeMember",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					},
+					{
+						"name": "userId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateSkillTreeUserDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Member updated successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Skill tree or user not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Remove skill tree member",
+				"description": "Remove a member from a skill tree",
+				"tags": ["SkillTree"],
+				"operationId": "removeSkillTreeMember",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill tree ID"
+					},
+					{
+						"name": "userId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Member removed successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission or trying to remove creator"
+					},
+					"404": {
+						"description": "Not Found - Skill tree or user not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/user/my-skilltrees": {
+			"get": {
+				"summary": "Get current user's skill trees",
+				"description": "Get all skill trees the authenticated user is a member of",
+				"tags": ["SkillTree"],
+				"operationId": "getUserSkillTrees",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User's skill trees retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/skilltree/user/{userId}/skilltrees": {
+			"get": {
+				"summary": "Get user's skill trees",
+				"description": "Get all skill trees a specific user is a member of",
+				"tags": ["SkillTree"],
+				"operationId": "getUserSkillTreesByUserId",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "userId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User's skill trees retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/SkillTree"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"SkillTree": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Skill tree ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Skill tree name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill tree description"
+					},
+					"creatorId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the creator user"
+					},
+					"creator": {
+						"$ref": "#/components/schemas/User"
+					},
+					"skillNodes": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SkillNode"
+						},
+						"description": "Skill nodes in this tree"
+					},
+					"tags": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Tag"
+						},
+						"description": "Tags associated with this skill tree"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"SkillNode": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Skill node ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Skill node name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill node description",
+						"nullable": true
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "Experience points for this node"
+					},
+					"skillTreeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill tree",
+						"nullable": true
+					},
+					"parentNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the parent skill node",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"Tag": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Tag ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "Tag name"
+					},
+					"isRestricted": {
+						"type": "boolean",
+						"description": "Whether this tag is restricted"
+					},
+					"restrictionDescription": {
+						"type": "string",
+						"description": "Description of the restriction"
+					}
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "User ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			},
+			"CreateSkillTreeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill tree name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill tree description"
+					},
+					"tags": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Tag names for this skill tree"
+					}
+				},
+				"required": ["name"]
+			},
+			"UpdateSkillTreeDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Skill tree name"
+					},
+					"description": {
+						"type": "string",
+						"description": "Skill tree description"
+					},
+					"tags": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Tag names for this skill tree"
+					}
+				}
+			},
+			"JoinSkillTreeDto": {
+				"type": "object",
+				"properties": {
+					"role": {
+						"type": "string",
+						"enum": ["MEMBER", "ADMIN"],
+						"description": "Role in the skill tree"
+					}
+				}
+			},
+			"UpdateSkillTreeUserDto": {
+				"type": "object",
+				"properties": {
+					"role": {
+						"type": "string",
+						"enum": ["MEMBER", "ADMIN"],
+						"description": "Role in the skill tree"
+					},
+					"verificationStatus": {
+						"type": "string",
+						"enum": ["PENDING", "VERIFIED"],
+						"description": "Verification status"
+					}
+				},
+				"required": ["role"]
+			},
+			"SkillTreeUserDto": {
+				"type": "object",
+				"properties": {
+					"user": {
+						"$ref": "#/components/schemas/User"
+					},
+					"role": {
+						"type": "string",
+						"enum": ["MEMBER", "ADMIN"],
+						"description": "Role in the skill tree"
+					},
+					"verificationStatus": {
+						"type": "string",
+						"enum": ["PENDING", "VERIFIED"],
+						"description": "Verification status"
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Enter JWT Bearer token"
+			}
+		}
+	}
+}

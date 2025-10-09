@@ -1,0 +1,212 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Verification API",
+		"description": "Post verification API endpoints",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/verification/{postId}": {
+			"post": {
+				"summary": "Verify post",
+				"description": "Verify a post and provide feedback",
+				"tags": ["Verification"],
+				"operationId": "verifyPost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "postId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/VerifyPostDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Post verified successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Feedback"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission to verify"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"409": {
+						"description": "Conflict - Already verified by this user"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/verification/post/{postId}": {
+			"get": {
+				"summary": "Get post verification",
+				"description": "Get all verification feedback for a post",
+				"tags": ["Verification"],
+				"operationId": "getPostVerification",
+				"parameters": [
+					{
+						"name": "postId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Verification feedback retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Feedback"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"VerifyPostDto": {
+				"type": "object",
+				"properties": {
+					"feedbackText": {
+						"type": "string",
+						"description": "Feedback text for the verification"
+					},
+					"multiplier": {
+						"type": "integer",
+						"description": "XP multiplier for the verification (default: 1)"
+					}
+				},
+				"required": ["feedbackText"]
+			},
+			"Feedback": {
+				"type": "object",
+				"properties": {
+					"verifierId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the verifier user"
+					},
+					"postId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the verified post"
+					},
+					"feedbackText": {
+						"type": "string",
+						"description": "Feedback text"
+					},
+					"multiplier": {
+						"type": "integer",
+						"description": "XP multiplier"
+					},
+					"verifier": {
+						"$ref": "#/components/schemas/User"
+					},
+					"post": {
+						"$ref": "#/components/schemas/Post"
+					}
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "User ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			},
+			"Post": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Post ID"
+					},
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Enter JWT Bearer token"
+			}
+		}
+	}
+}

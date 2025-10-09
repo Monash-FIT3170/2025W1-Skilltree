@@ -1,0 +1,436 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "User API",
+		"description": "User management API endpoints",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/user/me": {
+			"get": {
+				"summary": "Get current user",
+				"description": "Get the currently authenticated user's profile information",
+				"tags": ["User"],
+				"operationId": "getMe",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User profile retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/stats/me": {
+			"get": {
+				"summary": "Get current user stats",
+				"description": "Get the currently authenticated user's statistics",
+				"tags": ["User"],
+				"operationId": "getMyStats",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User stats retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserStatsDto"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/profile": {
+			"put": {
+				"summary": "Update user profile",
+				"description": "Update the currently authenticated user's profile information",
+				"tags": ["User"],
+				"operationId": "updateProfile",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateUserDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User profile updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user": {
+			"get": {
+				"summary": "Get all users",
+				"description": "Get a list of all users",
+				"tags": ["User"],
+				"operationId": "getAllUsers",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "List of users retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/stats/{id}": {
+			"get": {
+				"summary": "Get user stats by ID",
+				"description": "Get a specific user's statistics by their ID",
+				"tags": ["User"],
+				"operationId": "getUserStats",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User stats retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserStatsDto"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/{id}": {
+			"get": {
+				"summary": "Get user by ID",
+				"description": "Get a specific user by their ID",
+				"tags": ["User"],
+				"operationId": "getUserById",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/{id}/following": {
+			"get": {
+				"summary": "Get user following",
+				"description": "Get the list of users a user is following",
+				"tags": ["User"],
+				"operationId": "getUserFollowing",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User following list retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/user/{id}/followers": {
+			"get": {
+				"summary": "Get user followers",
+				"description": "Get the list of users following a specific user",
+				"tags": ["User"],
+				"operationId": "getUserFollowers",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "User ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User followers list retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "User ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"dateOfBirth": {
+						"type": "string",
+						"format": "date-time",
+						"description": "User's date of birth"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					},
+					"xpPoint": {
+						"type": "integer",
+						"description": "User's experience points"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Account creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"UpdateUserDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			},
+			"UserStatsDto": {
+				"type": "object",
+				"properties": {
+					"xpPoint": {
+						"type": "integer",
+						"description": "User's total experience points"
+					},
+					"skillTreeCount": {
+						"type": "integer",
+						"description": "Number of skill trees the user has created"
+					},
+					"skillNodeCount": {
+						"type": "integer",
+						"description": "Number of skill nodes the user has completed"
+					},
+					"postCount": {
+						"type": "integer",
+						"description": "Number of posts the user has made"
+					},
+					"followerCount": {
+						"type": "integer",
+						"description": "Number of followers the user has"
+					},
+					"followingCount": {
+						"type": "integer",
+						"description": "Number of users the user is following"
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Enter JWT Bearer token"
+			}
+		}
+	}
+}

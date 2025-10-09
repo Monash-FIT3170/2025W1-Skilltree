@@ -118,35 +118,58 @@ export class UserService {
 		}
 	}
 
-	async followUser(userId: string, targetUserId: string) {
+	async getUserFollowing(
+		userId: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
 		try {
-			await this.prisma.user.update({
+			const user = await this.prisma.user.findUnique({
 				where: { id: userId },
-				data: {
-					following: {
-						connect: { id: targetUserId },
-					},
-				},
 			});
-			return { success: true };
-		} catch {
-			throw new InternalServerErrorException('Failed to follow user');
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+
+			const followingRelations = await this.prisma.userFollow.findMany({
+				where: { followerId: userId },
+				include: { following: true },
+			});
+
+			return followingRelations.map((relation) => {
+				const { hash: _, email: __, ...publicUser } = relation.following;
+				return publicUser;
+			});
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch following users');
 		}
 	}
 
-	async unfollowUser(userId: string, targetUserId: string) {
+	async getUserFollowers(
+		userId: string,
+	): Promise<Omit<User, 'hash' | 'email'>[]> {
 		try {
-			await this.prisma.user.update({
+			const user = await this.prisma.user.findUnique({
 				where: { id: userId },
-				data: {
-					following: {
-						disconnect: { id: targetUserId },
-					},
-				},
 			});
-			return { success: true };
-		} catch {
-			throw new InternalServerErrorException('Failed to unfollow user');
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+
+			const followerRelations = await this.prisma.userFollow.findMany({
+				where: { followingId: userId },
+				include: { follower: true },
+			});
+			return followerRelations.map((relation) => {
+				const { hash: _, email: __, ...publicUser } = relation.follower;
+				return publicUser;
+			});
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch followers');
 		}
 	}
 }

@@ -1,0 +1,608 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Post API",
+		"description": "Post management API endpoints",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/post": {
+			"get": {
+				"summary": "Get all posts",
+				"description": "Get a list of all public posts",
+				"tags": ["Post"],
+				"operationId": "getAllPosts",
+				"responses": {
+					"200": {
+						"description": "List of posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"post": {
+				"summary": "Create post",
+				"description": "Create a new post",
+				"tags": ["Post"],
+				"operationId": "createPost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePostDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Post created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/{id}": {
+			"get": {
+				"summary": "Get post by ID",
+				"description": "Get a specific post by its ID",
+				"tags": ["Post"],
+				"operationId": "getPostById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update post",
+				"description": "Update an existing post",
+				"tags": ["Post"],
+				"operationId": "updatePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdatePostDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Post updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete post",
+				"description": "Delete an existing post",
+				"tags": ["Post"],
+				"operationId": "deletePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post deleted successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"403": {
+						"description": "Forbidden - User does not have permission"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/auth/all": {
+			"get": {
+				"summary": "Get all posts (authenticated)",
+				"description": "Get a list of all posts visible to the authenticated user",
+				"tags": ["Post"],
+				"operationId": "getAllPostsAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "List of posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/auth/{id}": {
+			"get": {
+				"summary": "Get post by ID (authenticated)",
+				"description": "Get a specific post by its ID with authentication context",
+				"tags": ["Post"],
+				"operationId": "getPostByIdAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Post"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/{id}/like": {
+			"post": {
+				"summary": "Like post",
+				"description": "Like a specific post",
+				"tags": ["Post"],
+				"operationId": "likePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post liked successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Unlike post",
+				"description": "Remove like from a specific post",
+				"tags": ["Post"],
+				"operationId": "unlikePost",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post unliked successfully"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/{id}/likes": {
+			"get": {
+				"summary": "Get post likes",
+				"description": "Get all users who liked a specific post",
+				"tags": ["Post"],
+				"operationId": "getPostLikes",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Post ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Post likes retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Post not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/skillnode/{skillNodeId}": {
+			"get": {
+				"summary": "Get posts by skill node",
+				"description": "Get all posts for a specific skill node",
+				"tags": ["Post"],
+				"operationId": "getPostsBySkillNode",
+				"parameters": [
+					{
+						"name": "skillNodeId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/post/auth/skillnode/{skillNodeId}": {
+			"get": {
+				"summary": "Get posts by skill node (authenticated)",
+				"description": "Get all posts for a specific skill node with authentication context",
+				"tags": ["Post"],
+				"operationId": "getPostsBySkillNodeAuthenticated",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "skillNodeId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Skill node ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Posts retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Post"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Skill node not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Post": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "Post ID"
+					},
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					},
+					"skillNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the associated skill node",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Post creation timestamp"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Last update timestamp"
+					}
+				}
+			},
+			"CreatePostDto": {
+				"type": "object",
+				"properties": {
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					},
+					"skillNodeId": {
+						"type": "string",
+						"format": "uuid",
+						"description": "ID of the associated skill node",
+						"nullable": true
+					}
+				},
+				"required": ["content", "proofMedia"]
+			},
+			"UpdatePostDto": {
+				"type": "object",
+				"properties": {
+					"content": {
+						"type": "string",
+						"description": "Post content"
+					},
+					"proofMedia": {
+						"type": "string",
+						"description": "URL to proof media (image, video, etc.)"
+					}
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"description": "User ID"
+					},
+					"name": {
+						"type": "string",
+						"description": "User's full name"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"description": "User's email address"
+					},
+					"pfp": {
+						"type": "string",
+						"description": "Profile picture URL"
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Enter JWT Bearer token"
+			}
+		}
+	}
+}
