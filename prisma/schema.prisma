@@ -147,7 +147,6 @@ model Tag {
 model Event {
   id        String   @id @default(uuid())
   title     String
-  isRanked  Boolean  @default(false)
   xpPayout  Int      @default(0)
   users     User[]   @relation("EventParticipants")
   startDate DateTime @default(now())
