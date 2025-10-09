@@ -96,4 +96,9 @@ export class PostController {
 	) {
 		return this.postService.getPostsBySkillNode(skillNodeId, user);
 	}
+
+	@Get("/skilltree/:skillTreeId")
+	getPostsBySkillTree(@Param('skillTreeId') skillTreeId: string) {
+		return this.postService.getPostsBySkillTree(skillTreeId);
+	}
 }
