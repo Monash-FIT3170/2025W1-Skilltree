@@ -23,7 +23,7 @@ export async function getIsMember(skillTreeId: string) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
 
-  revalidatePath(`/community/${skillTreeId}`);
+  revalidatePath(`/community/${skillTreeId}`, "page");
   return data as APIResponse<boolean>;
 }
 
