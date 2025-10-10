@@ -61,10 +61,10 @@ export async function createVerificationAction({
 
     return responseData;
   } catch (error) {
-    console.error("Error creating community:", error);
+    console.error("Error creating verification:", error);
     return {
       ok: false,
-      message: "Failed to create community. Please try again.",
+      message: "Failed to create verification. Please try again.",
     };
   }
 }
