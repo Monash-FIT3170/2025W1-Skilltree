@@ -109,7 +109,6 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id/leave')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	leaveSkillTree(@Param('id') skillTreeId: string, @GetUser() user: User) {
 		return this.skilltreeService.leaveSkillTree(skillTreeId, user.id);
 	}
