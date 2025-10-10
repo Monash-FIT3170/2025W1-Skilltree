@@ -478,12 +478,12 @@ const ViewCommunityClient = ({
 
           {posts.length === 0 ? (
             <div className="w-full flex flex-col items-center justify-center">
-              <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
+              <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
                 <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
                 <p className="text-muted-foreground">
                   No posts yet. Be the first to add a proof of practice!
                 </p>
-              </Skeleton>
+              </div>
             </div>
           ) : (
             posts.map((post) => (
