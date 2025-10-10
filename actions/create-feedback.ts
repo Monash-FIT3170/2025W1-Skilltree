@@ -57,7 +57,7 @@ export async function createVerificationAction({
     const responseData = (await response.json()) as CreateVerification;
     console.log(responseData);
 
-    revalidatePath("/community/[id]");
+    revalidatePath("/community/[id]", "page");
 
     return responseData;
   } catch (error) {
