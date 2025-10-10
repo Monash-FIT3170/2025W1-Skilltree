@@ -140,7 +140,10 @@ const CommunityCard = ({
                     try {
                       const response = await joinSkillTreeAction(community.id);
                       if (response.ok) {
-                        toast.success("Successfully joined skill tree!");
+                        toast.success(
+                          "Successfully joined skill tree, sending you over now."
+                        );
+                        router.push(`/community/${community.id}`);
                       } else {
                         toast.error("Failed to join skill tree.");
                       }

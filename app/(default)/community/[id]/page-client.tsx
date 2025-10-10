@@ -31,7 +31,13 @@ import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
 import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
-import { Clock12, MessagesSquareIcon, ThumbsUp, Plus } from "lucide-react";
+import {
+  Clock12,
+  MessagesSquareIcon,
+  ThumbsUp,
+  Plus,
+  AlertCircle,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -45,6 +51,7 @@ import { getIsMember } from "@/actions/get-is-member";
 import { set } from "mongoose";
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const events = [
   {
@@ -151,7 +158,9 @@ const ViewCommunityClient = ({
     setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
     const response = await joinSkillTreeAction(community.id);
     if (response.ok) {
-      toast.success("Successfully joined skill tree!");
+      toast.success(
+        "Successfully joined skill tree, your feed will be updated soon."
+      );
     } else {
       toast.error("Failed to join skill tree.");
     }
@@ -244,20 +253,18 @@ const ViewCommunityClient = ({
       setLoadingStates((prev) => ({ ...prev, submittingFeedback: true }));
     }
     try {
-      await createVerificationAction({
+      const response = await createVerificationAction({
         postId: openPostId,
         feedbackText: addFeedbackForm.feedbackText,
         multiplier: noXp ? 1 : isAdmin ? 3 : 2,
       });
 
-      toast.success(
-        "Feedback submitted successfully, it will reflect in the feed shortly."
-      );
+      toast.success("Feedback submitted successfully. It will appear soon.");
 
       setAddFeedbackForm({ feedbackText: "", multiplier: 1 });
     } catch (error) {
       console.error("Error creating verification:", error);
-      toast.error("Failed to create verification. Please try again.");
+      toast.error((error as Error).message || "Failed to submit feedback.");
     } finally {
       if (noXp) {
         setLoadingStates((prev) => ({
@@ -471,7 +478,14 @@ const ViewCommunityClient = ({
           </div>
 
           {posts.length === 0 ? (
-            <div>Woah. Such Empty.</div>
+            <div className="w-full flex flex-col items-center justify-center">
+              <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">
+                  No posts yet. Be the first to add a proof of practice!
+                </p>
+              </Skeleton>
+            </div>
           ) : (
             posts.map((post) => (
               <Card key={post.id} className="w-full my-8">

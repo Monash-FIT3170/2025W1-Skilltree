@@ -27,44 +27,25 @@ export async function createVerificationAction({
 }: CreateCommunityData) {
   const cookieStore = await cookies();
 
-  try {
-    const response = await fetch(
-      `${process.env.API_URL}/verification/${postId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
-        },
-        body: JSON.stringify({ feedbackText, multiplier }),
-      }
-    );
-
-    if (!response.ok) {
-      let errorMessage = "Something went wrong";
-      try {
-        const text = await response.text();
-        if (text) {
-          const errorData = JSON.parse(text);
-          errorMessage = errorData.message || errorMessage;
-        }
-      } catch {
-        throw new Error(errorMessage);
-      }
-      return { ok: false, message: errorMessage };
+  const response = await fetch(
+    `${process.env.API_URL}/verification/${postId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
+      },
+      body: JSON.stringify({ feedbackText, multiplier }),
     }
+  );
 
-    const responseData = (await response.json()) as CreateVerification;
-    console.log(responseData);
-
-    revalidatePath("/community/[id]");
-
-    return responseData;
-  } catch (error) {
-    console.error("Error creating community:", error);
-    return {
-      ok: false,
-      message: "Failed to create community. Please try again.",
-    };
+  const json = await response.json();
+  if (!json.ok) {
+    throw new Error(json.message || "Something went wrong");
   }
+
+  const responseData = json as CreateVerification;
+
+  revalidatePath("/community/[id]");
+  return responseData;
 }
