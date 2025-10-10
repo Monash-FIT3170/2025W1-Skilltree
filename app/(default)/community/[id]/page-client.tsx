@@ -42,7 +42,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { getIsMember } from "@/actions/get-is-member";
-import { set } from "mongoose";
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
 
