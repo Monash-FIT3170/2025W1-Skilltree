@@ -15,6 +15,7 @@ export class VerificationService {
 			where: { id: postId },
 			include: {
 				skillNode: { select: { id: true, skillTreeId: true } },
+				creator: { select: { id: true } },
 			},
 		});
 
@@ -28,15 +29,12 @@ export class VerificationService {
 			);
 		}
 
-		const membership = await this.prisma.skillTreeUser.findUnique({
-			where: {
-				skillTreeId_userId: {
-					skillTreeId: post.skillNode.skillTreeId,
-					userId: verifier.id,
-				},
-			},
-			select: { role: true },
-		});
+		if (post.creator?.id === verifier.id) {
+			throw new HttpException(
+				'You cannot verify posts in your own skill tree',
+				HttpStatus.FORBIDDEN,
+			);
+		}
 
 		const multiplier = dto.multiplier ?? 1;
 

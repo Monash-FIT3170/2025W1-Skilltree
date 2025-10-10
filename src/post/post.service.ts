@@ -135,7 +135,7 @@ export class PostService {
 					skillNode.skillTree.skillTreeUser.length === 0
 				) {
 					throw new ForbiddenException(
-						'You must be a member of the skill tree to post to this skill node',
+						'You must be a member of the skill tree to post to this skill node.',
 					);
 				}
 			}
@@ -145,6 +145,7 @@ export class PostService {
 					content: createPostDto.content,
 					proofMedia: createPostDto.proofMedia,
 					skillNodeId: createPostDto.skillNodeId,
+					creatorId: userId,
 				},
 				include: {
 					skillNode: {
@@ -404,7 +405,7 @@ export class PostService {
 				},
 				orderBy: { createdAt: 'desc' },
 			});
-			
+
 			return posts;
 		} catch (error) {
 			if (error instanceof NotFoundException) {
