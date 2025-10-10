@@ -43,17 +43,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { getIsMember } from "@/actions/get-is-member";
+import { set } from "mongoose";
+import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 
-const skillNodes = [
-  "React Basics",
-  "State Management",
-  "Component Composition",
-  "Hooks Mastery",
-  "TypeScript Integration",
-  "API Handling",
-  "Testing & Debugging",
-  "UI/UX Best Practices",
-];
 const events = [
   {
     id: "1",
@@ -97,15 +89,28 @@ const ViewCommunityClient = ({
   const [isJoinLeaveButtonLoading, setIsJoinLeaveButtonLoading] =
     useState(false);
 
+  const skillNodes = community.skillNodes.map((node) => ({
+    name: node.name,
+    id: node.id,
+  }));
+
+  const [addProofOfPracticeForm, setAddProofOfPracticeForm] = useState<{
+    skillNodeId: string;
+    proofMedia: string | null;
+    content: string;
+  }>({
+    skillNodeId: "",
+    proofMedia: null,
+    content: "",
+  });
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMember, setIsMember] = useState(false);
-  const [title, setTitle] = useState(community.name);
-  const [tags, setTags] = useState("");
-  const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
+  const [isAddingProofLoading, setIsAddingProofLoading] = useState(false);
+  const [popModalOpen, setPopModalOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -116,10 +121,7 @@ const ViewCommunityClient = ({
     })();
   }, [community.id, posts.length, isAdmin, isMember]);
 
-  const handleCommentSubmit = () => {
-    //here we need to add the submission of a comment
-    // console.log({ title, tags, body, allowVerification });
-  };
+  const handleCommentSubmit = () => {};
 
   const handleLeave = async () => {
     setIsJoinLeaveButtonLoading(true);
@@ -161,6 +163,58 @@ const ViewCommunityClient = ({
       },
       { id: "grind", label: "Rails / Boxes", unlocked: true },
     ],
+  };
+
+  const handleAddProofOfPractice = async () => {
+    const { skillNodeId, proofMedia, content } = addProofOfPracticeForm;
+    if (!skillNodeId) {
+      console.error("Please select a skill tree node.");
+      toast.error("Please select a skill tree node.");
+      return;
+    }
+    if (!proofMedia) {
+      console.error("Please upload a media file.");
+      toast.error("Please upload a media file.");
+      return;
+    }
+    if (!content) {
+      console.error("Please enter a description.");
+      toast.error("Please enter a description.");
+      return;
+    }
+
+    setIsAddingProofLoading(true);
+    try {
+      const response = await createProofOfPracticeAction({
+        skillNodeId: addProofOfPracticeForm.skillNodeId as string,
+        proofMedia: addProofOfPracticeForm.proofMedia as string,
+        content: addProofOfPracticeForm.content as string,
+      });
+      if (response.ok) {
+        toast.success(
+          "Proof of practice added successfully, it will reflect in the feed shortly."
+        );
+        setAddProofOfPracticeForm({
+          skillNodeId: "",
+          proofMedia: null,
+          content: "",
+        });
+        setPreview(null);
+        // Optionally refresh posts or close dialog
+      } else {
+        toast.error(
+          typeof response.message === "string"
+            ? response.message
+            : "Failed to add proof of practice."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while adding proof of practice.");
+    } finally {
+      setIsAddingProofLoading(false);
+      setPopModalOpen(false);
+    }
   };
 
   return (
@@ -244,7 +298,7 @@ const ViewCommunityClient = ({
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
-              <Dialog>
+              <Dialog open={popModalOpen} onOpenChange={setPopModalOpen}>
                 <DialogTrigger asChild>
                   <Button
                     size="sm"
@@ -267,14 +321,22 @@ const ViewCommunityClient = ({
                     <Label htmlFor="skill-tree-node">
                       Select Skill Tree Node
                     </Label>
-                    <Select>
+                    <Select
+                      value={addProofOfPracticeForm.skillNodeId}
+                      onValueChange={(value) =>
+                        setAddProofOfPracticeForm({
+                          ...addProofOfPracticeForm,
+                          skillNodeId: value,
+                        })
+                      }
+                    >
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
                       </SelectTrigger>
                       <SelectContent>
                         {skillNodes.map((node) => (
-                          <SelectItem key={node} value={node}>
-                            {node}
+                          <SelectItem key={node.id} value={node.id}>
+                            {node.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -283,7 +345,23 @@ const ViewCommunityClient = ({
 
                   <div className="w-full py-2 space-y-2">
                     <Label>Upload Media</Label>
-                    <Input type="file" />
+                    <Input
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const file = e.target.files[0];
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setPreview(reader.result as string);
+                            setAddProofOfPracticeForm((prev) => ({
+                              ...prev,
+                              proofMedia: reader.result as string,
+                            }));
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      type="file"
+                    />
                     {preview && (
                       <Image
                         width={720}
@@ -300,17 +378,39 @@ const ViewCommunityClient = ({
                     <Textarea
                       rows={5}
                       className="w-full"
-                      value={body}
-                      onChange={(e) => setBody(e.target.value)}
+                      value={addProofOfPracticeForm.content}
+                      onChange={(e) =>
+                        setAddProofOfPracticeForm((prev) => ({
+                          ...prev,
+                          content: e.target.value,
+                        }))
+                      }
                       placeholder="Write about what you practiced today..."
                     />
                   </div>
 
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button variant="destructive">Cancel</Button>
+                      <Button
+                        onClick={() => {
+                          setPreview(null);
+                          setAddProofOfPracticeForm({
+                            skillNodeId: "",
+                            proofMedia: null,
+                            content: "",
+                          });
+                        }}
+                        variant="destructive"
+                      >
+                        Cancel
+                      </Button>
                     </DialogClose>
-                    <Button>Confirm</Button>
+                    <Button
+                      onClick={handleAddProofOfPractice}
+                      disabled={isAddingProofLoading}
+                    >
+                      {isAddingProofLoading ? "Adding..." : "Confirm"}
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -338,7 +438,7 @@ const ViewCommunityClient = ({
                   <div className="text-base">{post.content}</div>
                   <div className="flex items-center justify-center w-full">
                     <Image
-                      src={"https://picsum.photos/600/350"}
+                      src={post.proofMedia ?? "https://picsum.photos/600/350"}
                       alt="Post Image"
                       width={600}
                       height={350}
