@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -41,6 +41,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getIsAdmin } from "@/actions/get-is-admin";
+import { getIsMember } from "@/actions/get-is-member";
 
 const skillNodes = [
   "React Basics",
@@ -90,35 +92,57 @@ const ViewCommunityClient = ({
   community: TSkillTree;
   posts: TSkillNode[];
 }) => {
-  const user = userStore.getState();
   const router = useRouter();
+
+  const [isJoinLeaveButtonLoading, setIsJoinLeaveButtonLoading] =
+    useState(false);
 
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 
-  const isAdmin = community.skillTreeUser.some(
-    (u) => u.user.id === user.user!.id && u.role === "ADMIN"
-  );
-  const isMember = community.skillTreeUser.some(
-    (u) => u.user.id === user.user!.id && u.role === "MEMBER"
-  );
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMember, setIsMember] = useState(false);
   const [title, setTitle] = useState(community.name);
   const [tags, setTags] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
 
-  const handlePostSubmit = () => {
-    // console.log({ title, tags, body, allowVerification });
-  };
+  useEffect(() => {
+    (async () => {
+      const adminStatus = await getIsAdmin(community.id);
+      setIsAdmin(adminStatus.message as boolean);
+      const memberStatus = await getIsMember(community.id);
+      setIsMember(memberStatus.message as boolean);
+    })();
+  }, [community.id, posts.length, isAdmin, isMember]);
+
   const handleCommentSubmit = () => {
     //here we need to add the submission of a comment
     // console.log({ title, tags, body, allowVerification });
   };
 
-  const handleCreatePost = () => {
-    // Handle create post logic here
-    console.log("Creating new post");
+  const handleLeave = async () => {
+    setIsJoinLeaveButtonLoading(true);
+    const response = await leaveSkillTreeAction(community.id);
+    if (response.ok) {
+      toast.success("Successfully left skill tree.");
+    } else {
+      console.log(JSON.stringify(response, null, 2));
+
+      toast.error(response.message || "Failed to leave skill tree.");
+    }
+    setIsJoinLeaveButtonLoading(false);
+  };
+
+  const handleJoin = async () => {
+    setIsJoinLeaveButtonLoading(true);
+    const response = await joinSkillTreeAction(community.id);
+    if (response.ok) {
+      toast.success("Successfully joined skill tree!");
+    } else {
+      toast.error("Failed to join skill tree.");
+    }
+    setIsJoinLeaveButtonLoading(false);
   };
 
   const exampleSkillTree = {
@@ -161,37 +185,17 @@ const ViewCommunityClient = ({
               Settings
             </Button>
           )}
-          {!isAdmin &&
-            (isMember ? (
-              <Button
-                type="button"
-                onClick={async () => {
-                  const response = await leaveSkillTreeAction(community.id);
-                  if (response.ok) {
-                    toast.success("Successfully left skill tree.");
-                  } else {
-                    toast.error("Failed to leave skill tree.");
-                  }
-                }}
-                variant="destructive"
-              >
-                Leave
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={async () => {
-                  const response = await joinSkillTreeAction(community.id);
-                  if (response.ok) {
-                    toast.success("Successfully joined skill tree!");
-                  } else {
-                    toast.error("Failed to join skill tree.");
-                  }
-                }}
-              >
-                Join
-              </Button>
-            ))}
+          {community.skillTreeUser.some(
+            (member) => member.user.id === userStore.getState().user?.id
+          ) ? (
+            <Button type="button" onClick={handleLeave} variant="destructive">
+              {isJoinLeaveButtonLoading ? "Leaving..." : "Leave"}
+            </Button>
+          ) : (
+            <Button type="button" onClick={handleJoin}>
+              {isJoinLeaveButtonLoading ? "Joining..." : "Join"}
+            </Button>
+          )}
         </div>
       </header>
       <main className="container grid flex-1 grid-cols-1 gap-8 px-6 py-8 mx-auto md:grid-cols-2">
@@ -306,7 +310,7 @@ const ViewCommunityClient = ({
                     <DialogClose asChild>
                       <Button variant="destructive">Cancel</Button>
                     </DialogClose>
-                    <Button onClick={handlePostSubmit}>Confirm</Button>
+                    <Button>Confirm</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

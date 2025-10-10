@@ -10,11 +10,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronUp, ChevronDown, Trophy } from "lucide-react";
+import { ChevronUp, ChevronDown, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type Trend = "up" | "down" | "neutral";
-type Row = { rank: number; name: string; xp: number; communities: number; trend: Trend; pfp?: string | null };
+type Row = {
+  rank: number;
+  name: string;
+  xp: number;
+  communities: number;
+  trend: Trend;
+  pfp?: string | null;
+};
 
 export default function Leaderboard() {
   const [pageSize, setPageSize] = useState<"10" | "25" | "50">("25");
@@ -22,7 +38,13 @@ export default function Leaderboard() {
 
   const all: Row[] = [
     { rank: 1, name: "Han Sama", xp: 788_890, communities: 42, trend: "up" },
-    { rank: 2, name: "Samaira Ashi", xp: 718_290, communities: 37, trend: "neutral" },
+    {
+      rank: 2,
+      name: "Samaira Ashi",
+      xp: 718_290,
+      communities: 37,
+      trend: "neutral",
+    },
     { rank: 3, name: "Lilly", xp: 673_888, communities: 28, trend: "up" },
     { rank: 4, name: "Josh", xp: 658_393, communities: 31, trend: "down" },
     { rank: 5, name: "Kai", xp: 640_120, communities: 22, trend: "up" },
@@ -72,7 +94,7 @@ export default function Leaderboard() {
     { rank: 49, name: "Kim", xp: 401_220, communities: 17, trend: "down" },
     { rank: 50, name: "Neo", xp: 398_000, communities: 16, trend: "neutral" },
   ];
-  
+
   const totalPages = Math.ceil(all.length / Number(pageSize));
 
   const rows = useMemo(() => {
@@ -81,63 +103,50 @@ export default function Leaderboard() {
     return all.slice(start, end);
   }, [all, pageSize, currentPage]);
   const isCompact = rows.length <= 10; // when "Show 10"
-  
+
   const handlePageSizeChange = (v: "10" | "25" | "50") => {
-  setPageSize(v);
-  setCurrentPage(1); 
+    setPageSize(v);
+    setCurrentPage(1);
   };
 
   return (
-    <div className={isCompact ? "flex w-full flex-col" : "flex h-screen w-full flex-col"}>
-      {/* Header bar */}
-      <div className="border-b bg-background">
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <img src="/images/logo.png" alt="Skilltree Logo" className="h-10 w-10" />
-            <h1 className="flex items-center gap-2 text-2xl font-bold">
-              Leaderboard <Trophy className="h-6 w-6 text-yellow-500" />
-            </h1>
-          </div>
-
-          <Select
-            value={pageSize}
-            onValueChange={(v: "10" | "25" | "50") => setPageSize(v)}
-          >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Rows per page" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="10">Show 10</SelectItem>
-              <SelectItem value="25">Show 25</SelectItem>
-              <SelectItem value="50">Show 50</SelectItem>
-            </SelectContent>
-          </Select>
+    <div className={"flex w-full flex-col min-h-screen"}>
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-bold tracking-tight">Leaderboard</h1>
+          <p className="mb-5 text-muted-foreground">
+            The top users with the most XP across all communities.
+          </p>
         </div>
+
+        <Select value={pageSize} onValueChange={handlePageSizeChange}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Rows per page" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">Show 10</SelectItem>
+            <SelectItem value="25">Show 25</SelectItem>
+            <SelectItem value="50">Show 50</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Main content */}
-      <div className="mx-auto w-full max-w-7xl px-4 py-4">
-        <Card className={isCompact ? "border" : "flex min-h-0 flex-1 flex-col border"}>
-          {/* Header row — same grid as rows */}
-          <div className="sticky top-0 z-10 grid grid-cols-[80px_1fr_180px_220px] items-center gap-2 border-b bg-card px-4 py-3 font-semibold">
-            <span>Rank</span>
-            <span>Username</span>
-            <span className="text-center">Communities</span>
-            <span className="grid grid-cols-[1fr_20px] items-center">
-              <span className="text-right">Total XP</span>
-              <span />
-            </span>
-          </div>
-
-          {/* Body: only scroll when NOT compact */}
-          <div className={isCompact ? "" : "min-h-0 flex-1 overflow-auto"}>
-            {rows.map((user) => (
-              <div
-                key={user.rank}
-                className="grid grid-cols-[80px_1fr_180px_220px] items-center gap-2 border-b px-4 py-3 last:border-0"
-              >
-                <span className="tabular-nums">{user.rank}.</span>
-
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="font-bold w-[80px]">Rank</TableHead>
+            <TableHead className="font-bold">User</TableHead>
+            <TableHead className="font-bold text-center w-[180px]">
+              Communities
+            </TableHead>
+            <TableHead className="font-bold text-right">Total XP</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((user) => (
+            <TableRow key={user.rank}>
+              <TableCell className="tabular-nums">{user.rank}.</TableCell>
+              <TableCell>
                 <div className="flex min-w-0 items-center gap-3">
                   <Avatar className="h-8 w-8 shrink-0">
                     {user.pfp ? (
@@ -154,47 +163,61 @@ export default function Leaderboard() {
                   </Avatar>
                   <span className="truncate">{user.name}</span>
                 </div>
-
-                <span className="text-center tabular-nums">
-                  {user.communities.toLocaleString()}
-                </span>
-
-                <div className="grid grid-cols-[1fr_20px] items-center justify-end">
-                  <span className="inline-block w-full text-right tabular-nums">
+              </TableCell>
+              <TableCell className="text-center tabular-nums">
+                {user.communities.toLocaleString()}
+              </TableCell>
+              <TableCell className="text-right">
+                <div className="flex items-center justify-end gap-1">
+                  <span className="tabular-nums">
                     {user.xp.toLocaleString()}
                   </span>
-                  {user.trend === "up" && <ChevronUp className="h-4 w-4 text-green-500" />}
-                  {user.trend === "down" && <ChevronDown className="h-4 w-4 text-red-500" />}
-                  {user.trend === "neutral" && <span />}
+                  {user.trend === "up" && (
+                    <ChevronUp className="h-4 w-4 text-green-500" />
+                  )}
+                  {user.trend === "down" && (
+                    <ChevronDown className="h-4 w-4 text-red-500" />
+                  )}
+                  {user.trend === "neutral" && (
+                    <Minus className="text-yellow-500 h-4 w-4" />
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={4}>
+              <div className="flex items-center justify-between text-sm">
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
+                  >
+                    Next
+                  </Button>
                 </div>
               </div>
-            ))}
-          </div>
-        </Card>
-        <div className="mt-4 flex items-center justify-between text-sm">
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      </div>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     </div>
   );
 }
