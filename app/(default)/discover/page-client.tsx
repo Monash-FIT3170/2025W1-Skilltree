@@ -27,7 +27,6 @@ import { TSkillTree } from "@/types";
 import { toast } from "sonner";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { getIsMember } from "@/actions/get-is-member";
-import { getIsAdmin } from "@/actions/get-is-admin";
 import { cn } from "@/lib/utils";
 
 export default function CommunitiesPageClient({
