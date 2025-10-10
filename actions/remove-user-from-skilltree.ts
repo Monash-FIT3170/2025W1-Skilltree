@@ -25,9 +25,10 @@ export async function removeUserFromSkillTree(
   }
 
   const message = data.message as string;
-  revalidatePath(`/community/${skillTreeId}`);
-  revalidatePath(`/community/${skillTreeId}/members`);
-  revalidatePath("/dashboard");
+
+  revalidatePath(`/community/${skillTreeId}`, "page");
+  revalidatePath(`/community/${skillTreeId}/members`, "page");
+  revalidatePath("/dashboard", "page");
 
   return { ok: true, message };
 }

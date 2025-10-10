@@ -46,9 +46,9 @@ export async function createCommunityAction(data: CreateCommunityData) {
     const responseData = await response.json();
     console.log(responseData);
 
-    revalidatePath("/dashboard");
-    revalidatePath("/discover");
-    revalidatePath("/community/add");
+    revalidatePath("/dashboard", "page");
+    revalidatePath("/discover", "page");
+    revalidatePath("/community/add", "page");
 
     return responseData;
   } catch (error) {

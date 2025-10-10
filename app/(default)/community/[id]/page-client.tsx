@@ -24,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { userStore } from "@/stores";
 import { useRouter } from "next/navigation";
 import { TSkillTree } from "@/actions/get-community-action";
@@ -45,6 +44,7 @@ import { getIsAdmin } from "@/actions/get-is-admin";
 import { getIsMember } from "@/actions/get-is-member";
 import { set } from "mongoose";
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
+import { createVerificationAction } from "@/actions/create-feedback";
 
 const events = [
   {
@@ -86,8 +86,12 @@ const ViewCommunityClient = ({
 }) => {
   const router = useRouter();
 
-  const [isJoinLeaveButtonLoading, setIsJoinLeaveButtonLoading] =
-    useState(false);
+  const [loadingStates, setLoadingStates] = useState({
+    joinLeave: false,
+    addingProof: false,
+    submittingFeedback: false,
+    submittingFeedbackNoXp: false,
+  });
 
   const skillNodes = community.skillNodes.map((node) => ({
     name: node.name,
@@ -103,13 +107,20 @@ const ViewCommunityClient = ({
     proofMedia: null,
     content: "",
   });
+  const [addFeedbackForm, setAddFeedbackForm] = useState<{
+    feedbackText: string;
+    multiplier: number;
+  }>({
+    feedbackText: "",
+    multiplier: 1,
+  });
+
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
-  const [isAddingProofLoading, setIsAddingProofLoading] = useState(false);
   const [popModalOpen, setPopModalOpen] = useState(false);
 
   useEffect(() => {
@@ -124,7 +135,7 @@ const ViewCommunityClient = ({
   const handleCommentSubmit = () => {};
 
   const handleLeave = async () => {
-    setIsJoinLeaveButtonLoading(true);
+    setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
     const response = await leaveSkillTreeAction(community.id);
     if (response.ok) {
       toast.success("Successfully left skill tree.");
@@ -133,18 +144,18 @@ const ViewCommunityClient = ({
 
       toast.error(response.message || "Failed to leave skill tree.");
     }
-    setIsJoinLeaveButtonLoading(false);
+    setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
   };
 
   const handleJoin = async () => {
-    setIsJoinLeaveButtonLoading(true);
+    setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
     const response = await joinSkillTreeAction(community.id);
     if (response.ok) {
       toast.success("Successfully joined skill tree!");
     } else {
       toast.error("Failed to join skill tree.");
     }
-    setIsJoinLeaveButtonLoading(false);
+    setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
   };
 
   const exampleSkillTree = {
@@ -183,7 +194,7 @@ const ViewCommunityClient = ({
       return;
     }
 
-    setIsAddingProofLoading(true);
+    setLoadingStates((prev) => ({ ...prev, addingProof: true }));
     try {
       const response = await createProofOfPracticeAction({
         skillNodeId: addProofOfPracticeForm.skillNodeId as string,
@@ -212,8 +223,50 @@ const ViewCommunityClient = ({
       console.error(error);
       toast.error("An error occurred while adding proof of practice.");
     } finally {
-      setIsAddingProofLoading(false);
+      setLoadingStates((prev) => ({ ...prev, addingProof: false }));
       setPopModalOpen(false);
+    }
+  };
+
+  const handleAddFeedback = async (noXp: boolean = false) => {
+    if (!openPostId) {
+      toast.error("No post selected for feedback.");
+      return;
+    }
+    if (!addFeedbackForm.feedbackText) {
+      toast.error("Feedback text cannot be empty.");
+      return;
+    }
+
+    if (noXp) {
+      setLoadingStates((prev) => ({ ...prev, submittingFeedbackNoXp: true }));
+    } else {
+      setLoadingStates((prev) => ({ ...prev, submittingFeedback: true }));
+    }
+    try {
+      await createVerificationAction({
+        postId: openPostId,
+        feedbackText: addFeedbackForm.feedbackText,
+        multiplier: noXp ? 1 : isAdmin ? 3 : 2,
+      });
+
+      toast.success(
+        "Feedback submitted successfully, it will reflect in the feed shortly."
+      );
+
+      setAddFeedbackForm({ feedbackText: "", multiplier: 1 });
+    } catch (error) {
+      console.error("Error creating verification:", error);
+      toast.error("Failed to create verification. Please try again.");
+    } finally {
+      if (noXp) {
+        setLoadingStates((prev) => ({
+          ...prev,
+          submittingFeedbackNoXp: false,
+        }));
+      } else {
+        setLoadingStates((prev) => ({ ...prev, submittingFeedback: false }));
+      }
     }
   };
 
@@ -243,11 +296,11 @@ const ViewCommunityClient = ({
             (member) => member.user.id === userStore.getState().user?.id
           ) ? (
             <Button type="button" onClick={handleLeave} variant="destructive">
-              {isJoinLeaveButtonLoading ? "Leaving..." : "Leave"}
+              {loadingStates.joinLeave ? "Leaving..." : "Leave"}
             </Button>
           ) : (
             <Button type="button" onClick={handleJoin}>
-              {isJoinLeaveButtonLoading ? "Joining..." : "Join"}
+              {loadingStates.joinLeave ? "Joining..." : "Join"}
             </Button>
           )}
         </div>
@@ -407,9 +460,9 @@ const ViewCommunityClient = ({
                     </DialogClose>
                     <Button
                       onClick={handleAddProofOfPractice}
-                      disabled={isAddingProofLoading}
+                      disabled={loadingStates.addingProof}
                     >
-                      {isAddingProofLoading ? "Adding..." : "Confirm"}
+                      {loadingStates.addingProof ? "Adding..." : "Confirm"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -472,12 +525,14 @@ const ViewCommunityClient = ({
                       {post.feedback.map((fb) => (
                         <Card
                           key={`${fb.postId}_${fb.verifierId}`}
-                          className="flex flex-col gap-3 text-sm font-bold"
+                          className="flex flex-col gap-3 text-sm"
                         >
-                          <CardHeader className="flex items-center gap-2">
+                          <CardHeader className="font-bold flex items-center gap-2">
                             Verified by {fb.verifier.name}
                             <CardDescription>
-                              <Badge>{fb.multiplier}x</Badge>
+                              <Badge className="font-bold">
+                                {fb.multiplier}x
+                              </Badge>
                             </CardDescription>
                           </CardHeader>
                           <CardContent>{fb.feedbackText}</CardContent>
@@ -494,6 +549,13 @@ const ViewCommunityClient = ({
                           placeholder="Write your feedback..."
                           className="mt-2"
                           rows={3}
+                          value={addFeedbackForm.feedbackText}
+                          onChange={(e) =>
+                            setAddFeedbackForm({
+                              ...addFeedbackForm,
+                              feedbackText: e.target.value,
+                            })
+                          }
                         />
                         <div className="flex justify-end mt-2 gap-2">
                           <Button
@@ -505,19 +567,23 @@ const ViewCommunityClient = ({
                           <Button
                             variant="destructive"
                             onClick={() => {
-                              handleCommentSubmit();
-                              toast.success("Comment submitted!");
+                              handleAddFeedback(true);
                             }}
+                            disabled={loadingStates.submittingFeedbackNoXp}
                           >
-                            Submit Without XP
+                            {loadingStates.submittingFeedbackNoXp
+                              ? "Submitting..."
+                              : "Submit Without XP"}
                           </Button>
                           <Button
                             onClick={() => {
-                              handleCommentSubmit();
-                              toast.success("Comment submitted!");
+                              handleAddFeedback();
                             }}
+                            disabled={loadingStates.submittingFeedback}
                           >
-                            Submit
+                            {loadingStates.submittingFeedback
+                              ? "Submitting..."
+                              : "Submit"}
                           </Button>
                         </div>
                       </div>

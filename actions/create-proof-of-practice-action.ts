@@ -74,9 +74,10 @@ export async function createProofOfPracticeAction({
     console.log(responseData);
 
     revalidatePath(
-      `/community/${responseData.message?.skillNode.skillTree.id}`
+      `/community/${responseData.message?.skillNode.skillTree.id}`,
+      "page"
     );
-    revalidatePath("/community/[id]");
+    revalidatePath("/community/[id]", "page");
 
     return responseData;
   } catch (error) {
