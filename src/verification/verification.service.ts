@@ -38,13 +38,6 @@ export class VerificationService {
 			select: { role: true },
 		});
 
-		if (!membership || membership.role !== 'ADMIN') {
-			throw new HttpException(
-				'Only tree admins can verify posts',
-				HttpStatus.FORBIDDEN,
-			);
-		}
-
 		const multiplier = dto.multiplier ?? 1;
 
 		const feedback = await this.prisma.feedback.upsert({
@@ -58,7 +51,7 @@ export class VerificationService {
 			},
 		});
 
-		return { message: 'Verification saved', data: feedback };
+		return feedback;
 	}
 
 	async listForPost(postId: string) {
