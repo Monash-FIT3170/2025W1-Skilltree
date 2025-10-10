@@ -55,7 +55,6 @@ export class SkillNodeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	deleteSkillNode(@Param('id') id: string, @GetUser() user: any) {
 		return this.skillNodeService.deleteSkillNode(id, user.id);
 	}

@@ -60,7 +60,6 @@ export class PostController {
 
 	@UseGuards(JwtGuard)
 	@Delete(':id')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	deletePost(@Param('id') id: string, @GetUser() user: User) {
 		return this.postService.deletePost(id, user.id);
 	}
@@ -73,7 +72,6 @@ export class PostController {
 
 	@UseGuards(JwtGuard)
 	@Delete(':id/like')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	unlikePost(@Param('id') postId: string, @GetUser() user: User) {
 		return this.postService.unlikePost(postId, user.id);
 	}
@@ -97,7 +95,7 @@ export class PostController {
 		return this.postService.getPostsBySkillNode(skillNodeId, user);
 	}
 
-	@Get("/skilltree/:skillTreeId")
+	@Get('/skilltree/:skillTreeId')
 	getPostsBySkillTree(@Param('skillTreeId') skillTreeId: string) {
 		return this.postService.getPostsBySkillTree(skillTreeId);
 	}

@@ -90,7 +90,6 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	deleteSkillTree(@Param('id') id: string, @GetUser() user: User) {
 		return this.skilltreeService.deleteSkillTree(id, user.id);
 	}
@@ -146,7 +145,6 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id/members/:userId')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	removeUserFromSkillTree(
 		@Param('id') skillTreeId: string,
 		@Param('userId') userId: string,
