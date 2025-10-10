@@ -27,7 +27,6 @@ import { TSkillTree } from "@/types";
 import { toast } from "sonner";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { getIsMember } from "@/actions/get-is-member";
-import { getIsAdmin } from "@/actions/get-is-admin";
 import { cn } from "@/lib/utils";
 
 export default function CommunitiesPageClient({
@@ -101,7 +100,6 @@ const CommunityCard = ({
         <div className="space-y-3">
           <div className="flex items-center text-sm text-muted-foreground">
             <Users className="w-4 h-4 mr-2" />
-            {/* <span>{community.skillTreeUser.length} members</span> */}
           </div>
         </div>
       </CardContent>

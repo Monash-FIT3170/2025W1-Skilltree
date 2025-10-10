@@ -81,10 +81,10 @@ export async function createProofOfPracticeAction({
 
     return responseData;
   } catch (error) {
-    console.error("Error creating community:", error);
+    console.error("Error creating proof of practice:", error);
     return {
       ok: false,
-      message: "Failed to create community. Please try again.",
+      message: "Failed to create proof of practice. Please try again.",
     };
   }
 }

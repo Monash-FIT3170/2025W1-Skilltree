@@ -48,7 +48,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { getIsMember } from "@/actions/get-is-member";
-import { set } from "mongoose";
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -137,7 +136,7 @@ const ViewCommunityClient = ({
       const memberStatus = await getIsMember(community.id);
       setIsMember(memberStatus.message as boolean);
     })();
-  }, [community.id, posts.length, isAdmin, isMember]);
+  }, [community.id, posts.length]);
 
   const handleCommentSubmit = () => {};
 
@@ -279,9 +278,9 @@ const ViewCommunityClient = ({
 
   return (
     <div className="flex flex-col w-full">
-      <header className="flex">
+      <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full">
         <h1 className="text-3xl font-bold">{community.name}</h1>
-        <div className="flex gap-3 ml-auto">
+        <div className="flex gap-3">
           <Button
             onClick={() => router.push(`/community/${community.id}/members`)}
           >
@@ -312,7 +311,7 @@ const ViewCommunityClient = ({
           )}
         </div>
       </header>
-      <main className="container grid flex-1 grid-cols-1 gap-8 px-6 py-8 mx-auto md:grid-cols-2">
+      <main className="w-full grid flex-1 grid-cols-1 gap-8 mx-auto md:grid-cols-2">
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
             <div className="p-4 rounded shadow-sm">
