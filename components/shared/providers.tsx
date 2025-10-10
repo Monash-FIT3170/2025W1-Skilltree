@@ -155,7 +155,7 @@ export const Providers = ({
           </div>
         </header>
 
-        <main className="p-5 flex container mx-auto items-center justify-center min-h-[calc(100vh-4rem)]">
+        <main className="p-5 flex container mx-auto items-start justify-center min-h-[calc(100vh-4rem)]">
           {children}
         </main>
       </SidebarInset>
@@ -220,7 +220,6 @@ function AppSidebar() {
                     <span>Global Leaderboard</span>
                   </Link>
                 </SidebarMenuButton>
-              
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

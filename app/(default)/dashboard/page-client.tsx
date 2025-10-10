@@ -20,11 +20,13 @@ import {
   Clock6,
   Plus,
   Timer,
+  AlertCircle,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { TSkillTrees } from "@/actions/get-my-skilltrees";
 import { TEvents } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const DashboardPageClient = ({
   skilltrees,
@@ -76,7 +78,17 @@ const DashboardPageClient = ({
         </header>
         <div className="flex-1 w-full pr-2 overflow-y-auto ">
           {skilltrees.length === 0 ? (
-            <div>Woah. Such empty.</div>
+            <div className="w-full flex flex-col items-center justify-center">
+              <div className="w-full flex flex-col items-center justify-center">
+                <Card className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                  <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">
+                    You are not subscribed to any communities yet. Explore and
+                    join some!
+                  </p>
+                </Card>
+              </div>
+            </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {skilltrees.map((tree: TSkillTrees) => {
@@ -120,25 +132,22 @@ const DashboardPageClient = ({
       <div className="hidden lg:block bg-border h-[${calc(100vh-6.5rem)}]" />
 
       <ScrollArea
-        className={`h-full max-h-[${columnHeight}] flex flex-col pr-5`}
+        className={`h-full max-h-[${columnHeight}] w-full flex flex-col`}
       >
-        <div className="mb-4">
-          <h2 className="flex items-center justify-center relative text-lg font-semibold">
-            <span>Upcoming Events</span>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleAddEvent}
-              className="h-8 w-8 p-0 absolute right-0"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </h2>
-        </div>
+        <h2 className="mb-4 w-full flex items-center justify-center relative text-lg font-semibold">
+          <span>Upcoming Events</span>
+        </h2>
 
         <div className="flex flex-col gap-3">
           {events.length === 0 ? (
-            <div>Woah. Such empty.</div>
+            <div className="w-full flex flex-col items-center justify-center">
+              <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">
+                  No upcoming events. Check back later!
+                </p>
+              </Skeleton>
+            </div>
           ) : (
             events.map((ev) => {
               return (
