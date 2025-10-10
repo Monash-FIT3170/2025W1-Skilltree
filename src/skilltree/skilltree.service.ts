@@ -24,7 +24,7 @@ export class SkilltreeService {
 			});
 			if (!membership) return false;
 
-			return membership.role === "ADMIN" ? true : false;
+			return membership.role === 'ADMIN' ? true : false;
 		} catch {
 			throw new InternalServerErrorException(
 				'Failed to verify skill tree membership',
@@ -39,7 +39,7 @@ export class SkilltreeService {
 			});
 			if (!membership) return false;
 
-			return membership.role === "MEMBER" ? true : false;
+			return membership.role === 'MEMBER' ? true : false;
 		} catch {
 			throw new InternalServerErrorException(
 				'Failed to verify skill tree membership',
@@ -498,6 +498,52 @@ export class SkilltreeService {
 				},
 				orderBy: [{ role: 'asc' }, { verificationStatus: 'asc' }],
 			});
+		} catch {
+			throw new InternalServerErrorException(
+				'Failed to fetch user skill trees',
+			);
+		}
+	}
+
+	async getUserSkillTreeInverseById(userId: string) {
+		try {
+			const allSkillTrees = await this.prismaService.skillTree.findMany({
+				include: {
+					creator: { select: { id: true, name: true, email: true } },
+					tags: true,
+					_count: { select: { skillNodes: true, skillTreeUser: true } },
+				},
+			});
+			const skillTreeMemberOf = await this.prismaService.skillTreeUser.findMany(
+				{
+					where: { userId },
+					include: {
+						skillTree: {
+							include: {
+								creator: { select: { id: true, name: true, email: true } },
+								tags: true,
+								_count: { select: { skillNodes: true, skillTreeUser: true } },
+							},
+						},
+					},
+					orderBy: [{ role: 'asc' }, { verificationStatus: 'asc' }],
+				},
+			);
+
+			const setDifference = (a: any[], b: any[]) =>
+				a.filter((item) => !b.some((bItem) => bItem.id === item.id));
+			const userNotMemberOf = setDifference(
+				allSkillTrees,
+				skillTreeMemberOf.map((stm) => stm.skillTree),
+			);
+
+			console.log({
+				allSkillTrees: allSkillTrees.length,
+				skillTreeMemberOf: skillTreeMemberOf.length,
+				userNotMemberOf: userNotMemberOf.length,
+			});
+
+			return userNotMemberOf;
 		} catch {
 			throw new InternalServerErrorException(
 				'Failed to fetch user skill trees',

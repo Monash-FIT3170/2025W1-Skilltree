@@ -24,8 +24,6 @@ import {
 export class SkilltreeController {
 	constructor(private readonly skilltreeService: SkilltreeService) {}
 
-	
-
 	/**
 	 * Get all skill trees (public, restricted filtered out for unauthenticated users)
 	 */
@@ -170,26 +168,26 @@ export class SkilltreeController {
 	 * Get all skill trees a user (by ID) is a member of
 	 */
 	@UseGuards(JwtGuard)
-	@Get('user/:userId/skilltrees')
+	@Get('user/:userId')
 	getUserSkillTreesById(@Param('userId') userId: string) {
 		return this.skilltreeService.getUserSkillTrees(userId);
 	}
 
 	@UseGuards(JwtGuard)
+	@Get('user/:userId/inverse')
+	getUserSkillTreeInverseById(@Param('userId') userId: string) {
+		return this.skilltreeService.getUserSkillTreeInverseById(userId);
+	}
+
+	@UseGuards(JwtGuard)
 	@Get('is-admin/:skillTreeId')
-	isAdmin(
-		@Param('skillTreeId') skillTreeId: string,
-		@GetUser() user: User,
-	) {
+	isAdmin(@Param('skillTreeId') skillTreeId: string, @GetUser() user: User) {
 		return this.skilltreeService.isAdmin(skillTreeId, user);
 	}
 
 	@UseGuards(JwtGuard)
 	@Get('is-member/:skillTreeId')
-	isMember(
-		@Param('skillTreeId') skillTreeId: string,
-		@GetUser() user: User,
-	) {
+	isMember(@Param('skillTreeId') skillTreeId: string, @GetUser() user: User) {
 		return this.skilltreeService.isMember(skillTreeId, user);
 	}
 }
