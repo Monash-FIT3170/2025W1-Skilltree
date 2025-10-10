@@ -11,7 +11,6 @@ export default async function CommunitiesPage() {
       return <CommonError errorDescription="Could not load communities" />;
     }
 
-    console.log(JSON.stringify(communities.message, null, 4));
 
     return (
       <CommunitiesPageClient
