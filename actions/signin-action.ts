@@ -27,6 +27,13 @@ export async function signInAction(form: { email: string; password: string }) {
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 7, // 1 week
   });
+  cookieStore.set("user_id", message.user.id, {
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+  });
 
   return { ok: true, message: data.message };
 }
