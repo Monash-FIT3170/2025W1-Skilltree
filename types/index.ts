@@ -83,6 +83,18 @@ export type TAuthSkillTree = {
   skillTreeUser: TSkillTreeUser[];
   createdAt: string;
   updatedAt: string;
+  _count: {
+    skillNodes: number;
+    skillTreeUser: number;
+  };
+};
+
+export type TGetCommunitiesByMembershipResponse = {
+  skillTreeId: string;
+  userId: string;
+  role: string;
+  verificationStatus: string;
+  skillTree: TAuthSkillTree;
 };
 
 export type APIResponse<T> = {
