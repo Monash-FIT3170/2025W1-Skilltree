@@ -179,11 +179,20 @@ export class SkilltreeController {
 	}
 
 	@UseGuards(JwtGuard)
-	@Get('is-admin-or-member/:skillTreeId')
+	@Get('is-admin/:skillTreeId')
 	isAdmin(
 		@Param('skillTreeId') skillTreeId: string,
 		@GetUser() user: User,
 	) {
 		return this.skilltreeService.isAdmin(skillTreeId, user);
+	}
+
+	@UseGuards(JwtGuard)
+	@Get('is-member/:skillTreeId')
+	isMember(
+		@Param('skillTreeId') skillTreeId: string,
+		@GetUser() user: User,
+	) {
+		return this.skilltreeService.isMember(skillTreeId, user);
 	}
 }
