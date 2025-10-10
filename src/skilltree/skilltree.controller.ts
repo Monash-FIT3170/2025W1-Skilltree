@@ -24,6 +24,8 @@ import {
 export class SkilltreeController {
 	constructor(private readonly skilltreeService: SkilltreeService) {}
 
+	
+
 	/**
 	 * Get all skill trees (public, restricted filtered out for unauthenticated users)
 	 */
@@ -174,5 +176,14 @@ export class SkilltreeController {
 	@Get('user/:userId/skilltrees')
 	getUserSkillTreesById(@Param('userId') userId: string) {
 		return this.skilltreeService.getUserSkillTrees(userId);
+	}
+
+	@UseGuards(JwtGuard)
+	@Get('is-admin-or-member/:skillTreeId')
+	isAdmin(
+		@Param('skillTreeId') skillTreeId: string,
+		@GetUser() user: User,
+	) {
+		return this.skilltreeService.isAdmin(skillTreeId, user);
 	}
 }
