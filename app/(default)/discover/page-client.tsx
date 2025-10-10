@@ -100,7 +100,6 @@ const CommunityCard = ({
         <div className="space-y-3">
           <div className="flex items-center text-sm text-muted-foreground">
             <Users className="w-4 h-4 mr-2" />
-            {/* <span>{community.skillTreeUser.length} members</span> */}
           </div>
         </div>
       </CardContent>
