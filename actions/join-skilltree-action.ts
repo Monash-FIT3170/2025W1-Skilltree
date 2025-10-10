@@ -16,6 +16,7 @@ export async function joinSkillTreeAction(id: string) {
 
   revalidatePath(`/community/${id}`);
   revalidatePath("/dashboard");
+  revalidatePath("/discover");
   revalidatePath(`/community/${id}/members`);
 
   if (!response.ok) {
