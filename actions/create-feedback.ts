@@ -46,6 +46,6 @@ export async function createVerificationAction({
 
   const responseData = json as CreateVerification;
 
-  revalidatePath("/community/[id]");
+  revalidatePath(`/community/${postId}`);
   return responseData;
 }
