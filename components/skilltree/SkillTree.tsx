@@ -30,7 +30,7 @@ import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
-/* ---------- helpers: ensure a single root, named by community ---------- */
+// for a single root
 
 function pickRootId(
   nodes: Node<SkillNodeData>[],
@@ -62,7 +62,16 @@ function ensureRoot(
       {
         id: rootId,
         type: "skill",
-        data: { title: communityName, isPrimary: true, xp: 0 },
+        data: {
+          title: communityName,
+          isPrimary: true,
+          xp: 0,
+          description: "",
+          onChangeDescription: () => {},
+          onComplete: () => {},
+          onRename: () => {},
+          onChangeXp: () => {},
+        },
         position: { x: 0, y: 0 },
       },
     ];
@@ -72,6 +81,7 @@ function ensureRoot(
       title: communityName,
       isPrimary: true,
       xp: existing.data?.xp ?? 0,
+      description: existing.data?.description ?? "",
     };
   }
   return { nodes, rootId };
@@ -91,7 +101,6 @@ const initialKey = (dto: SkillTreeDTO) =>
     c: [...dto.completedIds].sort(),
   });
 
-/* ---------------------------------------------------------------------- */
 
 type Props = {
   initial?: SkillTreeDTO;
@@ -99,6 +108,7 @@ type Props = {
   rootId?: string;
   onComplete?: (nodeId: string) => Promise<void> | void;
   className?: string;
+  onExport?: (dto: SkillTreeDTO) => void;
 };
 
 export default function SkillTree({
@@ -107,6 +117,7 @@ export default function SkillTree({
   rootId: preferredRootId = "root",
   onComplete,
   className,
+  onExport,
 }: Props) {
   const seed = useMemo(() => {
     const ensured = ensureRoot(
@@ -131,7 +142,14 @@ export default function SkillTree({
   const [completedIds, setCompletedIds] = useState<Set<string>>(seed.completed);
   const [selectedIds, setSelectedIds] = useState<string[]>([seed.rootId]);
 
-  // Guard against parents re-supplying a new "initial" every render
+  // remember last selected
+  const lastSelectedRef = useRef<string[]>([seed.rootId]);
+  useEffect(() => {
+    // if root id changes
+    lastSelectedRef.current = [seed.rootId];
+  }, [seed.rootId]);
+
+  // guard for reapplying parents
   const lastAppliedInitialRef = useRef<string>(
     initial
       ? initialKey({
@@ -142,7 +160,7 @@ export default function SkillTree({
       : ""
   );
 
-  // Re-apply when initial/communityName/rootId prop changes — only if materially different
+  // just incase reference changes
   useEffect(() => {
     const ensured = ensureRoot(
       initial?.nodes ?? [],
@@ -167,7 +185,8 @@ export default function SkillTree({
     lastAppliedInitialRef.current = key;
   }, [initial, communityName, preferredRootId, setEdges, setNodes]);
 
-  /* ---------- stable handlers ---------- */
+
+  // handlers
 
   const handleComplete = useCallback(
     async (id: string) => {
@@ -179,7 +198,6 @@ export default function SkillTree({
       try {
         await onComplete?.(id);
       } catch {
-        /* no-op */
       }
     },
     [onComplete]
@@ -207,6 +225,19 @@ export default function SkillTree({
     [setNodes]
   );
 
+  const handleChangeDescription = useCallback(
+    (id: string, description: string) => {
+      setNodes((prev) =>
+        (prev as Node<SkillNodeData>[]).map((node) =>
+          node.id === id
+            ? { ...node, data: { ...node.data, description } }
+            : node
+        )
+      );
+    },
+    [setNodes]
+  );
+
   const nodesWithStatus = useMemo<Node<SkillNodeData>[]>(() => {
     const statusMap = computeStatuses(
       nodes as Node<SkillNodeData>[],
@@ -222,6 +253,7 @@ export default function SkillTree({
       const sameHandlers =
         curr?.onComplete === handleComplete &&
         curr?.onRename === handleRename &&
+        curr?.onChangeDescription === handleChangeDescription &&
         curr?.onChangeXp === handleChangeXp;
       const typeOk = n.type === "skill";
 
@@ -235,6 +267,7 @@ export default function SkillTree({
           status: nextStatus,
           onComplete: handleComplete,
           onRename: handleRename,
+          onChangeDescription: handleChangeDescription,
           onChangeXp: handleChangeXp,
         },
       };
@@ -246,9 +279,10 @@ export default function SkillTree({
     handleComplete,
     handleRename,
     handleChangeXp,
+    handleChangeDescription,
   ]);
 
-  // ---- layout helper (used for deletes; preserves remaining positions)
+  // for positions
   const relayout = useCallback(
     (nextNodes: Node<SkillNodeData>[], nextEdges: Edge[]) =>
       layoutTopDown(
@@ -258,13 +292,12 @@ export default function SkillTree({
     []
   );
 
-  // ---- mutations
   const makeId = useCallback(
     () => `n_${Math.random().toString(36).slice(2, 9)}`,
     []
   );
 
-  /** Add a child relative to the parent's CURRENT position (no global relayout). */
+// Add a child relative to the parent's CURRENT position
   const addChild = useCallback(() => {
     const parentId = selectedIds[0] ?? rootId; // fallback to root if nothing selected
     const parent = (nodes as Node<SkillNodeData>[]).find(
@@ -272,7 +305,6 @@ export default function SkillTree({
     );
     const { x: px = 0, y: py = 0 } = parent?.position ?? { x: 0, y: 0 };
 
-    // Sibling-aware offset
     const childrenMap = buildChildrenMap(edges);
     const existingChildrenCount = (childrenMap[parentId] ?? []).length;
 
@@ -286,7 +318,15 @@ export default function SkillTree({
     const newNode: Node<SkillNodeData> = {
       id,
       type: "skill",
-      data: { title: "New child", xp: 0 }, // no description
+      data: {
+        title: "New child",
+        xp: 0,
+        description: "",
+        onChangeDescription: handleChangeDescription,
+        onComplete: handleComplete,
+        onRename: handleRename,
+        onChangeXp: handleChangeXp,
+      },
       position: { x: childX, y: childY },
       sourcePosition: Position.Top,
       targetPosition: Position.Bottom,
@@ -304,7 +344,7 @@ export default function SkillTree({
     );
   }, [edges, nodes, selectedIds, rootId, makeId]);
 
-  /** Cascading delete (children & descendants). Root protected. */
+  // Cascading delete, root protected
   const deleteSelected = useCallback(() => {
     if (selectedIds.length === 0) return;
 
@@ -345,9 +385,58 @@ export default function SkillTree({
     );
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
 
+  // for dragging
+  const [draggingNodes, setDraggingNodes, onDraggingNodesChange] =
+    useNodesState<Node>([]);
+  const [draggingEdges, setDraggingEdges, onDraggingEdgesChange] =
+    useEdgesState<Edge>([]);
+
+  // derive completed ids for export
+  const derivedCompletedIds = React.useMemo(
+    () =>
+      nodes
+        .filter((n) => (n.data as SkillNodeData | any)?.status === "completed")
+        .map((n) => String(n.id)),
+    [nodes]
+  );
+
+  // leave out current dto whenever nodes/edges/derivedCompleted change, but only when it actually differs
+  const lastExportKeyRef = useRef<string | null>(null);
+  React.useEffect(() => {
+    if (!onExport) return;
+    const key = JSON.stringify({
+      n: nodes.map((n) => ({
+        id: n.id,
+        x: n.position?.x ?? 0,
+        y: n.position?.y ?? 0,
+      })),
+      e: edges.map((e) => ({ s: e.source, t: e.target })),
+      c: [...derivedCompletedIds].sort(),
+    });
+    if (lastExportKeyRef.current === key) return;
+    lastExportKeyRef.current = key;
+    onExport({
+      nodes,
+      edges,
+      completedIds: Array.from(derivedCompletedIds),
+    });
+  }, [nodes, edges, derivedCompletedIds, onExport]);
+
+  // after nodes, edges, completedIds state declarations
+  useEffect(() => {
+    try {
+      onExport?.({
+        nodes: nodes as any,
+        edges: edges as any,
+        completedIds: Array.from(completedIds ?? []),
+      });
+    } catch (e) {
+      console.warn("SkillTree onExport failed", e);
+    }
+  }, [nodes, edges, completedIds, onExport]);
+
   return (
     <div className={className ?? "h-full w-full rounded border flex flex-col"}>
-      {/* Toolbar — no "Add root" */}
       <div className="flex items-center gap-2 p-2 border-b bg-muted/30">
         <button
           className="px-2 py-1 border rounded text-xs hover:bg-muted disabled:opacity-50"
@@ -389,9 +478,9 @@ export default function SkillTree({
           onSelectionChange={(sel) => {
             const next = (sel?.nodes ?? []).map((n) => n.id);
             const target = next.length ? next : [rootId];
-            setSelectedIds((prev) =>
-              arraysEqual(prev, target) ? prev : target
-            );
+            if (arraysEqual(lastSelectedRef.current, target)) return;
+            lastSelectedRef.current = target;
+            setSelectedIds(target);
           }}
         >
           <MiniMap />
