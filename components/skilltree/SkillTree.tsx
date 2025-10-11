@@ -16,6 +16,9 @@ import {
   useNodesState,
   useEdgesState,
   Position,
+  applyNodeChanges,
+  type NodeChange,
+  type Connection,
 } from "@xyflow/react";
 import type { Edge, Node, NodeTypes } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -25,10 +28,14 @@ import {
   computeStatuses,
   layoutTopDown,
   buildChildrenMap,
+  buildParentMap,
 } from "@/components/skilltree/graph";
 import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
+
+// keep children at least this many px below their lowest parent
+const MIN_CHILD_GAP_Y = 200;
 
 /* ---------- helpers: ensure a single root, named by community ---------- */
 
@@ -124,7 +131,7 @@ export default function SkillTree({
   }, [initial, communityName, preferredRootId]);
 
   const [rootId, setRootId] = useState<string>(seed.rootId);
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node<SkillNodeData>>(
+  const [nodes, setNodes, _rfOnNodesChange] = useNodesState<Node<SkillNodeData>>(
     seed.nodes
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState(seed.edges);
@@ -266,7 +273,7 @@ export default function SkillTree({
 
   /** Add a child relative to the parent's CURRENT position (no global relayout). */
   const addChild = useCallback(() => {
-    const parentId = selectedIds[0] ?? rootId; // fallback to root if nothing selected
+    const parentId = selectedIds[0] ?? rootId;
     const parent = (nodes as Node<SkillNodeData>[]).find(
       (n) => n.id === parentId
     );
@@ -274,34 +281,41 @@ export default function SkillTree({
 
     // Sibling-aware offset
     const childrenMap = buildChildrenMap(edges);
-    const existingChildrenCount = (childrenMap[parentId] ?? []).length;
+    const childIds = childrenMap[parentId] ?? [];
+    const existingChildren = (nodes as Node<SkillNodeData>[]).filter((n) =>
+    childIds.includes(n.id)
+  );
+    const dx = 240;                 // base sibling spacing
+    const extraNewChildGap = 80;    // the extra gap you want
+    const spacingX = dx + extraNewChildGap;
 
-    const dx = 240;
+    // Find the current rightmost child's X (fallback to parent X if none)
+    const rightmostX = existingChildren.length
+      ? Math.max(...existingChildren.map((c) => c.position?.x ?? px))
+      : px;
+
     const dy = 140;
-    const startX = px - (existingChildrenCount * dx) / 2;
-    const childX = startX + existingChildrenCount * dx;
-    const childY = py + dy;
+    const childX = existingChildren.length ? rightmostX + spacingX : px;
+    const childY = Math.max(py + dy, py + MIN_CHILD_GAP_Y); // ensure lower than parent
 
     const id = makeId();
     const newNode: Node<SkillNodeData> = {
       id,
       type: "skill",
-      data: { title: "New child", xp: 0 }, // no description
+      data: { title: "New child", xp: 0 },
       position: { x: childX, y: childY },
       sourcePosition: Position.Top,
       targetPosition: Position.Bottom,
     };
     const newEdge: Edge = {
       id: `e-${id}-${parentId}`,
-      source: id,
-      target: parentId,
+      source: id,     // child
+      target: parentId, // parent
     };
 
     setEdges((prev) => [...prev, newEdge]);
     setNodes((prev) => [...(prev as Node<SkillNodeData>[]), newNode]);
-    setSelectedIds((prev) =>
-      prev.length === 1 && prev[0] === id ? prev : [id]
-    );
+    setSelectedIds([id]);
   }, [edges, nodes, selectedIds, rootId, makeId]);
 
   /** Cascading delete (children & descendants). Root protected. */
@@ -340,10 +354,109 @@ export default function SkillTree({
     setCompletedIds(nextCompleted);
     setEdges(nextEdges);
     setNodes(relayout(nextNodes, nextEdges));
-    setSelectedIds((prev) =>
-      prev.length === 1 && prev[0] === rootId ? prev : [rootId]
-    );
+    setSelectedIds([rootId]);
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
+
+  /** Clamp moves so children never go above the lowest parent; also re-clamp descendants when a parent moves. */
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      setNodes((prev) => {
+        const parentsMap = buildParentMap(edges);
+        const childrenMap = buildChildrenMap(edges);
+
+        // first, apply incoming changes normally
+        let next = applyNodeChanges(changes, prev) as Node<SkillNodeData>[];
+
+        const idToNode = new Map(next.map((n) => [n.id, n]));
+        const movedIds = new Set(
+          changes
+            .map((c) => (c.type === "position" ? c.id : undefined))
+            .filter((id): id is string => typeof id === "string")
+        );
+
+        // helper: compute min allowed Y for a node given all its parents
+        const minAllowedYFor = (id: string): number | undefined => {
+          const pids = parentsMap[id] ?? [];
+          if (pids.length === 0) return undefined;
+          return Math.max(
+            ...pids.map(
+              (pid) => (idToNode.get(pid)?.position?.y ?? 0) + MIN_CHILD_GAP_Y
+            )
+          );
+        };
+
+        // build extra "position" changes to clamp children + descendants if any parent moved
+        const extra: NodeChange[] = [];
+        const queue: string[] = Array.from(movedIds);
+
+        while (queue.length) {
+          const pid = queue.shift()!;
+          const kids = childrenMap[pid] ?? [];
+          for (const kid of kids) {
+            const child = idToNode.get(kid);
+            if (!child) continue;
+            const minY = minAllowedYFor(kid);
+            if (minY !== undefined) {
+              const cy = child.position?.y ?? 0;
+              const cx = child.position?.x ?? 0;
+              if (cy < minY) {
+                extra.push({
+                  id: kid,
+                  type: "position",
+                  position: { x: cx, y: minY },
+                  dragging: false,
+                });
+              }
+            }
+            // always propagate to descendants
+            queue.push(kid);
+          }
+        }
+
+        if (extra.length) {
+          next = applyNodeChanges(extra, next) as Node<SkillNodeData>[];
+        }
+
+        // final pass: any node directly moved by the user and is a child must be clamped too
+        if (movedIds.size) {
+          const directExtra: NodeChange[] = [];
+          for (const id of movedIds) {
+            const node = next.find((n) => n.id === id);
+            if (!node) continue;
+            const minY = minAllowedYFor(id);
+            if (minY === undefined) continue;
+            const cy = node.position?.y ?? 0;
+            const cx = node.position?.x ?? 0;
+            if (cy < minY) {
+              directExtra.push({
+                id,
+                type: "position",
+                position: { x: cx, y: minY },
+                dragging: false,
+              });
+            }
+          }
+          if (directExtra.length) {
+            next = applyNodeChanges(directExtra, next) as Node<SkillNodeData>[];
+          }
+        }
+
+        return next;
+      });
+    },
+    [edges, setNodes]
+  );
+
+  // (optional) block illegal connections if you enable user-created edges
+  const isValidConnection = useCallback((conn: Edge | Connection) => {
+    if (!conn.source || !conn.target) return false;
+    const src = (nodes as Node<SkillNodeData>[]).find((n) => n.id === conn.source); // child
+    const tgt = (nodes as Node<SkillNodeData>[]).find((n) => n.id === conn.target); // parent
+    if (!src || !tgt) return false;
+    const sy = src.position?.y ?? 0;
+    const ty = tgt.position?.y ?? 0;
+    return sy >= ty + MIN_CHILD_GAP_Y;
+  }, [nodes]);
 
   return (
     <div className={className ?? "h-full w-full rounded border flex flex-col"}>
@@ -386,9 +499,10 @@ export default function SkillTree({
           connectionMode={ConnectionMode.Loose}
           elementsSelectable
           proOptions={{ hideAttribution: true }}
-          onSelectionChange={(sel) => {
-            const next = (sel?.nodes ?? []).map((n) => n.id);
-            const target = next.length ? next : [rootId];
+          isValidConnection={isValidConnection}   /* optional, safe to keep */
+          onSelectionChange={(sel: { nodes: Node<SkillNodeData>[] } | null) => {
+            const nextSel = (sel?.nodes ?? []).map((n) => n.id);
+            const target = nextSel.length ? nextSel : [rootId];
             setSelectedIds((prev) =>
               arraysEqual(prev, target) ? prev : target
             );
