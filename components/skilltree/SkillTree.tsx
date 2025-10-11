@@ -36,7 +36,10 @@ const MIN_CHILD_GAP_Y = 100;
 
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
-// for a single root
+// keep children at least this many px below their lowest parent
+const MIN_CHILD_GAP_Y = 200;
+
+/* ---------- helpers: ensure a single root, named by community ---------- */
 
 function pickRootId(
   nodes: Node<SkillNodeData>[],
