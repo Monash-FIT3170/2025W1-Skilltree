@@ -324,7 +324,7 @@ export default function SkillTree({
 
     const dy = 140;
     const childX = existingChildren.length ? rightmostX + spacingX : px;
-    const childY = Math.max(py + dy, py + MIN_CHILD_GAP_Y); // ensure lower than parent
+    const childY = Math.max(py + dy, py + 200); // ensure lower than parent
 
     const id = makeId();
     const newNode: Node<SkillNodeData> = {

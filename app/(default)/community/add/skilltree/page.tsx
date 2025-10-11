@@ -29,6 +29,7 @@ export default function Page() {
   const [skillTreeDto, setSkillTreeDto] = useState<SkillTreeDTO>(initial);
   const [loading, setLoading] = useState(false);
 
+  // load community data saved from previous step (sessionStorage)
   const communityData = useMemo(() => {
     if (typeof window === "undefined") return null;
     const raw = sessionStorage.getItem("communityData");
@@ -110,9 +111,17 @@ export default function Page() {
         <Button onClick={handleCreate} disabled={loading}>
           {loading ? "Creating..." : "Create Community"}
         </Button>
+        <Button onClick={handleCreate} disabled={loading}>
+          {loading ? "Creating..." : "Create Community"}
+        </Button>
       </div>
 
       <div className="h-full">
+        <SkillTree
+          communityName={communityData?.name ?? communityName}
+          initial={initial}
+          onExport={handleExport} // stable handler
+        />
         <SkillTree
           communityName={communityData?.name ?? communityName}
           initial={initial}
