@@ -140,7 +140,7 @@ export default function CommunitiesPageClient({
             <p className="mb-4 text-muted-foreground">
               There are no communities available at the moment.
             </p>
-            <Button>Create Community</Button>
+            <Button onClick={() => router.push('/community/add')}>Create Community</Button>
           </div>
         )}
       </div>
