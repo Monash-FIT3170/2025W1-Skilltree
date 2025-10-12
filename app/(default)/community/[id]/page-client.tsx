@@ -299,7 +299,7 @@ const ViewCommunityClient = ({
                 <h2 className="text-lg font-semibold">Recent Events</h2>
               </div>
 
-              <div className="flex flex-col items-stretch w-full gap-4 rounded">
+              <div className="flex flex-col items-stretch w-full py-5 gap-4 rounded">
                 {events.map((ev) => (
                   <Card key={ev.id} className="w-full rounded">
                     <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
