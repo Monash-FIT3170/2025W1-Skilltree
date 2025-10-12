@@ -258,7 +258,6 @@ const ViewCommunityClient = ({
 
     setSubmitting(true);
     const res = await createPostAction({
-      title: title,
       skillNodeId: selectedNode,
       content: body,
       proofMedia: fileB64 ?? undefined,
@@ -555,15 +554,6 @@ const ViewCommunityClient = ({
                         className="object-contain mt-2 border max-h-60 rounded-xl"
                       />
                     )}
-                  </div>
-
-                  <div className="w-full space-y-2">
-                    <Label>Title</Label>
-                    <Input
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Give your proof a title"
-                    />
                   </div>
 
                   <div className="w-full space-y-2">
