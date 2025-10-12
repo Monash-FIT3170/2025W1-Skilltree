@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -103,6 +103,7 @@ const ViewCommunityClient = ({
   const isAdmin = community.skillTreeUser.some(
     (u) => u.user && u.user.id === user.user!.id && u.role === "ADMIN"
   );
+
   const isMember = community.skillTreeUser.some(
     (u) => u.user && u.user.id === user.user!.id && u.role === "MEMBER"
   );
@@ -113,6 +114,12 @@ const ViewCommunityClient = ({
   const [fileB64, setFileB64] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setLikedPosts({});
+  }, [posts]);
 
   const handlePostSubmit = async () => {
     if (!selectedNode) {
@@ -177,18 +184,16 @@ const ViewCommunityClient = ({
   }: {
     post: TSkillNode;
     userId: string;
-    toast: {
-      success: (msg: string) => void;
-      error: (msg: string) => void;
-    };
+    toast: any;
     router: ReturnType<typeof useRouter>;
   }) {
-    const hasLiked = post.likes.some(like => like.id === userId);
+    const hasLiked = post.likes.some(like => like.id === userId) || likedPosts[post.id];
     let res;
     if (hasLiked) {
       res = await unlikePostAction(post.id);
       if (res.ok) {
         toast.success("Unliked!");
+        setLikedPosts(prev => ({ ...prev, [post.id]: false }));
         router.refresh?.();
       } else {
         toast.error("Failed to unlike post");
@@ -197,6 +202,7 @@ const ViewCommunityClient = ({
       res = await likePostAction(post.id);
       if (res.ok) {
         toast.success("Liked!");
+        setLikedPosts(prev => ({ ...prev, [post.id]: true }));
         router.refresh?.();
       } else {
         toast.error("Failed to like post");
@@ -430,7 +436,7 @@ const ViewCommunityClient = ({
                   <div className="flex items-center justify-between w-full">
                     <Button
                     variant={
-                      post.likes.some(like => like.id === user.user!.id)
+                      post.likes.some(like => like.id === user.user!.id) || likedPosts[post.id]
                         ? "outline"
                         : "default"
                     }
@@ -445,7 +451,7 @@ const ViewCommunityClient = ({
                     }
                   >
                     <ThumbsUp />
-                    {post.likes.length} Like(s)
+                    {post.likes.length + (likedPosts[post.id] ? 1 : 0)} Like(s)
                   </Button>
                     <Button
                       className="flex items-center gap-2"
