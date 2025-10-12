@@ -32,6 +32,7 @@ import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
 import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
+import { createPostAction } from "@/actions/create-post-action";
 import { Clock12, MessagesSquareIcon, ThumbsUp, Plus } from "lucide-react";
 import {
   Card,
@@ -95,6 +96,7 @@ const ViewCommunityClient = ({
 
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const isAdmin = community.skillTreeUser.some(
     (u) => u.user.id === user.user!.id && u.role === "ADMIN"
@@ -103,13 +105,51 @@ const ViewCommunityClient = ({
     (u) => u.user.id === user.user!.id && u.role === "MEMBER"
   );
 
-  const [title, setTitle] = useState(community.name);
+  const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
+  const [fileB64, setFileB64] = useState<string | null>(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handlePostSubmit = () => {
-    // console.log({ title, tags, body, allowVerification });
+  const handlePostSubmit = async () => {
+    if (!selectedNode) {
+      toast.error("Please select a skill node");
+      return;
+    }
+
+    if (!title.trim()) {
+      toast.error("Please add a title");
+      return;
+    }
+
+    setSubmitting(true);
+    const res = await createPostAction({
+      skillNodeId: selectedNode,
+      title: title.trim(),
+      content: body,
+      proofMedia: fileB64 ?? undefined,
+      tags: tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+    });
+    setSubmitting(false);
+
+    if (res.ok) {
+      toast.success("Post created");
+      setTitle("");
+      setBody("");
+      setTags("");
+      setPreview(null);
+      setFileB64(null);
+      setIsDialogOpen(false);
+      // Ideally revalidate and refresh list
+      router.refresh?.();
+    } else {
+      toast.error(typeof res.message === "string" ? res.message : "Failed to create post");
+    }
   };
   const handleCommentSubmit = () => {
     //here we need to add the submission of a comment
@@ -240,7 +280,7 @@ const ViewCommunityClient = ({
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
-              <Dialog>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
                     size="sm"
@@ -260,17 +300,18 @@ const ViewCommunityClient = ({
                   </DialogHeader>
 
                   <div className="w-full space-y-2 text-sm">
-                    <Label htmlFor="skill-tree-node">
-                      Select Skill Tree Node
-                    </Label>
-                    <Select>
+                    <Label htmlFor="skill-tree-node">Select Skill Tree Node</Label>
+                    <Select
+                      value={selectedNode ?? undefined}
+                      onValueChange={(val) => setSelectedNode(val)}
+                    >
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
                       </SelectTrigger>
                       <SelectContent>
-                        {skillNodes.map((node) => (
-                          <SelectItem key={node} value={node}>
-                            {node}
+                        {community.skillNodes.map((node) => (
+                          <SelectItem key={node.id} value={node.id}>
+                            {node.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -279,7 +320,21 @@ const ViewCommunityClient = ({
 
                   <div className="w-full py-2 space-y-2">
                     <Label>Upload Media</Label>
-                    <Input type="file" />
+                    <Input
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const result = reader.result as string;
+                          setPreview(result);
+                          setFileB64(result);
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                    />
                     {preview && (
                       <Image
                         width={720}
@@ -289,6 +344,15 @@ const ViewCommunityClient = ({
                         className="object-contain mt-2 border max-h-60 rounded-xl"
                       />
                     )}
+                  </div>
+
+                  <div className="w-full space-y-2">
+                    <Label>Title</Label>
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Give your proof a title"
+                    />
                   </div>
 
                   <div className="w-full space-y-2">
@@ -306,7 +370,9 @@ const ViewCommunityClient = ({
                     <DialogClose asChild>
                       <Button variant="destructive">Cancel</Button>
                     </DialogClose>
-                    <Button onClick={handlePostSubmit}>Confirm</Button>
+                    <Button onClick={handlePostSubmit} disabled={submitting}>
+                      {submitting ? "Submitting..." : "Confirm"}
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -332,15 +398,17 @@ const ViewCommunityClient = ({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-base">{post.content}</div>
-                  <div className="flex items-center justify-center w-full">
-                    <Image
-                      src={"https://picsum.photos/600/350"}
-                      alt="Post Image"
-                      width={600}
-                      height={350}
-                      className="object-cover rounded"
-                    />
-                  </div>
+                  {post.proofMedia && (
+                    <div className="flex items-center justify-center w-full">
+                      <Image
+                        src={post.proofMedia}
+                        alt="Post Media"
+                        width={600}
+                        height={350}
+                        className="object-cover rounded"
+                      />
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="flex flex-col w-full gap-4">
                   <div className="flex items-center justify-between w-full">
