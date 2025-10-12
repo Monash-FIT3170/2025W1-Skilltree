@@ -42,6 +42,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { likePostAction } from "@/actions/like-post-action";
+import { unlikePostAction } from "@/actions/unlike-post-action";
 
 const skillNodes = [
   "React Basics",
@@ -165,6 +167,42 @@ const ViewCommunityClient = ({
       { id: "grind", label: "Rails / Boxes", unlocked: true },
     ],
   };
+
+  // Helper function for like/unlike logic
+  async function handleLikeToggle({
+    post,
+    userId,
+    toast,
+    router,
+  }: {
+    post: TSkillNode;
+    userId: string;
+    toast: {
+      success: (msg: string) => void;
+      error: (msg: string) => void;
+    };
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const hasLiked = post.likes.some(like => like.id === userId);
+    let res;
+    if (hasLiked) {
+      res = await unlikePostAction(post.id);
+      if (res.ok) {
+        toast.success("Unliked!");
+        router.refresh?.();
+      } else {
+        toast.error("Failed to unlike post");
+      }
+    } else {
+      res = await likePostAction(post.id);
+      if (res.ok) {
+        toast.success("Liked!");
+        router.refresh?.();
+      } else {
+        toast.error("Failed to like post");
+      }
+    }
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -391,12 +429,24 @@ const ViewCommunityClient = ({
                 <CardFooter className="flex flex-col w-full gap-4">
                   <div className="flex items-center justify-between w-full">
                     <Button
-                      variant="default"
-                      className="flex items-center gap-2"
-                    >
-                      <ThumbsUp />
-                      {post.likes.length} Like(s)
-                    </Button>
+                    variant={
+                      post.likes.some(like => like.id === user.user!.id)
+                        ? "outline"
+                        : "default"
+                    }
+                    className="flex items-center gap-2"
+                    onClick={() =>
+                      handleLikeToggle({
+                        post,
+                        userId: user.user!.id,
+                        toast,
+                        router,
+                      })
+                    }
+                  >
+                    <ThumbsUp />
+                    {post.likes.length} Like(s)
+                  </Button>
                     <Button
                       className="flex items-center gap-2"
                       onClick={() =>
