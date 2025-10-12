@@ -327,10 +327,13 @@ const ViewCommunityClient = ({
         </aside>
 
         {/* Posts feed */}
-        <section className="py-5 space-y-6 md:col-span-1">
+        <section
+          className="py-5 space-y-6 md:col-span-1"
+        >
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
+
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
@@ -420,7 +423,11 @@ const ViewCommunityClient = ({
               </Dialog>
             </h2>
           </div>
-
+          <div style={{
+            maxHeight: "calc(100vh - 100px)",
+            overflowY: "auto",
+            paddingRight: ".5rem",
+          }}>
           {posts.length === 0 ? (
             <div>Woah. Such Empty.</div>
           ) : (
@@ -559,6 +566,7 @@ const ViewCommunityClient = ({
               </Card>
             ))
           )}
+          </div>
         </section>
       </main>
     </div>
