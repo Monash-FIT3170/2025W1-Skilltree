@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -31,7 +31,7 @@ import { TSkillTree } from "@/actions/get-community-action";
 import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
-import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
+import { TPost } from "@/actions/get-all-post-for-skilltree";
 import { createPostAction } from "@/actions/create-post-action";
 import { Clock12, MessagesSquareIcon, ThumbsUp, Plus } from "lucide-react";
 import {
@@ -92,7 +92,7 @@ const ViewCommunityClient = ({
   posts,
 }: {
   community: TSkillTree;
-  posts: TSkillNode[];
+  posts: TPost[];
 }) => {
   const user = userStore.getState();
   const router = useRouter();
@@ -121,6 +121,12 @@ const ViewCommunityClient = ({
   useEffect(() => {
     setLikedPosts({});
   }, [posts]);
+
+  
+  const visiblePosts = useMemo(() => {
+    if (!selectedSkill) return posts;
+    return posts.filter((p) => p.skillNode?.id === selectedSkill || (p as any).skillNodeId === selectedSkill);
+  }, [posts, selectedSkill]);
 
   const handlePostSubmit = async () => {
     if (!selectedNode) {
@@ -183,7 +189,7 @@ const ViewCommunityClient = ({
     toast,
     router,
   }: {
-    post: TSkillNode;
+    post: TPost;
     userId: string;
     toast: any;
     router: ReturnType<typeof useRouter>;
@@ -422,16 +428,32 @@ const ViewCommunityClient = ({
                 </DialogContent>
               </Dialog>
             </h2>
+            <div className="mb-2 text-sm text-muted-foreground flex items-center gap-2 justify-center">
+              {selectedSkill ? (
+                <>
+                  <span>
+                    Filtered by:{" "}
+                    {community.skillNodes.find((n) => n.id === selectedSkill)?.name ??
+                      selectedSkill}
+                  </span>
+                  <Button size="sm" variant="outline" onClick={() => setSelectedSkill(null)}>
+                    Clear
+                  </Button>
+                </>
+              ) : (
+                <span>All posts</span>
+              )}
+            </div>
           </div>
           <div style={{
             maxHeight: "calc(100vh - 100px)",
             overflowY: "auto",
             paddingRight: ".5rem",
           }}>
-          {posts.length === 0 ? (
+          {visiblePosts.length === 0 ? (
             <div>Woah. Such Empty.</div>
           ) : (
-            posts.map((post) => (
+            visiblePosts.map((post) => (
               <Card key={post.id} className="w-full my-8">
                 <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
                   <div className="flex items-center justify-between w-full">
