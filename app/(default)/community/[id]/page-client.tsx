@@ -99,10 +99,10 @@ const ViewCommunityClient = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const isAdmin = community.skillTreeUser.some(
-    (u) => u.user.id === user.user!.id && u.role === "ADMIN"
+    (u) => u.user && u.user.id === user.user!.id && u.role === "ADMIN"
   );
   const isMember = community.skillTreeUser.some(
-    (u) => u.user.id === user.user!.id && u.role === "MEMBER"
+    (u) => u.user && u.user.id === user.user!.id && u.role === "MEMBER"
   );
 
   const [title, setTitle] = useState(""); // UI label removed below, but preserve variable if you want to keep future use
