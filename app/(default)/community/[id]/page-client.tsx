@@ -121,7 +121,39 @@ const ViewCommunityClient = ({
   useEffect(() => {
     setLikedPosts({});
   }, [posts]);
+  
+  type FlatNode = { id: string; name: string; parentId: string | null };
 
+  function buildTree(nodes: FlatNode[], communityName: string) {
+    const byParent = new Map<string | null, FlatNode[]>();
+    nodes.forEach((n) => {
+      const key = n.parentId ?? null;
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key)!.push(n);
+    });
+
+    const toNode = (n: FlatNode) => ({
+      id: n.id,
+      label: n.name,
+      unlocked: true, 
+      children: (byParent.get(n.id) ?? []).map(toNode),
+    });
+
+    
+    const roots = byParent.get(null) ?? [];
+
+    return {
+      id: "root",
+      label: communityName, 
+      unlocked: true,
+      children: roots.map(toNode),
+    };
+  }
+
+  const rootSkill = useMemo(
+    () => buildTree(community.skillNodes as any, community.name),
+    [community.skillNodes, community.name]
+  );
   
   const visiblePosts = useMemo(() => {
     if (!selectedSkill) return posts;
@@ -164,23 +196,7 @@ const ViewCommunityClient = ({
     console.log("Creating new post");
   };
 
-  const exampleSkillTree = {
-    id: "snowboarding",
-    label: "Snowboarding",
-    unlocked: true,
-    children: [
-      {
-        id: "jump",
-        label: "Jumping",
-        unlocked: false,
-        children: [
-          { id: "grab", label: "Grab Tricks", unlocked: false },
-          { id: "spin", label: "Spin Tricks", unlocked: false },
-        ],
-      },
-      { id: "grind", label: "Rails / Boxes", unlocked: true },
-    ],
-  };
+
 
   // Helper function for like/unlike logic
   async function handleLikeToggle({
@@ -295,10 +311,11 @@ const ViewCommunityClient = ({
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
             <div className="p-4 rounded shadow-sm">
+              
               <FilteringSkillTree
-                rootSkill={exampleSkillTree}
-                onSelect={(nodeId) => setSelectedSkill(nodeId)}
-              />
+            rootSkill={rootSkill}
+            onSelect={(nodeId) => setSelectedSkill(nodeId)}
+          />
             </div>
             <section className="w-full">
               <div className="w-full text-center">
