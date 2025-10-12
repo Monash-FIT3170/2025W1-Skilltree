@@ -57,6 +57,7 @@ export const Providers = ({
   children: Readonly<React.ReactNode>;
 }) => {
   const router = useRouter();
+  const [headerSearch, setHeaderSearch] = useState("");
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [name, setName] = useState("");
   const [pfp, setPfp] = useState("");
@@ -105,6 +106,14 @@ export const Providers = ({
               className="w-[300px] md:w-[400px] lg:w-[500px]"
               placeholder="Search..."
               type="text"
+              value={headerSearch}
+              onChange={(e) => setHeaderSearch(e.target.value)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  const q = headerSearch.trim();
+                  router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+                }
+              }}
             />
 
             <div className="flex items-center justify-start gap-2">
