@@ -105,8 +105,7 @@ const ViewCommunityClient = ({
     (u) => u.user.id === user.user!.id && u.role === "MEMBER"
   );
 
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState("");
+  const [title, setTitle] = useState(""); // UI label removed below, but preserve variable if you want to keep future use
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
   const [fileB64, setFileB64] = useState<string | null>(null);
@@ -119,29 +118,17 @@ const ViewCommunityClient = ({
       return;
     }
 
-    if (!title.trim()) {
-      toast.error("Please add a title");
-      return;
-    }
-
     setSubmitting(true);
     const res = await createPostAction({
       skillNodeId: selectedNode,
-      title: title.trim(),
       content: body,
       proofMedia: fileB64 ?? undefined,
-      tags: tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
     });
     setSubmitting(false);
 
     if (res.ok) {
       toast.success("Post created");
-      setTitle("");
       setBody("");
-      setTags("");
       setPreview(null);
       setFileB64(null);
       setIsDialogOpen(false);
@@ -344,15 +331,6 @@ const ViewCommunityClient = ({
                         className="object-contain mt-2 border max-h-60 rounded-xl"
                       />
                     )}
-                  </div>
-
-                  <div className="w-full space-y-2">
-                    <Label>Title</Label>
-                    <Input
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Give your proof a title"
-                    />
                   </div>
 
                   <div className="w-full space-y-2">
