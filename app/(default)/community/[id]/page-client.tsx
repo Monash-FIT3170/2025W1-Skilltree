@@ -44,6 +44,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { likePostAction } from "@/actions/like-post-action";
 import { unlikePostAction } from "@/actions/unlike-post-action";
+import { deletePostAction } from "@/actions/delete-post-action";
 
 const skillNodes = [
   "React Basics",
@@ -207,6 +208,25 @@ const ViewCommunityClient = ({
       } else {
         toast.error("Failed to like post");
       }
+    }
+  }
+
+  // Helper function for deleting a post
+  async function handleDeletePost({
+    postId,
+    toast,
+    router,
+  }: {
+    postId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const res = await deletePostAction(postId);
+    if (res.ok) {
+      toast.success("Post deleted!");
+      router.refresh?.();
+    } else {
+      toast.error("Failed to delete post");
     }
   }
 
@@ -522,6 +542,20 @@ const ViewCommunityClient = ({
                     </div>
                   )}
                 </CardFooter>
+                {(isAdmin) && (
+                  <Button
+                    variant="destructive"
+                    onClick={() =>
+                      handleDeletePost({
+                        postId: post.id,
+                        toast,
+                        router,
+                      })
+                    }
+                  >
+                    Delete
+                  </Button>
+                )}
               </Card>
             ))
           )}
