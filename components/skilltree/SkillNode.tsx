@@ -27,11 +27,9 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
     <div
       className={cn(
         "rounded bg-card text-card-foreground shadow-sm w-[260px] transition",
-        "border-2", // base thickness for all nodes
+        "border-2",
         selected && "ring-2 ring-primary",
-        // ✅ Primary border only when NOT completed
         d.isPrimary && !isCompleted && "border-2 border-red-500",
-        // ✅ Completed wins and becomes the normal green like others
         isCompleted && "border-green-500",
         isLocked && "opacity-90"
       )}

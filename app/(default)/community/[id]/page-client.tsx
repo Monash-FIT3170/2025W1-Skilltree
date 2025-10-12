@@ -38,6 +38,7 @@ import {
   Plus,
   AlertCircle,
 } from "lucide-react";
+import { createPostAction } from "@/actions/create-post-action";
 import {
   Card,
   CardContent,
@@ -51,6 +52,9 @@ import { getIsMember } from "@/actions/get-is-member";
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
 import { Skeleton } from "@/components/ui/skeleton";
+import { likePostAction } from "@/actions/like-post-action";
+import { unlikePostAction } from "@/actions/unlike-post-action";
+import { deletePostAction } from "@/actions/delete-post-action";
 
 const events = [
   {
@@ -114,7 +118,7 @@ const ViewCommunityClient = ({
     content: "",
   });
   const [addFeedbackForm, setAddFeedbackForm] = useState<{
-    feedbackText: string;
+    feedbackText: string; 
     multiplier: number;
   }>({
     feedbackText: "",
@@ -123,6 +127,7 @@ const ViewCommunityClient = ({
 
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMember, setIsMember] = useState(false);
@@ -151,6 +156,56 @@ const ViewCommunityClient = ({
       toast.error(response.message || "Failed to leave skill tree.");
     }
     setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
+  const isAdmin = community.skillTreeUser.some(
+    (u) => u.user && u.user.id === user.user!.id && u.role === "ADMIN"
+  );
+
+  const isMember = community.skillTreeUser.some(
+    (u) => u.user && u.user.id === user.user!.id && u.role === "MEMBER"
+  );
+
+  const [title, setTitle] = useState(""); // UI label removed below, but preserve variable if you want to keep future use
+  const [body, setBody] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
+  const [fileB64, setFileB64] = useState<string | null>(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setLikedPosts({});
+  }, [posts]);
+
+  const handlePostSubmit = async () => {
+    if (!selectedNode) {
+      toast.error("Please select a skill node");
+      return;
+    }
+
+    setSubmitting(true);
+    const res = await createPostAction({
+      skillNodeId: selectedNode,
+      content: body,
+      proofMedia: fileB64 ?? undefined,
+    });
+    setSubmitting(false);
+
+    if (res.ok) {
+      toast.success("Post created");
+      setBody("");
+      setPreview(null);
+      setFileB64(null);
+      setIsDialogOpen(false);
+      // Ideally revalidate and refresh list
+      router.refresh?.();
+    } else {
+      toast.error(typeof res.message === "string" ? res.message : "Failed to create post");
+    }
+  };
+  const handleCommentSubmit = () => {
+    //here we need to add the submission of a comment
+    // console.log({ title, tags, body, allowVerification });
   };
 
   const handleJoin = async () => {
@@ -275,6 +330,59 @@ const ViewCommunityClient = ({
       }
     }
   };
+  // Helper function for like/unlike logic
+  async function handleLikeToggle({
+    post,
+    userId,
+    toast,
+    router,
+  }: {
+    post: TSkillNode;
+    userId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const hasLiked = post.likes.some(like => like.id === userId) || likedPosts[post.id];
+    let res;
+    if (hasLiked) {
+      res = await unlikePostAction(post.id);
+      if (res.ok) {
+        toast.success("Unliked!");
+        setLikedPosts(prev => ({ ...prev, [post.id]: false }));
+        router.refresh?.();
+      } else {
+        toast.error("Failed to unlike post");
+      }
+    } else {
+      res = await likePostAction(post.id);
+      if (res.ok) {
+        toast.success("Liked!");
+        setLikedPosts(prev => ({ ...prev, [post.id]: true }));
+        router.refresh?.();
+      } else {
+        toast.error("Failed to like post");
+      }
+    }
+  }
+
+  // Helper function for deleting a post
+  async function handleDeletePost({
+    postId,
+    toast,
+    router,
+  }: {
+    postId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const res = await deletePostAction(postId);
+    if (res.ok) {
+      toast.success("Post deleted!");
+      router.refresh?.();
+    } else {
+      toast.error("Failed to delete post");
+    }
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -325,7 +433,7 @@ const ViewCommunityClient = ({
                 <h2 className="text-lg font-semibold">Recent Events</h2>
               </div>
 
-              <div className="flex flex-col items-stretch w-full gap-4 rounded">
+              <div className="flex flex-col items-stretch w-full py-5 gap-4 rounded">
                 {events.map((ev) => (
                   <Card key={ev.id} className="w-full rounded">
                     <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
@@ -353,7 +461,9 @@ const ViewCommunityClient = ({
         </aside>
 
         {/* Posts feed */}
-        <section className="py-5 space-y-6 md:col-span-1">
+        <section
+          className="py-5 space-y-6 md:col-span-1"
+        >
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
@@ -377,23 +487,16 @@ const ViewCommunityClient = ({
                   </DialogHeader>
 
                   <div className="w-full space-y-2 text-sm">
-                    <Label htmlFor="skill-tree-node">
-                      Select Skill Tree Node
-                    </Label>
+                    <Label htmlFor="skill-tree-node">Select Skill Tree Node</Label>
                     <Select
-                      value={addProofOfPracticeForm.skillNodeId}
-                      onValueChange={(value) =>
-                        setAddProofOfPracticeForm({
-                          ...addProofOfPracticeForm,
-                          skillNodeId: value,
-                        })
-                      }
+                      value={selectedNode ?? undefined}
+                      onValueChange={(val) => setSelectedNode(val)}
                     >
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
                       </SelectTrigger>
                       <SelectContent>
-                        {skillNodes.map((node) => (
+                        {community.skillNodes.map((node) => (
                           <SelectItem key={node.id} value={node.id}>
                             {node.name}
                           </SelectItem>
@@ -405,21 +508,19 @@ const ViewCommunityClient = ({
                   <div className="w-full py-2 space-y-2">
                     <Label>Upload Media</Label>
                     <Input
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          const file = e.target.files[0];
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreview(reader.result as string);
-                            setAddProofOfPracticeForm((prev) => ({
-                              ...prev,
-                              proofMedia: reader.result as string,
-                            }));
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
                       type="file"
+                      accept="image/*,video/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const result = reader.result as string;
+                          setPreview(result);
+                          setFileB64(result);
+                        };
+                        reader.readAsDataURL(file);
+                      }}
                     />
                     {preview && (
                       <Image
@@ -464,18 +565,19 @@ const ViewCommunityClient = ({
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button
-                      onClick={handleAddProofOfPractice}
-                      disabled={loadingStates.addingProof}
-                    >
-                      {loadingStates.addingProof ? "Adding..." : "Confirm"}
+                    <Button onClick={handlePostSubmit} disabled={submitting}>
+                      {submitting ? "Submitting..." : "Confirm"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </h2>
           </div>
-
+          <div style={{
+            maxHeight: "calc(100vh - 100px)",
+            overflowY: "auto",
+            paddingRight: ".5rem",
+          }}>
           {posts.length === 0 ? (
             <div className="w-full flex flex-col items-center justify-center">
               <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
@@ -502,25 +604,39 @@ const ViewCommunityClient = ({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-base">{post.content}</div>
-                  <div className="flex items-center justify-center w-full">
-                    <Image
-                      src={post.proofMedia ?? "https://picsum.photos/600/350"}
-                      alt="Post Image"
-                      width={600}
-                      height={350}
-                      className="object-cover rounded"
-                    />
-                  </div>
+                  {post.proofMedia && (
+                    <div className="flex items-center justify-center w-full">
+                      <Image
+                        src={post.proofMedia}
+                        alt="Post Media"
+                        width={600}
+                        height={350}
+                        className="object-cover rounded"
+                      />
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="flex flex-col w-full gap-4">
                   <div className="flex items-center justify-between w-full">
                     <Button
-                      variant="default"
-                      className="flex items-center gap-2"
-                    >
-                      <ThumbsUp />
-                      {post.likes.length} Like(s)
-                    </Button>
+                    variant={
+                      post.likes.some(like => like.id === user.user!.id) || likedPosts[post.id]
+                        ? "outline"
+                        : "default"
+                    }
+                    className="flex items-center gap-2"
+                    onClick={() =>
+                      handleLikeToggle({
+                        post,
+                        userId: user.user!.id,
+                        toast,
+                        router,
+                      })
+                    }
+                  >
+                    <ThumbsUp />
+                    {post.likes.length + (likedPosts[post.id] ? 1 : 0)} Like(s)
+                  </Button>
                     <Button
                       className="flex items-center gap-2"
                       onClick={() =>
@@ -603,9 +719,24 @@ const ViewCommunityClient = ({
                     </div>
                   )}
                 </CardFooter>
+                {(isAdmin) && (
+                  <Button
+                    variant="destructive"
+                    onClick={() =>
+                      handleDeletePost({
+                        postId: post.id,
+                        toast,
+                        router,
+                      })
+                    }
+                  >
+                    Delete
+                  </Button>
+                )}
               </Card>
             ))
           )}
+          </div>
         </section>
       </main>
     </div>
