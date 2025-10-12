@@ -4,8 +4,10 @@ import { cookies } from "next/headers";
 
 export type CreatePostPayload = {
   skillNodeId: string;
+  title: string;
   content: string;
   proofMedia?: string | null; // base64 data URL string
+  tags?: string[]; // optional tags by name
 };
 
 export async function createPostAction(payload: CreatePostPayload) {
