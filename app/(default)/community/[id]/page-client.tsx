@@ -49,6 +49,7 @@ import { Badge } from "@/components/ui/badge";
 import { getMembership } from "@/actions/get-membership";
 import { createVerificationAction } from "@/actions/create-feedback";
 import { TFeedback, TSkillNode, TUser } from "@/types";
+import { TFeedback, TSkillNode, TUser } from "@/types";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { likePostAction } from "@/actions/like-post-action";
@@ -174,7 +175,7 @@ const ViewCommunityClient = ({
 
     const byParent = new Map<string | null, FlatNode[]>();
 
-    // group by parent 
+    // group by parent
     nodes.forEach((n) => {
       const key = (n as any).parentNodeId ?? (n as any).parentId ?? null;
       if (!byParent.has(key)) byParent.set(key, []);
@@ -227,7 +228,7 @@ const ViewCommunityClient = ({
     [community.skillNodes, community.name]
   );
 
-  // ensure we pass the actual root node to the tree component 
+  // ensure we pass the actual root node to the tree component
   const displayedRoot = useMemo(() => {
     if (!rootSkill) return null;
     if (
