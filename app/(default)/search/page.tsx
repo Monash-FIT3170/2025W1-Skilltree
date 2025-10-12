@@ -16,9 +16,6 @@ export default async function SearchPage({
       return <CommonError errorDescription="Could not load communities" />;
     }
 
-    // If the backend doesn't support filtering reliably, apply an extra
-    // server-side filter here to ensure only communities whose name
-    // includes the query (case-insensitive) are shown. Also dedupe by name.
     let results = communities.message as TAuthSkillTree[];
     if (q) {
       const lowerQ = q.toLowerCase();
