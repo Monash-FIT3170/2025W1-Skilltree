@@ -17,29 +17,17 @@ import {
 export class SkilltreeService {
 	constructor(private readonly prismaService: PrismaService) {}
 
-	async isAdmin(skillTreeId: string, user: User) {
+	async membershipStatus(skillTreeId: string, user: User) {
 		try {
 			const membership = await this.prismaService.skillTreeUser.findUnique({
 				where: { skillTreeId_userId: { skillTreeId, userId: user.id } },
 			});
 			if (!membership) return false;
 
-			return membership.role === 'ADMIN' ? true : false;
-		} catch {
-			throw new InternalServerErrorException(
-				'Failed to verify skill tree membership',
-			);
-		}
-	}
-
-	async isMember(skillTreeId: string, user: User) {
-		try {
-			const membership = await this.prismaService.skillTreeUser.findUnique({
-				where: { skillTreeId_userId: { skillTreeId, userId: user.id } },
-			});
-			if (!membership) return false;
-
-			return membership.role === 'MEMBER' ? true : false;
+			return {
+				member: membership.role === 'MEMBER',
+				admin: membership.role === 'ADMIN',
+			};
 		} catch {
 			throw new InternalServerErrorException(
 				'Failed to verify skill tree membership',

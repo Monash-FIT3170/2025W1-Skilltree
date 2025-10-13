@@ -1,5 +1,6 @@
 export type TApiResponse<T = any> = {
 	ok: boolean;
-	message: T | string;
+	message?: T;
+	error?: string;
 	status: number;
 };

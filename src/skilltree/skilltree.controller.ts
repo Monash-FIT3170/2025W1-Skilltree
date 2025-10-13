@@ -19,6 +19,7 @@ import {
 	UpdateSkillTreeDto,
 	UpdateSkillTreeUserDto,
 } from './dto';
+import { TApiResponse } from 'src/types';
 
 @Controller('skilltree')
 export class SkilltreeController {
@@ -180,14 +181,11 @@ export class SkilltreeController {
 	}
 
 	@UseGuards(JwtGuard)
-	@Get('is-admin/:skillTreeId')
-	isAdmin(@Param('skillTreeId') skillTreeId: string, @GetUser() user: User) {
-		return this.skilltreeService.isAdmin(skillTreeId, user);
-	}
-
-	@UseGuards(JwtGuard)
-	@Get('is-member/:skillTreeId')
-	isMember(@Param('skillTreeId') skillTreeId: string, @GetUser() user: User) {
-		return this.skilltreeService.isMember(skillTreeId, user);
+	@Get('membership/:skillTreeId')
+	membershipStatus(
+		@Param('skillTreeId') skillTreeId: string,
+		@GetUser() user: User,
+	) {
+		return this.skilltreeService.membershipStatus(skillTreeId, user);
 	}
 }

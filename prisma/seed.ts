@@ -1,5 +1,6 @@
 import { PrismaClient, Role, VerificationStatus } from '@prisma/client';
 import * as argon2 from 'argon2';
+import { dataUri } from './data_url';
 
 const prisma = new PrismaClient();
 
@@ -38,7 +39,6 @@ async function main() {
 		},
 	});
 
-	// Additional users
 	const user3 = await prisma.user.create({
 		data: {
 			name: 'Charlie',
@@ -85,7 +85,6 @@ async function main() {
 		},
 	});
 
-	// Additional tags
 	const tag3 = await prisma.tag.create({
 		data: {
 			name: 'Design',
@@ -126,7 +125,6 @@ async function main() {
 		},
 	});
 
-	// Additional skill trees
 	const skillTree2 = await prisma.skillTree.create({
 		data: {
 			name: 'Data Science Fundamentals',
@@ -200,7 +198,6 @@ async function main() {
 		},
 	});
 
-	// Data Science skill nodes
 	const node4 = await prisma.skillNode.create({
 		data: {
 			name: 'Python Basics',
@@ -218,7 +215,6 @@ async function main() {
 		},
 	});
 
-	// Mobile development skill nodes
 	const node6 = await prisma.skillNode.create({
 		data: {
 			name: 'React Native Setup',
@@ -236,7 +232,6 @@ async function main() {
 		},
 	});
 
-	// Design skill nodes
 	const node8 = await prisma.skillNode.create({
 		data: {
 			name: 'Design Principles',
@@ -254,306 +249,271 @@ async function main() {
 		},
 	});
 
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree1.id,
-	// 		userId: user1.id,
-	// 		role: Role.ADMIN,
-	// 		verificationStatus: VerificationStatus.VERIFIED,
-	// 	},
-	// });
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree1.id,
-	// 		userId: user2.id,
-	// 		role: Role.MEMBER,
-	// 		verificationStatus: VerificationStatus.PENDING,
-	// 	},
-	// });
+	await prisma.skillTreeUser.create({
+		data: {
+			skillTreeId: skillTree1.id,
+			userId: user2.id,
+			role: Role.MEMBER,
+			verificationStatus: VerificationStatus.PENDING,
+		},
+	});
 
-	// // Additional skill tree users
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree2.id,
-	// 		userId: user3.id,
-	// 		role: Role.ADMIN,
-	// 		verificationStatus: VerificationStatus.VERIFIED,
-	// 	},
-	// });
+	await prisma.skillTreeUser.create({
+		data: {
+			skillTreeId: skillTree2.id,
+			userId: user1.id,
+			role: Role.MEMBER,
+			verificationStatus: VerificationStatus.VERIFIED,
+		},
+	});
 
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree2.id,
-	// 		userId: user1.id,
-	// 		role: Role.MEMBER,
-	// 		verificationStatus: VerificationStatus.VERIFIED,
-	// 	},
-	// });
+	await prisma.skillTreeUser.create({
+		data: {
+			skillTreeId: skillTree3.id,
+			userId: user2.id,
+			role: Role.MEMBER,
+			verificationStatus: VerificationStatus.PENDING,
+		},
+	});
 
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree3.id,
-	// 		userId: user4.id,
-	// 		role: Role.ADMIN,
-	// 		verificationStatus: VerificationStatus.VERIFIED,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node1.id,
+			userId: user1.id,
+			xpPoint: 50,
+		},
+	});
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node2.id,
+			userId: user2.id,
+			xpPoint: 30,
+		},
+	});
 
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree3.id,
-	// 		userId: user2.id,
-	// 		role: Role.MEMBER,
-	// 		verificationStatus: VerificationStatus.PENDING,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node3.id,
+			userId: user1.id,
+			xpPoint: 75,
+		},
+	});
 
-	// await prisma.skillTreeUser.create({
-	// 	data: {
-	// 		skillTreeId: skillTree4.id,
-	// 		userId: user5.id,
-	// 		role: Role.ADMIN,
-	// 		verificationStatus: VerificationStatus.VERIFIED,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node4.id,
+			userId: user3.id,
+			xpPoint: 100,
+		},
+	});
 
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node1.id,
-	// 		userId: user1.id,
-	// 		xpPoint: 50,
-	// 	},
-	// });
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node2.id,
-	// 		userId: user2.id,
-	// 		xpPoint: 30,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node4.id,
+			userId: user1.id,
+			xpPoint: 85,
+		},
+	});
 
-	// // Additional skill node users
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node3.id,
-	// 		userId: user1.id,
-	// 		xpPoint: 75,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node5.id,
+			userId: user3.id,
+			xpPoint: 90,
+		},
+	});
 
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node4.id,
-	// 		userId: user3.id,
-	// 		xpPoint: 100,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node6.id,
+			userId: user4.id,
+			xpPoint: 100,
+		},
+	});
 
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node4.id,
-	// 		userId: user1.id,
-	// 		xpPoint: 85,
-	// 	},
-	// });
+	await prisma.skillNodeUser.create({
+		data: {
+			skillNodeId: node8.id,
+			userId: user5.id,
+			xpPoint: 95,
+		},
+	});
 
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node5.id,
-	// 		userId: user3.id,
-	// 		xpPoint: 90,
-	// 	},
-	// });
+	const post1 = await prisma.post.create({
+		data: {
+			content: 'Completed HTML basics!',
+			proofMedia: dataUri,
+			skillNode: { connect: { id: node1.id } },
+			likes: { connect: [{ id: user2.id }] },
+			creator: { connect: { id: user1.id } },
+		},
+	});
 
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node6.id,
-	// 		userId: user4.id,
-	// 		xpPoint: 100,
-	// 	},
-	// });
+	const post2 = await prisma.post.create({
+		data: {
+			content:
+				'Just finished learning JavaScript fundamentals! Built my first interactive webpage.',
+			proofMedia: dataUri,
+			skillNode: { connect: { id: node3.id } },
+			likes: { connect: [{ id: user2.id }, { id: user3.id }] },
+			creator: { connect: { id: user2.id } },
+		},
+	});
 
-	// await prisma.skillNodeUser.create({
-	// 	data: {
-	// 		skillNodeId: node8.id,
-	// 		userId: user5.id,
-	// 		xpPoint: 95,
-	// 	},
-	// });
+	const post3 = await prisma.post.create({
+		data: {
+			content:
+				'Successfully completed Python basics course. Ready for data manipulation!',
+			proofMedia: dataUri,
+			skillNode: { connect: { id: node4.id } },
+			likes: { connect: [{ id: user1.id }, { id: user4.id }] },
+			creator: { connect: { id: user3.id } },
+		},
+	});
 
-	// const post1 = await prisma.post.create({
-	// 	data: {
-	// 		content: 'Completed HTML basics!',
-	// 		proofMedia: 'proof1.png',
-	// 		skillNode: { connect: { id: node1.id } },
-	// 		likes: { connect: [{ id: user2.id }] },
-	// 	},
-	// });
+	const post4 = await prisma.post.create({
+		data: {
+			content:
+				"Built my first React Native app! It's a simple todo list but I'm proud of it.",
+			proofMedia: dataUri,
+			skillNode: { connect: { id: node7.id } },
+			likes: { connect: [{ id: user3.id }, { id: user5.id }] },
+			creator: { connect: { id: user4.id } },
+		},
+	});
 
-	// // Additional posts
-	// const post2 = await prisma.post.create({
-	// 	data: {
-	// 		content:
-	// 			'Just finished learning JavaScript fundamentals! Built my first interactive webpage.',
-	// 		proofMedia: 'javascript_project.png',
-	// 		skillNode: { connect: { id: node3.id } },
-	// 		likes: { connect: [{ id: user2.id }, { id: user3.id }] },
-	// 	},
-	// });
+	const post5 = await prisma.post.create({
+		data: {
+			content:
+				'Created my first UI design in Figma following design principles.',
+			proofMedia: dataUri,
+			skillNode: { connect: { id: node9.id } },
+			likes: {
+				connect: [{ id: user1.id }, { id: user2.id }, { id: user4.id }],
+			},
+			creator: { connect: { id: user5.id } },
+		},
+	});
 
-	// const post3 = await prisma.post.create({
-	// 	data: {
-	// 		content:
-	// 			'Successfully completed Python basics course. Ready for data manipulation!',
-	// 		proofMedia: 'python_certificate.pdf',
-	// 		skillNode: { connect: { id: node4.id } },
-	// 		likes: { connect: [{ id: user1.id }, { id: user4.id }] },
-	// 	},
-	// });
+	await prisma.feedback.create({
+		data: {
+			verifierId: user2.id,
+			postId: post1.id,
+			feedbackText: 'Great job!',
+			multiplier: 2,
+		},
+	});
 
-	// const post4 = await prisma.post.create({
-	// 	data: {
-	// 		content:
-	// 			"Built my first React Native app! It's a simple todo list but I'm proud of it.",
-	// 		proofMedia: 'first_app_screenshot.png',
-	// 		skillNode: { connect: { id: node7.id } },
-	// 		likes: { connect: [{ id: user3.id }, { id: user5.id }] },
-	// 	},
-	// });
+	await prisma.feedback.create({
+		data: {
+			verifierId: user3.id,
+			postId: post2.id,
+			feedbackText:
+				'Excellent work on the JavaScript project! The interactivity is well implemented.',
+			multiplier: 3,
+		},
+	});
 
-	// const post5 = await prisma.post.create({
-	// 	data: {
-	// 		content:
-	// 			'Created my first UI design in Figma following design principles.',
-	// 		proofMedia: 'figma_design.png',
-	// 		skillNode: { connect: { id: node9.id } },
-	// 		likes: {
-	// 			connect: [{ id: user1.id }, { id: user2.id }, { id: user4.id }],
-	// 		},
-	// 	},
-	// });
+	await prisma.feedback.create({
+		data: {
+			verifierId: user1.id,
+			postId: post3.id,
+			feedbackText:
+				'Solid foundation in Python. Your code structure looks clean.',
+			multiplier: 2,
+		},
+	});
 
-	// await prisma.feedback.create({
-	// 	data: {
-	// 		verifierId: user2.id,
-	// 		postId: post1.id,
-	// 		feedbackText: 'Great job!',
-	// 		multiplier: 2,
-	// 	},
-	// });
+	await prisma.feedback.create({
+		data: {
+			verifierId: user5.id,
+			postId: post4.id,
+			feedbackText: 'Amazing first app! The user interface is intuitive.',
+			multiplier: 4,
+		},
+	});
 
-	// // Additional feedback
-	// await prisma.feedback.create({
-	// 	data: {
-	// 		verifierId: user3.id,
-	// 		postId: post2.id,
-	// 		feedbackText:
-	// 			'Excellent work on the JavaScript project! The interactivity is well implemented.',
-	// 		multiplier: 3,
-	// 	},
-	// });
+	await prisma.feedback.create({
+		data: {
+			verifierId: user2.id,
+			postId: post5.id,
+			feedbackText:
+				'Beautiful design! You really understood the design principles.',
+			multiplier: 3,
+		},
+	});
 
-	// await prisma.feedback.create({
-	// 	data: {
-	// 		verifierId: user1.id,
-	// 		postId: post3.id,
-	// 		feedbackText:
-	// 			'Solid foundation in Python. Your code structure looks clean.',
-	// 		multiplier: 2,
-	// 	},
-	// });
+	const event1 = await prisma.event.create({
+		data: {
+			title: 'Hackathon',
+			isRanked: true,
+			xpPayout: 500,
+			users: { connect: [{ id: user1.id }, { id: user2.id }] },
+			startDate: new Date('2025-08-01'),
+			endDate: new Date('2025-08-02'),
+			winner: { connect: { id: user1.id } },
+		},
+	});
 
-	// await prisma.feedback.create({
-	// 	data: {
-	// 		verifierId: user5.id,
-	// 		postId: post4.id,
-	// 		feedbackText: 'Amazing first app! The user interface is intuitive.',
-	// 		multiplier: 4,
-	// 	},
-	// });
+	const event2 = await prisma.event.create({
+		data: {
+			title: 'Data Science Challenge',
+			isRanked: true,
+			xpPayout: 300,
+			users: {
+				connect: [{ id: user1.id }, { id: user3.id }, { id: user4.id }],
+			},
+			startDate: new Date('2025-08-15'),
+			endDate: new Date('2025-08-16'),
+			winner: { connect: { id: user3.id } },
+		},
+	});
 
-	// await prisma.feedback.create({
-	// 	data: {
-	// 		verifierId: user2.id,
-	// 		postId: post5.id,
-	// 		feedbackText:
-	// 			'Beautiful design! You really understood the design principles.',
-	// 		multiplier: 3,
-	// 	},
-	// });
+	const event3 = await prisma.event.create({
+		data: {
+			title: 'Mobile App Showcase',
+			isRanked: false,
+			xpPayout: 200,
+			users: {
+				connect: [{ id: user2.id }, { id: user4.id }, { id: user5.id }],
+			},
+			startDate: new Date('2025-09-01'),
+			endDate: new Date('2025-09-01'),
+		},
+	});
 
-	// const event1 = await prisma.event.create({
-	// 	data: {
-	// 		title: 'Hackathon',
-	// 		isRanked: true,
-	// 		xpPayout: 500,
-	// 		users: { connect: [{ id: user1.id }, { id: user2.id }] },
-	// 		startDate: new Date('2025-08-01'),
-	// 		endDate: new Date('2025-08-02'),
-	// 		winner: { connect: { id: user1.id } },
-	// 	},
-	// });
+	const event4 = await prisma.event.create({
+		data: {
+			title: 'Design Competition',
+			isRanked: true,
+			xpPayout: 400,
+			users: {
+				connect: [{ id: user1.id }, { id: user3.id }, { id: user5.id }],
+			},
+			startDate: new Date('2025-09-10'),
+			endDate: new Date('2025-09-12'),
+			winner: { connect: { id: user5.id } },
+		},
+	});
 
-	// // Additional events
-	// const event2 = await prisma.event.create({
-	// 	data: {
-	// 		title: 'Data Science Challenge',
-	// 		isRanked: true,
-	// 		xpPayout: 300,
-	// 		users: {
-	// 			connect: [{ id: user1.id }, { id: user3.id }, { id: user4.id }],
-	// 		},
-	// 		startDate: new Date('2025-08-15'),
-	// 		endDate: new Date('2025-08-16'),
-	// 		winner: { connect: { id: user3.id } },
-	// 	},
-	// });
-
-	// const event3 = await prisma.event.create({
-	// 	data: {
-	// 		title: 'Mobile App Showcase',
-	// 		isRanked: false,
-	// 		xpPayout: 200,
-	// 		users: {
-	// 			connect: [{ id: user2.id }, { id: user4.id }, { id: user5.id }],
-	// 		},
-	// 		startDate: new Date('2025-09-01'),
-	// 		endDate: new Date('2025-09-01'),
-	// 	},
-	// });
-
-	// const event4 = await prisma.event.create({
-	// 	data: {
-	// 		title: 'Design Competition',
-	// 		isRanked: true,
-	// 		xpPayout: 400,
-	// 		users: {
-	// 			connect: [{ id: user1.id }, { id: user3.id }, { id: user5.id }],
-	// 		},
-	// 		startDate: new Date('2025-09-10'),
-	// 		endDate: new Date('2025-09-12'),
-	// 		winner: { connect: { id: user5.id } },
-	// 	},
-	// });
-
-	// const event5 = await prisma.event.create({
-	// 	data: {
-	// 		title: 'Weekly Coding Meetup',
-	// 		isRanked: false,
-	// 		xpPayout: 50,
-	// 		users: {
-	// 			connect: [
-	// 				{ id: user1.id },
-	// 				{ id: user2.id },
-	// 				{ id: user3.id },
-	// 				{ id: user4.id },
-	// 				{ id: user5.id },
-	// 			],
-	// 		},
-	// 		startDate: new Date('2025-08-30'),
-	// 		endDate: new Date('2025-08-30'),
-	// 	},
-	// });
+	const event5 = await prisma.event.create({
+		data: {
+			title: 'Weekly Coding Meetup',
+			isRanked: false,
+			xpPayout: 50,
+			users: {
+				connect: [
+					{ id: user1.id },
+					{ id: user2.id },
+					{ id: user3.id },
+					{ id: user4.id },
+					{ id: user5.id },
+				],
+			},
+			startDate: new Date('2025-08-30'),
+			endDate: new Date('2025-08-30'),
+		},
+	});
 
 	console.log('Database seeded successfully.');
 }

@@ -15,6 +15,7 @@ import { CreateSkillNodeDto, UpdateSkillNodeDto } from './dto/skillnode.dto';
 import { JwtGuard } from '../_utils/guards/jwt.guard';
 import { GetUser } from '../_utils/decorator/get-user.decorator';
 // import { User } from '@prisma/client'; // Not needed, use type User = any
+import { TApiResponse } from 'src/types';
 
 @Controller('skill-node')
 export class SkillNodeController {
