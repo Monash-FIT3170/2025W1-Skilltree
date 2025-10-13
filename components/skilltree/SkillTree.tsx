@@ -106,6 +106,7 @@ type Props = {
   rootId?: string;
   onComplete?: (nodeId: string) => Promise<void> | void;
   className?: string;
+  onSelectNode?: (nodeId: string | null) => void;
 };
 
 export default function SkillTree({
@@ -114,6 +115,7 @@ export default function SkillTree({
   rootId: preferredRootId = "root",
   onComplete,
   className,
+  onSelectNode,
 }: Props) {
   const seed = useMemo(() => {
     const ensured = ensureRoot(
@@ -213,6 +215,15 @@ export default function SkillTree({
     },
     [setNodes]
   );
+
+  const emitSelection = useCallback(
+  (ids: string[]) => {
+    const first = ids[0] ?? rootId;
+    
+    onSelectNode?.(first === rootId ? null : first);
+  },
+  [onSelectNode, rootId]
+);
 
   const nodesWithStatus = useMemo<Node<SkillNodeData>[]>(() => {
     const statusMap = computeStatuses(
@@ -506,7 +517,10 @@ export default function SkillTree({
             setSelectedIds((prev) =>
               arraysEqual(prev, target) ? prev : target
             );
+            emitSelection(target);
           }}
+
+          onNodeClick={(_, node) => emitSelection([node.id])}
         >
           <MiniMap />
           <Controls />
