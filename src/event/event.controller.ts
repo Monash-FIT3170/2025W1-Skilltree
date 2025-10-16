@@ -20,7 +20,7 @@ export class EventController {
 	@Get()
 	async getAllEvents(): Promise<TApiResponse<any[]>> {
 		const res = await this.eventService.getAllEvents();
-		return { ok: true, message: res, status: HttpStatus.OK };
+		return res;
 	}
 
 	@Get(':id')
