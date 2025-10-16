@@ -6,6 +6,7 @@ import {
 	Param,
 	UseGuards,
 	HttpStatus,
+	Delete,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { JwtGuard } from '../_utils/guards/jwt.guard';
@@ -37,12 +38,6 @@ export class EventController {
 	}
 
 	@UseGuards(JwtGuard)
-	@Post(':id/delete')
-	deleteEvent(@Param('id') id: string, eventId: string, @GetUser() user: User) {
-		return this.eventService.deleteEvent(id, eventId, user.id);
-	}
-
-	@UseGuards(JwtGuard)
 	@Post(':id/join')
 	joinEvent(@Param('id') eventId: string, @GetUser() user: User) {
 		return this.eventService.joinEvent(eventId, user.id);
@@ -52,16 +47,6 @@ export class EventController {
 	@Post(':id/leave')
 	leaveEvent(@Param('id') eventId: string, @GetUser() user: User) {
 		return this.eventService.leaveEvent(eventId, user.id);
-	}
-
-	@UseGuards(JwtGuard)
-	@Post(':id/update')
-	updateEvent(
-		@Param('id') eventId: string,
-		@Body() dto: UpdateEventDto,
-		@GetUser() user: User,
-	) {
-		return this.eventService.updateEvent(eventId, dto, user.id);
 	}
 
 	@Get(':id/users')

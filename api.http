@@ -2,9 +2,9 @@
 # Variables, change them as per your need
 ############################################
 
-@bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWV6eG92b2EwMDAwNWN1eWdvZGJ6Z2N5IiwiZW1haWwiOiJqb2huQGRvZS5jb20iLCJpYXQiOjE3NTY2NTk0Njd9.IlQXRBb8tLZOK9ZYq52AAz51NmRGHnz-Y5BohOnLPHc
-@skillTreeId = 04a7e7ef-1584-4c8a-97bd-c5a6757543ce
-@userId = 971e694a-5859-49e6-84b0-4a39b56ba3e7
+@bearerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZmRhZmRhYi04MWU3LTQ2NDgtYTViNi05Yjk4YzM3YmNhNTMiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NjA2NTQ4NDd9.iKJROLsQo6Z4sC67XCQaSRPkYGJ0e-ASzMSwWY4hZGc
+@skillTreeId = 9661246c-d6c8-44ce-948c-a6a5b0359e62
+@userId = 7fdafdab-81e7-4648-a5b6-9b98c37bca53
 @postId = 69250fee-d4d8-4b78-b1cc-f290a1525ad3
 
 ############################################
@@ -27,8 +27,8 @@ POST http://localhost:3001/auth/signin
 Content-Type: application/json
 
 {
-  "email": "john@doe.com",
-  "password": "John@Doe@New@123"
+  "email": "eve@example.com",
+  "password": "passworddef"
 }
 
 ### Get current user profile
@@ -236,3 +236,40 @@ Authorization: Bearer {{bearerToken}}
 ### Get user's skill trees
 GET http://localhost:3001/skilltree/user/{{userId}}/skilltrees
 Authorization: Bearer {{bearerToken}}
+
+
+
+### Get all events
+GET http://localhost:3001/event
+
+
+@eventId = 422c32f4-b74d-4c5c-a069-29dd7e5376b0
+### Create Event
+POST http://localhost:3001/event
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+  "skillTreeId": "{{skillTreeId}}",
+  "title": "Hackathon 2025",
+  "xpPayout": 100,
+  "startDate": "2025-11-01T10:00:00Z",
+  "endDate": "2025-11-03T18:00:00Z"
+}
+
+### Get One
+GET http://localhost:3001/event/{{eventId}}
+
+### Delete Event
+DELETE http://localhost:3001/event/{{skillTreeId}}/{{eventId}}/
+
+### Get users from event
+GET http://localhost:3001/event/{{eventId}}/users
+
+### Update 
+POST http://localhost:3001/event/{{eventId}}/join
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzN2RkMzBhYS0zMDRiLTQ1MmYtYTdiZC1hNjgwM2JlYjk1NjYiLCJlbWFpbCI6ImV2ZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2MDY1NTYyOX0.NW_A2wUB53h6fO3y7Z4kMuPJGOUMA_GlAGSJzg0iKA0
+
+### Leave Event
+POST http://localhost:3001/event/{{eventId}}/leave
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzN2RkMzBhYS0zMDRiLTQ1MmYtYTdiZC1hNjgwM2JlYjk1NjYiLCJlbWFpbCI6ImV2ZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2MDY1NTYyOX0.NW_A2wUB53h6fO3y7Z4kMuPJGOUMA_GlAGSJzg0iKA0
