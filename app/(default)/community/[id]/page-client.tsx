@@ -194,10 +194,6 @@ const ViewCommunityClient = ({
       );
     }
   };
-  const handleCommentSubmit = () => {
-    //here we need to add the submission of a comment
-    // console.log({ title, tags, body, allowVerification });
-  };
 
   const handleJoin = async () => {
     setLoadingStates((prev) => ({ ...prev, joinLeave: true }));

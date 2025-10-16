@@ -32,10 +32,9 @@ import {
 } from "@/components/skilltree/graph";
 import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
-const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
+const MIN_CHILD_GAP_Y = 100;
 
-// keep children at least this many px below their lowest parent
-const MIN_CHILD_GAP_Y = 200;
+const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
 /* ---------- helpers: ensure a single root, named by community ---------- */
 

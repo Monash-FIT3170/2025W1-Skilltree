@@ -29,7 +29,6 @@ export default function Page() {
   const [skillTreeDto, setSkillTreeDto] = useState<SkillTreeDTO>(initial);
   const [loading, setLoading] = useState(false);
 
-  // load community data saved from previous step (sessionStorage)
   const communityData = useMemo(() => {
     if (typeof window === "undefined") return null;
     const raw = sessionStorage.getItem("communityData");
