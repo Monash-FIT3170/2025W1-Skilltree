@@ -25,7 +25,7 @@ export class EventService {
 				throw new InternalServerErrorException('Validation failed');
 			}
 
-			if (!user || userPermitted.role !== 'ADMIN') {
+			if (userPermitted.role !== 'ADMIN') {
 				throw new InternalServerErrorException('Only admins can create events');
 			}
 			const event = await this.prisma.event.create({
