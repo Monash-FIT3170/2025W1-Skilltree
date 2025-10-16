@@ -20,8 +20,11 @@ export class EventService {
 				},
 			});
 
-			if (!user || !userPermitted) {
-				throw new InternalServerErrorException('Validation failed');
+			if (!user) {
+				throw new InternalServerErrorException('User not found');
+			}
+			if (!userPermitted) {
+				throw new InternalServerErrorException('User is not a member of the skill tree');
 			}
 
 			if (userPermitted.role !== 'ADMIN') {
