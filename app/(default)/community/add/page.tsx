@@ -6,9 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { createCommunityAction } from "@/actions/create-community-action";
 
 export default function CreateCommunityPage() {
   const [form, setForm] = useState({
@@ -67,7 +65,38 @@ export default function CreateCommunityPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push("/community/add/skilltree");
+    setLoading(true);
+
+    try {
+      // Store form data in sessionStorage to use in skill tree page
+      sessionStorage.setItem(
+        "communityData",
+        JSON.stringify({
+          name: form.communityName,
+          description: form.communityDesc,
+          tags: form.tags.split(",").map((t) => t.trim()),
+          isAdultOnly: form.isAdultOnly,
+        })
+      );
+
+      if (iconFile) {
+        sessionStorage.setItem(
+          "communityIcon",
+          await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(iconFile);
+          })
+        );
+      }
+
+      // Navigate to skill tree creation
+      router.push("/community/add/skilltree");
+    } catch (error) {
+      setMessage("Error saving community details");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -161,7 +190,7 @@ export default function CreateCommunityPage() {
 
             <div className="flex flex-wrap justify-end w-full gap-3">
               <Button type="submit" disabled={loading}>
-                {loading ? "Creating…" : "Create"}
+                {loading ? "Creating…" : "Next: Create Skill Tree"}
               </Button>
               <Button variant="outline" type="button" onClick={handleClear}>
                 Cancel

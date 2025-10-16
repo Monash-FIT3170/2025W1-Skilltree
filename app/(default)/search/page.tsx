@@ -6,11 +6,10 @@ import CommonError from "@/components/CommonError";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   try {
-    const params = await searchParams;
-    const q = typeof params?.q === "string" ? params.q : undefined;
+    const q = typeof searchParams?.q === "string" ? searchParams.q : undefined;
     const communities = await getCommunitiesAction(q);
 
     if (!communities.ok) {
@@ -21,6 +20,7 @@ export default async function SearchPage({
     if (q) {
       const lowerQ = q.toLowerCase();
       results = results.filter((c) => c.name.toLowerCase().includes(lowerQ));
+      // dedupe by name
       const seen = new Set<string>();
       results = results.filter((c) => {
         if (seen.has(c.name)) return false;

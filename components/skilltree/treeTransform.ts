@@ -55,32 +55,85 @@ export function reactFlowToBackendTree(
   edges: Edge[],
   skillTreeId: string
 ): BackendSkillNode[] {
-  // map of nodeId -> node
+  // build node map for every node
   const nodeMap: Record<string, BackendSkillNode> = {};
-  nodes.forEach((n) => {
-    nodeMap[n.id] = {
-      id: n.id,
-      name: typeof n.data.label === "string" ? n.data.label : "",
-      description: typeof n.data.description === "string" ? n.data.description : undefined,
-      xpPoint: typeof n.data.xp === "number" ? n.data.xp : undefined,
-      unlocked: typeof n.data.unlocked === "boolean" ? n.data.unlocked : false,
+  // map positions to help decide parent/child when unsure on edge direction
+  const posMap: Record<string, { x?: number; y?: number }> = {};
+
+  for (const n of nodes) {
+    const d = (n.data ?? {}) as any;
+    nodeMap[String(n.id)] = {
+      id: String(n.id),
+      name:
+        (typeof d?.title === "string" && d.title) ||
+        (typeof d?.label === "string" && d.label) ||
+        "",
+      description:
+        typeof d?.description === "string" ? d.description : undefined,
+      xpPoint: typeof d?.xp === "number" ? d.xp : undefined,
+      unlocked: typeof d?.unlocked === "boolean" ? d.unlocked : false,
       skillTreeId,
       children: [],
-      parentNodeId: typeof n.data.parentNodeId === "string" ? n.data.parentNodeId : undefined,
+      parentNodeId: undefined,
     };
-  });
 
-  edges.forEach((e) => {
-    const parent = nodeMap[e.source];
-    const child = nodeMap[e.target];
+    // capture position if present
+    if (n.position) {
+      posMap[String(n.id)] = { x: n.position.x, y: n.position.y };
+    }
+  }
+
+  // wire parent/child using edges
+  // if both nodes have positions, pick upper node (smaller y) as parent
+  // otherwise edges
+  for (const e of edges) {
+    const srcId = String(e.source);
+    const tgtId = String(e.target);
+    const srcNode = nodeMap[srcId];
+    const tgtNode = nodeMap[tgtId];
+
+    if (!srcNode && !tgtNode) {
+      console.debug("reactFlowToBackendTree: edge references missing nodes", e);
+      continue;
+    }
+
+    let parent: BackendSkillNode | undefined;
+    let child: BackendSkillNode | undefined;
+
+    if (srcNode && tgtNode) {
+      const srcPos = posMap[srcId];
+      const tgtPos = posMap[tgtId];
+      if (typeof srcPos?.y === "number" && typeof tgtPos?.y === "number") {
+        // smaller y = visually above => parent
+        if (srcPos.y <= tgtPos.y) {
+          parent = srcNode;
+          child = tgtNode;
+        } else {
+          parent = tgtNode;
+          child = srcNode;
+        }
+      } else {
+        // or just use edges
+        parent = srcNode;
+        child = tgtNode;
+      }
+    } else if (srcNode) {
+      parent = srcNode;
+      child = undefined;
+    } else if (tgtNode) {
+      parent = tgtNode;
+      child = undefined;
+    }
+
     if (parent && child) {
-      parent.children!.push(child);
+      parent.children = parent.children ?? [];
+      parent.children.push(child);
       child.parentNodeId = parent.id;
     }
-  });
+  }
 
-  // find root nodes (no parentNodeId)
+  // find roots
   const roots = Object.values(nodeMap).filter((n) => !n.parentNodeId);
-
+  
   return roots;
 }

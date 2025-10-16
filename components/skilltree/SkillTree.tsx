@@ -34,10 +34,7 @@ import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
-// keep children at least this many px below their lowest parent
-const MIN_CHILD_GAP_Y = 200;
-
-/* ---------- helpers: ensure a single root, named by community ---------- */
+// for a single root
 
 function pickRootId(
   nodes: Node<SkillNodeData>[],
@@ -69,7 +66,16 @@ function ensureRoot(
       {
         id: rootId,
         type: "skill",
-        data: { title: communityName, isPrimary: true, xp: 0 },
+        data: {
+          title: communityName,
+          isPrimary: true,
+          xp: 0,
+          description: "",
+          onChangeDescription: () => {},
+          onComplete: () => {},
+          onRename: () => {},
+          onChangeXp: () => {},
+        },
         position: { x: 0, y: 0 },
       },
     ];
@@ -79,6 +85,7 @@ function ensureRoot(
       title: communityName,
       isPrimary: true,
       xp: existing.data?.xp ?? 0,
+      description: existing.data?.description ?? "",
     };
   }
   return { nodes, rootId };
@@ -98,15 +105,13 @@ const initialKey = (dto: SkillTreeDTO) =>
     c: [...dto.completedIds].sort(),
   });
 
-/* ---------------------------------------------------------------------- */
-
 type Props = {
   initial?: SkillTreeDTO;
   communityName: string;
   rootId?: string;
   onComplete?: (nodeId: string) => Promise<void> | void;
   className?: string;
-  onSelectNode?: (nodeId: string | null) => void;
+  onExport?: (dto: SkillTreeDTO) => void;
 };
 
 export default function SkillTree({
@@ -115,7 +120,7 @@ export default function SkillTree({
   rootId: preferredRootId = "root",
   onComplete,
   className,
-  onSelectNode,
+  onExport,
 }: Props) {
   const seed = useMemo(() => {
     const ensured = ensureRoot(
@@ -133,14 +138,21 @@ export default function SkillTree({
   }, [initial, communityName, preferredRootId]);
 
   const [rootId, setRootId] = useState<string>(seed.rootId);
-  const [nodes, setNodes, _rfOnNodesChange] = useNodesState<Node<SkillNodeData>>(
-    seed.nodes
-  );
+  const [nodes, setNodes, _rfOnNodesChange] = useNodesState<
+    Node<SkillNodeData>
+  >(seed.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(seed.edges);
   const [completedIds, setCompletedIds] = useState<Set<string>>(seed.completed);
   const [selectedIds, setSelectedIds] = useState<string[]>([seed.rootId]);
 
-  // Guard against parents re-supplying a new "initial" every render
+  // remember last selected
+  const lastSelectedRef = useRef<string[]>([seed.rootId]);
+  useEffect(() => {
+    // if root id changes
+    lastSelectedRef.current = [seed.rootId];
+  }, [seed.rootId]);
+
+  // guard for reapplying parents
   const lastAppliedInitialRef = useRef<string>(
     initial
       ? initialKey({
@@ -151,7 +163,7 @@ export default function SkillTree({
       : ""
   );
 
-  // Re-apply when initial/communityName/rootId prop changes — only if materially different
+  // just incase reference changes
   useEffect(() => {
     const ensured = ensureRoot(
       initial?.nodes ?? [],
@@ -176,7 +188,7 @@ export default function SkillTree({
     lastAppliedInitialRef.current = key;
   }, [initial, communityName, preferredRootId, setEdges, setNodes]);
 
-  /* ---------- stable handlers ---------- */
+  // handlers
 
   const handleComplete = useCallback(
     async (id: string) => {
@@ -187,9 +199,7 @@ export default function SkillTree({
       });
       try {
         await onComplete?.(id);
-      } catch {
-        /* no-op */
-      }
+      } catch {}
     },
     [onComplete]
   );
@@ -216,14 +226,18 @@ export default function SkillTree({
     [setNodes]
   );
 
-  const emitSelection = useCallback(
-  (ids: string[]) => {
-    const first = ids[0] ?? rootId;
-    
-    onSelectNode?.(first === rootId ? null : first);
-  },
-  [onSelectNode, rootId]
-);
+  const handleChangeDescription = useCallback(
+    (id: string, description: string) => {
+      setNodes((prev) =>
+        (prev as Node<SkillNodeData>[]).map((node) =>
+          node.id === id
+            ? { ...node, data: { ...node.data, description } }
+            : node
+        )
+      );
+    },
+    [setNodes]
+  );
 
   const nodesWithStatus = useMemo<Node<SkillNodeData>[]>(() => {
     const statusMap = computeStatuses(
@@ -240,6 +254,7 @@ export default function SkillTree({
       const sameHandlers =
         curr?.onComplete === handleComplete &&
         curr?.onRename === handleRename &&
+        curr?.onChangeDescription === handleChangeDescription &&
         curr?.onChangeXp === handleChangeXp;
       const typeOk = n.type === "skill";
 
@@ -253,6 +268,7 @@ export default function SkillTree({
           status: nextStatus,
           onComplete: handleComplete,
           onRename: handleRename,
+          onChangeDescription: handleChangeDescription,
           onChangeXp: handleChangeXp,
         },
       };
@@ -264,9 +280,10 @@ export default function SkillTree({
     handleComplete,
     handleRename,
     handleChangeXp,
+    handleChangeDescription,
   ]);
 
-  // ---- layout helper (used for deletes; preserves remaining positions)
+  // for positions
   const relayout = useCallback(
     (nextNodes: Node<SkillNodeData>[], nextEdges: Edge[]) =>
       layoutTopDown(
@@ -276,13 +293,12 @@ export default function SkillTree({
     []
   );
 
-  // ---- mutations
   const makeId = useCallback(
     () => `n_${Math.random().toString(36).slice(2, 9)}`,
     []
   );
 
-  /** Add a child relative to the parent's CURRENT position (no global relayout). */
+  // Add a child relative to the parent's CURRENT position
   const addChild = useCallback(() => {
     const parentId = selectedIds[0] ?? rootId;
     const parent = (nodes as Node<SkillNodeData>[]).find(
@@ -290,14 +306,13 @@ export default function SkillTree({
     );
     const { x: px = 0, y: py = 0 } = parent?.position ?? { x: 0, y: 0 };
 
-    // Sibling-aware offset
     const childrenMap = buildChildrenMap(edges);
     const childIds = childrenMap[parentId] ?? [];
     const existingChildren = (nodes as Node<SkillNodeData>[]).filter((n) =>
-    childIds.includes(n.id)
-  );
-    const dx = 240;                 // base sibling spacing
-    const extraNewChildGap = 80;    // the extra gap you want
+      childIds.includes(n.id)
+    );
+    const dx = 240; // base sibling spacing
+    const extraNewChildGap = 80; // the extra gap you want
     const spacingX = dx + extraNewChildGap;
 
     // Find the current rightmost child's X (fallback to parent X if none)
@@ -313,14 +328,22 @@ export default function SkillTree({
     const newNode: Node<SkillNodeData> = {
       id,
       type: "skill",
-      data: { title: "New child", xp: 0 },
+      data: {
+        title: "New child",
+        xp: 0,
+        description: "",
+        onChangeDescription: handleChangeDescription,
+        onComplete: handleComplete,
+        onRename: handleRename,
+        onChangeXp: handleChangeXp,
+      },
       position: { x: childX, y: childY },
       sourcePosition: Position.Top,
       targetPosition: Position.Bottom,
     };
     const newEdge: Edge = {
       id: `e-${id}-${parentId}`,
-      source: id,     // child
+      source: id, // child
       target: parentId, // parent
     };
 
@@ -329,7 +352,7 @@ export default function SkillTree({
     setSelectedIds([id]);
   }, [edges, nodes, selectedIds, rootId, makeId]);
 
-  /** Cascading delete (children & descendants). Root protected. */
+  // Cascading delete, root protected
   const deleteSelected = useCallback(() => {
     if (selectedIds.length === 0) return;
 
@@ -368,110 +391,58 @@ export default function SkillTree({
     setSelectedIds([rootId]);
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
 
-  /** Clamp moves so children never go above the lowest parent; also re-clamp descendants when a parent moves. */
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      setNodes((prev) => {
-        const parentsMap = buildParentMap(edges);
-        const childrenMap = buildChildrenMap(edges);
+  // for dragging
+  const [draggingNodes, setDraggingNodes, onDraggingNodesChange] =
+    useNodesState<Node>([]);
+  const [draggingEdges, setDraggingEdges, onDraggingEdgesChange] =
+    useEdgesState<Edge>([]);
 
-        // first, apply incoming changes normally
-        let next = applyNodeChanges(changes, prev) as Node<SkillNodeData>[];
-
-        const idToNode = new Map(next.map((n) => [n.id, n]));
-        const movedIds = new Set(
-          changes
-            .map((c) => (c.type === "position" ? c.id : undefined))
-            .filter((id): id is string => typeof id === "string")
-        );
-
-        // helper: compute min allowed Y for a node given all its parents
-        const minAllowedYFor = (id: string): number | undefined => {
-          const pids = parentsMap[id] ?? [];
-          if (pids.length === 0) return undefined;
-          return Math.max(
-            ...pids.map(
-              (pid) => (idToNode.get(pid)?.position?.y ?? 0) + MIN_CHILD_GAP_Y
-            )
-          );
-        };
-
-        // build extra "position" changes to clamp children + descendants if any parent moved
-        const extra: NodeChange[] = [];
-        const queue: string[] = Array.from(movedIds);
-
-        while (queue.length) {
-          const pid = queue.shift()!;
-          const kids = childrenMap[pid] ?? [];
-          for (const kid of kids) {
-            const child = idToNode.get(kid);
-            if (!child) continue;
-            const minY = minAllowedYFor(kid);
-            if (minY !== undefined) {
-              const cy = child.position?.y ?? 0;
-              const cx = child.position?.x ?? 0;
-              if (cy < minY) {
-                extra.push({
-                  id: kid,
-                  type: "position",
-                  position: { x: cx, y: minY },
-                  dragging: false,
-                });
-              }
-            }
-            // always propagate to descendants
-            queue.push(kid);
-          }
-        }
-
-        if (extra.length) {
-          next = applyNodeChanges(extra, next) as Node<SkillNodeData>[];
-        }
-
-        // final pass: any node directly moved by the user and is a child must be clamped too
-        if (movedIds.size) {
-          const directExtra: NodeChange[] = [];
-          for (const id of movedIds) {
-            const node = next.find((n) => n.id === id);
-            if (!node) continue;
-            const minY = minAllowedYFor(id);
-            if (minY === undefined) continue;
-            const cy = node.position?.y ?? 0;
-            const cx = node.position?.x ?? 0;
-            if (cy < minY) {
-              directExtra.push({
-                id,
-                type: "position",
-                position: { x: cx, y: minY },
-                dragging: false,
-              });
-            }
-          }
-          if (directExtra.length) {
-            next = applyNodeChanges(directExtra, next) as Node<SkillNodeData>[];
-          }
-        }
-
-        return next;
-      });
-    },
-    [edges, setNodes]
+  // derive completed ids for export
+  const derivedCompletedIds = React.useMemo(
+    () =>
+      nodes
+        .filter((n) => (n.data as SkillNodeData | any)?.status === "completed")
+        .map((n) => String(n.id)),
+    [nodes]
   );
 
-  // (optional) block illegal connections if you enable user-created edges
-  const isValidConnection = useCallback((conn: Edge | Connection) => {
-    if (!conn.source || !conn.target) return false;
-    const src = (nodes as Node<SkillNodeData>[]).find((n) => n.id === conn.source); // child
-    const tgt = (nodes as Node<SkillNodeData>[]).find((n) => n.id === conn.target); // parent
-    if (!src || !tgt) return false;
-    const sy = src.position?.y ?? 0;
-    const ty = tgt.position?.y ?? 0;
-    return sy >= ty + MIN_CHILD_GAP_Y;
-  }, [nodes]);
+  // leave out current dto whenever nodes/edges/derivedCompleted change, but only when it actually differs
+  const lastExportKeyRef = useRef<string | null>(null);
+  React.useEffect(() => {
+    if (!onExport) return;
+    const key = JSON.stringify({
+      n: nodes.map((n) => ({
+        id: n.id,
+        x: n.position?.x ?? 0,
+        y: n.position?.y ?? 0,
+      })),
+      e: edges.map((e) => ({ s: e.source, t: e.target })),
+      c: [...derivedCompletedIds].sort(),
+    });
+    if (lastExportKeyRef.current === key) return;
+    lastExportKeyRef.current = key;
+    onExport({
+      nodes,
+      edges,
+      completedIds: Array.from(derivedCompletedIds),
+    });
+  }, [nodes, edges, derivedCompletedIds, onExport]);
+
+  // after nodes, edges, completedIds state declarations
+  useEffect(() => {
+    try {
+      onExport?.({
+        nodes: nodes as any,
+        edges: edges as any,
+        completedIds: Array.from(completedIds ?? []),
+      });
+    } catch (e) {
+      console.warn("SkillTree onExport failed", e);
+    }
+  }, [nodes, edges, completedIds, onExport]);
 
   return (
     <div className={className ?? "h-full w-full rounded border flex flex-col"}>
-      {/* Toolbar — no "Add root" */}
       <div className="flex items-center gap-2 p-2 border-b bg-muted/30">
         <button
           className="px-2 py-1 border rounded text-xs hover:bg-muted disabled:opacity-50"
@@ -510,16 +481,13 @@ export default function SkillTree({
           connectionMode={ConnectionMode.Loose}
           elementsSelectable
           proOptions={{ hideAttribution: true }}
-          isValidConnection={isValidConnection}   /* optional, safe to keep */
-          onSelectionChange={(sel: { nodes: Node<SkillNodeData>[] } | null) => {
-            const nextSel = (sel?.nodes ?? []).map((n) => n.id);
-            const target = nextSel.length ? nextSel : [rootId];
-            setSelectedIds((prev) =>
-              arraysEqual(prev, target) ? prev : target
-            );
-            emitSelection(target);
+          onSelectionChange={(sel) => {
+            const next = (sel?.nodes ?? []).map((n) => n.id);
+            const target = next.length ? next : [rootId];
+            if (arraysEqual(lastSelectedRef.current, target)) return;
+            lastSelectedRef.current = target;
+            setSelectedIds(target);
           }}
-
           onNodeClick={(_, node) => emitSelection([node.id])}
         >
           <MiniMap />
