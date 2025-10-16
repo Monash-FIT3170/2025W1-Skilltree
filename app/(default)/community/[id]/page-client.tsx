@@ -559,21 +559,15 @@ const ViewCommunityClient = ({
               </Dialog>
             </h2>
           </div>
-          <div
-            style={{
-              maxHeight: "calc(100vh - 100px)",
-              overflowY: "auto",
-              paddingRight: ".5rem",
-            }}
-          >
+          <div>
             {posts.length === 0 ? (
               <div className="w-full flex flex-col items-center justify-center">
-                <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
                   <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">
-                    No posts yet. Be the first to add a proof of practice!
+                    No upcoming events. Check back later!
                   </p>
-                </div>
+                </Skeleton>
               </div>
             ) : (
               posts.map((post) => (
