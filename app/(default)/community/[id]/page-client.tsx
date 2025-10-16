@@ -144,11 +144,17 @@ const ViewCommunityClient = ({
 
     try {
       const result = await deleteCommunityAction(community.id);
+      // Ensure we pass a string to toast (the API may return an object as message)
+      const messageStr =
+        typeof result.message === "string"
+          ? result.message
+          : JSON.stringify(result.message);
+
       if (result.ok) {
-        toast.success(result.message);
-        router.push("/community");
+        toast.success(messageStr);
+        router.push("/dashboard");
       } else {
-        toast.error(result.message);
+        toast.error(messageStr);
       }
     } catch (err) {
       toast.error("Failed to delete community");
@@ -162,7 +168,12 @@ const ViewCommunityClient = ({
     } else {
       console.log(JSON.stringify(response, null, 2));
 
-      toast.error(response.message || "Failed to leave skill tree.");
+      const msg =
+        typeof response.message === "string"
+          ? response.message
+          : JSON.stringify(response.message || "Failed to leave skill tree.");
+
+      toast.error(msg);
     }
     setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
   };

@@ -80,7 +80,7 @@ const CommunityMembersClient = ({
                   className={cn(
                     "flex items-center space-x-2",
                     member.user.id === user.userId &&
-                      "opacity-50 pointer-events-none"
+                    "opacity-50 pointer-events-none"
                   )}
                 >
                   <Button
@@ -91,7 +91,11 @@ const CommunityMembersClient = ({
                         id,
                         member.user.id
                       );
-                      toast.success(response.message);
+                      const msg =
+                        typeof response.message === "string"
+                          ? response.message
+                          : JSON.stringify(response.message);
+                      toast.success(msg);
                     }}
                   >
                     Remove
