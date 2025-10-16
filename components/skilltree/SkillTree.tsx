@@ -32,6 +32,8 @@ import {
 } from "@/components/skilltree/graph";
 import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
+const MIN_CHILD_GAP_Y = 100;
+
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
 // for a single root
@@ -474,7 +476,7 @@ export default function SkillTree({
         <ReactFlow
           nodes={nodesWithStatus}
           edges={edges}
-          onNodesChange={onNodesChange}
+          onNodesChange={_rfOnNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
           fitView
@@ -488,7 +490,6 @@ export default function SkillTree({
             lastSelectedRef.current = target;
             setSelectedIds(target);
           }}
-          onNodeClick={(_, node) => emitSelection([node.id])}
         >
           <MiniMap />
           <Controls />

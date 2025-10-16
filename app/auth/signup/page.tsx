@@ -42,14 +42,14 @@ export default function LoginPage() {
         password: form.password,
       });
       if (!response.ok) {
-        toast.error(response.message as string);
+        toast.error("Invalid credentials");
         return;
       }
       const { access_token, user } = response.message as TSignInResponse;
 
       const userProfile = await getUserAction();
       if (!userProfile.ok) {
-        toast.error(userProfile.message as string);
+        toast.error("Failed to load user profile");
         return;
       }
 
@@ -77,7 +77,7 @@ export default function LoginPage() {
     });
 
     if (!response.ok) {
-      return toast.error(response.message as string);
+      return toast.error("Could not sign you up. Try again later.");
     }
 
     const { user, access_token } = response.message as TSignUpResponse;
