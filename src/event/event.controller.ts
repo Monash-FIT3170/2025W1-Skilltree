@@ -6,15 +6,12 @@ import {
 	Param,
 	UseGuards,
 	HttpStatus,
-	Delete,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { JwtGuard } from '../_utils/guards/jwt.guard';
 import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
 import { GetUser } from '../_utils/decorator/get-user.decorator';
 import { User } from '@prisma/client';
-import { TApiResponse } from 'src/types';
 
 @Controller('event')
 export class EventController {
