@@ -46,13 +46,13 @@ export class EventService {
 		}
 	}
 
-	async deleteEvent(dto: DeleteEventDto, eventId: string, userId: string) {
+	async deleteEvent(id: string, eventId: string, userId: string) {
 		try {
 			const user = await this.prisma.user.findUnique({ where: { id: userId } });
 			const userPermitted = await this.prisma.skillTreeUser.findFirst({
 				where: {
 					userId: userId,
-					skillTreeId: dto.skillTreeId,
+					skillTreeId: id,
 				},
 			});
 
@@ -111,12 +111,16 @@ export class EventService {
 
 	async updateEvent(eventId: string, dto: UpdateEventDto, userId: string) {
 		try {
-			const event = await this.prisma.event.findUnique({ where: { id: eventId } });
+			const event = await this.prisma.event.findUnique({
+				where: { id: eventId },
+			});
 			if (!event) throw new InternalServerErrorException('Event not found');
 
 			// require skillTreeId in dto to verify admin privileges (matches create/delete pattern)
 			if (!dto.skillTreeId) {
-				throw new InternalServerErrorException('skillTreeId is required to update event');
+				throw new InternalServerErrorException(
+					'skillTreeId is required to update event',
+				);
 			}
 
 			const user = await this.prisma.user.findUnique({ where: { id: userId } });
