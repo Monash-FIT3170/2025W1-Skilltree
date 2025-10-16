@@ -5,7 +5,6 @@ import CommonError from "@/components/CommonError";
 import CommunitySkillTree from "@/components/CommunitySkillTree";
 
 type PageProps = {
-  // PPR is on, so params is a Promise
   params: Promise<{ id: string }>;
 };
 
@@ -57,7 +56,7 @@ export default async function Page({ params }: PageProps) {
 
         {/* Back to community */}
         <Link href={`/community/${community.id}`}>
-          <Button >← Back to Community</Button>
+          <Button>← Back to Community</Button>
         </Link>
       </div>
 
