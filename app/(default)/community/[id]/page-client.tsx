@@ -1,5 +1,5 @@
 "use client";
-
+import { deleteCommunityAction } from "@/actions/delete-community-actions";
 import React, { useEffect, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,6 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getIsAdmin } from "@/actions/get-is-admin";
 import { getIsMember } from "@/actions/get-is-member";
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
@@ -124,22 +123,37 @@ const ViewCommunityClient = ({
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const user = userStore.getState();
+  const isAdmin = community.skillTreeUser.some(
+    (u) => u.user && u.user.id === user.user?.id && u.role === "ADMIN"
+  );
   const [isMember, setIsMember] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [popModalOpen, setPopModalOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const adminStatus = await getIsAdmin(community.id);
-      setIsAdmin(adminStatus.message as boolean);
       const memberStatus = await getIsMember(community.id);
       setIsMember(memberStatus.message as boolean);
     })();
   }, [community.id, posts.length]);
 
-  const handleCommentSubmit = () => {};
+  const handleCommentSubmit = () => { };
+  async function handleDeleteCommunity() {
+    if (!confirm("Are you sure you want to delete this community? This action cannot be undone.")) return;
 
+    try {
+      const result = await deleteCommunityAction(community.id);
+      if (result.ok) {
+        toast.success(result.message);
+        router.push("/community");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err) {
+      toast.error("Failed to delete community");
+    }
+  }
   const handleLeave = async () => {
     setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
     const response = await leaveSkillTreeAction(community.id);
@@ -278,9 +292,9 @@ const ViewCommunityClient = ({
 
   return (
     <div className="flex flex-col w-full">
-      <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full">
+      <header className="flex">
         <h1 className="text-3xl font-bold">{community.name}</h1>
-        <div className="flex gap-3">
+        <div className="flex gap-3 ml-auto">
           <Button
             onClick={() => router.push(`/community/${community.id}/members`)}
           >
@@ -309,6 +323,7 @@ const ViewCommunityClient = ({
               {loadingStates.joinLeave ? "Joining..." : "Join"}
             </Button>
           )}
+
         </div>
       </header>
       <main className="w-full grid flex-1 grid-cols-1 gap-8 mx-auto md:grid-cols-2">
@@ -336,11 +351,10 @@ const ViewCommunityClient = ({
                         </p>
                       </div>
                       <Badge
-                        className={`shrink-0 self-start sm:self-center ${
-                          ev.mode === "ranked"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-emerald-100 text-emerald-700"
-                        }`}
+                        className={`shrink-0 self-start sm:self-center ${ev.mode === "ranked"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-emerald-100 text-emerald-700"
+                          }`}
                       >
                         {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
                       </Badge>
