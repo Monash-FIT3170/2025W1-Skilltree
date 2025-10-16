@@ -38,7 +38,7 @@ export default function LogInPage() {
     try {
       const response = await signInAction(form);
       if (!response.ok) {
-        toast.error(response.message as string);
+        toast.error("Invalid credentials");
         setIsPending(false);
         return;
       }
@@ -46,15 +46,18 @@ export default function LogInPage() {
 
       const userProfile = await getUserAction();
       if (!userProfile.ok) {
-        toast.error(userProfile.message as string);
+        toast.error("Failed to fetch user profile");
         setIsPending(false);
         return;
       }
 
+      console.log(userProfile.message);
+      // return;
+
       userStore.setState((pv) => ({
         ...pv,
-        userId: user.id,
         accessToken: access_token,
+        userId: user.id,
         user: userProfile.message as TUser,
       }));
 

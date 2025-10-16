@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
-import { TSkillTrees } from "@/actions/get-my-skilltrees";
+import { TAuthSkillTrees } from "@/actions/get-my-skilltrees";
 import { TEvents } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -32,7 +32,7 @@ const DashboardPageClient = ({
   skilltrees,
   events,
 }: {
-  skilltrees: TSkillTrees[];
+  skilltrees: TAuthSkillTrees[];
   events: TEvents[];
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
@@ -91,7 +91,7 @@ const DashboardPageClient = ({
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {skilltrees.map((tree: TSkillTrees) => {
+              {skilltrees.map((tree: TAuthSkillTrees) => {
                 return (
                   <Card
                     className="transition-colors cursor-pointer hover:bg-primary/10"

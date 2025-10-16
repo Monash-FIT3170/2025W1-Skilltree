@@ -50,6 +50,7 @@ import { userStore } from "@/stores";
 import { Button } from "../ui/button";
 import Loading from "../../app/loading";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const Providers = ({
   children,
@@ -57,24 +58,16 @@ export const Providers = ({
   children: Readonly<React.ReactNode>;
 }) => {
   const router = useRouter();
+  const [headerSearch, setHeaderSearch] = useState("");
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [pfp, setPfp] = useState("");
+  const name = userStore.getState().user?.name || "User";
+  const pfp = userStore.getState().user?.pfp || undefined;
 
   useEffect(() => {
-    const unsubscribe = userStore.subscribe((state) => {
-      if (!state.userId || !state.accessToken) {
-        router.replace("/auth/signin");
-      }
-
-      setName(state.user?.name || "");
-      setPfp(state.user?.pfp || "");
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    if (!userStore.getState().accessToken) {
+      router.push("/login");
+    }
+  }, [router]);
 
   const handleSettings = () => {
     router.push("/user/settings");
@@ -105,16 +98,31 @@ export const Providers = ({
               className="w-[300px] md:w-[400px] lg:w-[500px]"
               placeholder="Search..."
               type="text"
+              value={headerSearch}
+              onChange={(e) => setHeaderSearch(e.target.value)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  const q = headerSearch.trim();
+                  router.push(
+                    q ? `/search?q=${encodeURIComponent(q)}` : "/search"
+                  );
+                }
+              }}
             />
 
             <div className="flex items-center justify-start gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className="flex-1 w-full flex items-center justify-between !p-4"
-                  >
-                    {userStore.getState().user?.name || "User"}
+                  <Button asChild variant={"outline"}>
+                    <div className="flex items-center gap-4 !p-4">
+                      <Avatar>
+                        <AvatarImage src={pfp} alt={name || "User"} />
+                        <AvatarFallback>
+                          {(name || "U").charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {userStore.getState().user?.name || "User"}
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
 

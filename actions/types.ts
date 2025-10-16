@@ -1,4 +1,4 @@
-import { TSkillTree, TUser } from "@/types";
+import { TAuthSkillTree, TUser } from "@/types";
 
 export type TSignInResponse = {
   access_token: string;
@@ -12,4 +12,4 @@ export type TSignUpResponse = {
 
 export type TGetUserProfileResponse = TUser;
 
-export type TGetSkillTreesResponse = TSkillTree[];
+export type TGeTAuthSkillTreesResponse = TAuthSkillTree[];

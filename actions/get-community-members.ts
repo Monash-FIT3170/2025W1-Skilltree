@@ -16,15 +16,15 @@ export async function getCommunityMembersAction(id: string) {
     }
   );
 
-  const data = (await response.json()) as APIResponse<TSkillTreeMember[]>;
+  const data = (await response.json()) as APIResponse<TAuthSkillTreeMember[]>;
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
-  return data as APIResponse<TSkillTreeMember[]>;
+  return data as APIResponse<TAuthSkillTreeMember[]>;
 }
 
-export type TSkillTreeMember = {
+export type TAuthSkillTreeMember = {
   skillTreeId: string;
   role: "ADMIN" | "MEMBER";
   verificationStatus: "PENDING" | "VERIFIED";

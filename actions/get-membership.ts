@@ -4,11 +4,11 @@ import { cookies } from "next/headers";
 import { APIResponse } from "@/types";
 import { revalidatePath } from "next/cache";
 
-export async function getIsAdmin(skillTreeId: string) {
+export async function getMembership(skillTreeId: string) {
   const cookieStore = await cookies();
 
   const response = await fetch(
-    `${process.env.API_URL}/skilltree/is-admin/${skillTreeId}`,
+    `${process.env.API_URL}/skilltree/membership/${skillTreeId}`,
     {
       method: "GET",
       headers: {
@@ -17,17 +17,25 @@ export async function getIsAdmin(skillTreeId: string) {
     }
   );
 
-  const data = (await response.json()) as APIResponse<boolean>;
+  const data = (await response.json()) as APIResponse<{
+    member: boolean;
+    admin: boolean;
+  }>;
+
+  console.log("getMembership", data);
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
 
-  revalidatePath(`/community/${skillTreeId}`);
-  return data as APIResponse<boolean>;
+  revalidatePath(`/community/${skillTreeId}`, "page");
+  return data as APIResponse<{
+    member: boolean;
+    admin: boolean;
+  }>;
 }
 
-export type TSkillTreeMember = {
+export type TAuthSkillTreeMember = {
   skillTreeId: string;
   role: "ADMIN" | "MEMBER";
   verificationStatus: "PENDING" | "VERIFIED";

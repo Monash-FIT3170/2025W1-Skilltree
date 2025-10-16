@@ -51,20 +51,19 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
     const updateUser = await updateUserAction({
       name,
       pfp: previewUrl ?? "",
-      // Add isPrivate to your updateUserAction
-      // isPrivate,
     });
 
     if (!updateUser.ok) {
-      return toast.error(updateUser.message as string);
+      return toast.error("Failed to update profile");
     }
 
     userStore.setState((state) => ({
-      user: { ...state.user, ...(updateUser.message as TUser) },
+      user: {
+        ...state.user,
+        ...updateUser.message,
+      },
     }));
 
-    setFile(null);
-    setPreviewUrl(null);
     toast.success("Profile updated successfully");
   };
 
@@ -80,7 +79,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
               onClick={handleAvatarClick}
               className="cursor-pointer h-28 w-28 md:h-48 md:w-48 aspect-square"
             >
-              <AvatarImage src={previewUrl ?? ""} alt={name || "User"} />
+              <AvatarImage src={previewUrl ?? undefined} alt={name || "User"} />
               <AvatarFallback>{initials(name)}</AvatarFallback>
             </Avatar>
             <Input
@@ -137,7 +136,9 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
                 <Checkbox
                   id="private-account"
                   checked={isPrivate}
-                  onCheckedChange={(checked) => setIsPrivate(checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    setIsPrivate(checked as boolean)
+                  }
                 />
                 <Label
                   htmlFor="private-account"

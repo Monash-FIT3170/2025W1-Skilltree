@@ -1,5 +1,8 @@
 import CommunitiesPageClient from "./page-client";
-import type { TGetCommunitiesByMembershipResponse, TSkillTree } from "@/types";
+import type {
+  TGetCommunitiesByMembershipResponse,
+  TAuthSkillTree,
+} from "@/types";
 import CommonError from "@/components/CommonError";
 import { getCommunityByMembershipAction } from "@/actions/get-community-by-membership";
 
@@ -11,10 +14,9 @@ export default async function CommunitiesPage() {
       return <CommonError errorDescription="Could not load communities" />;
     }
 
-
     return (
       <CommunitiesPageClient
-        communities={communities.message as TSkillTree[]}
+        communities={communities.message as TAuthSkillTree[]}
       />
     );
   } catch (error) {

@@ -14,9 +14,9 @@ export async function leaveSkillTreeAction(id: string) {
   });
   const data = await response.json();
 
-  revalidatePath(`/community/${id}`);
+  revalidatePath(`/community/${id}`, "page");
   revalidatePath("/dashboard");
-  revalidatePath(`/community/${id}/members`);
+  revalidatePath(`/community/${id}/members`, "page");
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };

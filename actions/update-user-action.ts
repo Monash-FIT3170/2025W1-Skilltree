@@ -3,7 +3,8 @@
 import { cookies } from "next/headers";
 import { APIResponse } from "@/types";
 import { TGetUserProfileResponse } from "./types";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
+import { getUserAction } from "./get-user-action";
 
 export async function updateUserAction({
   name,
@@ -27,14 +28,15 @@ export async function updateUserAction({
   });
   const data = (await response.json()) as APIResponse<TGetUserProfileResponse>;
 
-  // revalidatePath("/user/settings");
-  revalidatePath("/(default)", "layout");
-
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
 
+  revalidatePath("/user/settings", "page");
+  revalidatePath("/(default)", "layout");
+  revalidatePath("/auth", "layout");
+
   const message = data.message as TGetUserProfileResponse;
 
-  return { ok: true, message: data.message };
+  return { ok: true, message };
 }

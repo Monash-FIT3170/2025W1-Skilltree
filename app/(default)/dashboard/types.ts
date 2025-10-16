@@ -1,4 +1,4 @@
-import { TSkillTreeUser } from "@/types";
+import { TAuthSkillTreeUser } from "@/types";
 
 type TEventResponse = {
   ok: boolean;
@@ -6,7 +6,7 @@ type TEventResponse = {
   status: number;
 };
 
-type TSkillTree = {
+type TAuthSkillTree = {
   id: string;
   name: string;
   description: string;
@@ -64,19 +64,7 @@ type TSkillNode = {
   skillTreeId: string;
 };
 
-type TAuthSkillTree = {
-  id: string;
-  name: string;
-  description: string;
-  creator: TCreator;
-  tags: TTag[];
-  skillNodes: TSkillNode[];
-  skillTreeUser: TSkillTreeUser[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-type APIResponse<T> = {
+export type APIResponse<T> = {
   ok: boolean;
   message: T | string;
   status: number;

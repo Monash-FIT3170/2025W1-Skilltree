@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -26,11 +26,11 @@ import {
 } from "@/components/ui/select";
 import { userStore } from "@/stores";
 import { useRouter } from "next/navigation";
-import { TSkillTree } from "@/actions/get-community-action";
+import { TAuthSkillTree } from "@/actions/get-community-action";
 import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
-import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
+import { createPostAction } from "@/actions/create-post-action";
 import {
   Clock12,
   MessagesSquareIcon,
@@ -46,10 +46,13 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getIsAdmin } from "@/actions/get-is-admin";
-import { getIsMember } from "@/actions/get-is-member";
-import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
+import { likePostAction } from "@/actions/like-post-action";
+import { unlikePostAction } from "@/actions/unlike-post-action";
+import { deletePostAction } from "@/actions/delete-post-action";
+import { getMembership } from "@/actions/get-membership";
 import { createVerificationAction } from "@/actions/create-feedback";
+import { TFeedback, TUser } from "@/types";
+import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const events = [
@@ -87,8 +90,8 @@ const ViewCommunityClient = ({
   community,
   posts,
 }: {
-  community: TSkillTree;
-  posts: TSkillNode[];
+  community: TAuthSkillTree;
+  posts: any[];
 }) => {
   const router = useRouter();
 
@@ -98,6 +101,17 @@ const ViewCommunityClient = ({
     submittingFeedback: false,
     submittingFeedbackNoXp: false,
   });
+
+  const [membership, setMembership] = useState({
+    member: false,
+    admin: false,
+  });
+  useEffect(() => {
+    (async () => {
+      const { member, admin } = (await getMembership(community.id)).message;
+      setMembership({ member, admin });
+    })();
+  }, [community.id]);
 
   const skillNodes = community.skillNodes.map((node) => ({
     name: node.name,
@@ -123,22 +137,98 @@ const ViewCommunityClient = ({
 
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isMember, setIsMember] = useState(false);
+  const [title, setTitle] = useState(community.name);
+  const [tags, setTags] = useState("");
+  const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
-  const [popModalOpen, setPopModalOpen] = useState(false);
+  const [fileB64, setFileB64] = useState<string | null>(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+
+  const user = userStore.getState();
 
   useEffect(() => {
-    (async () => {
-      const adminStatus = await getIsAdmin(community.id);
-      setIsAdmin(adminStatus.message as boolean);
-      const memberStatus = await getIsMember(community.id);
-      setIsMember(memberStatus.message as boolean);
-    })();
-  }, [community.id, posts.length]);
+    setLikedPosts({});
+  }, [posts]);
 
-  const handleCommentSubmit = () => {};
+  type FlatNode = { id: string; name: string; parentId: string | null };
+
+  function buildTree(nodes: FlatNode[], communityName: string) {
+    const byParent = new Map<string | null, FlatNode[]>();
+    nodes.forEach((n) => {
+      const key = n.parentId ?? null;
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key)!.push(n);
+    });
+
+    const toNode: any = (n: FlatNode) => ({
+      id: n.id,
+      label: n.name,
+      unlocked: true,
+      children: (byParent.get(n.id) ?? []).map(toNode),
+    });
+
+    const roots = byParent.get(null) ?? [];
+
+    return {
+      id: "root",
+      label: communityName,
+      unlocked: true,
+      children: roots.map(toNode),
+    };
+  }
+
+  const rootSkill = useMemo(
+    () => buildTree(community.skillNodes as any, community.name),
+    [community.skillNodes, community.name]
+  );
+
+  const visiblePosts = useMemo(() => {
+    if (!selectedSkill) return posts;
+    if (selectedSkill === "root") return posts;
+    return posts.filter(
+      (p) =>
+        p.skillNode?.id === selectedSkill ||
+        (p as any).skillNodeId === selectedSkill
+    );
+  }, [posts, selectedSkill]);
+
+  const handlePostSubmit = async () => {
+    if (!selectedNode) {
+      toast.error("Please select a skill node");
+      return;
+    }
+
+    setSubmitting(true);
+    const res = await createPostAction({
+      skillNodeId: selectedNode,
+      content: body,
+      proofMedia: fileB64 ?? undefined,
+    });
+    setSubmitting(false);
+
+    if (res.ok) {
+      toast.success("Post created");
+      setBody("");
+      setPreview(null);
+      setFileB64(null);
+      setIsDialogOpen(false);
+      // Ideally revalidate and refresh list
+      router.refresh?.();
+    } else {
+      toast.error(
+        typeof res.message === "string" ? res.message : "Failed to create post"
+      );
+    }
+  };
+  const handleCommentSubmit = () => {
+    //here we need to add the submission of a comment
+    // console.log({ title, tags, body, allowVerification });
+  };
 
   const handleLeave = async () => {
     setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
@@ -166,75 +256,61 @@ const ViewCommunityClient = ({
     setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
   };
 
-  const exampleSkillTree = {
-    id: "snowboarding",
-    label: "Snowboarding",
-    unlocked: true,
-    children: [
-      {
-        id: "jump",
-        label: "Jumping",
-        unlocked: false,
-        children: [
-          { id: "grab", label: "Grab Tricks", unlocked: false },
-          { id: "spin", label: "Spin Tricks", unlocked: false },
-        ],
-      },
-      { id: "grind", label: "Rails / Boxes", unlocked: true },
-    ],
-  };
-
-  const handleAddProofOfPractice = async () => {
-    const { skillNodeId, proofMedia, content } = addProofOfPracticeForm;
-    if (!skillNodeId) {
-      console.error("Please select a skill tree node.");
-      toast.error("Please select a skill tree node.");
-      return;
-    }
-    if (!proofMedia) {
-      console.error("Please upload a media file.");
-      toast.error("Please upload a media file.");
-      return;
-    }
-    if (!content) {
-      console.error("Please enter a description.");
-      toast.error("Please enter a description.");
-      return;
-    }
-
-    setLoadingStates((prev) => ({ ...prev, addingProof: true }));
-    try {
-      const response = await createProofOfPracticeAction({
-        skillNodeId: addProofOfPracticeForm.skillNodeId as string,
-        proofMedia: addProofOfPracticeForm.proofMedia as string,
-        content: addProofOfPracticeForm.content as string,
-      });
-      if (response.ok) {
-        toast.success(
-          "Proof of practice added successfully, it will reflect in the feed shortly."
-        );
-        setAddProofOfPracticeForm({
-          skillNodeId: "",
-          proofMedia: null,
-          content: "",
-        });
-        setPreview(null);
-        // Optionally refresh posts or close dialog
+  // Helper function for like/unlike logic
+  async function handleLikeToggle({
+    post,
+    userId,
+    toast,
+    router,
+  }: {
+    post: any;
+    userId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const hasLiked =
+      post.likes.some((like: TUser) => like.id === userId) ||
+      likedPosts[post.id];
+    let res;
+    if (hasLiked) {
+      res = await unlikePostAction(post.id);
+      if (res.ok) {
+        toast.success("Unliked!");
+        setLikedPosts((prev) => ({ ...prev, [post.id]: false }));
+        router.refresh?.();
       } else {
-        toast.error(
-          typeof response.message === "string"
-            ? response.message
-            : "Failed to add proof of practice."
-        );
+        toast.error("Failed to unlike post");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while adding proof of practice.");
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, addingProof: false }));
-      setPopModalOpen(false);
+    } else {
+      res = await likePostAction(post.id);
+      if (res.ok) {
+        toast.success("Liked!");
+        setLikedPosts((prev) => ({ ...prev, [post.id]: true }));
+        router.refresh?.();
+      } else {
+        toast.error("Failed to like post");
+      }
     }
-  };
+  }
+
+  // Helper function for deleting a post
+  async function handleDeletePost({
+    postId,
+    toast,
+    router,
+  }: {
+    postId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const res = await deletePostAction(postId);
+    if (res.ok) {
+      toast.success("Post deleted!");
+      router.refresh?.();
+    } else {
+      toast.error("Failed to delete post");
+    }
+  }
 
   const handleAddFeedback = async (noXp: boolean = false) => {
     if (!openPostId) {
@@ -255,7 +331,7 @@ const ViewCommunityClient = ({
       const response = await createVerificationAction({
         postId: openPostId,
         feedbackText: addFeedbackForm.feedbackText,
-        multiplier: noXp ? 1 : isAdmin ? 3 : 2,
+        multiplier: noXp ? 1 : membership.admin ? 3 : 2,
       });
 
       toast.success("Feedback submitted successfully. It will appear soon.");
@@ -278,7 +354,7 @@ const ViewCommunityClient = ({
 
   return (
     <div className="flex flex-col w-full">
-      <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full">
+      <header className="mb-5 flex flex-col lg:flex-row items-start lg:items-center justify-between w-full">
         <h1 className="text-3xl font-bold">{community.name}</h1>
         <div className="flex gap-3">
           <Button
@@ -291,16 +367,13 @@ const ViewCommunityClient = ({
           >
             View Skill Tree
           </Button>
-          {isAdmin && (
+          {membership.admin && !membership.member ? (
             <Button
               onClick={() => router.push(`/community/${community.id}/settings`)}
             >
               Settings
             </Button>
-          )}
-          {community.skillTreeUser.some(
-            (member) => member.user.id === userStore.getState().user?.id
-          ) ? (
+          ) : membership.member ? (
             <Button type="button" onClick={handleLeave} variant="destructive">
               {loadingStates.joinLeave ? "Leaving..." : "Leave"}
             </Button>
@@ -313,52 +386,54 @@ const ViewCommunityClient = ({
       </header>
       <main className="w-full grid flex-1 grid-cols-1 gap-8 mx-auto md:grid-cols-2">
         <aside className="md:col-span-1">
-          <div className="py-5 space-y-6">
-            <div className="p-4 rounded shadow-sm">
-              <FilteringSkillTree
-                rootSkill={exampleSkillTree}
-                onSelect={(nodeId) => setSelectedSkill(nodeId)}
-              />
-            </div>
-            <section className="w-full">
-              <div className="w-full text-center">
-                <h2 className="text-lg font-semibold">Recent Events</h2>
-              </div>
-
-              <div className="flex flex-col items-stretch w-full gap-4 rounded">
-                {events.map((ev) => (
-                  <Card key={ev.id} className="w-full rounded">
-                    <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <h3 className="font-semibold">{ev.title}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {ev.club} · {ev.category}
-                        </p>
-                      </div>
-                      <Badge
-                        className={`shrink-0 self-start sm:self-center ${
-                          ev.mode === "ranked"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-emerald-100 text-emerald-700"
-                        }`}
-                      >
-                        {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
+          <div className="p-4 rounded shadow-sm">
+            <FilteringSkillTree
+              rootSkill={rootSkill}
+              onSelect={(nodeId) => setSelectedSkill(nodeId)}
+            />
           </div>
+          <section className="w-full">
+            <div className="w-full text-center mt-5">
+              <h2 className="text-lg font-semibold">Recent Events</h2>
+            </div>
+
+            <div className="flex flex-col items-stretch w-full py-5 gap-4 rounded">
+              {events.map((ev) => (
+                <Card key={ev.id} className="w-full rounded">
+                  <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 className="font-semibold">{ev.title}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {ev.club} · {ev.category}
+                      </p>
+                    </div>
+                    <Badge
+                      className={`shrink-0 self-start sm:self-center ${
+                        ev.mode === "ranked"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-emerald-100 text-emerald-700"
+                      }`}
+                    >
+                      {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
+                    </Badge>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
         </aside>
 
         {/* Posts feed */}
-        <section className="py-5 space-y-6 md:col-span-1">
+        <section className="space-y-6 md:col-span-1">
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
-              <Dialog open={popModalOpen} onOpenChange={setPopModalOpen}>
-                <DialogTrigger asChild>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger
+                  className={cn(membership.member ? "block" : "hidden")}
+                  asChild
+                >
                   <Button
                     size="sm"
                     variant="outline"
@@ -381,19 +456,14 @@ const ViewCommunityClient = ({
                       Select Skill Tree Node
                     </Label>
                     <Select
-                      value={addProofOfPracticeForm.skillNodeId}
-                      onValueChange={(value) =>
-                        setAddProofOfPracticeForm({
-                          ...addProofOfPracticeForm,
-                          skillNodeId: value,
-                        })
-                      }
+                      value={selectedNode ?? undefined}
+                      onValueChange={(val) => setSelectedNode(val)}
                     >
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
                       </SelectTrigger>
                       <SelectContent>
-                        {skillNodes.map((node) => (
+                        {community.skillNodes.map((node) => (
                           <SelectItem key={node.id} value={node.id}>
                             {node.name}
                           </SelectItem>
@@ -405,21 +475,19 @@ const ViewCommunityClient = ({
                   <div className="w-full py-2 space-y-2">
                     <Label>Upload Media</Label>
                     <Input
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          const file = e.target.files[0];
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreview(reader.result as string);
-                            setAddProofOfPracticeForm((prev) => ({
-                              ...prev,
-                              proofMedia: reader.result as string,
-                            }));
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
                       type="file"
+                      accept="image/*,video/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const result = reader.result as string;
+                          setPreview(result);
+                          setFileB64(result);
+                        };
+                        reader.readAsDataURL(file);
+                      }}
                     />
                     {preview && (
                       <Image
@@ -464,148 +532,185 @@ const ViewCommunityClient = ({
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button
-                      onClick={handleAddProofOfPractice}
-                      disabled={loadingStates.addingProof}
-                    >
-                      {loadingStates.addingProof ? "Adding..." : "Confirm"}
+                    <Button onClick={handlePostSubmit} disabled={submitting}>
+                      {submitting ? "Submitting..." : "Confirm"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </h2>
           </div>
-
-          {posts.length === 0 ? (
-            <div className="w-full flex flex-col items-center justify-center">
-              <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
-                <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  No posts yet. Be the first to add a proof of practice!
-                </p>
+          <div>
+            {visiblePosts.length === 0 ? (
+              <div className="w-full flex flex-col items-center justify-center">
+                <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                  <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">
+                    No posts yet. Check back later!
+                  </p>
+                </Skeleton>
               </div>
-            </div>
-          ) : (
-            posts.map((post) => (
-              <Card key={post.id} className="w-full my-8">
-                <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
-                  <div className="flex items-center justify-between w-full">
-                    <div className="p-0 m-0 text-lg font-bold">
-                      {post.skillNode.name} <br />
-                      <span className="text-sm">in {community.name}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs">
-                      <Clock12 />{" "}
-                      {new Date(post.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-base">{post.content}</div>
-                  <div className="flex items-center justify-center w-full">
-                    <Image
-                      src={post.proofMedia ?? "https://picsum.photos/600/350"}
-                      alt="Post Image"
-                      width={600}
-                      height={350}
-                      className="object-cover rounded"
-                    />
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-col w-full gap-4">
-                  <div className="flex items-center justify-between w-full">
-                    <Button
-                      variant="default"
-                      className="flex items-center gap-2"
-                    >
-                      <ThumbsUp />
-                      {post.likes.length} Like(s)
-                    </Button>
-                    <Button
-                      className="flex items-center gap-2"
-                      onClick={() =>
-                        setOpenPostId(openPostId === post.id ? null : post.id)
-                      }
-                    >
-                      <MessagesSquareIcon />
-                      <span>{post.feedback.length} Feedback(s)</span>
-                    </Button>
-                  </div>
-
-                  {/* Feedback shown inline below post when open */}
-                  {openPostId === post.id && (
-                    <div className="w-full mt-4 space-y-3">
-                      {post.feedback.map((fb) => (
-                        <Card
-                          key={`${fb.postId}_${fb.verifierId}`}
-                          className="flex flex-col gap-3 text-sm"
-                        >
-                          <CardHeader className="font-bold flex items-center gap-2">
-                            Verified by {fb.verifier.name}
-                            <CardDescription>
-                              <Badge className="font-bold">
-                                {fb.multiplier}x
-                              </Badge>
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>{fb.feedbackText}</CardContent>
-                        </Card>
-                      ))}
-
-                      {/* Feedback box */}
-                      <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
-                        <Label htmlFor={`comment-${post.id}`}>
-                          Leave some feedback
-                        </Label>
-                        <Textarea
-                          id={`comment-${post.id}`}
-                          placeholder="Write your feedback..."
-                          className="mt-2"
-                          rows={3}
-                          value={addFeedbackForm.feedbackText}
-                          onChange={(e) =>
-                            setAddFeedbackForm({
-                              ...addFeedbackForm,
-                              feedbackText: e.target.value,
-                            })
-                          }
-                        />
-                        <div className="flex justify-end mt-2 gap-2">
-                          <Button
-                            variant="outline"
-                            onClick={() => setOpenPostId(null)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            onClick={() => {
-                              handleAddFeedback(true);
-                            }}
-                            disabled={loadingStates.submittingFeedbackNoXp}
-                          >
-                            {loadingStates.submittingFeedbackNoXp
-                              ? "Submitting..."
-                              : "Submit Without XP"}
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              handleAddFeedback();
-                            }}
-                            disabled={loadingStates.submittingFeedback}
-                          >
-                            {loadingStates.submittingFeedback
-                              ? "Submitting..."
-                              : "Submit"}
-                          </Button>
-                        </div>
+            ) : (
+              visiblePosts.map((post) => (
+                <Card key={post.id} className="w-full">
+                  <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="p-0 m-0 text-lg font-bold">
+                        {post.skillNode.name} <br />
+                        <span className="text-sm">in {community.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs">
+                        <Clock12 />{" "}
+                        {new Date(post.createdAt).toLocaleDateString()}
                       </div>
                     </div>
-                  )}
-                </CardFooter>
-              </Card>
-            ))
-          )}
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="text-base">{post.content}</div>
+                    {post.proofMedia && (
+                      <div className="flex items-center justify-center w-full">
+                        <Image
+                          src={post.proofMedia}
+                          alt="Post Media"
+                          width={600}
+                          height={350}
+                          className="object-cover rounded"
+                        />
+                      </div>
+                    )}
+                  </CardContent>
+                  <CardFooter className="flex flex-col  w-full gap-4">
+                    <div className="flex items-center w-full justify-between">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          className="flex items-center gap-2"
+                          onClick={() =>
+                            setOpenPostId(
+                              openPostId === post.id ? null : post.id
+                            )
+                          }
+                        >
+                          <MessagesSquareIcon />
+                          <span>{post.feedback.length} Feedback(s)</span>
+                        </Button>
+                        <Button
+                          variant={
+                            post.likes.some(
+                              (like: TUser) => like.id === user.user!.id
+                            ) || likedPosts[post.id]
+                              ? "outline"
+                              : "default"
+                          }
+                          className="flex items-center gap-2"
+                          onClick={() =>
+                            handleLikeToggle({
+                              post,
+                              userId: user.user!.id,
+                              toast,
+                              router,
+                            })
+                          }
+                        >
+                          <ThumbsUp />
+                          {post.likes.length +
+                            (likedPosts[post.id] ? 1 : 0)}{" "}
+                          Like(s)
+                        </Button>
+                      </div>
+
+                      <div className="flex gap-2">
+                        {membership.admin && (
+                          <Button
+                            variant="destructive"
+                            onClick={() =>
+                              handleDeletePost({
+                                postId: post.id,
+                                toast,
+                                router,
+                              })
+                            }
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Feedback shown inline below post when open */}
+                    {openPostId === post.id && (
+                      <div className="w-full mt-4 space-y-3">
+                        {post.feedback.map((fb: TFeedback) => (
+                          <Card
+                            key={`${fb.postId}_${fb.verifierId}`}
+                            className="flex flex-col gap-3 text-sm"
+                          >
+                            <CardHeader className="font-bold flex items-center gap-2">
+                              Verified by {fb.verifier.name}
+                              <CardDescription>
+                                <Badge className="font-bold">
+                                  {fb.multiplier}x
+                                </Badge>
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>{fb.feedbackText}</CardContent>
+                          </Card>
+                        ))}
+
+                        {/* Feedback box */}
+                        <div className="flex flex-col p-4 mt-4 border rounded-lg bg-muted/30 gap-3">
+                          <Label htmlFor={`comment-${post.id}`}>
+                            Leave some feedback
+                          </Label>
+                          <Textarea
+                            id={`comment-${post.id}`}
+                            placeholder="Write your feedback..."
+                            className="mt-2"
+                            rows={3}
+                            value={addFeedbackForm.feedbackText}
+                            onChange={(e) =>
+                              setAddFeedbackForm({
+                                ...addFeedbackForm,
+                                feedbackText: e.target.value,
+                              })
+                            }
+                          />
+                          <div className="flex justify-end mt-2 gap-2">
+                            <Button
+                              variant="outline"
+                              onClick={() => setOpenPostId(null)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              onClick={() => {
+                                handleAddFeedback(true);
+                              }}
+                              disabled={loadingStates.submittingFeedbackNoXp}
+                            >
+                              {loadingStates.submittingFeedbackNoXp
+                                ? "Submitting..."
+                                : "Submit Without XP"}
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                handleAddFeedback();
+                              }}
+                              disabled={loadingStates.submittingFeedback}
+                            >
+                              {loadingStates.submittingFeedback
+                                ? "Submitting..."
+                                : "Submit"}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </CardFooter>
+                </Card>
+              ))
+            )}
+          </div>
         </section>
       </main>
     </div>

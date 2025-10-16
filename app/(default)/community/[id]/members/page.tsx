@@ -1,9 +1,12 @@
 import {
   getCommunityMembersAction,
-  TSkillTreeMember,
+  TAuthSkillTreeMember,
 } from "@/actions/get-community-members";
 import CommunityMembersClient from "./page-client";
-import { getCommunityAction, TSkillTree } from "@/actions/get-community-action";
+import {
+  getCommunityAction,
+  TAuthSkillTree,
+} from "@/actions/get-community-action";
 import CommonError from "@/components/CommonError";
 
 export default async function ViewMembers({
@@ -29,8 +32,8 @@ export default async function ViewMembers({
     return (
       <CommunityMembersClient
         id={id}
-        community={community.message as TSkillTree}
-        members={members.message as TSkillTreeMember[]}
+        community={community.message as TAuthSkillTree}
+        members={members.message as TAuthSkillTreeMember[]}
       />
     );
   } catch (error) {

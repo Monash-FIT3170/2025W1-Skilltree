@@ -12,15 +12,15 @@ export async function getCommunityAction(id: string) {
       Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
     },
   });
-  const data = (await response.json()) as APIResponse<TSkillTree>;
+  const data = (await response.json()) as APIResponse<TAuthSkillTree>;
 
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
-  return data as APIResponse<TSkillTree>;
+  return data as APIResponse<TAuthSkillTree>;
 }
 
-export type TSkillTree = {
+export type TAuthSkillTree = {
   id: string;
   name: string;
   description: string;
@@ -29,10 +29,10 @@ export type TSkillTree = {
   creator: TCreator;
   tags: TTag[];
   skillNodes: TSkillNode[];
-  skillTreeUser: TSkillTreeUser[];
+  skillTreeUser: TAuthSkillTreeUser[];
 };
 
-type TSkillTreeUser = {
+type TAuthSkillTreeUser = {
   role: "ADMIN" | "MEMBER";
   verificationStatus: "VERIFIED" | "PENDING";
   user: TUser;

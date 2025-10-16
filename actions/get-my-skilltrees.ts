@@ -17,18 +17,18 @@ export const getMySkillTreesAction = async () => {
   );
   const skilltreeJson = await skilltreeResponse.json();
 
-  return skilltreeJson as APIResponse<TSkillTrees[]>;
+  return skilltreeJson as APIResponse<TAuthSkillTrees[]>;
 };
 
-export type TSkillTrees = {
+export type TAuthSkillTrees = {
   skillTreeId: string;
   userId: string;
   role: string;
   verificationStatus: string;
-  skillTree: TSkillTree;
+  skillTree: TAuthSkillTree;
 };
 
-type TSkillTree = {
+type TAuthSkillTree = {
   id: string;
   name: string;
   description: string;

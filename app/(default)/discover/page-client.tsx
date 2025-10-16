@@ -23,35 +23,39 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { TSkillTree } from "@/types";
+import { TAuthSkillTree } from "@/types";
 import { toast } from "sonner";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
-import { getIsMember } from "@/actions/get-is-member";
 import { cn } from "@/lib/utils";
 
 export default function CommunitiesPageClient({
   communities,
+  title = "Communities",
 }: {
-  communities: TSkillTree[];
+  communities: TAuthSkillTree[];
+  title?: string;
 }) {
   const router = useRouter();
-  const [pendingCommunity, setPendingCommunity] = useState<TSkillTree | null>(
-    null
-  );
+  const [pendingCommunity, setPendingCommunity] =
+    useState<TAuthSkillTree | null>(null);
 
   return (
     <>
       <div className="container h-full mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight">Communities</h1>
-        <p className="mb-5 text-muted-foreground">
-          Discover and join communities that match your interests and skills.
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+        {title === "Communities" ? (
+          <p className="mb-5 text-muted-foreground">
+            Discover and join communities that match your interests and skills.
+          </p>
+        ) : (
+          <p className="mb-5 text-muted-foreground">Search results</p>
+        )}
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {communities.map((community: TSkillTree) => (
+          {communities.map((community: TAuthSkillTree) => (
             <CommunityCard
               key={community.id}
-              community={community as TSkillTree}
+              community={community as TAuthSkillTree}
               pendingCommunity={pendingCommunity}
               setPendingCommunity={setPendingCommunity}
             />
@@ -63,7 +67,9 @@ export default function CommunitiesPageClient({
             <p className="mb-4 text-muted-foreground">
               There are no communities available at the moment.
             </p>
-            <Button>Create Community</Button>
+            <Button onClick={() => router.push("/community/add")}>
+              Create Community
+            </Button>
           </div>
         )}
       </div>
@@ -76,9 +82,11 @@ const CommunityCard = ({
   pendingCommunity,
   setPendingCommunity,
 }: {
-  community: TSkillTree;
-  pendingCommunity: TSkillTree | null;
-  setPendingCommunity: React.Dispatch<React.SetStateAction<TSkillTree | null>>;
+  community: TAuthSkillTree;
+  pendingCommunity: TAuthSkillTree | null;
+  setPendingCommunity: React.Dispatch<
+    React.SetStateAction<TAuthSkillTree | null>
+  >;
 }) => {
   const router = useRouter();
   const [isJoining, setIsJoining] = useState(false);

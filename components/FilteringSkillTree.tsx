@@ -21,7 +21,12 @@ type SkillNode = {
 };
 
 type SkillTreeFilterProps = {
-  rootSkill: SkillNode;
+  rootSkill: {
+    id: string;
+    label: string;
+    unlocked: boolean;
+    children: unknown[];
+  };
   onSelect: (nodeId: string | null) => void; // returns selected node id
 };
 
@@ -133,7 +138,12 @@ export default function SkillTreeFilter({
   // build the tree -> nodes/edges
   const generateElements = useCallback(
     (
-      skill: SkillNode,
+      skill: {
+        id: string;
+        label: string;
+        unlocked: boolean;
+        children: unknown[];
+      },
       parentId: string | null,
       depth = 0,
       index = 0,
@@ -175,7 +185,7 @@ export default function SkillTreeFilter({
       let allEdges: Edge[] = [...edgeList];
 
       if (skill.children && skill.children.length > 0) {
-        skill.children.forEach((child, childIndex) => {
+        skill.children.forEach((child: any, childIndex) => {
           const { nodes: cNodes, edges: cEdges } = generateElements(
             child,
             id,

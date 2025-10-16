@@ -1,4 +1,7 @@
-import { getCommunityAction, TSkillTree } from "@/actions/get-community-action";
+import {
+  getCommunityAction,
+  TAuthSkillTree,
+} from "@/actions/get-community-action";
 import ViewCommunityClient from "./page-client";
 import {
   getAllPostsForSkillTree,
@@ -28,7 +31,7 @@ export default async function ViewCommunity({
 
     return (
       <ViewCommunityClient
-        community={community.message as TSkillTree}
+        community={community.message as TAuthSkillTree}
         posts={posts.message as TSkillNode[]}
       />
     );

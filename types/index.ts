@@ -1,21 +1,9 @@
-export type TSkillTrees = {
+export type TAuthSkillTrees = {
   skillTreeId: string;
   userId: string;
   role: string;
   verificationStatus: string;
-  skillTree: TSkillTree;
-};
-
-export type TSkillTree = {
-  id: string;
-  name: string;
-  description: string;
-  creatorId: string;
-  createdAt: string;
-  updatedAt: string;
-  creator: TCreator;
-  tags: TTag[];
-  skillNodes: TSkillNode[];
+  skillTree: TAuthSkillTree;
 };
 
 export type TCreator = {
@@ -52,7 +40,7 @@ export type TUser = {
   dateOfBirth: string;
   pfp: string;
   xpPoint: number;
-  skillTreeUser: TSkillTreeUser[];
+  skillTreeUser: TAuthSkillTreeUser[];
   createdAt: string;
   updatedAt: string;
 };
@@ -65,9 +53,9 @@ export type TSkillNode = {
   skillTreeId: string;
 };
 
-export type TSkillTreeUser = {
+export type TAuthSkillTreeUser = {
   skillTreeId: string;
-  skillTree: TSkillTree;
+  skillTree: TAuthSkillTree;
   userId: string;
   role: "ADMIN" | "MEMBER";
   verificationStatus: "PENDING" | "VERIFIED";
@@ -80,7 +68,7 @@ export type TAuthSkillTree = {
   creator: TCreator;
   tags: TTag[];
   skillNodes: TSkillNode[];
-  skillTreeUser: TSkillTreeUser[];
+  skillTreeUser: TAuthSkillTreeUser[];
   createdAt: string;
   updatedAt: string;
   _count: {
@@ -99,6 +87,41 @@ export type TGetCommunitiesByMembershipResponse = {
 
 export type APIResponse<T> = {
   ok: boolean;
-  message: T | string;
+  message: T;
   status: number;
 };
+
+export type TPost = {
+  id: string;
+  content: string;
+  proofMedia: string;
+  skillNode: TSkillNode;
+  skillNodeId: string;
+  likes: TUser[];
+  feedback: TFeedback[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TFeedback = {
+  verifier: TUser;
+  verifierId: string;
+  post: TPost;
+  postId: string;
+  feedbackText: string;
+  multiplier: number;
+};
+
+export type TSignInResponse = {
+  access_token: string;
+  user: TUser;
+};
+
+export type TSignUpResponse = {
+  access_token: string;
+  user: TUser;
+};
+
+export type TGetUserProfileResponse = TUser;
+
+export type TGeTAuthSkillTreesResponse = TAuthSkillTree[];

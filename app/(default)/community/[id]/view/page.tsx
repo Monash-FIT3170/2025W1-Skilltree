@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import CommunitySkillTree from "@/components/CommunitySkillTree";
 import { Button } from "@/components/ui/button";
+import ViewCommunityButton from "@/components/ViewCommunityButton";
 
 export default function CommunityPage() {
   const posts = [
@@ -63,13 +64,14 @@ export default function CommunityPage() {
       { id: "grind", label: "Rails / Boxes", unlocked: true },
     ],
   };
+  
   // integrate events, skilltree, posts here
   return (
     <div className="w-full h-full">
       <header className="flex justify-center gap-3 mb-5 ">
         <h1 className="text-3xl font-bold">Snowboarding Community Tree</h1>
         <div className="ml-auto gap-3">
-          <Button>View Community</Button>
+          <ViewCommunityButton/>
         </div>
       </header>
 

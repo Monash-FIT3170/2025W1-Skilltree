@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { TUser } from "@/types";
-import { TSkillTrees } from "@/actions/get-my-skilltrees";
+import { TAuthSkillTrees } from "@/actions/get-my-skilltrees";
 import { format } from "date-fns";
 import { initials } from "@/lib/utils";
 
@@ -68,10 +68,10 @@ export default function UserProfileClient({
 }: {
   user: TUser;
   /** Backward-compat: treated as "Joined" if joinedSkilltrees is not provided */
-  skilltrees?: TSkillTrees[];
-  completedSkilltrees?: TSkillTrees[];
-  joinedSkilltrees?: TSkillTrees[];
-  ownedSkilltrees?: TSkillTrees[];
+  skilltrees?: TAuthSkillTrees[];
+  completedSkilltrees?: TAuthSkillTrees[];
+  joinedSkilltrees?: TAuthSkillTrees[];
+  ownedSkilltrees?: TAuthSkillTrees[];
   followers?: TFollower[];
   following?: TFollower[];
   profileStats?: TProfileStats;
@@ -98,7 +98,7 @@ export default function UserProfileClient({
     totalXP: user.xpPoint,
   };
 
-  const actualJoined = (joinedSkilltrees ?? skilltrees) as TSkillTrees[];
+  const actualJoined = (joinedSkilltrees ?? skilltrees) as TAuthSkillTrees[];
 
   const handleFollowToggle = () => {
     setCurrentlyFollowing(!currentlyFollowing);
@@ -352,7 +352,7 @@ export default function UserProfileClient({
 }
 
 /** Grid section reused for the three community tabs */
-function CommunityGrid({ trees }: { trees: TSkillTrees[] }) {
+function CommunityGrid({ trees }: { trees: TAuthSkillTrees[] }) {
   const router = useRouter();
 
   if (!trees || trees.length === 0) {

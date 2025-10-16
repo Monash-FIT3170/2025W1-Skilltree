@@ -21,5 +21,5 @@ export async function getUserAction() {
 
   const message = data.message as TGetUserProfileResponse;
 
-  return { ok: true, message: data.message };
+  return { ok: true, message };
 }

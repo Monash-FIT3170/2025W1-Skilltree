@@ -13,12 +13,13 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TSkillTreeMember } from "@/actions/get-community-members";
+import { TAuthSkillTreeMember } from "@/actions/get-community-members";
 import { toast } from "sonner";
-import { TSkillTree } from "@/actions/get-community-action";
+import { TAuthSkillTree } from "@/actions/get-community-action";
 import { useStore } from "@xyflow/react";
 import { userStore } from "@/stores";
 import { removeUserFromSkillTree } from "@/actions/remove-user-from-skilltree";
+import { getMembership } from "@/actions/get-membership";
 
 const roles = ["ADMIN", "MEMBER"];
 
@@ -28,17 +29,28 @@ const CommunityMembersClient = ({
   members,
 }: {
   id: string;
-  community: TSkillTree;
-  members: TSkillTreeMember[];
+  community: TAuthSkillTree;
+  members: TAuthSkillTreeMember[];
 }) => {
   const router = useRouter();
   const user = userStore.getState();
+  const [membership, setMembership] = useState({
+    admin: false,
+    member: false,
+  });
 
-  const isAdmin = community.skillTreeUser.some(
-    (u) =>
-      user.userId! === community.creator.id ||
-      (u.role === "ADMIN" && u.user.id === user.userId!)
-  );
+  useEffect(() => {
+    const fetchMembership = async () => {
+      const response = await getMembership(id);
+      if (response.ok) {
+        setMembership(response.message);
+      } else {
+        toast.error("Failed to fetch membership details");
+      }
+    };
+
+    fetchMembership();
+  }, [id]);
 
   return (
     <div className="flex flex-col min-w-full min-h-screen">
@@ -47,7 +59,7 @@ const CommunityMembersClient = ({
       <main className="flex-1">
         <div className="space-y-4">
           {members.length === 0 && <p>No members in the community yet.</p>}
-          {members.map((member: TSkillTreeMember) => (
+          {members.map((member: TAuthSkillTreeMember) => (
             <div
               key={member.user.id}
               className="flex items-center justify-between p-2 border rounded"
@@ -65,8 +77,8 @@ const CommunityMembersClient = ({
                         member.role === "ADMIN"
                           ? "bg-primary"
                           : member.role === "MEMBER"
-                            ? "bg-foreground text-background"
-                            : "bg-primary"
+                          ? "bg-foreground text-background"
+                          : "bg-primary"
                       )}
                     >
                       {member.role.toUpperCase()}
@@ -75,7 +87,7 @@ const CommunityMembersClient = ({
                   <p className="text-sm text-gray-500">{member.user.email}</p>
                 </div>
               </div>
-              {isAdmin && (
+              {membership.admin && (
                 <div
                   className={cn(
                     "flex items-center space-x-2",
