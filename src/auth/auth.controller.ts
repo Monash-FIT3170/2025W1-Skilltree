@@ -17,6 +17,7 @@ import {
 } from './dto';
 import { JwtGuard } from '../_utils/guards';
 import { GetUser, GetUserId, Public } from '../_utils/decorator';
+import { TApiResponse } from 'src/types';
 
 @Controller('auth')
 export class AuthController {

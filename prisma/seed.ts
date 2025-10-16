@@ -1,5 +1,6 @@
 import { PrismaClient, Role, VerificationStatus } from '@prisma/client';
 import * as argon2 from 'argon2';
+import { dataUri } from './data_url';
 
 const prisma = new PrismaClient();
 
@@ -16,8 +17,9 @@ async function main() {
 	await prisma.event.deleteMany({});
 	await prisma.user.deleteMany({});
 
-	console.log('Existing data purged. Creating new seed data...');
+	console.log('Existing data purged.');
 
+	console.log('Creating new seed data...');
 	const user1 = await prisma.user.create({
 		data: {
 			name: 'User',
@@ -37,7 +39,6 @@ async function main() {
 		},
 	});
 
-	// Additional users
 	const user3 = await prisma.user.create({
 		data: {
 			name: 'Charlie',
@@ -84,7 +85,6 @@ async function main() {
 		},
 	});
 
-	// Additional tags
 	const tag3 = await prisma.tag.create({
 		data: {
 			name: 'Design',
@@ -114,16 +114,29 @@ async function main() {
 			name: 'Web Development',
 			description: 'Learn to build websites',
 			creator: { connect: { id: user1.id } },
+			skillTreeUser: {
+				create: {
+					user: { connect: { id: user1.id } },
+					role: Role.ADMIN,
+					verificationStatus: VerificationStatus.VERIFIED,
+				},
+			},
 			tags: { connect: [{ id: tag1.id }] },
 		},
 	});
 
-	// Additional skill trees
 	const skillTree2 = await prisma.skillTree.create({
 		data: {
 			name: 'Data Science Fundamentals',
 			description: 'Master the basics of data science and analytics',
 			creator: { connect: { id: user3.id } },
+			skillTreeUser: {
+				create: {
+					user: { connect: { id: user3.id } },
+					role: Role.ADMIN,
+					verificationStatus: VerificationStatus.VERIFIED,
+				},
+			},
 			tags: { connect: [{ id: tag4.id }, { id: tag2.id }] },
 		},
 	});
@@ -133,6 +146,13 @@ async function main() {
 			name: 'Mobile App Development',
 			description: 'Build mobile applications for iOS and Android',
 			creator: { connect: { id: user4.id } },
+			skillTreeUser: {
+				create: {
+					user: { connect: { id: user4.id } },
+					role: Role.ADMIN,
+					verificationStatus: VerificationStatus.VERIFIED,
+				},
+			},
 			tags: { connect: [{ id: tag5.id }, { id: tag1.id }] },
 		},
 	});
@@ -142,6 +162,13 @@ async function main() {
 			name: 'UI/UX Design',
 			description: 'Learn user interface and user experience design',
 			creator: { connect: { id: user5.id } },
+			skillTreeUser: {
+				create: {
+					user: { connect: { id: user5.id } },
+					role: Role.ADMIN,
+					verificationStatus: VerificationStatus.VERIFIED,
+				},
+			},
 			tags: { connect: [{ id: tag3.id }] },
 		},
 	});
@@ -171,7 +198,6 @@ async function main() {
 		},
 	});
 
-	// Data Science skill nodes
 	const node4 = await prisma.skillNode.create({
 		data: {
 			name: 'Python Basics',
@@ -189,7 +215,6 @@ async function main() {
 		},
 	});
 
-	// Mobile development skill nodes
 	const node6 = await prisma.skillNode.create({
 		data: {
 			name: 'React Native Setup',
@@ -207,7 +232,6 @@ async function main() {
 		},
 	});
 
-	// Design skill nodes
 	const node8 = await prisma.skillNode.create({
 		data: {
 			name: 'Design Principles',
@@ -228,27 +252,9 @@ async function main() {
 	await prisma.skillTreeUser.create({
 		data: {
 			skillTreeId: skillTree1.id,
-			userId: user1.id,
-			role: Role.ADMIN,
-			verificationStatus: VerificationStatus.VERIFIED,
-		},
-	});
-	await prisma.skillTreeUser.create({
-		data: {
-			skillTreeId: skillTree1.id,
 			userId: user2.id,
 			role: Role.MEMBER,
 			verificationStatus: VerificationStatus.PENDING,
-		},
-	});
-
-	// Additional skill tree users
-	await prisma.skillTreeUser.create({
-		data: {
-			skillTreeId: skillTree2.id,
-			userId: user3.id,
-			role: Role.ADMIN,
-			verificationStatus: VerificationStatus.VERIFIED,
 		},
 	});
 
@@ -264,27 +270,9 @@ async function main() {
 	await prisma.skillTreeUser.create({
 		data: {
 			skillTreeId: skillTree3.id,
-			userId: user4.id,
-			role: Role.ADMIN,
-			verificationStatus: VerificationStatus.VERIFIED,
-		},
-	});
-
-	await prisma.skillTreeUser.create({
-		data: {
-			skillTreeId: skillTree3.id,
 			userId: user2.id,
 			role: Role.MEMBER,
 			verificationStatus: VerificationStatus.PENDING,
-		},
-	});
-
-	await prisma.skillTreeUser.create({
-		data: {
-			skillTreeId: skillTree4.id,
-			userId: user5.id,
-			role: Role.ADMIN,
-			verificationStatus: VerificationStatus.VERIFIED,
 		},
 	});
 
@@ -303,7 +291,6 @@ async function main() {
 		},
 	});
 
-	// Additional skill node users
 	await prisma.skillNodeUser.create({
 		data: {
 			skillNodeId: node3.id,
@@ -355,20 +342,21 @@ async function main() {
 	const post1 = await prisma.post.create({
 		data: {
 			content: 'Completed HTML basics!',
-			proofMedia: 'proof1.png',
+			proofMedia: dataUri,
 			skillNode: { connect: { id: node1.id } },
 			likes: { connect: [{ id: user2.id }] },
+			creator: { connect: { id: user1.id } },
 		},
 	});
 
-	// Additional posts
 	const post2 = await prisma.post.create({
 		data: {
 			content:
 				'Just finished learning JavaScript fundamentals! Built my first interactive webpage.',
-			proofMedia: 'javascript_project.png',
+			proofMedia: dataUri,
 			skillNode: { connect: { id: node3.id } },
 			likes: { connect: [{ id: user2.id }, { id: user3.id }] },
+			creator: { connect: { id: user2.id } },
 		},
 	});
 
@@ -376,9 +364,10 @@ async function main() {
 		data: {
 			content:
 				'Successfully completed Python basics course. Ready for data manipulation!',
-			proofMedia: 'python_certificate.pdf',
+			proofMedia: dataUri,
 			skillNode: { connect: { id: node4.id } },
 			likes: { connect: [{ id: user1.id }, { id: user4.id }] },
+			creator: { connect: { id: user3.id } },
 		},
 	});
 
@@ -386,9 +375,10 @@ async function main() {
 		data: {
 			content:
 				"Built my first React Native app! It's a simple todo list but I'm proud of it.",
-			proofMedia: 'first_app_screenshot.png',
+			proofMedia: dataUri,
 			skillNode: { connect: { id: node7.id } },
 			likes: { connect: [{ id: user3.id }, { id: user5.id }] },
+			creator: { connect: { id: user4.id } },
 		},
 	});
 
@@ -396,11 +386,12 @@ async function main() {
 		data: {
 			content:
 				'Created my first UI design in Figma following design principles.',
-			proofMedia: 'figma_design.png',
+			proofMedia: dataUri,
 			skillNode: { connect: { id: node9.id } },
 			likes: {
 				connect: [{ id: user1.id }, { id: user2.id }, { id: user4.id }],
 			},
+			creator: { connect: { id: user5.id } },
 		},
 	});
 
@@ -413,7 +404,6 @@ async function main() {
 		},
 	});
 
-	// Additional feedback
 	await prisma.feedback.create({
 		data: {
 			verifierId: user3.id,
@@ -464,7 +454,6 @@ async function main() {
 		},
 	});
 
-	// Additional events
 	const event2 = await prisma.event.create({
 		data: {
 			title: 'Data Science Challenge',

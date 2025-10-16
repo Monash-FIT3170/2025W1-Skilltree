@@ -1,19 +1,28 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	Post,
+	Body,
+	Param,
+	UseGuards,
+	HttpStatus,
+} from '@nestjs/common';
 import { EventService } from './event.service';
 import { JwtGuard } from '../_utils/guards/jwt.guard';
 import { CreateEventDto } from './dto/create-event.dto';
-import { DeleteEventDto } from './dto/delete-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { GetUser } from '../_utils/decorator/get-user.decorator';
 import { User } from '@prisma/client';
+import { TApiResponse } from 'src/types';
 
 @Controller('event')
 export class EventController {
 	constructor(private readonly eventService: EventService) {}
 
 	@Get()
-	getAllEvents() {
-		return this.eventService.getAllEvents();
+	async getAllEvents(): Promise<TApiResponse<any[]>> {
+		const res = await this.eventService.getAllEvents();
+		return { ok: true, message: res, status: HttpStatus.OK };
 	}
 
 	@Get(':id')
@@ -29,11 +38,7 @@ export class EventController {
 
 	@UseGuards(JwtGuard)
 	@Post(':id/delete')
-	deleteEvent(
-		@Param('id') id: string,
-		eventId: string,
-		@GetUser() user: User,
-	) {
+	deleteEvent(@Param('id') id: string, eventId: string, @GetUser() user: User) {
 		return this.eventService.deleteEvent(id, eventId, user.id);
 	}
 

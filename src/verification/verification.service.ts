@@ -15,6 +15,7 @@ export class VerificationService {
 			where: { id: postId },
 			include: {
 				skillNode: { select: { id: true, skillTreeId: true } },
+				creator: { select: { id: true } },
 			},
 		});
 
@@ -28,19 +29,9 @@ export class VerificationService {
 			);
 		}
 
-		const membership = await this.prisma.skillTreeUser.findUnique({
-			where: {
-				skillTreeId_userId: {
-					skillTreeId: post.skillNode.skillTreeId,
-					userId: verifier.id,
-				},
-			},
-			select: { role: true },
-		});
-
-		if (!membership || membership.role !== 'ADMIN') {
+		if (post.creator?.id === verifier.id) {
 			throw new HttpException(
-				'Only tree admins can verify posts',
+				'You cannot verify posts in your own skill tree',
 				HttpStatus.FORBIDDEN,
 			);
 		}
@@ -58,7 +49,7 @@ export class VerificationService {
 			},
 		});
 
-		return { message: 'Verification saved', data: feedback };
+		return feedback;
 	}
 
 	async listForPost(postId: string) {

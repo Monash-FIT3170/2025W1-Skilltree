@@ -34,10 +34,25 @@ async function bootstrap() {
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 	});
 
-	const document = JSON.parse(
-		(await readFile(join(process.cwd(), 'swagger.json'))).toString('utf-8'),
-	);
-	SwaggerModule.setup('api', app, document);
+	let document: any;
+	try {
+		const raw = await readFile(join(process.cwd(), 'swagger.json'));
+		document = JSON.parse(raw.toString('utf-8'));
+		SwaggerModule.setup('api', app, document);
+		console.log('Loaded fallback swagger.json');
+	} catch (err) {
+		console.warn(
+			'swagger.json not found or invalid, building Swagger document at runtime',
+		);
+		const config = new DocumentBuilder()
+			.setTitle('Backend API')
+			.setDescription('API Documentation')
+			.setVersion('1.0')
+			.addBearerAuth()
+			.build();
+		document = SwaggerModule.createDocument(app, config);
+		SwaggerModule.setup('api', app, document);
+	}
 
 	console.log(
 		'📚 Fallback Swagger documentation available at: http://localhost:3001/api',

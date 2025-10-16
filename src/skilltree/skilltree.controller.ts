@@ -7,7 +7,6 @@ import {
 	Patch,
 	Post,
 	UseGuards,
-	ParseUUIDPipe,
 	HttpCode,
 	HttpStatus,
 } from '@nestjs/common';
@@ -20,6 +19,7 @@ import {
 	UpdateSkillTreeDto,
 	UpdateSkillTreeUserDto,
 } from './dto';
+import { TApiResponse } from 'src/types';
 
 @Controller('skilltree')
 export class SkilltreeController {
@@ -37,7 +37,7 @@ export class SkilltreeController {
 	 * Get a skill tree by its ID (public, restricted filtered out for unauthenticated users)
 	 */
 	@Get(':id')
-	getSkillTreeById(@Param('id', ParseUUIDPipe) id: string) {
+	getSkillTreeById(@Param('id') id: string) {
 		return this.skilltreeService.getSkillTreeById(id);
 	}
 
@@ -56,7 +56,7 @@ export class SkilltreeController {
 	@UseGuards(JwtGuard)
 	@Get('auth/:id')
 	getSkillTreeByIdAuthenticated(
-		@Param('id', ParseUUIDPipe) id: string,
+		@Param('id') id: string,
 		@GetUser() user: User,
 	) {
 		return this.skilltreeService.getSkillTreeById(id, user);
@@ -77,7 +77,7 @@ export class SkilltreeController {
 	@UseGuards(JwtGuard)
 	@Patch(':id')
 	updateSkillTree(
-		@Param('id', ParseUUIDPipe) id: string,
+		@Param('id') id: string,
 		@Body() dto: UpdateSkillTreeDto,
 		@GetUser() user: User,
 	) {
@@ -89,11 +89,7 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id')
-	@HttpCode(HttpStatus.NO_CONTENT)
-	deleteSkillTree(
-		@Param('id', ParseUUIDPipe) id: string,
-		@GetUser() user: User,
-	) {
+	deleteSkillTree(@Param('id') id: string, @GetUser() user: User) {
 		return this.skilltreeService.deleteSkillTree(id, user.id);
 	}
 
@@ -102,10 +98,7 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Post(':id/join')
-	joinSkillTree(
-		@Param('id', ParseUUIDPipe) skillTreeId: string,
-		@GetUser() user: User,
-	) {
+	joinSkillTree(@Param('id') skillTreeId: string, @GetUser() user: User) {
 		return this.skilltreeService.joinSkillTree(skillTreeId, user.id);
 	}
 
@@ -114,11 +107,7 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id/leave')
-	@HttpCode(HttpStatus.NO_CONTENT)
-	leaveSkillTree(
-		@Param('id', ParseUUIDPipe) skillTreeId: string,
-		@GetUser() user: User,
-	) {
+	leaveSkillTree(@Param('id') skillTreeId: string, @GetUser() user: User) {
 		return this.skilltreeService.leaveSkillTree(skillTreeId, user.id);
 	}
 
@@ -127,10 +116,7 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Get(':id/members')
-	getSkillTreeMembers(
-		@Param('id', ParseUUIDPipe) skillTreeId: string,
-		@GetUser() user: User,
-	) {
+	getSkillTreeMembers(@Param('id') skillTreeId: string, @GetUser() user: User) {
 		return this.skilltreeService.getSkillTreeMembers(skillTreeId, user.id);
 	}
 
@@ -140,8 +126,8 @@ export class SkilltreeController {
 	@UseGuards(JwtGuard)
 	@Patch(':id/members/:userId')
 	updateSkillTreeUser(
-		@Param('id', ParseUUIDPipe) skillTreeId: string,
-		@Param('userId', ParseUUIDPipe) userId: string,
+		@Param('id') skillTreeId: string,
+		@Param('userId') userId: string,
 		@Body() dto: UpdateSkillTreeUserDto,
 		@GetUser() user: User,
 	) {
@@ -158,10 +144,9 @@ export class SkilltreeController {
 	 */
 	@UseGuards(JwtGuard)
 	@Delete(':id/members/:userId')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	removeUserFromSkillTree(
-		@Param('id', ParseUUIDPipe) skillTreeId: string,
-		@Param('userId', ParseUUIDPipe) userId: string,
+		@Param('id') skillTreeId: string,
+		@Param('userId') userId: string,
 		@GetUser() user: User,
 	) {
 		return this.skilltreeService.removeUserFromSkillTree(
@@ -184,8 +169,23 @@ export class SkilltreeController {
 	 * Get all skill trees a user (by ID) is a member of
 	 */
 	@UseGuards(JwtGuard)
-	@Get('user/:userId/skilltrees')
-	getUserSkillTreesById(@Param('userId', ParseUUIDPipe) userId: string) {
+	@Get('user/:userId')
+	getUserSkillTreesById(@Param('userId') userId: string) {
 		return this.skilltreeService.getUserSkillTrees(userId);
+	}
+
+	@UseGuards(JwtGuard)
+	@Get('user/:userId/inverse')
+	getUserSkillTreeInverseById(@Param('userId') userId: string) {
+		return this.skilltreeService.getUserSkillTreeInverseById(userId);
+	}
+
+	@UseGuards(JwtGuard)
+	@Get('membership/:skillTreeId')
+	membershipStatus(
+		@Param('skillTreeId') skillTreeId: string,
+		@GetUser() user: User,
+	) {
+		return this.skilltreeService.membershipStatus(skillTreeId, user);
 	}
 }

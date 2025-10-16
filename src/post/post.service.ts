@@ -135,7 +135,7 @@ export class PostService {
 					skillNode.skillTree.skillTreeUser.length === 0
 				) {
 					throw new ForbiddenException(
-						'You must be a member of the skill tree to post to this skill node',
+						'You must be a member of the skill tree to post to this skill node.',
 					);
 				}
 			}
@@ -145,6 +145,7 @@ export class PostService {
 					content: createPostDto.content,
 					proofMedia: createPostDto.proofMedia,
 					skillNodeId: createPostDto.skillNodeId,
+					creatorId: userId,
 				},
 				include: {
 					skillNode: {
@@ -359,6 +360,58 @@ export class PostService {
 				throw error;
 			}
 			throw new InternalServerErrorException('Failed to unlike post');
+		}
+	}
+
+	async getPostsBySkillTree(skillTreeId: string) {
+		try {
+			const skillTree = await this.prismaService.skillTree.findUnique({
+				where: { id: skillTreeId },
+			});
+
+			if (!skillTree) {
+				throw new NotFoundException('Skill tree not found');
+			}
+
+			const posts = await this.prismaService.post.findMany({
+				where: {
+					skillNode: {
+						skillTreeId: skillTreeId,
+					},
+				},
+				include: {
+					skillNode: {
+						select: {
+							id: true,
+							name: true,
+							skillTree: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					likes: {
+						select: { id: true, name: true },
+					},
+					feedback: {
+						include: {
+							verifier: {
+								select: { id: true, name: true },
+							},
+						},
+					},
+					_count: {
+						select: { likes: true, feedback: true },
+					},
+				},
+				orderBy: { createdAt: 'desc' },
+			});
+
+			return posts;
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw error;
+			}
+			throw new InternalServerErrorException('Failed to fetch posts');
 		}
 	}
 
