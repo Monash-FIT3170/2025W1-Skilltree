@@ -426,35 +426,6 @@ const ViewCommunityClient = ({
               </div>
             </section>
           </div>
-          <section className="w-full">
-            <div className="w-full text-center mt-5">
-              <h2 className="text-lg font-semibold">Recent Events</h2>
-            </div>
-
-            <div className="flex flex-col items-stretch w-full py-5 gap-4 rounded">
-              {events.map((ev) => (
-                <Card key={ev.id} className="w-full rounded">
-                  <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h3 className="font-semibold">{ev.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {ev.club} · {ev.category}
-                      </p>
-                    </div>
-                    <Badge
-                      className={`shrink-0 self-start sm:self-center ${
-                        ev.mode === "ranked"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-emerald-100 text-emerald-700"
-                      }`}
-                    >
-                      {ev.mode === "ranked" ? "Ranked" : "UN-Ranked"}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
         </aside>
 
         {/* Posts feed */}
@@ -574,21 +545,15 @@ const ViewCommunityClient = ({
               </Dialog>
             </h2>
           </div>
-          <div
-            style={{
-              maxHeight: "calc(100vh - 100px)",
-              overflowY: "auto",
-              paddingRight: ".5rem",
-            }}
-          >
+          <div>
             {posts.length === 0 ? (
               <div className="w-full flex flex-col items-center justify-center">
-                <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
                   <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">
-                    No posts yet. Be the first to add a proof of practice!
+                    No upcoming events. Check back later!
                   </p>
-                </div>
+                </Skeleton>
               </div>
             ) : (
               posts.map((post) => (
