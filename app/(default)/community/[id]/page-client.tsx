@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -26,10 +26,10 @@ import {
 } from "@/components/ui/select";
 import { userStore } from "@/stores";
 import { useRouter } from "next/navigation";
-import { TAuthSkillTree } from "@/actions/get-community-action";
 import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
+import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
 import {
   Clock12,
   MessagesSquareIcon,
@@ -46,15 +46,13 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getMembership } from "@/actions/get-membership";
+import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
-import { TFeedback, TSkillNode, TUser } from "@/types";
-import { TFeedback, TSkillNode, TUser } from "@/types";
-import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { likePostAction } from "@/actions/like-post-action";
 import { unlikePostAction } from "@/actions/unlike-post-action";
 import { deletePostAction } from "@/actions/delete-post-action";
+import { getMembership } from "@/actions/get-membership";
+import { TAuthSkillTree } from "@/actions/get-community-action";
 
 const events = [
   {
@@ -92,9 +90,11 @@ const ViewCommunityClient = ({
   posts,
 }: {
   community: TAuthSkillTree;
-  posts: any[];
+  posts: TSkillNode[];
 }) => {
   const router = useRouter();
+
+  const user = userStore.getState();
 
   const [loadingStates, setLoadingStates] = useState({
     joinLeave: false,
@@ -102,17 +102,6 @@ const ViewCommunityClient = ({
     submittingFeedback: false,
     submittingFeedbackNoXp: false,
   });
-
-  const [membership, setMembership] = useState({
-    member: false,
-    admin: false,
-  });
-  useEffect(() => {
-    (async () => {
-      const { member, admin } = (await getMembership(community.id)).message;
-      setMembership({ member, admin });
-    })();
-  }, [community.id]);
 
   const skillNodes = community.skillNodes.map((node) => ({
     name: node.name,
@@ -140,116 +129,43 @@ const ViewCommunityClient = ({
   const [openPostId, setOpenPostId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState("");
-  const [body, setBody] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMember, setIsMember] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [popModalOpen, setPopModalOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const membershipStatus = await getMembership(community.id);
+      setIsAdmin(membershipStatus.message.admin);
+      setIsMember(membershipStatus.message.member);
+    })();
+  }, [community.id, posts.length]);
+
+  const handleLeave = async () => {
+    setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
+    const response = await leaveSkillTreeAction(community.id);
+    if (response.ok) {
+      toast.success("Successfully left skill tree.");
+    } else {
+      console.log(JSON.stringify(response, null, 2));
+
+      toast.error(response.message || "Failed to leave skill tree.");
+    }
+    setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
+  };
+
+  const [title, setTitle] = useState(""); // UI label removed below, but preserve variable if you want to keep future use
+  const [body, setBody] = useState("");
   const [fileB64, setFileB64] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
 
-  const user = userStore.getState();
-
   useEffect(() => {
     setLikedPosts({});
   }, [posts]);
-
-  type FlatNode = {
-    id: string;
-    name: string;
-    parentId?: string | null;
-    parentNodeId?: string | null;
-  };
-
-  function buildTree(nodes: FlatNode[], communityName: string) {
-    if (!nodes || nodes.length === 0) {
-      return {
-        id: "root",
-        label: communityName,
-        unlocked: true,
-        children: [],
-      };
-    }
-
-    const byParent = new Map<string | null, FlatNode[]>();
-
-    // group by parent
-    nodes.forEach((n) => {
-      const key = (n as any).parentNodeId ?? (n as any).parentId ?? null;
-      if (!byParent.has(key)) byParent.set(key, []);
-      byParent.get(key)!.push(n);
-    });
-
-    const toNode = (n: FlatNode): any => ({
-      id: n.id,
-      label: n.name,
-      unlocked: true,
-      children: (byParent.get(n.id) ?? []).map(toNode),
-    });
-
-    // Find root nodes
-    const rootNodes = byParent.get(null) ?? [];
-
-    // If we have exactly one root node
-    if (rootNodes.length === 1) {
-      return toNode(rootNodes[0]);
-    }
-
-    // debugging / errors:
-    // Handle multiple roots case
-    if (rootNodes.length > 1) {
-      console.debug(
-        `Found ${rootNodes.length} root nodes, using first one as main root`
-      );
-      return toNode(rootNodes[0]);
-    }
-
-    // No root nodes
-    if (nodes.length > 0) {
-      console.debug(
-        "No root nodes found but nodes exist, using first node as root"
-      );
-      return toNode(nodes[0]);
-    }
-
-    // no roots
-    return {
-      id: "root",
-      label: communityName,
-      unlocked: true,
-      children: [],
-    };
-  }
-
-  const rootSkill = useMemo(
-    () => buildTree(community.skillNodes as any, community.name),
-    [community.skillNodes, community.name]
-  );
-
-  // ensure we pass the actual root node to the tree component
-  const displayedRoot = useMemo(() => {
-    if (!rootSkill) return null;
-    if (
-      rootSkill.id === "root" &&
-      Array.isArray(rootSkill.children) &&
-      rootSkill.children.length > 0
-    ) {
-      return rootSkill.children[0];
-    }
-    return rootSkill;
-  }, [rootSkill]);
-
-  const visiblePosts = useMemo(() => {
-    if (!selectedSkill) return posts;
-    if (selectedSkill === "root") return posts;
-    return posts.filter(
-      (p) =>
-        p.skillNode?.id === selectedSkill ||
-        (p as any).skillNodeId === selectedSkill
-    );
-  }, [posts, selectedSkill]);
 
   const handlePostSubmit = async () => {
     if (!selectedNode) {
@@ -278,23 +194,10 @@ const ViewCommunityClient = ({
       );
     }
   };
-
-  const handleLeave = async () => {
-    setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
-    const response = await leaveSkillTreeAction(community.id);
-    if (response.ok) {
-      toast.success("Successfully left skill tree.");
-    } else {
-      console.log(JSON.stringify(response, null, 2));
-
-      toast.error(response.message || "Failed to leave skill tree.");
-    }
-    setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
+  const handleCommentSubmit = () => {
+    //here we need to add the submission of a comment
+    // console.log({ title, tags, body, allowVerification });
   };
-
-  useEffect(() => {
-    setLikedPosts({});
-  }, [posts]);
 
   const handleJoin = async () => {
     setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
@@ -307,6 +210,76 @@ const ViewCommunityClient = ({
       toast.error("Failed to join skill tree.");
     }
     setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
+  };
+
+  const exampleSkillTree = {
+    id: "snowboarding",
+    label: "Snowboarding",
+    unlocked: true,
+    children: [
+      {
+        id: "jump",
+        label: "Jumping",
+        unlocked: false,
+        children: [
+          { id: "grab", label: "Grab Tricks", unlocked: false },
+          { id: "spin", label: "Spin Tricks", unlocked: false },
+        ],
+      },
+      { id: "grind", label: "Rails / Boxes", unlocked: true },
+    ],
+  };
+
+  const handleAddProofOfPractice = async () => {
+    const { skillNodeId, proofMedia, content } = addProofOfPracticeForm;
+    if (!skillNodeId) {
+      console.error("Please select a skill tree node.");
+      toast.error("Please select a skill tree node.");
+      return;
+    }
+    if (!proofMedia) {
+      console.error("Please upload a media file.");
+      toast.error("Please upload a media file.");
+      return;
+    }
+    if (!content) {
+      console.error("Please enter a description.");
+      toast.error("Please enter a description.");
+      return;
+    }
+
+    setLoadingStates((prev) => ({ ...prev, addingProof: true }));
+    try {
+      const response = await createProofOfPracticeAction({
+        skillNodeId: addProofOfPracticeForm.skillNodeId as string,
+        proofMedia: addProofOfPracticeForm.proofMedia as string,
+        content: addProofOfPracticeForm.content as string,
+      });
+      if (response.ok) {
+        toast.success(
+          "Proof of practice added successfully, it will reflect in the feed shortly."
+        );
+        setAddProofOfPracticeForm({
+          skillNodeId: "",
+          proofMedia: null,
+          content: "",
+        });
+        setPreview(null);
+        // Optionally refresh posts or close dialog
+      } else {
+        toast.error(
+          typeof response.message === "string"
+            ? response.message
+            : "Failed to add proof of practice."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while adding proof of practice.");
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, addingProof: false }));
+      setPopModalOpen(false);
+    }
   };
 
   const handleAddFeedback = async (noXp: boolean = false) => {
@@ -328,7 +301,7 @@ const ViewCommunityClient = ({
       const response = await createVerificationAction({
         postId: openPostId,
         feedbackText: addFeedbackForm.feedbackText,
-        multiplier: noXp ? 1 : membership.admin ? 3 : 2,
+        multiplier: noXp ? 1 : isAdmin ? 3 : 2,
       });
 
       toast.success("Feedback submitted successfully. It will appear soon.");
@@ -355,7 +328,7 @@ const ViewCommunityClient = ({
     toast,
     router,
   }: {
-    post: TSkillNode & { likes: TUser[] };
+    post: TSkillNode;
     userId: string;
     toast: any;
     router: ReturnType<typeof useRouter>;
@@ -405,7 +378,7 @@ const ViewCommunityClient = ({
 
   return (
     <div className="flex flex-col w-full">
-      <header className="mb-5 flex flex-col lg:flex-row items-start lg:items-center justify-between w-full">
+      <header className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full">
         <h1 className="text-3xl font-bold">{community.name}</h1>
         <div className="flex gap-3">
           <Button
@@ -418,13 +391,14 @@ const ViewCommunityClient = ({
           >
             View Skill Tree
           </Button>
-          {membership.admin && !membership.member ? (
+          {isAdmin && (
             <Button
               onClick={() => router.push(`/community/${community.id}/settings`)}
             >
               Settings
             </Button>
-          ) : membership.member ? (
+          )}
+          {isMember ? (
             <Button type="button" onClick={handleLeave} variant="destructive">
               {loadingStates.joinLeave ? "Leaving..." : "Leave"}
             </Button>
@@ -439,14 +413,10 @@ const ViewCommunityClient = ({
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
             <div className="p-4 rounded shadow-sm">
-              {displayedRoot ? (
-                <FilteringSkillTree
-                  rootSkill={displayedRoot}
-                  onSelect={(nodeId) => setSelectedSkill(nodeId)}
-                />
-              ) : (
-                <div>No skill nodes</div>
-              )}
+              <FilteringSkillTree
+                rootSkill={exampleSkillTree}
+                onSelect={(nodeId) => setSelectedSkill(nodeId)}
+              />
             </div>
             <section className="w-full">
               <div className="w-full text-center">
@@ -485,12 +455,8 @@ const ViewCommunityClient = ({
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
-
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger
-                  className={cn(membership.member ? "block" : "hidden")}
-                  asChild
-                >
+              <Dialog open={popModalOpen} onOpenChange={setPopModalOpen}>
+                <DialogTrigger asChild>
                   <Button
                     size="sm"
                     variant="outline"
@@ -597,15 +563,21 @@ const ViewCommunityClient = ({
               </Dialog>
             </h2>
           </div>
-          <div>
+          <div
+            style={{
+              maxHeight: "calc(100vh - 100px)",
+              overflowY: "auto",
+              paddingRight: ".5rem",
+            }}
+          >
             {posts.length === 0 ? (
               <div className="w-full flex flex-col items-center justify-center">
-                <Skeleton className="flex flex-col gap-2 items-center justify-center w-full h-80">
+                <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
                   <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">
-                    No upcoming events. Check back later!
+                    No posts yet. Be the first to add a proof of practice!
                   </p>
-                </Skeleton>
+                </div>
               </div>
             ) : (
               posts.map((post) => (
@@ -641,7 +613,7 @@ const ViewCommunityClient = ({
                       <Button
                         variant={
                           post.likes.some(
-                            (like: any) => like.id === user.user!.id
+                            (like) => like.id === user.user!.id
                           ) || likedPosts[post.id]
                             ? "outline"
                             : "default"
@@ -674,7 +646,7 @@ const ViewCommunityClient = ({
                     {/* Feedback shown inline below post when open */}
                     {openPostId === post.id && (
                       <div className="w-full mt-4 space-y-3">
-                        {post.feedback.map((fb: any) => (
+                        {post.feedback.map((fb) => (
                           <Card
                             key={`${fb.postId}_${fb.verifierId}`}
                             className="flex flex-col gap-3 text-sm"
@@ -742,7 +714,7 @@ const ViewCommunityClient = ({
                       </div>
                     )}
                   </CardFooter>
-                  {membership.admin && (
+                  {isAdmin && (
                     <Button
                       variant="destructive"
                       onClick={() =>
@@ -765,4 +737,5 @@ const ViewCommunityClient = ({
     </div>
   );
 };
+
 export default ViewCommunityClient;

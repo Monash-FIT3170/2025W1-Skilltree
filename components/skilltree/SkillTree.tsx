@@ -32,8 +32,6 @@ import {
 } from "@/components/skilltree/graph";
 import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
-const MIN_CHILD_GAP_Y = 100;
-
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
 // keep children at least this many px below their lowest parent
@@ -52,7 +50,7 @@ function pickRootId(
   const candidates = nodes.filter((n) => !sources.has(String(n.id)));
   return candidates.length
     ? String(candidates[0].id)
-    : preferredRootId ?? "root";
+    : (preferredRootId ?? "root");
 }
 
 function ensureRoot(
