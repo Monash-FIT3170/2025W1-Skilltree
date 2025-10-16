@@ -18,7 +18,7 @@ export class EventController {
 	constructor(private readonly eventService: EventService) {}
 
 	@Get()
-	async getAllEvents(): Promise<TApiResponse<any[]>> {
+	async getAllEvents() {
 		const res = await this.eventService.getAllEvents();
 		return res;
 	}

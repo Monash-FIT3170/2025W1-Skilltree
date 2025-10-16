@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+	Injectable,
+	InternalServerErrorException,
+	NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
 
@@ -24,7 +28,9 @@ export class EventService {
 				throw new InternalServerErrorException('User not found');
 			}
 			if (!userPermitted) {
-				throw new InternalServerErrorException('User is not a member of the skill tree');
+				throw new InternalServerErrorException(
+					'User is not a member of the skill tree',
+				);
 			}
 
 			if (userPermitted.role !== 'ADMIN') {
@@ -76,10 +82,14 @@ export class EventService {
 
 	async getEventById(eventId: string) {
 		try {
-			return await this.prisma.event.findUnique({
+			const event = await this.prisma.event.findUnique({
 				where: { id: eventId },
 				include: { users: true, winner: true },
 			});
+
+			if (!event) throw new NotFoundException('Event not found');
+
+			return event;
 		} catch {
 			throw new InternalServerErrorException('Failed to fetch event');
 		}
