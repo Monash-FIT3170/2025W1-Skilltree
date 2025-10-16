@@ -323,7 +323,14 @@ const ViewCommunityClient = ({
               {loadingStates.joinLeave ? "Joining..." : "Join"}
             </Button>
           )}
-
+          {isAdmin && (
+            <Button
+              variant="destructive"
+              onClick={handleDeleteCommunity}
+            >
+              Delete Community
+            </Button>
+          )}
         </div>
       </header>
       <main className="w-full grid flex-1 grid-cols-1 gap-8 mx-auto md:grid-cols-2">
