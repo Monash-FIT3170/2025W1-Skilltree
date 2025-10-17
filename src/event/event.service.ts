@@ -101,9 +101,10 @@ export class EventService {
 				where: { id: eventId },
 				include: { users: true },
 			});
-			if (!event) throw new InternalServerErrorException('Event not found');
+			if (!event) throw new NotFoundException('Event not found');
 			return event.users;
-		} catch {
+		} catch (e) {
+			if (e instanceof NotFoundException) throw e;
 			throw new InternalServerErrorException('Failed to fetch event users');
 		}
 	}
