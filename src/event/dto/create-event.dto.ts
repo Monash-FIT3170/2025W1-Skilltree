@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer/types/decorators/type.decorator';
 import { IsString, IsOptional, IsInt, IsDateString } from 'class-validator';
 
 export class CreateEventDto {
@@ -9,6 +10,7 @@ export class CreateEventDto {
 
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	xpPayout?: number;
 
 	@IsDateString()
