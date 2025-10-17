@@ -81,31 +81,20 @@ export class EventService {
 	}
 
 	async getEventById(eventId: string) {
-		try {
-			const event = await this.prisma.event.findUnique({
-				where: { id: eventId },
-				include: { users: true, winner: true },
-			});
-
-			if (!event) throw new NotFoundException('Event not found');
-
-			return event;
-		} catch {
-			throw new InternalServerErrorException('Failed to fetch event');
-		}
+		const event = await this.prisma.event.findUnique({
+			where: { id: eventId },
+			include: { users: true, winner: true },
+		});
+		if (!event) throw new NotFoundException('Event not found');
+		return event;
 	}
 
 	async getEventUsers(eventId: string) {
-		try {
-			const event = await this.prisma.event.findUnique({
-				where: { id: eventId },
-				include: { users: true },
-			});
-			if (!event) throw new NotFoundException('Event not found');
-			return event.users;
-		} catch (e) {
-			if (e instanceof NotFoundException) throw e;
-			throw new InternalServerErrorException('Failed to fetch event users');
-		}
+		const event = await this.prisma.event.findUnique({
+			where: { id: eventId },
+			include: { users: true },
+		});
+		if (!event) throw new NotFoundException('Event not found');
+		return event.users;
 	}
 }

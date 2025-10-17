@@ -5,7 +5,6 @@ import {
 	Body,
 	Param,
 	UseGuards,
-	HttpStatus,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { JwtGuard } from '../_utils/guards/jwt.guard';

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer/types/decorators/type.decorator';
+import { Type } from 'class-transformer';
 import { IsString, IsOptional, IsInt, IsDateString } from 'class-validator';
 
 export class CreateEventDto {
