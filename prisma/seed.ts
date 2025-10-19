@@ -446,7 +446,6 @@ async function main() {
 	const event1 = await prisma.event.create({
 		data: {
 			title: 'Hackathon',
-			isRanked: true,
 			xpPayout: 500,
 			users: { connect: [{ id: user1.id }, { id: user2.id }] },
 			startDate: new Date('2025-08-01'),
@@ -458,7 +457,6 @@ async function main() {
 	const event2 = await prisma.event.create({
 		data: {
 			title: 'Data Science Challenge',
-			isRanked: true,
 			xpPayout: 300,
 			users: {
 				connect: [{ id: user1.id }, { id: user3.id }, { id: user4.id }],
@@ -472,7 +470,6 @@ async function main() {
 	const event3 = await prisma.event.create({
 		data: {
 			title: 'Mobile App Showcase',
-			isRanked: false,
 			xpPayout: 200,
 			users: {
 				connect: [{ id: user2.id }, { id: user4.id }, { id: user5.id }],
@@ -485,7 +482,6 @@ async function main() {
 	const event4 = await prisma.event.create({
 		data: {
 			title: 'Design Competition',
-			isRanked: true,
 			xpPayout: 400,
 			users: {
 				connect: [{ id: user1.id }, { id: user3.id }, { id: user5.id }],
@@ -499,7 +495,6 @@ async function main() {
 	const event5 = await prisma.event.create({
 		data: {
 			title: 'Weekly Coding Meetup',
-			isRanked: false,
 			xpPayout: 50,
 			users: {
 				connect: [
