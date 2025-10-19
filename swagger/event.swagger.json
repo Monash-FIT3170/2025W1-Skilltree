@@ -2,19 +2,19 @@
 	"openapi": "3.0.0",
 	"info": {
 		"title": "Event API",
-		"description": "Event management API endpoints",
+		"description": "API endpoints for managing events",
 		"version": "1.0.0"
 	},
 	"paths": {
 		"/event": {
 			"get": {
 				"summary": "Get all events",
-				"description": "Get a list of all events",
+				"description": "Retrieve a list of all events.",
 				"tags": ["Event"],
 				"operationId": "getAllEvents",
 				"responses": {
 					"200": {
-						"description": "List of events retrieved successfully",
+						"description": "A list of events.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -30,6 +30,219 @@
 						"description": "Internal server error"
 					}
 				}
+			},
+			"post": {
+				"summary": "Create a new event",
+				"description": "Create a new event. Requires authentication.",
+				"tags": ["Event"],
+				"operationId": "createEvent",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateEventDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "The event was created successfully.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Event"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request - Invalid input data"
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/event/{id}": {
+			"get": {
+				"summary": "Get event by ID",
+				"description": "Retrieve a single event by its ID.",
+				"tags": ["Event"],
+				"operationId": "getEventById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Event ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The requested event.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Event"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Event not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/event/{id}/join": {
+			"post": {
+				"summary": "Join an event",
+				"description": "Allows an authenticated user to join an event. Requires authentication.",
+				"tags": ["Event"],
+				"operationId": "joinEvent",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Event ID"
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Successfully joined the event.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Event"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Event not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/event/{id}/leave": {
+			"post": {
+				"summary": "Leave an event",
+				"description": "Allows an authenticated user to leave an event. Requires authentication.",
+				"tags": ["Event"],
+				"operationId": "leaveEvent",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Event ID"
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Successfully left the event.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Event"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Invalid or missing token"
+					},
+					"404": {
+						"description": "Not Found - Event not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/event/{id}/users": {
+			"get": {
+				"summary": "Get users in an event",
+				"description": "Retrieve a list of users participating in a specific event.",
+				"tags": ["Event"],
+				"operationId": "getUsers",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Event ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of users in the event.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found - Event not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
 			}
 		}
 	},
@@ -40,57 +253,63 @@
 				"properties": {
 					"id": {
 						"type": "string",
-						"format": "uuid",
-						"description": "Event ID"
+						"format": "uuid"
 					},
 					"title": {
-						"type": "string",
-						"description": "Event title"
-					},
-					"isRanked": {
-						"type": "boolean",
-						"description": "Whether this is a ranked event"
+						"type": "string"
 					},
 					"xpPayout": {
-						"type": "integer",
-						"description": "XP payout for the event"
+						"type": "integer"
 					},
 					"startDate": {
 						"type": "string",
-						"format": "date-time",
-						"description": "Event start date and time"
+						"format": "date-time"
 					},
 					"endDate": {
 						"type": "string",
-						"format": "date-time",
-						"description": "Event end date and time"
+						"format": "date-time"
 					},
 					"winnerId": {
 						"type": "string",
 						"format": "uuid",
-						"description": "ID of the winner user",
 						"nullable": true
-					},
-					"winner": {
-						"$ref": "#/components/schemas/User",
-						"nullable": true
-					},
-					"users": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/User"
-						},
-						"description": "Event participants"
 					},
 					"createdAt": {
 						"type": "string",
-						"format": "date-time",
-						"description": "Creation timestamp"
+						"format": "date-time"
 					},
 					"updatedAt": {
 						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"CreateEventDto": {
+				"type": "object",
+				"required": ["skillTreeId", "title", "startDate", "endDate"],
+				"properties": {
+					"skillTreeId": {
+						"type": "string",
+						"description": "The ID of the related skill tree."
+					},
+					"title": {
+						"type": "string",
+						"description": "The title of the event."
+					},
+					"xpPayout": {
+						"type": "integer",
+						"description": "The experience points awarded for the event.",
+						"default": 0
+					},
+					"startDate": {
+						"type": "string",
 						"format": "date-time",
-						"description": "Last update timestamp"
+						"description": "The start date of the event."
+					},
+					"endDate": {
+						"type": "string",
+						"format": "date-time",
+						"description": "The end date of the event."
 					}
 				}
 			},
@@ -99,21 +318,14 @@
 				"properties": {
 					"id": {
 						"type": "string",
-						"format": "uuid",
-						"description": "User ID"
+						"format": "uuid"
 					},
 					"name": {
-						"type": "string",
-						"description": "User's full name"
+						"type": "string"
 					},
 					"email": {
 						"type": "string",
-						"format": "email",
-						"description": "User's email address"
-					},
-					"pfp": {
-						"type": "string",
-						"description": "Profile picture URL"
+						"format": "email"
 					}
 				}
 			}
