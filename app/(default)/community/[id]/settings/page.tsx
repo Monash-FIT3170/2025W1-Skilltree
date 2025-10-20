@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createEventAction } from "@/actions/create-event-action";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,10 +40,18 @@ const TextEditor = ({
   />
 );
 
+interface Event {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  xpPayout: number;
+}
+
 export default function ManageCommunities() {
   const params = useParams();
   const router = useRouter();
-  const communityId = params.id;
+  const communityId = params.id as string;
 
   const [availableRoles, setAvailableRoles] = useState<string[]>([
     "admin",
@@ -67,13 +76,13 @@ export default function ManageCommunities() {
 
   const [isRestricted, setIsRestricted] = useState(false);
 
-  const [events, setEvents] = useState<
-    { id: number; title: string; date: string; description: string }[]
-  >([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [newEventTitle, setNewEventTitle] = useState("");
-  const [newEventDate, setNewEventDate] = useState("");
-  const [newEventDescription, setNewEventDescription] = useState("");
+  const [newEventStartDate, setNewEventStartDate] = useState("");
+  const [newEventEndDate, setNewEventEndDate] = useState("");
+  const [newEventXpPayout, setNewEventXpPayout] = useState("");
   const [eventErrors, setEventErrors] = useState<string | null>(null);
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
 
   const [announcement, setAnnouncement] = useState("");
@@ -112,42 +121,71 @@ export default function ManageCommunities() {
     setMembers((prev) => prev.filter((m) => m.id !== id));
   };
 
-  async function createEvent(payload: any) {
-    return new Promise((resolve) => setTimeout(resolve, 500));
-  }
-
   const validateAndAddEvent = async () => {
     setEventErrors(null);
 
-    if (!newEventTitle.trim()) return setEventErrors("Event title is required");
-    if (!newEventDate) return setEventErrors("Event date is required");
+    // Validation
+    if (!newEventTitle.trim()) {
+      return setEventErrors("Event title is required");
+    }
+    if (!newEventStartDate) {
+      return setEventErrors("Start date is required");
+    }
+    if (!newEventEndDate) {
+      return setEventErrors("End date is required");
+    }
+
+    // Validate that end date is after start date
+    if (new Date(newEventEndDate) <= new Date(newEventStartDate)) {
+      return setEventErrors("End date must be after start date");
+    }
+
+    setIsCreatingEvent(true);
 
     try {
       const payload = {
-        name: newEventTitle.trim(),
-        communityId: String(communityId),
-        experienceId: "default",
-        rankedStatus: true,
-        experiencePayout: 0,
+        skillTreeId: communityId,
+        title: newEventTitle.trim(),
+        xpPayout: newEventXpPayout ? parseInt(newEventXpPayout, 10) : 0,
+        startDate: newEventStartDate,
+        endDate: newEventEndDate,
       };
 
-      await createEvent(payload);
+      console.log("Sending payload:", payload);
 
+      const result = await createEventAction(payload);
+
+      if (!result.ok) {
+        setEventErrors(result.message || "Failed to create event");
+        return;
+      }
+
+      // Add the created event to the local state
+      const eventData = result.message; // This is the event data from your action
       setEvents((prev) => [
         ...prev,
         {
-          id: Date.now(),
-          title: newEventTitle.trim(),
-          date: newEventDate,
-          description: newEventDescription.trim(),
+          id: eventData.id,
+          title: eventData.title,
+          startDate: eventData.startDate,
+          endDate: eventData.endDate,
+          xpPayout: eventData.xpPayout || 0,
         },
       ]);
 
+      // Reset form
       setNewEventTitle("");
-      setNewEventDate("");
-      setNewEventDescription("");
+      setNewEventStartDate("");
+      setNewEventEndDate("");
+      setNewEventXpPayout("");
+      setEventErrors(null);
+
+      alert("Event created successfully!");
     } catch (err) {
-      setEventErrors("Failed to create event.");
+      console.error("Error creating event:", err);
+      setEventErrors("Failed to create event");
+    } finally {
+      setIsCreatingEvent(false);
     }
   };
 
@@ -302,52 +340,116 @@ export default function ManageCommunities() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Events & Competitions</DialogTitle>
           </DialogHeader>
-          <div className="max-w-lg space-y-3 mb-4">
-            <Input
-              placeholder="Event title"
-              value={newEventTitle}
-              onChange={(e) => setNewEventTitle(e.target.value)}
-            />
-            <Input
-              type="date"
-              value={newEventDate}
-              onChange={(e) => setNewEventDate(e.target.value)}
-            />
-            <Textarea
-              placeholder="Event description"
-              rows={3}
-              value={newEventDescription}
-              onChange={(e) => setNewEventDescription(e.target.value)}
-            />
-            {eventErrors && <p className="-600 font-semibold">{eventErrors}</p>}
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="event-title">Event Title *</Label>
+                <Input
+                  id="event-title"
+                  placeholder="Enter event title"
+                  value={newEventTitle}
+                  onChange={(e) => setNewEventTitle(e.target.value)}
+                  disabled={isCreatingEvent}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="event-start">Start Date *</Label>
+                <Input
+                  id="event-start"
+                  type="datetime-local"
+                  value={newEventStartDate}
+                  onChange={(e) => setNewEventStartDate(e.target.value)}
+                  disabled={isCreatingEvent}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="event-end">End Date *</Label>
+                <Input
+                  id="event-end"
+                  type="datetime-local"
+                  value={newEventEndDate}
+                  onChange={(e) => setNewEventEndDate(e.target.value)}
+                  disabled={isCreatingEvent}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="event-xp">XP Payout (Optional)</Label>
+                <Input
+                  id="event-xp"
+                  type="number"
+                  min="0"
+                  placeholder="Enter XP payout"
+                  value={newEventXpPayout}
+                  onChange={(e) => setNewEventXpPayout(e.target.value)}
+                  disabled={isCreatingEvent}
+                />
+              </div>
+
+              {eventErrors && (
+                <p className="text-red-600 font-semibold text-sm">
+                  {eventErrors}
+                </p>
+              )}
+            </div>
+
+            <div className="border-t pt-4">
+              <h3 className="font-semibold mb-3">Created Events</h3>
+              {events.length === 0 ? (
+                <p className="text-muted-foreground text-sm">
+                  No events created yet.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {events.map((event) => (
+                    <li key={event.id} className="border p-3 rounded">
+                      <p className="font-semibold">{event.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Start: {new Date(event.startDate).toLocaleString()}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        End: {new Date(event.endDate).toLocaleString()}
+                      </p>
+                      {event.xpPayout > 0 && (
+                        <p className="text-sm text-muted-foreground">
+                          XP Payout: {event.xpPayout}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-          <div>
-            {events.length === 0 && <p>No events created yet.</p>}
-            <ul className="space-y-2 max-w-lg">
-              {events.map((event) => (
-                <li key={event.id} className="border p-3 rounded">
-                  <p className="font-semibold">{event.title}</p>
-                  <p className=" -600">{event.date}</p>
-                  <p>{event.description}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
+
           <DialogFooter>
-            <Button onClick={validateAndAddEvent}>
-              <Plus size={16} className="mr-2" />
-              Create Event
+            <Button onClick={validateAndAddEvent} disabled={isCreatingEvent}>
+              {isCreatingEvent ? (
+                "Creating..."
+              ) : (
+                <>
+                  <Plus size={16} className="mr-2" />
+                  Create Event
+                </>
+              )}
             </Button>
-            <Button variant="ghost" onClick={() => setDialogOpen(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => setDialogOpen(false)}
+              disabled={isCreatingEvent}
+            >
               Close
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <Dialog
         open={announcementDialogOpen}
         onOpenChange={setAnnouncementDialogOpen}
@@ -370,7 +472,7 @@ export default function ManageCommunities() {
             )}
 
             {announcementPreview && (
-              <div className="border p-4 rounded  whitespace-pre-wrap">
+              <div className="border p-4 rounded whitespace-pre-wrap">
                 {announcement || <em>No announcement to preview</em>}
               </div>
             )}
