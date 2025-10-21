@@ -1,82 +1,66 @@
-"use client";
-
-import React, { useState } from "react";
-import CommunitySkillTree from "@/components/CommunitySkillTree";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getCommunityAction, TSkillTree } from "@/actions/get-community-action";
+import CommonError from "@/components/CommonError";
+import CommunitySkillTree from "@/components/CommunitySkillTree";
 
-export default function CommunityPage() {
-  const posts = [
-    {
-      id: "1",
-      user: "Example User",
-      title: "Snowboarding Jump Node",
-      body: "this is me doing a jump. how good!",
-      image: "/snowboard.jpg",
-      likes: 59,
-      comments: [
-        { id: "c1", user: "User 1", text: "Wow very cool jump example user!" },
-        { id: "c2", user: "User 1", text: "I wish I could do that….." },
-      ],
-    },
-    {
-      id: "2",
-      user: "Example User",
-      title: "Snowboarding Jump Node",
-      body: "this is me doing a jump. how good!",
-      image: "/snowboard.jpg",
-      likes: 59,
-      comments: [
-        { id: "c1", user: "User 1", text: "Wow very cool jump example user!" },
-        { id: "c2", user: "User 1", text: "I wish I could do that….." },
-      ],
-    },
-    {
-      id: "3",
-      user: "Example User",
-      title: "Snowboarding Jump Node",
-      body: "this is me doing a jump. how good!",
-      image: "/snowboard.jpg",
-      likes: 59,
-      comments: [
-        { id: "c1", user: "User 1", text: "Wow very cool jump example user!" },
-        { id: "c2", user: "User 1", text: "I wish I could do that….." },
-      ],
-    },
-  ];
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
 
-  // example skill tree
-  const exampleSkillTree = {
-    // integrate skill tree here
-    id: "snowboarding",
-    label: "Snowboarding",
+type FlatNode = { id: string; name: string; parentId: string | null };
+
+function buildRootSkill(community: TSkillTree) {
+  const flat: FlatNode[] = community.skillNodes.map((n: any) => ({
+    id: String(n.id),
+    name: n.name,
+    parentId: n.parentId == null ? null : String(n.parentId),
+  }));
+
+  const byParent = new Map<string | null, FlatNode[]>();
+  for (const n of flat) {
+    const key = n.parentId;
+    if (!byParent.has(key)) byParent.set(key, []);
+    byParent.get(key)!.push(n);
+  }
+
+  const toNode = (n: FlatNode): any => ({
+    id: n.id,
+    label: n.name,
     unlocked: true,
-    children: [
-      {
-        id: "jump",
-        label: "Jumping",
-        unlocked: false,
-        children: [
-          { id: "grab", label: "Grab Tricks", unlocked: false },
-          { id: "spin", label: "Spin Tricks", unlocked: false },
-        ],
-      },
-      { id: "grind", label: "Rails / Boxes", unlocked: true },
-    ],
-  };
-  // integrate events, skilltree, posts here
-  return (
-    <div className="w-full h-full">
-      <header className="flex justify-center gap-3 mb-5 ">
-        <h1 className="text-3xl font-bold">Snowboarding Community Tree</h1>
-        <div className="ml-auto gap-3">
-          <Button>View Community</Button>
-        </div>
-      </header>
+    children: (byParent.get(n.id) ?? []).map(toNode),
+  });
 
-      {/* SkillTree */}
-      <div className="flex justify-center">
-        <CommunitySkillTree rootSkill={exampleSkillTree} />
+  const roots = byParent.get(null) ?? [];
+  return {
+    id: "root",
+    label: community.name,
+    unlocked: true,
+    children: roots.map(toNode),
+  };
+}
+
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
+
+  const res = await getCommunityAction(id);
+  if (!res.ok) return <CommonError errorDescription="Community not found" />;
+
+  const community = res.message as TSkillTree;
+  const rootSkill = buildRootSkill(community);
+
+  return (
+    <div className="p-6">
+      <div className="flex flex-col items-center gap-4 mb-4">
+          <h1 className="text-3xl font-bold">{community.name} Community Tree</h1>
+
+        {/* Back to community */}
+        <Link href={`/community/${community.id}`}>
+          <Button>← Back to Community</Button>
+        </Link>
       </div>
+
+      <CommunitySkillTree rootSkill={rootSkill} />
     </div>
   );
 }

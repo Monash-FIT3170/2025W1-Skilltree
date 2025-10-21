@@ -16,6 +16,9 @@ import {
   useNodesState,
   useEdgesState,
   Position,
+  applyNodeChanges,
+  type NodeChange,
+  type Connection,
 } from "@xyflow/react";
 import type { Edge, Node, NodeTypes } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -25,6 +28,7 @@ import {
   computeStatuses,
   layoutTopDown,
   buildChildrenMap,
+  buildParentMap,
 } from "@/components/skilltree/graph";
 import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
 
@@ -135,7 +139,7 @@ export default function SkillTree({
   }, [initial, communityName, preferredRootId]);
 
   const [rootId, setRootId] = useState<string>(seed.rootId);
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node<SkillNodeData>>(
+  const [nodes, setNodes, _rfOnNodesChange] = useNodesState<Node<SkillNodeData>>(
     seed.nodes
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState(seed.edges);
@@ -299,20 +303,29 @@ export default function SkillTree({
 
 // Add a child relative to the parent's CURRENT position
   const addChild = useCallback(() => {
-    const parentId = selectedIds[0] ?? rootId; // fallback to root if nothing selected
+    const parentId = selectedIds[0] ?? rootId;
     const parent = (nodes as Node<SkillNodeData>[]).find(
       (n) => n.id === parentId
     );
     const { x: px = 0, y: py = 0 } = parent?.position ?? { x: 0, y: 0 };
 
     const childrenMap = buildChildrenMap(edges);
-    const existingChildrenCount = (childrenMap[parentId] ?? []).length;
+    const childIds = childrenMap[parentId] ?? [];
+    const existingChildren = (nodes as Node<SkillNodeData>[]).filter((n) =>
+    childIds.includes(n.id)
+  );
+    const dx = 240;                 // base sibling spacing
+    const extraNewChildGap = 80;    // the extra gap you want
+    const spacingX = dx + extraNewChildGap;
 
-    const dx = 240;
+    // Find the current rightmost child's X (fallback to parent X if none)
+    const rightmostX = existingChildren.length
+      ? Math.max(...existingChildren.map((c) => c.position?.x ?? px))
+      : px;
+
     const dy = 140;
-    const startX = px - (existingChildrenCount * dx) / 2;
-    const childX = startX + existingChildrenCount * dx;
-    const childY = py + dy;
+    const childX = existingChildren.length ? rightmostX + spacingX : px;
+    const childY = Math.max(py + dy, py + MIN_CHILD_GAP_Y); // ensure lower than parent
 
     const id = makeId();
     const newNode: Node<SkillNodeData> = {
@@ -333,15 +346,13 @@ export default function SkillTree({
     };
     const newEdge: Edge = {
       id: `e-${id}-${parentId}`,
-      source: id,
-      target: parentId,
+      source: id,     // child
+      target: parentId, // parent
     };
 
     setEdges((prev) => [...prev, newEdge]);
     setNodes((prev) => [...(prev as Node<SkillNodeData>[]), newNode]);
-    setSelectedIds((prev) =>
-      prev.length === 1 && prev[0] === id ? prev : [id]
-    );
+    setSelectedIds([id]);
   }, [edges, nodes, selectedIds, rootId, makeId]);
 
   // Cascading delete, root protected
@@ -380,9 +391,7 @@ export default function SkillTree({
     setCompletedIds(nextCompleted);
     setEdges(nextEdges);
     setNodes(relayout(nextNodes, nextEdges));
-    setSelectedIds((prev) =>
-      prev.length === 1 && prev[0] === rootId ? prev : [rootId]
-    );
+    setSelectedIds([rootId]);
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
 
   // for dragging
@@ -482,6 +491,8 @@ export default function SkillTree({
             lastSelectedRef.current = target;
             setSelectedIds(target);
           }}
+
+          onNodeClick={(_, node) => emitSelection([node.id])}
         >
           <MiniMap />
           <Controls />
