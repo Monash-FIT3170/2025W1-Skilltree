@@ -124,7 +124,6 @@ export default function ManageCommunities() {
   const validateAndAddEvent = async () => {
     setEventErrors(null);
 
-    // Validation
     if (!newEventTitle.trim()) {
       return setEventErrors("Event title is required");
     }
@@ -135,7 +134,6 @@ export default function ManageCommunities() {
       return setEventErrors("End date is required");
     }
 
-    // Validate that end date is after start date
     if (new Date(newEventEndDate) <= new Date(newEventStartDate)) {
       return setEventErrors("End date must be after start date");
     }
@@ -155,23 +153,29 @@ export default function ManageCommunities() {
 
       const result = await createEventAction(payload);
 
+      console.log("Result received:", result);
+
       if (!result.ok) {
         setEventErrors(result.message || "Failed to create event");
         return;
       }
 
-      // Add the created event to the local state
-      const eventData = result.message; // This is the event data from your action
-      setEvents((prev) => [
-        ...prev,
-        {
-          id: eventData.id,
-          title: eventData.title,
-          startDate: eventData.startDate,
-          endDate: eventData.endDate,
-          xpPayout: eventData.xpPayout || 0,
-        },
-      ]);
+      // The event was created successfully, add it to local state
+      const eventData = result.message;
+      console.log("Event data:", eventData);
+
+      // Create a temporary event object for the UI
+      const newEvent = {
+        id: eventData.id || Date.now().toString(),
+        title: eventData.title || newEventTitle.trim(),
+        startDate: eventData.startDate || newEventStartDate,
+        endDate: eventData.endDate || newEventEndDate,
+        xpPayout:
+          eventData.xpPayout ||
+          (newEventXpPayout ? parseInt(newEventXpPayout, 10) : 0),
+      };
+
+      setEvents((prev) => [...prev, newEvent]);
 
       // Reset form
       setNewEventTitle("");
@@ -180,6 +184,8 @@ export default function ManageCommunities() {
       setNewEventXpPayout("");
       setEventErrors(null);
 
+      // Close dialog and show success
+      setDialogOpen(false);
       alert("Event created successfully!");
     } catch (err) {
       console.error("Error creating event:", err);
@@ -191,6 +197,17 @@ export default function ManageCommunities() {
 
   const handleSaveDetails = () => {
     alert("Community details saved for: " + communityId);
+  };
+
+  // Add this function to load existing events
+  const loadExistingEvents = async () => {
+    try {
+      // You might need to create a get events action
+      // For now, we'll just initialize with empty array
+      setEvents([]);
+    } catch (err) {
+      console.error("Failed to load events:", err);
+    }
   };
 
   useEffect(() => {
@@ -209,6 +226,9 @@ export default function ManageCommunities() {
     setAnnouncement("");
     setAnnouncementPreview(false);
     setAvailableRoles(["admin", "moderator", "member"]);
+
+    // Load existing events
+    loadExistingEvents();
   }, [communityId]);
 
   return (
