@@ -20,7 +20,19 @@ export async function createEventAction(data: CreateEventData) {
     
     console.log("API_URL:", API_URL);
     console.log("Token exists:", !!token);
-    console.log("Data being sent:", data);
+    console.log("Original data:", data);
+    
+    // Convert dates to proper ISO format
+    const startDate = new Date(data.startDate).toISOString();
+    const endDate = new Date(data.endDate).toISOString();
+    
+    const formattedData = {
+      ...data,
+      startDate,
+      endDate,
+    };
+    
+    console.log("Formatted data being sent:", formattedData);
     
     const endpoint = `${API_URL}/event`;
 
@@ -30,7 +42,7 @@ export async function createEventAction(data: CreateEventData) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(formattedData),
     });
 
     console.log("Response status:", response.status);
