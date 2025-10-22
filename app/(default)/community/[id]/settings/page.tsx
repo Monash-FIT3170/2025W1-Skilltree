@@ -22,6 +22,8 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { deleteCommunityAction } from "@/actions/delete-community actions";
 
 const TextEditor = ({
   value,
@@ -153,6 +155,27 @@ export default function ManageCommunities() {
 
   const handleSaveDetails = () => {
     alert("Community details saved for: " + communityId);
+  };
+
+  const handleDeleteCommunity = async () => {
+    if (
+      !confirm(
+        "Permanently delete this community? This cannot be undone."
+      )
+    )
+      return;
+    try {
+      const res = await deleteCommunityAction(communityId);
+      if (res.ok) {
+        toast.success("Community deleted");
+        router.push("/dashboard");
+      } else {
+        toast.error(res.message || "Failed to delete community");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting community");
+    }
   };
 
   useEffect(() => {
@@ -394,6 +417,12 @@ export default function ManageCommunities() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <div className="mt-4">
+        <Button variant="destructive" onClick={handleDeleteCommunity}>
+          Delete Community
+        </Button>
+      </div>
     </div>
   );
 }
