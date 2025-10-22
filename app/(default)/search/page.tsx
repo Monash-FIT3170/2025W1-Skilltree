@@ -6,14 +6,10 @@ import CommonError from "@/components/CommonError";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }> | undefined;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   try {
-    const resolvedSearchParams = searchParams ? await searchParams : undefined;
-    const q =
-      typeof resolvedSearchParams?.q === "string"
-        ? resolvedSearchParams.q
-        : undefined;
+    const q = typeof searchParams?.q === "string" ? searchParams.q : undefined;
     const communities = await getCommunitiesAction(q);
 
     if (!communities.ok) {
@@ -24,6 +20,7 @@ export default async function SearchPage({
     if (q) {
       const lowerQ = q.toLowerCase();
       results = results.filter((c) => c.name.toLowerCase().includes(lowerQ));
+      // dedupe by name
       const seen = new Set<string>();
       results = results.filter((c) => {
         if (seen.has(c.name)) return false;
@@ -32,12 +29,7 @@ export default async function SearchPage({
       });
     }
 
-    return (
-      <CommunitiesPageClient
-        communities={results}
-        title={`Search results for "${q || ""}"`}
-      />
-    );
+    return <CommunitiesPageClient communities={results} title={`Search results for "${q || ""}"`} />;
   } catch (error) {
     return <CommonError errorDescription="Could not load communities" />;
   }
