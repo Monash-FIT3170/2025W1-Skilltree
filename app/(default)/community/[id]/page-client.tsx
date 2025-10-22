@@ -155,30 +155,70 @@ const ViewCommunityClient = ({
     setLikedPosts({});
   }, [posts]);
 
-  type FlatNode = { id: string; name: string; parentId: string | null };
+  type FlatNode = {
+    id: string;
+    name: string;
+    parentId?: string | null;
+    parentNodeId?: string | null;
+  };
 
   function buildTree(nodes: FlatNode[], communityName: string) {
+    if (!nodes || nodes.length === 0) {
+      return {
+        id: "root",
+        label: communityName,
+        unlocked: true,
+        children: [],
+      };
+    }
+
     const byParent = new Map<string | null, FlatNode[]>();
+
+    // group by parent 
     nodes.forEach((n) => {
-      const key = n.parentId ?? null;
+      const key = (n as any).parentNodeId ?? (n as any).parentId ?? null;
       if (!byParent.has(key)) byParent.set(key, []);
       byParent.get(key)!.push(n);
     });
 
-    const toNode: any = (n: FlatNode) => ({
+    const toNode = (n: FlatNode): any => ({
       id: n.id,
       label: n.name,
       unlocked: true,
       children: (byParent.get(n.id) ?? []).map(toNode),
     });
 
-    const roots = byParent.get(null) ?? [];
+    // Find root nodes
+    const rootNodes = byParent.get(null) ?? [];
 
+    // If we have exactly one root node
+    if (rootNodes.length === 1) {
+      return toNode(rootNodes[0]);
+    }
+
+    // debugging / errors:
+    // Handle multiple roots case
+    if (rootNodes.length > 1) {
+      console.debug(
+        `Found ${rootNodes.length} root nodes, using first one as main root`
+      );
+      return toNode(rootNodes[0]);
+    }
+
+    // No root nodes
+    if (nodes.length > 0) {
+      console.debug(
+        "No root nodes found but nodes exist, using first node as root"
+      );
+      return toNode(nodes[0]);
+    }
+
+    // no roots
     return {
       id: "root",
       label: communityName,
       unlocked: true,
-      children: roots.map(toNode),
+      children: [],
     };
   }
 
@@ -186,6 +226,19 @@ const ViewCommunityClient = ({
     () => buildTree(community.skillNodes as any, community.name),
     [community.skillNodes, community.name]
   );
+
+  // ensure we pass the actual root node to the tree component 
+  const displayedRoot = useMemo(() => {
+    if (!rootSkill) return null;
+    if (
+      rootSkill.id === "root" &&
+      Array.isArray(rootSkill.children) &&
+      rootSkill.children.length > 0
+    ) {
+      return rootSkill.children[0];
+    }
+    return rootSkill;
+  }, [rootSkill]);
 
   const visiblePosts = useMemo(() => {
     if (!selectedSkill) return posts;
@@ -217,7 +270,6 @@ const ViewCommunityClient = ({
       setPreview(null);
       setFileB64(null);
       setIsDialogOpen(false);
-      // Ideally revalidate and refresh list
       router.refresh?.();
     } else {
       toast.error(
@@ -386,15 +438,14 @@ const ViewCommunityClient = ({
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
             <div className="p-4 rounded shadow-sm">
-              <FilteringSkillTree
-                rootSkill={{
-                  id: Math.random().toString(),
-                  label: community.name,
-                  unlocked: true,
-                  children: rootSkill.children,
-                }}
-                onSelect={(nodeId) => setSelectedSkill(nodeId)}
-              />
+              {displayedRoot ? (
+                <FilteringSkillTree
+                  rootSkill={displayedRoot}
+                  onSelect={(nodeId) => setSelectedSkill(nodeId)}
+                />
+              ) : (
+                <div>No skill nodes</div>
+              )}
             </div>
             <section className="w-full">
               <div className="w-full text-center">
