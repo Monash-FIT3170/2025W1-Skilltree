@@ -44,6 +44,7 @@ const TextEditor = ({
 export default function ManageCommunities() {
   const params = useParams();
   const router = useRouter();
+  // params.id can be undefined (ParamValue). Guard at runtime and coerce to string when calling server actions.
   const communityId = params.id;
 
   const [availableRoles, setAvailableRoles] = useState<string[]>([
@@ -158,14 +159,17 @@ export default function ManageCommunities() {
   };
 
   const handleDeleteCommunity = async () => {
-    if (
-      !confirm(
-        "Permanently delete this community? This cannot be undone."
-      )
-    )
+    // Ensure we have a valid string id before calling the server action
+    if (!communityId || typeof communityId !== "string") {
+      toast.error("Invalid community id");
       return;
+    }
+
+    if (!confirm("Permanently delete this community? This cannot be undone.")) return;
+
     try {
-      const res = await deleteCommunityAction(communityId);
+      // Coerce to string to satisfy the action's signature
+      const res = await deleteCommunityAction(String(communityId));
       if (res.ok) {
         toast.success("Community deleted");
         router.push("/dashboard");
