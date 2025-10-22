@@ -1,5 +1,8 @@
 "use client";
-
+import React from "react";
+import { joinEventAction } from "@/actions/join-event-action";
+import { leaveEventAction } from "@/actions/leave-event-action";
+import { toast } from "sonner";
 import {
   CardContent,
   Card,
@@ -37,9 +40,23 @@ const DashboardPageClient = ({
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
   const router = useRouter();
+  const [joinedEvents, setJoinedEvents] = React.useState<string[]>([]);
 
-  const handleJoinEvent = (eventId: string) => {
-    console.log(`Joining event: ${eventId}`);
+  const handleJoinEvent = async (eventId: string) => {
+    const alreadyJoined = joinedEvents.includes(eventId);
+
+    const result = alreadyJoined
+      ? await leaveEventAction(eventId)
+      : await joinEventAction(eventId);
+
+    if (result.ok) {
+      setJoinedEvents((prev) =>
+        alreadyJoined ? prev.filter((id) => id !== eventId) : [...prev, eventId]
+      );
+      toast.success(alreadyJoined ? "Left event" : "Joined event!");
+    } else {
+      toast.error(result.message || "Something went wrong");
+    }
   };
 
   const handleAddEvent = () => {
@@ -171,10 +188,11 @@ const DashboardPageClient = ({
                       ) : (
                         <Button
                           size="sm"
+                          variant={joinedEvents.includes(ev.id) ? "destructive" : "default"}
                           onClick={() => handleJoinEvent(ev.id)}
                           className="h-7 px-3 text-xs"
                         >
-                          Join
+                          {joinedEvents.includes(ev.id) ? "Leave" : "Join"}
                         </Button>
                       )}
                     </div>
