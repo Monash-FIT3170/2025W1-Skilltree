@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import FilteringSkillTree from "@/components/FilteringSkillTree";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -30,14 +30,9 @@ import { TSkillTree } from "@/actions/get-community-action";
 import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
-import { TSkillNode } from "@/actions/get-all-post-for-skilltree";
-import {
-  Clock12,
-  MessagesSquareIcon,
-  ThumbsUp,
-  Plus,
-  AlertCircle,
-} from "lucide-react";
+import { TPost } from "@/actions/get-all-post-for-skilltree";
+import { createPostAction } from "@/actions/create-post-action";
+import { Clock12, MessagesSquareIcon, ThumbsUp, Plus } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -46,11 +41,9 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getIsAdmin } from "@/actions/get-is-admin";
-import { getIsMember } from "@/actions/get-is-member";
-import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
-import { createVerificationAction } from "@/actions/create-feedback";
-import { Skeleton } from "@/components/ui/skeleton";
+import { likePostAction } from "@/actions/like-post-action";
+import { unlikePostAction } from "@/actions/unlike-post-action";
+import { deletePostAction } from "@/actions/delete-post-action";
 
 const events = [
   {
@@ -88,7 +81,7 @@ const ViewCommunityClient = ({
   posts,
 }: {
   community: TSkillTree;
-  posts: TSkillNode[];
+  posts: TPost[];
 }) => {
   const router = useRouter();
 
@@ -123,34 +116,96 @@ const ViewCommunityClient = ({
 
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isMember, setIsMember] = useState(false);
+  const isAdmin = community.skillTreeUser.some(
+    (u) => u.user && u.user.id === user.user!.id && u.role === "ADMIN"
+  );
+
+  const isMember = community.skillTreeUser.some(
+    (u) => u.user && u.user.id === user.user!.id && u.role === "MEMBER"
+  );
+
+  const [title, setTitle] = useState(""); // UI label removed below, but preserve variable if you want to keep future use
+  const [body, setBody] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
-  const [popModalOpen, setPopModalOpen] = useState(false);
+  const [fileB64, setFileB64] = useState<string | null>(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    (async () => {
-      const adminStatus = await getIsAdmin(community.id);
-      setIsAdmin(adminStatus.message as boolean);
-      const memberStatus = await getIsMember(community.id);
-      setIsMember(memberStatus.message as boolean);
-    })();
-  }, [community.id, posts.length]);
+    setLikedPosts({});
+  }, [posts]);
+  
+  type FlatNode = { id: string; name: string; parentId: string | null };
 
-  const handleCommentSubmit = () => {};
+  function buildTree(nodes: FlatNode[], communityName: string) {
+    const byParent = new Map<string | null, FlatNode[]>();
+    nodes.forEach((n) => {
+      const key = n.parentId ?? null;
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key)!.push(n);
+    });
 
-  const handleLeave = async () => {
-    setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
-    const response = await leaveSkillTreeAction(community.id);
-    if (response.ok) {
-      toast.success("Successfully left skill tree.");
-    } else {
-      console.log(JSON.stringify(response, null, 2));
+    const toNode = (n: FlatNode) => ({
+      id: n.id,
+      label: n.name,
+      unlocked: true, 
+      children: (byParent.get(n.id) ?? []).map(toNode),
+    });
 
-      toast.error(response.message || "Failed to leave skill tree.");
+    
+    const roots = byParent.get(null) ?? [];
+
+    return {
+      id: "root",
+      label: communityName, 
+      unlocked: true,
+      children: roots.map(toNode),
+    };
+  }
+
+  const rootSkill = useMemo(
+    () => buildTree(community.skillNodes as any, community.name),
+    [community.skillNodes, community.name]
+  );
+  
+  const visiblePosts = useMemo(() => {
+    if (!selectedSkill) return posts;
+    return posts.filter((p) => p.skillNode?.id === selectedSkill || (p as any).skillNodeId === selectedSkill);
+  }, [posts, selectedSkill]);
+
+  const handlePostSubmit = async () => {
+    if (!selectedNode) {
+      toast.error("Please select a skill node");
+      return;
     }
-    setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
+
+    setSubmitting(true);
+    const res = await createPostAction({
+      skillNodeId: selectedNode,
+      content: body,
+      proofMedia: fileB64 ?? undefined,
+    });
+    setSubmitting(false);
+
+    if (res.ok) {
+      toast.success("Post created");
+      setBody("");
+      setPreview(null);
+      setFileB64(null);
+      setIsDialogOpen(false);
+      // Ideally revalidate and refresh list
+      router.refresh?.();
+    } else {
+      toast.error(typeof res.message === "string" ? res.message : "Failed to create post");
+    }
+  };
+  const handleCommentSubmit = () => {
+    //here we need to add the submission of a comment
+    // console.log({ title, tags, body, allowVerification });
   };
 
   const handleJoin = async () => {
@@ -166,23 +221,61 @@ const ViewCommunityClient = ({
     setLoadingStates((prev) => ({ ...prev, joinLeave: false }));
   };
 
-  const exampleSkillTree = {
-    id: "snowboarding",
-    label: "Snowboarding",
-    unlocked: true,
-    children: [
-      {
-        id: "jump",
-        label: "Jumping",
-        unlocked: false,
-        children: [
-          { id: "grab", label: "Grab Tricks", unlocked: false },
-          { id: "spin", label: "Spin Tricks", unlocked: false },
-        ],
-      },
-      { id: "grind", label: "Rails / Boxes", unlocked: true },
-    ],
-  };
+
+
+  // Helper function for like/unlike logic
+  async function handleLikeToggle({
+    post,
+    userId,
+    toast,
+    router,
+  }: {
+    post: TPost;
+    userId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const hasLiked = post.likes.some(like => like.id === userId) || likedPosts[post.id];
+    let res;
+    if (hasLiked) {
+      res = await unlikePostAction(post.id);
+      if (res.ok) {
+        toast.success("Unliked!");
+        setLikedPosts(prev => ({ ...prev, [post.id]: false }));
+        router.refresh?.();
+      } else {
+        toast.error("Failed to unlike post");
+      }
+    } else {
+      res = await likePostAction(post.id);
+      if (res.ok) {
+        toast.success("Liked!");
+        setLikedPosts(prev => ({ ...prev, [post.id]: true }));
+        router.refresh?.();
+      } else {
+        toast.error("Failed to like post");
+      }
+    }
+  }
+
+  // Helper function for deleting a post
+  async function handleDeletePost({
+    postId,
+    toast,
+    router,
+  }: {
+    postId: string;
+    toast: any;
+    router: ReturnType<typeof useRouter>;
+  }) {
+    const res = await deletePostAction(postId);
+    if (res.ok) {
+      toast.success("Post deleted!");
+      router.refresh?.();
+    } else {
+      toast.error("Failed to delete post");
+    }
+  }
 
   const handleAddProofOfPractice = async () => {
     const { skillNodeId, proofMedia, content } = addProofOfPracticeForm;
@@ -315,17 +408,18 @@ const ViewCommunityClient = ({
         <aside className="md:col-span-1">
           <div className="py-5 space-y-6">
             <div className="p-4 rounded shadow-sm">
+              
               <FilteringSkillTree
-                rootSkill={exampleSkillTree}
-                onSelect={(nodeId) => setSelectedSkill(nodeId)}
-              />
+            rootSkill={rootSkill}
+            onSelect={(nodeId) => setSelectedSkill(nodeId)}
+          />
             </div>
             <section className="w-full">
               <div className="w-full text-center">
                 <h2 className="text-lg font-semibold">Recent Events</h2>
               </div>
 
-              <div className="flex flex-col items-stretch w-full gap-4 rounded">
+              <div className="flex flex-col items-stretch w-full py-5 gap-4 rounded">
                 {events.map((ev) => (
                   <Card key={ev.id} className="w-full rounded">
                     <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
@@ -353,11 +447,14 @@ const ViewCommunityClient = ({
         </aside>
 
         {/* Posts feed */}
-        <section className="py-5 space-y-6 md:col-span-1">
+        <section
+          className="py-5 space-y-6 md:col-span-1"
+        >
           <div className="mb-4">
             <h2 className="flex items-center justify-center relative text-lg font-semibold">
               <span>Posts</span>
-              <Dialog open={popModalOpen} onOpenChange={setPopModalOpen}>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
                     size="sm"
@@ -377,23 +474,16 @@ const ViewCommunityClient = ({
                   </DialogHeader>
 
                   <div className="w-full space-y-2 text-sm">
-                    <Label htmlFor="skill-tree-node">
-                      Select Skill Tree Node
-                    </Label>
+                    <Label htmlFor="skill-tree-node">Select Skill Tree Node</Label>
                     <Select
-                      value={addProofOfPracticeForm.skillNodeId}
-                      onValueChange={(value) =>
-                        setAddProofOfPracticeForm({
-                          ...addProofOfPracticeForm,
-                          skillNodeId: value,
-                        })
-                      }
+                      value={selectedNode ?? undefined}
+                      onValueChange={(val) => setSelectedNode(val)}
                     >
                       <SelectTrigger id="skill-tree-node" className="w-full">
                         <SelectValue placeholder="Select skill tree node" />
                       </SelectTrigger>
                       <SelectContent>
-                        {skillNodes.map((node) => (
+                        {community.skillNodes.map((node) => (
                           <SelectItem key={node.id} value={node.id}>
                             {node.name}
                           </SelectItem>
@@ -405,21 +495,19 @@ const ViewCommunityClient = ({
                   <div className="w-full py-2 space-y-2">
                     <Label>Upload Media</Label>
                     <Input
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          const file = e.target.files[0];
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreview(reader.result as string);
-                            setAddProofOfPracticeForm((prev) => ({
-                              ...prev,
-                              proofMedia: reader.result as string,
-                            }));
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
                       type="file"
+                      accept="image/*,video/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const result = reader.result as string;
+                          setPreview(result);
+                          setFileB64(result);
+                        };
+                        reader.readAsDataURL(file);
+                      }}
                     />
                     {preview && (
                       <Image
@@ -464,29 +552,39 @@ const ViewCommunityClient = ({
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button
-                      onClick={handleAddProofOfPractice}
-                      disabled={loadingStates.addingProof}
-                    >
-                      {loadingStates.addingProof ? "Adding..." : "Confirm"}
+                    <Button onClick={handlePostSubmit} disabled={submitting}>
+                      {submitting ? "Submitting..." : "Confirm"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </h2>
-          </div>
-
-          {posts.length === 0 ? (
-            <div className="w-full flex flex-col items-center justify-center">
-              <div className="flex flex-col gap-2 items-center justify-center w-full h-80">
-                <AlertCircle className="w-12 h-12 mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  No posts yet. Be the first to add a proof of practice!
-                </p>
-              </div>
+            <div className="mb-2 text-sm text-muted-foreground flex items-center gap-2 justify-center">
+              {selectedSkill ? (
+                <>
+                  <span>
+                    Filtered by:{" "}
+                    {community.skillNodes.find((n) => n.id === selectedSkill)?.name ??
+                      selectedSkill}
+                  </span>
+                  <Button size="sm" variant="outline" onClick={() => setSelectedSkill(null)}>
+                    Clear
+                  </Button>
+                </>
+              ) : (
+                <span>All posts</span>
+              )}
             </div>
+          </div>
+          <div style={{
+            maxHeight: "calc(100vh - 100px)",
+            overflowY: "auto",
+            paddingRight: ".5rem",
+          }}>
+          {visiblePosts.length === 0 ? (
+            <div>Woah. Such Empty.</div>
           ) : (
-            posts.map((post) => (
+            visiblePosts.map((post) => (
               <Card key={post.id} className="w-full my-8">
                 <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">
                   <div className="flex items-center justify-between w-full">
@@ -502,25 +600,39 @@ const ViewCommunityClient = ({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-base">{post.content}</div>
-                  <div className="flex items-center justify-center w-full">
-                    <Image
-                      src={post.proofMedia ?? "https://picsum.photos/600/350"}
-                      alt="Post Image"
-                      width={600}
-                      height={350}
-                      className="object-cover rounded"
-                    />
-                  </div>
+                  {post.proofMedia && (
+                    <div className="flex items-center justify-center w-full">
+                      <Image
+                        src={post.proofMedia}
+                        alt="Post Media"
+                        width={600}
+                        height={350}
+                        className="object-cover rounded"
+                      />
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="flex flex-col w-full gap-4">
                   <div className="flex items-center justify-between w-full">
                     <Button
-                      variant="default"
-                      className="flex items-center gap-2"
-                    >
-                      <ThumbsUp />
-                      {post.likes.length} Like(s)
-                    </Button>
+                    variant={
+                      post.likes.some(like => like.id === user.user!.id) || likedPosts[post.id]
+                        ? "outline"
+                        : "default"
+                    }
+                    className="flex items-center gap-2"
+                    onClick={() =>
+                      handleLikeToggle({
+                        post,
+                        userId: user.user!.id,
+                        toast,
+                        router,
+                      })
+                    }
+                  >
+                    <ThumbsUp />
+                    {post.likes.length + (likedPosts[post.id] ? 1 : 0)} Like(s)
+                  </Button>
                     <Button
                       className="flex items-center gap-2"
                       onClick={() =>
@@ -603,9 +715,24 @@ const ViewCommunityClient = ({
                     </div>
                   )}
                 </CardFooter>
+                {(isAdmin) && (
+                  <Button
+                    variant="destructive"
+                    onClick={() =>
+                      handleDeletePost({
+                        postId: post.id,
+                        toast,
+                        router,
+                      })
+                    }
+                  >
+                    Delete
+                  </Button>
+                )}
               </Card>
             ))
           )}
+          </div>
         </section>
       </main>
     </div>
