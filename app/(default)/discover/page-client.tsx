@@ -31,10 +31,8 @@ import { cn } from "@/lib/utils";
 
 export default function CommunitiesPageClient({
   communities,
-  title = "Communities",
 }: {
-  communities: TAuthSkillTree[];
-  title?: string;
+  communities: TSkillTree[];
 }) {
   const router = useRouter();
   const [pendingCommunity, setPendingCommunity] = useState<TSkillTree | null>(
@@ -44,14 +42,10 @@ export default function CommunitiesPageClient({
   return (
     <>
       <div className="container h-full mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-        {title === "Communities" ? (
-          <p className="mb-5 text-muted-foreground">
-            Discover and join communities that match your interests and skills.
-          </p>
-        ) : (
-          <p className="mb-5 text-muted-foreground">Search results</p>
-        )}
+        <h1 className="text-3xl font-bold tracking-tight">Communities</h1>
+        <p className="mb-5 text-muted-foreground">
+          Discover and join communities that match your interests and skills.
+        </p>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {communities.map((community: TSkillTree) => (
@@ -69,7 +63,7 @@ export default function CommunitiesPageClient({
             <p className="mb-4 text-muted-foreground">
               There are no communities available at the moment.
             </p>
-            <Button onClick={() => router.push('/community/add')}>Create Community</Button>
+            <Button>Create Community</Button>
           </div>
         )}
       </div>

@@ -2,28 +2,14 @@ import type { Edge, Node } from "@xyflow/react";
 import { Position } from "@xyflow/react";
 import type { SkillStatus, SkillNodeData } from "./types";
 
-/** child -> [children...] using your semantics: edge.source = child, edge.target = parent */
 export function buildChildrenMap(edges: Edge[]): Record<string, string[]> {
   const map: Record<string, Set<string>> = {};
   for (const e of edges) {
-    const child = String(e.source);
-    const parent = String(e.target);
+    const child = e.source;
+    const parent = e.target;
     if (!child || !parent || child === parent) continue;
     (map[parent] ??= new Set()).add(child);
     map[child] ??= new Set();
-  }
-  return Object.fromEntries(Object.entries(map).map(([k, v]) => [k, [...v]]));
-}
-
-/** child -> [parents...] */
-export function buildParentMap(edges: Edge[]): Record<string, string[]> {
-  const map: Record<string, Set<string>> = {};
-  for (const e of edges) {
-    const child = String(e.source);
-    const parent = String(e.target);
-    if (!child || !parent || child === parent) continue;
-    (map[child] ??= new Set()).add(parent);
-    map[parent] ??= map[parent] ?? new Set();
   }
   return Object.fromEntries(Object.entries(map).map(([k, v]) => [k, [...v]]));
 }

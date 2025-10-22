@@ -4,13 +4,11 @@ import type { Edge, Node } from '@xyflow/react';
 export type SkillStatus = 'locked' | 'unlocked' | 'completed';
 
 export type SkillNodeData = {
-  onChangeDescription: (id: string, description: string) => void;
   title: string;
   isPrimary?: boolean;
   xp?: number;
-  description?: string;
 
-  // this will be injected at runtime:
+  // injected/derived at runtime:
   status?: SkillStatus;
   onComplete?: (id: string) => void | Promise<void>;
   onRename?: (id: string, title: string) => void;
@@ -18,7 +16,7 @@ export type SkillNodeData = {
 };
 
 export type SkillTreeDTO = {
-  nodes: Node<SkillNodeData>[]; 
-  edges: Edge[];                 // child parents??
-  completedIds: string[];         // given by back end
+  nodes: Node<SkillNodeData>[];  // ids unique; positions optional (layout will set)
+  edges: Edge[];                  // semantics: child -> parent
+  completedIds: string[];         // provided by backend
 };

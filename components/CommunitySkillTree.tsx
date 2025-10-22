@@ -14,7 +14,6 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 
 type SkillNode = {
   id: string;
@@ -31,7 +30,7 @@ const NODE_WIDTH = 180;
 const NODE_HEIGHT = 90;
 const H_SPACING = NODE_WIDTH * 1.4;
 const V_SPACING = NODE_HEIGHT * 1.8;
-  
+
 const Legend = () => {
   const items = [
     {
@@ -71,7 +70,6 @@ const Legend = () => {
     </div>
   );
 };
-
 
 const SkillNodeComponent = ({ data }: any) => {
   // TODO: change these colours later
@@ -118,13 +116,6 @@ export default function CommunitySkillTree({
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
 
-  const router = useRouter();
-
-  // on node click, zoom into node
-  const filterNodes = async () => {
-      router.push("/community/examplepage");
-  };
-  
   // flatten tree to nodes + edges and compute positions
   const generateElements = useCallback(
     (
@@ -244,7 +235,7 @@ export default function CommunitySkillTree({
         />
         <Button onClick={handleSearch}>Go</Button>
       </div>
-      
+
       <div style={{ flex: 1 }}>
         <ReactFlow
           nodes={nodes}
@@ -252,7 +243,6 @@ export default function CommunitySkillTree({
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
-          onNodeClick={filterNodes}
           fitView
           defaultEdgeOptions={{ type: "smoothstep", animated: false }}
           // for user interaction -> do we want to keep this?
