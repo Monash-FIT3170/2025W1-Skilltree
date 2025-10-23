@@ -32,7 +32,6 @@ export async function createEventAction(data: CreateEventData) {
       endDate,
     };
     
-    console.log("Formatted data being sent:", formattedData);
     
     const endpoint = `${API_URL}/event`;
 
