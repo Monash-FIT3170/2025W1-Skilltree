@@ -8,7 +8,7 @@
 	"scripts": {
 		"prisma:migrate:dev": "prisma migrate dev",
 		"prisma:seed": "ts-node prisma/seed.ts",
-		"build": "prisma generate && nest build",
+		"build": "prisma migrate dev && nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "nest start",
 		"start:dev": "nest start --watch",

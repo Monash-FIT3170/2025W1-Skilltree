@@ -13,7 +13,6 @@ async function main() {
 	await prisma.skillTreeUser.deleteMany({});
 	await prisma.skillNode.deleteMany({});
 	await prisma.skillTree.deleteMany({});
-	await prisma.tag.deleteMany({});
 	await prisma.event.deleteMany({});
 	await prisma.user.deleteMany({});
 
@@ -72,43 +71,6 @@ async function main() {
 		},
 	});
 
-	const tag1 = await prisma.tag.create({
-		data: {
-			name: 'Programming',
-		},
-	});
-	const tag2 = await prisma.tag.create({
-		data: {
-			name: 'Math',
-			isRestricted: true,
-			restrictionDescription: 'Restricted for some users.',
-		},
-	});
-
-	const tag3 = await prisma.tag.create({
-		data: {
-			name: 'Design',
-		},
-	});
-
-	const tag4 = await prisma.tag.create({
-		data: {
-			name: 'Data Science',
-		},
-	});
-
-	const tag5 = await prisma.tag.create({
-		data: {
-			name: 'Mobile Development',
-		},
-	});
-
-	const tag6 = await prisma.tag.create({
-		data: {
-			name: 'DevOps',
-		},
-	});
-
 	const skillTree1 = await prisma.skillTree.create({
 		data: {
 			name: 'Web Development',
@@ -121,7 +83,6 @@ async function main() {
 					verificationStatus: VerificationStatus.VERIFIED,
 				},
 			},
-			tags: { connect: [{ id: tag1.id }] },
 		},
 	});
 
@@ -137,7 +98,6 @@ async function main() {
 					verificationStatus: VerificationStatus.VERIFIED,
 				},
 			},
-			tags: { connect: [{ id: tag4.id }, { id: tag2.id }] },
 		},
 	});
 
@@ -153,7 +113,6 @@ async function main() {
 					verificationStatus: VerificationStatus.VERIFIED,
 				},
 			},
-			tags: { connect: [{ id: tag5.id }, { id: tag1.id }] },
 		},
 	});
 
@@ -169,7 +128,6 @@ async function main() {
 					verificationStatus: VerificationStatus.VERIFIED,
 				},
 			},
-			tags: { connect: [{ id: tag3.id }] },
 		},
 	});
 

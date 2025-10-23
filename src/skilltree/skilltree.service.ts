@@ -42,7 +42,6 @@ export class SkilltreeService {
 					creator: {
 						select: { id: true, name: true, email: true },
 					},
-					tags: true,
 					skillNodes: {
 						select: {
 							id: true,
@@ -70,10 +69,6 @@ export class SkilltreeService {
 			});
 
 			const filteredSkillTrees = skillTrees.filter((skillTree) => {
-				const hasRestrictedTags = skillTree.tags.some(
-					(tag) => tag.isRestricted,
-				);
-				if (!hasRestrictedTags) return true;
 				if (!user) return false;
 				const userMembership = skillTree.skillTreeUser[0];
 				return (
@@ -96,7 +91,6 @@ export class SkilltreeService {
 					creator: {
 						select: { id: true, name: true, email: true },
 					},
-					tags: true,
 					skillNodes: {
 						include: {
 							parentNode: { select: { id: true, name: true } },
@@ -128,20 +122,10 @@ export class SkilltreeService {
 
 			if (!skillTree) throw new NotFoundException('Skill tree not found');
 
-			const hasRestrictedTags = skillTree.tags.some((tag) => tag.isRestricted);
-			if (hasRestrictedTags && user) {
+			if (user) {
 				const userMembership = Array.isArray(skillTree.skillTreeUser)
 					? skillTree.skillTreeUser.find((stu: any) => stu.userId === user.id)
 					: skillTree.skillTreeUser[0];
-				if (
-					!userMembership ||
-					userMembership.verificationStatus !== VerificationStatus.VERIFIED
-				) {
-					const restrictedTag = skillTree.tags.find((tag) => tag.isRestricted);
-					throw new ForbiddenException(
-						restrictedTag?.restrictionDescription || 'Access restricted',
-					);
-				}
 			}
 
 			return skillTree;
@@ -166,11 +150,9 @@ export class SkilltreeService {
 				data: {
 					...skillTreeData,
 					creatorId,
-					tags: tagIds ? { connect: tagIds.map((id) => ({ id })) } : undefined,
 				},
 				include: {
 					creator: { select: { id: true, name: true, email: true } },
-					tags: true,
 				},
 			});
 
@@ -210,13 +192,9 @@ export class SkilltreeService {
 				where: { id },
 				data: {
 					...updateData,
-					tags: tagIds
-						? { set: tagIds.map((tagId) => ({ id: tagId })) }
-						: undefined,
 				},
 				include: {
 					creator: { select: { id: true, name: true, email: true } },
-					tags: true,
 				},
 			});
 		} catch (error) {
@@ -273,7 +251,6 @@ export class SkilltreeService {
 		try {
 			const skillTree = await this.prismaService.skillTree.findUnique({
 				where: { id: skillTreeId },
-				include: { tags: true },
 			});
 			if (!skillTree) throw new NotFoundException('Skill tree not found');
 
@@ -287,17 +264,11 @@ export class SkilltreeService {
 				);
 			}
 
-			const hasRestrictedTags = skillTree.tags.some((tag) => tag.isRestricted);
-			const verificationStatus = hasRestrictedTags
-				? VerificationStatus.PENDING
-				: VerificationStatus.VERIFIED;
-
 			return this.prismaService.skillTreeUser.create({
 				data: {
 					skillTreeId,
 					userId,
 					role: Role.MEMBER,
-					verificationStatus,
 				},
 				include: {
 					skillTree: { select: { id: true, name: true } },
@@ -479,7 +450,6 @@ export class SkilltreeService {
 					skillTree: {
 						include: {
 							creator: { select: { id: true, name: true, email: true } },
-							tags: true,
 							_count: { select: { skillNodes: true, skillTreeUser: true } },
 						},
 					},
@@ -498,7 +468,6 @@ export class SkilltreeService {
 			const allSkillTrees = await this.prismaService.skillTree.findMany({
 				include: {
 					creator: { select: { id: true, name: true, email: true } },
-					tags: true,
 					_count: { select: { skillNodes: true, skillTreeUser: true } },
 				},
 			});
@@ -509,7 +478,6 @@ export class SkilltreeService {
 						skillTree: {
 							include: {
 								creator: { select: { id: true, name: true, email: true } },
-								tags: true,
 								_count: { select: { skillNodes: true, skillTreeUser: true } },
 							},
 						},

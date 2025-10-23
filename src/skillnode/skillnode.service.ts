@@ -21,7 +21,6 @@ export class SkillNodeService {
 					skillTree: {
 						include: {
 							creator: { select: { id: true, name: true, email: true } },
-							tags: true,
 						},
 					},
 					parentNode: true,

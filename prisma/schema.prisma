@@ -52,13 +52,15 @@ model SkillTree {
   description String @default("")
 
   skillNodes    SkillNode[]
-  tags          Tag[]           @relation("SkillTreeTags")
+  tags          String[]
   creator       User            @relation(fields: [creatorId], references: [id])
   creatorId     String
   skillTreeUser SkillTreeUser[]
+  isRestricted  Boolean         @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  tagId     String?
 
   @@index([name])
 }
@@ -139,27 +141,15 @@ model Feedback {
   @@index([feedbackText])
 }
 
-model Tag {
-  id                     String  @id @default(uuid())
-  name                   String  @unique
-  isRestricted           Boolean @default(false)
-  restrictionDescription String  @default("You are not allowed to view the SkillTree because of community restrictions.")
-
-  skillTrees SkillTree[] @relation("SkillTreeTags")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([name])
-}
-
 model Event {
-  id        String   @id @default(uuid())
-  title     String
-  xpPayout  Int      @default(0)
-  users     User[]   @relation("EventParticipants")
-  startDate DateTime @default(now())
-  endDate   DateTime
+  id          String    @id @default(uuid())
+  title       String
+  description String    @default("")
+  xpPayout    Int       @default(0)
+  users       User[]    @relation("EventParticipants")
+  startDate   DateTime  @default(now())
+  mode        EventMode @default(RANKED)
+  endDate     DateTime
 
   winner   User?   @relation(fields: [winnerId], references: [id])
   winnerId String?
@@ -169,6 +159,12 @@ model Event {
 
   @@index([title])
   @@index([startDate])
+}
+
+enum EventMode {
+  RANKED
+  CASUAL
+  UNRANKED
 }
 
 model UserFollow {
