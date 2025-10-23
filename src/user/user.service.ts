@@ -100,10 +100,18 @@ export class UserService {
 				throw new NotFoundException('User not found');
 			}
 
+			const skillTreesJoined = user.skillTreeUser.map(
+				(skillTreeUser) => skillTreeUser.skillTreeId,
+			);
+
 			return {
-				skillTreesJoined: user.skillTreeUser,
+				skillTreesJoined: skillTreesJoined.map((id) => {
+					const skillTree = this.prisma.skillTree.findUnique({
+						where: { id },
+					});
+					return skillTree;
+				}),
 				skillTreesCreated: user.skillTrees,
-				skillNodesCompleted: user.skillNodeUser,
 			};
 		} catch (error) {
 			if (error instanceof NotFoundException) {
