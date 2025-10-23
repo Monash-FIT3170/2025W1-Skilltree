@@ -1,4 +1,4 @@
-name: ESLint
+name: Next Build
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [backend]
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -32,5 +32,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run ESLint
-        run: pnpm lint
+      - name: Run Next.js build
+        run: pnpm build
+
+      - name: Check build output
+        run: |
+          if [ -d "dist" ]; then
+            echo "Build successful - dist directory created"
+          else
+            echo "Build failed - dist directory not found"
+            exit 1
+          fi
