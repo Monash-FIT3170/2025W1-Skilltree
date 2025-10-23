@@ -17,6 +17,7 @@ import {
 	ForgotPasswordDto,
 } from './dto';
 import { format } from 'date-fns';
+import { SHA256 } from 'crypto-js';
 
 export interface AuthResponse {
 	access_token: string;
@@ -43,11 +44,13 @@ export class AuthService {
 		const hash = await argon2.hash(dto.password);
 
 		try {
+			const emailHash = SHA256(dto.email).toString();
 			const user = await this.prisma.user.create({
 				data: {
 					name: dto.name,
 					email: dto.email,
 					hash,
+					pfp: `https://www.gravatar.com/avatar/${emailHash}?d=identicon`,
 					dateOfBirth: dto.dateOfBirth,
 				},
 			});

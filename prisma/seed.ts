@@ -1,6 +1,7 @@
 import { PrismaClient, Role, VerificationStatus } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { dataUri } from './data_url';
+import { SHA256 } from 'crypto-js';
 
 const prisma = new PrismaClient();
 
@@ -19,54 +20,59 @@ async function main() {
 	console.log('Existing data purged.');
 
 	console.log('Creating new seed data...');
+	const user1HashedEmail = SHA256('user@example.com');
 	const user1 = await prisma.user.create({
 		data: {
 			name: 'User',
 			email: 'user@example.com',
 			dateOfBirth: new Date('1990-01-01'),
 			hash: await argon2.hash('string'),
-			pfp: '',
+			pfp: `https://gravatar.com/avatar/${user1HashedEmail}?d=identicon`,
 		},
 	});
+	const user2HashedEmail = SHA256('bob@example.com');
 	const user2 = await prisma.user.create({
 		data: {
 			name: 'Bob',
 			email: 'bob@example.com',
 			dateOfBirth: new Date('1992-02-02'),
 			hash: await argon2.hash('password456'),
-			pfp: '',
+			pfp: `https://gravatar.com/avatar/${user2HashedEmail}?d=identicon`,
 		},
 	});
 
+	const user3HashedEmail = SHA256('charlie@example.com');
 	const user3 = await prisma.user.create({
 		data: {
 			name: 'Charlie',
 			email: 'charlie@example.com',
 			dateOfBirth: new Date('1988-05-15'),
 			hash: await argon2.hash('password789'),
-			pfp: '',
+			pfp: `https://gravatar.com/avatar/${user3HashedEmail}?d=identicon`,
 			xpPoint: 250,
 		},
 	});
 
+	const user4HashedEmail = SHA256('diana@example.com');
 	const user4 = await prisma.user.create({
 		data: {
 			name: 'Diana',
 			email: 'diana@example.com',
 			dateOfBirth: new Date('1995-11-20'),
 			hash: await argon2.hash('passwordabc'),
-			pfp: '',
+			pfp: `https://gravatar.com/avatar/${user4HashedEmail}?d=identicon`,
 			xpPoint: 180,
 		},
 	});
 
+	const user5HashedEmail = SHA256('eve@example.com');
 	const user5 = await prisma.user.create({
 		data: {
 			name: 'Eve',
 			email: 'eve@example.com',
 			dateOfBirth: new Date('1993-03-08'),
 			hash: await argon2.hash('passworddef'),
-			pfp: '',
+			pfp: `https://gravatar.com/avatar/${user5HashedEmail}?d=identicon`,
 			xpPoint: 320,
 		},
 	});
