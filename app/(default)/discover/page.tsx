@@ -1,8 +1,5 @@
 import CommunitiesPageClient from "./page-client";
-import type {
-  TGetCommunitiesByMembershipResponse,
-  TAuthSkillTree,
-} from "@/types";
+import type { TAuthSkillTree } from "@/types";
 import CommonError from "@/components/CommonError";
 import { getCommunityByMembershipAction } from "@/actions/get-community-by-membership";
 

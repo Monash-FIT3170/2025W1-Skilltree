@@ -71,7 +71,6 @@ export async function createProofOfPracticeAction({
 
     const responseData =
       (await response.json()) as CreateProofOfPracticeResponse;
-    console.log(responseData);
 
     revalidatePath(
       `/community/${responseData.message?.skillNode.skillTree.id}`,

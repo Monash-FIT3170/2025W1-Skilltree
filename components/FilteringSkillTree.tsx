@@ -12,6 +12,7 @@ import {
   Background,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { TSkillNode } from "@/types";
 
 type SkillNode = {
   id: string;
@@ -21,12 +22,7 @@ type SkillNode = {
 };
 
 type SkillTreeFilterProps = {
-  rootSkill: {
-    id: string;
-    label: string;
-    unlocked: boolean;
-    children: unknown[];
-  };
+  rootSkill: TSkillNode;
   onSelect: (nodeId: string | null) => void; // returns selected node id
 };
 
@@ -48,13 +44,13 @@ const FilterNode = ({ id, data }: { id: string; data: FilterNodeData }) => {
   const bgColor = data.selected
     ? "#2563eb"
     : data.unlocked
-    ? "#34d399"
-    : "#d1d5db";
+      ? "#34d399"
+      : "#d1d5db";
   const textColor = data.selected
     ? "white"
     : data.unlocked
-    ? "white"
-    : "#374151";
+      ? "white"
+      : "#374151";
 
   // make the selected border explicit so it always shows
   const selectedBorder = data.selected
@@ -138,12 +134,7 @@ export default function SkillTreeFilter({
   // build the tree -> nodes/edges
   const generateElements = useCallback(
     (
-      skill: {
-        id: string;
-        label: string;
-        unlocked: boolean;
-        children: unknown[];
-      },
+      skill: TSkillNode,
       parentId: string | null,
       depth = 0,
       index = 0,
@@ -158,8 +149,8 @@ export default function SkillTreeFilter({
         type: "filterNode",
         position: { x, y },
         data: {
-          label: skill.label,
-          unlocked: skill.unlocked,
+          label: skill.name,
+          unlocked: true,
           selected: id === selectedNodeId,
           onClickRef: selectRef,
         },
@@ -184,14 +175,14 @@ export default function SkillTreeFilter({
       let allNodes: Node<FilterNodeData>[] = [node];
       let allEdges: Edge[] = [...edgeList];
 
-      if (skill.children && skill.children.length > 0) {
-        skill.children.forEach((child: any, childIndex) => {
+      if (skill.childNode && skill.childNode.length > 0) {
+        skill.childNode.forEach((child: any, childIndex) => {
           const { nodes: cNodes, edges: cEdges } = generateElements(
             child,
             id,
             depth + 1,
             childIndex,
-            skill.children!.length
+            skill.childNode?.length || 0
           );
           allNodes = allNodes.concat(cNodes);
           allEdges = allEdges.concat(cEdges);

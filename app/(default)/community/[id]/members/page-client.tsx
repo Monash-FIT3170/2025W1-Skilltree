@@ -13,10 +13,9 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TAuthSkillTreeMember } from "@/actions/get-community-members";
+import { TAuthSkillTreeMember } from "@/types";
 import { toast } from "sonner";
-import { TAuthSkillTree } from "@/actions/get-community-action";
-import { useStore } from "@xyflow/react";
+import { TAuthSkillTree } from "@/types";
 import { userStore } from "@/stores";
 import { removeUserFromSkillTree } from "@/actions/remove-user-from-skilltree";
 import { getMembership } from "@/actions/get-membership";
@@ -77,8 +76,8 @@ const CommunityMembersClient = ({
                         member.role === "ADMIN"
                           ? "bg-primary"
                           : member.role === "MEMBER"
-                          ? "bg-foreground text-background"
-                          : "bg-primary"
+                            ? "bg-foreground text-background"
+                            : "bg-primary"
                       )}
                     >
                       {member.role.toUpperCase()}

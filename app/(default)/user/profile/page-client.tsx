@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { TUser } from "@/types";
-import { TAuthSkillTrees } from "@/actions/get-my-skilltrees";
+import { TAuthSkillTrees } from "@/types";
 import { format } from "date-fns";
 import { initials } from "@/lib/utils";
 
@@ -144,7 +144,7 @@ export default function UserProfileClient({
               <div className="mt-1 flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span className="text-sm">
-                  Joined {format(user.dateOfBirth, "MMMM yyyy")}
+                  Joined {format(user.dateOfBirth!, "MMMM yyyy")}
                 </span>
               </div>
             </div>
@@ -183,7 +183,7 @@ export default function UserProfileClient({
             <CardContent className="flex flex-col items-center p-6">
               <Trophy className="mb-2 h-8 w-8 text-yellow-500" />
               <div className="text-2xl font-bold">
-                {stats.totalXP.toLocaleString()}
+                {stats.totalXP!.toLocaleString()}
               </div>
               <p className="text-sm text-muted-foreground">Total XP</p>
             </CardContent>
@@ -383,11 +383,11 @@ function CommunityGrid({ trees }: { trees: TAuthSkillTrees[] }) {
             <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <GitGraphIcon className="h-4 w-4" />
-                {tree.skillTree._count.skillNodes} nodes
+                {tree.skillTree._count!.skillNodes} nodes
               </span>
               <span className="inline-flex items-center gap-1">
                 <UserIcon className="h-4 w-4" />
-                {tree.skillTree._count.skillTreeUser} members
+                {tree.skillTree._count!.skillTreeUser} members
               </span>
             </div>
           </CardFooter>

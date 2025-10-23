@@ -15,23 +15,13 @@ import {
 import "@xyflow/react/dist/style.css";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-
-type SkillNode = {
-  id: string;
-  label: string;
-  unlocked: boolean;
-  children?: SkillNode[];
-};
-
-type CommunitySkillTreeProps = {
-  rootSkill: SkillNode;
-};
+import { TSkillNode } from "@/types";
 
 const NODE_WIDTH = 180;
 const NODE_HEIGHT = 90;
 const H_SPACING = NODE_WIDTH * 1.4;
 const V_SPACING = NODE_HEIGHT * 1.8;
-  
+
 const Legend = () => {
   const items = [
     {
@@ -72,7 +62,6 @@ const Legend = () => {
   );
 };
 
-
 const SkillNodeComponent = ({ data }: any) => {
   // TODO: change these colours later
   const bgColor = data.unlocked
@@ -91,8 +80,8 @@ const SkillNodeComponent = ({ data }: any) => {
         borderColor: data.unlockable
           ? "#10b981"
           : data.unlocked
-          ? "transparent"
-          : "#9ca3af",
+            ? "transparent"
+            : "#9ca3af",
         borderWidth: data.unlockable ? 3 : 1,
         minWidth: 140,
         maxWidth: 180,
@@ -108,7 +97,11 @@ const SkillNodeComponent = ({ data }: any) => {
 
 export default function CommunitySkillTree({
   rootSkill,
-}: CommunitySkillTreeProps) {
+  inRoot = false,
+}: {
+  rootSkill: TSkillNode;
+  inRoot?: boolean;
+}) {
   const nodeTypes = { skillNode: SkillNodeComponent };
 
   // for dragging
@@ -122,13 +115,13 @@ export default function CommunitySkillTree({
 
   // on node click, zoom into node
   const filterNodes = async () => {
-      router.push("/community/examplepage");
+    router.push("/community/examplepage");
   };
-  
+
   // flatten tree to nodes + edges and compute positions
   const generateElements = useCallback(
     (
-      skill: SkillNode,
+      skill: TSkillNode,
       parentId: string | null,
       parentUnlocked: boolean = true,
       depth = 0,
@@ -140,20 +133,15 @@ export default function CommunitySkillTree({
       const x = (index - (siblingCount - 1) / 2) * H_SPACING;
       const y = depth * V_SPACING;
 
-      const unlockable =
-        !parentUnlocked &&
-        !skill.unlocked &&
-        (!skill.children || skill.children.length === 0);
-
       const node: Node = {
         id,
         type: "skillNode",
         position: { x, y },
         data: {
-          label: skill.label,
+          label: skill.name,
           main: !parentId,
-          unlocked: skill.unlocked,
-          unlockable: !parentUnlocked && !skill.unlocked,
+          unlocked: true,
+          unlockable: true,
         },
       };
 
@@ -166,7 +154,7 @@ export default function CommunitySkillTree({
                 target: id,
                 type: "smoothstep",
                 // if its unlocked, have an unlocked edge colour
-                style: { stroke: skill.unlocked ? "#10b981" : "#9ca3af" },
+                // style: { stroke: skill.unlocked ? "#10b981" : "#9ca3af" },
               },
             ]
           : [];
@@ -174,15 +162,15 @@ export default function CommunitySkillTree({
       let allNodes: Node[] = [node];
       let allEdges: Edge[] = [...edgeList];
       // math
-      if (skill.children && skill.children.length > 0) {
-        skill.children.forEach((child, childIndex) => {
+      if (skill.childNode && skill.childNode.length > 0) {
+        skill.childNode.forEach((child, childIndex) => {
           const { nodes: cNodes, edges: cEdges } = generateElements(
             child,
             id,
-            skill.unlocked,
+            true,
             depth + 1,
             childIndex,
-            skill.children!.length
+            skill.childNode!.length
           );
           allNodes = allNodes.concat(cNodes);
           allEdges = allEdges.concat(cEdges);
@@ -233,18 +221,20 @@ export default function CommunitySkillTree({
       }}
     >
       {/* Search bar */}
-      <div className="p-2 flex gap-2 items-center">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          placeholder="Search skill..."
-          className="border rounded px-3 py-1 w-64"
-        />
-        <Button onClick={handleSearch}>Go</Button>
-      </div>
-      
+      {!inRoot && (
+        <div className="p-2 flex gap-2 items-center">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            placeholder="Search skill..."
+            className="border rounded px-3 py-1 w-64"
+          />
+          <Button onClick={handleSearch}>Go</Button>
+        </div>
+      )}
+
       <div style={{ flex: 1 }}>
         <ReactFlow
           nodes={nodes}
@@ -266,7 +256,7 @@ export default function CommunitySkillTree({
         </ReactFlow>
       </div>
 
-      <Legend />
+      {!inRoot && <Legend />}
     </div>
   );
 }

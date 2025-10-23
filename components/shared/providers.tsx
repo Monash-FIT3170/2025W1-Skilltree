@@ -84,6 +84,7 @@ export const Providers = ({
       userId: undefined,
       user: undefined,
     });
+    return router.push("/auth/signin");
   };
 
   return (

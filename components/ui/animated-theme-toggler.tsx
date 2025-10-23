@@ -1,7 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, use } from "react";
 import { flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -13,9 +13,26 @@ type props = {
 export const AnimatedThemeToggler = ({ className }: props) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    const theme =
+      localStorage.getItem("theme") ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light");
+    const isDark = theme === "dark";
+    setIsDarkMode(isDark);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
   const changeTheme = async () => {
     if (!buttonRef.current) return;
 
+    localStorage.setItem("theme", isDarkMode ? "light" : "dark");
     await document.startViewTransition(() => {
       flushSync(() => {
         const dark = document.documentElement.classList.toggle("dark");

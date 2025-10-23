@@ -24,14 +24,4 @@ export async function getCommunityMembersAction(id: string) {
   return data as APIResponse<TAuthSkillTreeMember[]>;
 }
 
-export type TAuthSkillTreeMember = {
-  skillTreeId: string;
-  role: "ADMIN" | "MEMBER";
-  verificationStatus: "PENDING" | "VERIFIED";
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    xpPoint: number;
-  };
-};
+import type { TAuthSkillTreeMember } from "@/types";

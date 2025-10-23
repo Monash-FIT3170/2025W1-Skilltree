@@ -30,16 +30,12 @@ export function ChipInput({
   const addChip = () => {
     const trimmedValue = inputValue.trim();
 
-    if (
-      trimmedValue &&
-      !chips.includes(trimmedValue) &&
-      chips.length < maxChips
-    ) {
-      const newChips = [...chips, trimmedValue];
-      setChips(newChips);
-      setInputValue("");
-      onChange?.(newChips);
-    }
+    if (!trimmedValue || chips.length >= maxChips) return;
+
+    const newChips = [...chips, trimmedValue];
+    setChips(newChips);
+    setInputValue("");
+    onChange?.(newChips);
   };
 
   const removeChip = (chipToRemove: string) => {
@@ -50,13 +46,13 @@ export function ChipInput({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap gap-2 p-2 min-h-10 mb-2">
+      <div className="flex flex-wrap gap-2 pl-0 p-2 min-h-10 mb-2">
         {chips.map((chip) => (
           <Badge
             onClick={() => removeChip(chip)}
             key={chip}
             variant="outline"
-            className="z-0 gap-1 px-3 py-1 bg-primary hover:bg-destructive/10 transition-colors cursor-pointer"
+            className="z-0 gap-1 pr-3 py-1 bg-primary hover:bg-destructive/10 transition-colors cursor-pointer"
           >
             {chip}
           </Badge>

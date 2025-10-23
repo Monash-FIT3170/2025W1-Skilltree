@@ -14,7 +14,7 @@ type TAuthSkillTree = {
   createdAt: string;
   updatedAt: string;
   creator: TCreator;
-  tags: TTag[];
+  tags: string[];
   skillNodes: TSkillNode[];
 };
 
@@ -22,15 +22,6 @@ type TCreator = {
   id: string;
   name: string;
   email: string;
-};
-
-type TTag = {
-  id: string;
-  name: string;
-  isRestricted: boolean;
-  restrictionDescription: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 type TEvents = {

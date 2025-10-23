@@ -22,7 +22,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
   const [name, setName] = useState(user.name);
   const [previewUrl, setPreviewUrl] = useState<string | null>(user.pfp ?? null);
   const [file, setFile] = useState<File | null>(null);
-  const [isPrivate, setIsPrivate] = useState(false); // Add this to your TUser type or get from user.isPrivate
+  const [isPrivate, setIsPrivate] = useState(false);
   const editRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
@@ -114,7 +114,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
 
             <div className="flex flex-col w-full gap-2">
               <Label className="text-muted-foreground">Total XP Earned</Label>
-              <Input disabled value={user.xpPoint.toLocaleString()} />
+              <Input disabled value={user.xpPoint!.toLocaleString()} />
             </div>
 
             <div className="flex flex-col w-full gap-2">
@@ -127,7 +127,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
               <Input
                 disabled
                 readOnly
-                value={format(user.dateOfBirth, "PPP")}
+                value={format(user.dateOfBirth!, "PPP")}
               />
             </div>
 

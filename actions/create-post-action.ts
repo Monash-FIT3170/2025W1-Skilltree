@@ -2,11 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export type CreatePostPayload = {
-  skillNodeId: string;
-  content: string;
-  proofMedia?: string | null; // base64 data URL string
-};
+import type { CreatePostPayload } from "@/actions/types";
 
 export async function createPostAction(payload: CreatePostPayload) {
   const cookieStore = await cookies();

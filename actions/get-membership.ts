@@ -22,8 +22,6 @@ export async function getMembership(skillTreeId: string) {
     admin: boolean;
   }>;
 
-  console.log("getMembership", data);
-
   if (!response.ok) {
     return { ok: false, message: data.message || "Something went wrong" };
   }
@@ -35,14 +33,4 @@ export async function getMembership(skillTreeId: string) {
   }>;
 }
 
-export type TAuthSkillTreeMember = {
-  skillTreeId: string;
-  role: "ADMIN" | "MEMBER";
-  verificationStatus: "PENDING" | "VERIFIED";
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    xpPoint: number;
-  };
-};
+import type { TAuthSkillTreeMember } from "@/types";

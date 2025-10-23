@@ -24,8 +24,7 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
-import { TAuthSkillTrees } from "@/actions/get-my-skilltrees";
-import { TEvents } from "@/types";
+import { TEvent, TAuthSkillTrees } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DashboardPageClient = ({
@@ -33,18 +32,14 @@ const DashboardPageClient = ({
   events,
 }: {
   skilltrees: TAuthSkillTrees[];
-  events: TEvents[];
+  events: TEvent[];
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
   const router = useRouter();
 
-  const handleJoinEvent = (eventId: string) => {
-    console.log(`Joining event: ${eventId}`);
-  };
+  const handleJoinEvent = (eventId: string) => {};
 
-  const handleAddEvent = () => {
-    console.log("Adding new event");
-  };
+  const handleAddEvent = () => {};
 
   const getTimeRemaining = (endDate: string) => {
     const now = new Date();
@@ -113,11 +108,11 @@ const DashboardPageClient = ({
                       <div className="flex items-center justify-between w-full gap-4 text-xs text-muted-foreground">
                         <span className="inline-flex items-center gap-1">
                           <GitGraphIcon className="w-4 h-4" />
-                          {tree.skillTree._count.skillNodes}
+                          {tree.skillTree._count!.skillNodes}
                         </span>
                         <span className="inline-flex items-center gap-1">
                           <UserIcon className="w-4 h-4" />
-                          {tree.skillTree._count.skillTreeUser}
+                          {tree.skillTree._count!.skillTreeUser}
                         </span>
                       </div>
                     </CardFooter>

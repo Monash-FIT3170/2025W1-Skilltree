@@ -1,11 +1,8 @@
 import DashboardPageClient from "./page-client";
-import {
-  getMySkillTreesAction,
-  TAuthSkillTrees,
-} from "@/actions/get-my-skilltrees";
+import { getMySkillTreesAction } from "@/actions/get-my-skilltrees";
 import { getEventsAction } from "@/actions/get-events";
 import CommonError from "@/components/CommonError";
-import { TEvents } from "@/types";
+import { TEvent, TAuthSkillTrees } from "@/types";
 
 export default async function DashboardPage() {
   try {
@@ -24,7 +21,7 @@ export default async function DashboardPage() {
     return (
       <DashboardPageClient
         skilltrees={skillTrees.message as TAuthSkillTrees[]}
-        events={events.message as TEvents[]}
+        events={events.message as TEvent[]}
       />
     );
   } catch (error) {

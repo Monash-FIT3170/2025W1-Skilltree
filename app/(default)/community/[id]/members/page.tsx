@@ -1,12 +1,7 @@
-import {
-  getCommunityMembersAction,
-  TAuthSkillTreeMember,
-} from "@/actions/get-community-members";
+import { TAuthSkillTree, TAuthSkillTreeMember } from "@/types";
 import CommunityMembersClient from "./page-client";
-import {
-  getCommunityAction,
-  TAuthSkillTree,
-} from "@/actions/get-community-action";
+import { getCommunityAction } from "@/actions/get-community-action";
+import { getCommunityMembersAction } from "@/actions/get-community-members";
 import CommonError from "@/components/CommonError";
 
 export default async function ViewMembers({

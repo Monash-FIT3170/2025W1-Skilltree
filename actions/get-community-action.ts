@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { APIResponse } from "@/types";
+import { APIResponse } from "@/actions/types";
 
 export async function getCommunityAction(id: string) {
   const cookieStore = await cookies();
@@ -20,55 +20,4 @@ export async function getCommunityAction(id: string) {
   return data as APIResponse<TAuthSkillTree>;
 }
 
-export type TAuthSkillTree = {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-  creator: TCreator;
-  tags: TTag[];
-  skillNodes: TSkillNode[];
-  skillTreeUser: TAuthSkillTreeUser[];
-};
-
-type TAuthSkillTreeUser = {
-  role: "ADMIN" | "MEMBER";
-  verificationStatus: "VERIFIED" | "PENDING";
-  user: TUser;
-};
-
-type TUser = {
-  id: string;
-  name: string;
-};
-
-type TCreator = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-type TTag = {
-  id: string;
-  name: string;
-  isRestricted: boolean;
-  restrictionDescription: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type TSkillNode = {
-  id: string;
-  name: string;
-  description: string;
-  xpPoint: number;
-  skillTreeId: string;
-  parentNode: TNestedNode | null;
-  childNode: TNestedNode[];
-};
-
-type TNestedNode = {
-  id: string;
-  name: string;
-};
+import type { TAuthSkillTree } from "@/actions/types";

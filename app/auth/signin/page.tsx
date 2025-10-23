@@ -51,7 +51,6 @@ export default function LogInPage() {
         return;
       }
 
-      console.log(userProfile.message);
       // return;
 
       userStore.setState((pv) => ({
@@ -118,32 +117,6 @@ export default function LogInPage() {
                 <Label htmlFor="password" className="text-sm">
                   Password
                 </Label>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="link" size="sm">
-                      Forgot Password?
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Reset your password</DialogTitle>
-                      <DialogDescription>
-                        Please enter your email address to receive a password
-                        reset link.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <Input
-                      type="email"
-                      required
-                      name="email"
-                      id="email"
-                      placeholder="Enter your email"
-                    />
-                    <DialogFooter>
-                      <Button type="submit">Send Reset Link</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
               </div>
               <Input
                 type="password"
