@@ -57,7 +57,7 @@ export async function createEventAction(data: CreateEventData) {
           errorMessage = errorData.message || errorMessage;
         }
       } catch {
-        throw new Error(errorMessage);
+        return { ok: false, message: errorMessage };
       }
       return { ok: false, message: errorMessage };
     }
