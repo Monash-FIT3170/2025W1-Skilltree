@@ -53,6 +53,7 @@ import { unlikePostAction } from "@/actions/unlike-post-action";
 import { deletePostAction } from "@/actions/delete-post-action";
 import { getMembership } from "@/actions/get-membership";
 import { TAuthSkillTree } from "@/actions/get-community-action";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const events = [
   {
