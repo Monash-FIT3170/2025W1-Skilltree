@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsString, IsOptional, IsInt, IsDateString } from 'class-validator';
+import {
+	IsString,
+	IsOptional,
+	IsInt,
+	IsDateString,
+	IsEnum,
+} from 'class-validator';
 
 export class CreateEventDto {
 	@IsString()
@@ -18,4 +24,7 @@ export class CreateEventDto {
 
 	@IsDateString()
 	endDate: string;
+
+	@IsEnum(['RANKED', 'UNRANKED'])
+	mode: 'RANKED' | 'UNRANKED';
 }

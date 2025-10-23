@@ -45,6 +45,7 @@ export class EventService {
 					users: {
 						connect: [{ id: userId }],
 					},
+					mode: dto.mode,
 				},
 			});
 			return event;
