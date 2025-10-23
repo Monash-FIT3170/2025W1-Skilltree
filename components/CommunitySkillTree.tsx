@@ -114,9 +114,9 @@ export default function CommunitySkillTree({
   const router = useRouter();
 
   // on node click, zoom into node
-  const filterNodes = async () => {
-    router.push("/community/examplepage");
-  };
+  // const filterNodes = async () => {
+  //   router.push("/community/examplepage");
+  // };
 
   // flatten tree to nodes + edges and compute positions
   const generateElements = useCallback(
@@ -243,7 +243,7 @@ export default function CommunitySkillTree({
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
-          onNodeClick={filterNodes}
+          // onNodeClick={filterNodes}
           fitView
           defaultEdgeOptions={{ type: "smoothstep", animated: false }}
           // for user interaction -> do we want to keep this?

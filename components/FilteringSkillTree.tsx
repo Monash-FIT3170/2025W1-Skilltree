@@ -9,12 +9,19 @@ import {
   useEdgesState,
   Node,
   Edge,
+  Background,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { TSkillNode } from "@/types";
+
+type SkillNode = {
+  id: string;
+  label: string;
+  unlocked: boolean;
+  children?: SkillNode[];
+};
 
 type SkillTreeFilterProps = {
-  rootSkill: TSkillNode;
+  rootSkill: SkillNode;
   onSelect: (nodeId: string | null) => void; // returns selected node id
 };
 
@@ -126,7 +133,7 @@ export default function SkillTreeFilter({
   // build the tree -> nodes/edges
   const generateElements = useCallback(
     (
-      skill: TSkillNode,
+      skill: SkillNode,
       parentId: string | null,
       depth = 0,
       index = 0,
@@ -141,8 +148,8 @@ export default function SkillTreeFilter({
         type: "filterNode",
         position: { x, y },
         data: {
-          label: skill.name,
-          unlocked: true,
+          label: skill.label,
+          unlocked: skill.unlocked,
           selected: id === selectedNodeId,
           onClickRef: selectRef,
         },
@@ -167,14 +174,14 @@ export default function SkillTreeFilter({
       let allNodes: Node<FilterNodeData>[] = [node];
       let allEdges: Edge[] = [...edgeList];
 
-      if (skill.childNode && skill.childNode.length > 0) {
-        skill.childNode.forEach((child: any, childIndex) => {
+      if (skill.children && skill.children.length > 0) {
+        skill.children.forEach((child: SkillNode, childIndex) => {
           const { nodes: cNodes, edges: cEdges } = generateElements(
             child,
             id,
             depth + 1,
             childIndex,
-            skill.childNode?.length || 0
+            skill.children!.length
           );
           allNodes = allNodes.concat(cNodes);
           allEdges = allEdges.concat(cEdges);

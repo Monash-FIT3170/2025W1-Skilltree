@@ -157,6 +157,21 @@ export type TEvent = {
   updatedAt: string;
 };
 
+export type TFollowerFollowingResponse = {
+  followers: TPublicUser[];
+  following: TPublicUser[];
+};
+
+export type TPublicUser = {
+  id: string;
+  name: string;
+  dateOfBirth: Date;
+  pfp: string;
+  xpPoint: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type TGetUserProfileResponse = TUser;
 
 export type TGeTAuthSkillTreesResponse = TAuthSkillTree[];

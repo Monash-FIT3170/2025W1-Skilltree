@@ -33,10 +33,19 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { TFollowerFollowingResponse, TUser } from "@/types";
+import { TFollowerFollowingResponse, TPublicUser } from "@/types";
 import { TAuthSkillTrees } from "@/types";
 import { format } from "date-fns";
 import { initials } from "@/lib/utils";
+import { getFollowerFollowing } from "@/actions/get-followers-following";
+import { followUser, unfollowUser } from "@/actions/follow-unfolloy";
+
+type TFollower = {
+  id: string;
+  name: string;
+  pfp?: string;
+  xpPoint: number;
+};
 
 type TProfileStats = {
   followersCount: number;
@@ -51,23 +60,45 @@ export default function UserProfileClient({
   completedSkilltrees = [],
   joinedSkilltrees = undefined, // if undefined, we’ll fall back to `skilltrees`
   ownedSkilltrees = [],
-  followers = [],
-  following = [],
   profileStats,
   isOwnProfile = true,
 }: {
-  user: TUser;
+  user: TPublicUser;
   skilltrees?: TAuthSkillTrees[];
   completedSkilltrees?: TAuthSkillTrees[];
   joinedSkilltrees?: TAuthSkillTrees[];
   ownedSkilltrees?: TAuthSkillTrees[];
-  followers?: TFollowerFollowingResponse["followers"];
-  following?: TFollowerFollowingResponse["following"];
   profileStats?: TProfileStats;
   isOwnProfile?: boolean;
+  isFollowing?: boolean;
 }) {
   const router = useRouter();
+
   const [currentlyFollowing, setCurrentlyFollowing] = useState(false);
+  const [followers, setFollowers] = useState<TPublicUser[]>([]);
+  const [following, setFollowing] = useState<TPublicUser[]>([]);
+
+  const followFollowingList = async () => {
+    const { message } = await getFollowerFollowing(user.id);
+    console.log({ message });
+    setFollowers((message as TFollowerFollowingResponse).followers);
+    setFollowing((message as TFollowerFollowingResponse).following);
+  };
+
+  useEffect(() => {
+    async () => {
+      await followFollowingList();
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log({ following });
+    const isFollowing = following.some((f) => {
+      return f.id === user.id;
+    });
+    console.log({ isFollowing });
+    setCurrentlyFollowing(isFollowing);
+  }, [following, user.id, currentlyFollowing]);
 
   // Dialog state for followers/following popups
   const [followersOpen, setFollowersOpen] = useState(false);
@@ -88,16 +119,16 @@ export default function UserProfileClient({
 
   const actualJoined = (joinedSkilltrees ?? skilltrees) as TAuthSkillTrees[];
 
-  const handleFollowToggle = () => {
-    setCurrentlyFollowing(!currentlyFollowing);
-    // TODO: call API here
+  const handleFollowToggle = async () => {
+    if (currentlyFollowing) {
+      await unfollowUser(user.id);
+      setCurrentlyFollowing(false);
+    } else {
+      await followUser(user.id);
+      setCurrentlyFollowing(true);
+    }
   };
 
-  const handleEditProfile = () => {
-    router.push("/user/settings");
-  };
-
-  // Filtered lists for dialogs
   const filteredFollowers = useMemo(() => {
     const q = followersQuery.trim().toLowerCase();
     if (!q) return followers;
@@ -125,10 +156,6 @@ export default function UserProfileClient({
           <div className="flex flex-1 flex-col items-center gap-4 md:items-start">
             <div className="text-center md:text-left">
               <h1 className="text-3xl font-bold tracking-tight">{user.name}</h1>
-              <div className="mt-2 flex items-center gap-2 text-muted-foreground">
-                <Mail className="h-4 w-4" />
-                <span className="text-sm">{user.email}</span>
-              </div>
               <div className="mt-1 flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span className="text-sm">
@@ -138,29 +165,23 @@ export default function UserProfileClient({
             </div>
 
             <div className="flex gap-3">
-              {isOwnProfile ? (
-                <Button onClick={handleEditProfile} variant="outline">
-                  Edit Profile
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleFollowToggle}
-                  variant={currentlyFollowing ? "outline" : "default"}
-                  className="flex items-center gap-2"
-                >
-                  {currentlyFollowing ? (
-                    <>
-                      <UserMinus className="h-4 w-4" />
-                      Unfollow
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus className="h-4 w-4" />
-                      Follow
-                    </>
-                  )}
-                </Button>
-              )}
+              <Button
+                onClick={handleFollowToggle}
+                variant={currentlyFollowing ? "outline" : "default"}
+                className="flex items-center gap-2"
+              >
+                {currentlyFollowing ? (
+                  <>
+                    <UserMinus className="h-4 w-4" />
+                    Unfollow
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="h-4 w-4" />
+                    Follow
+                  </>
+                )}
+              </Button>
             </div>
           </div>
         </div>

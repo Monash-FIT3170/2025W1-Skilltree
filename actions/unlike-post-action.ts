@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 export async function unlikePostAction(postId: string) {
@@ -9,6 +10,9 @@ export async function unlikePostAction(postId: string) {
       Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
     },
   });
+
+  revalidatePath(`/community/${postId}`);
+
   const data = await response.json();
   return { ok: response.ok, ...data };
 }

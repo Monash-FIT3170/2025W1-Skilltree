@@ -1,29 +1,30 @@
-import { getUserAction } from "@/actions/get-user-action";
-import React from "react";
+import { getUserByIdAction } from "@/actions/get-user-action";
 import UserProfileClient from "./page-client";
-import { TFollowerFollowingResponse, TUser } from "@/types";
+import { TFollowerFollowingResponse, TPublicUser, TUser } from "@/types";
 import CommonError from "@/components/CommonError";
 import { getFollowerFollowing } from "@/actions/get-followers-following";
 
-const UserSettingsPage = async () => {
+const UserSettingsPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  const { id } = await params;
+
   try {
-    const user = await getUserAction();
+    const user = await getUserByIdAction(id);
     const followerFollowing = await getFollowerFollowing(user.message.id);
 
-    console.log({ user });
+    console.log({
+      followerFollowing,
+      user,
+    });
 
     if (!user.ok) {
       return <CommonError errorDescription="Could not load user profile" />;
     }
 
-    return (
-      <UserProfileClient
-        followers={
-          (followerFollowing.message as TFollowerFollowingResponse).followers
-        }
-        user={user.message as TUser}
-      />
-    );
+    return <UserProfileClient user={user.message as TPublicUser} />;
   } catch {
     return <CommonError errorDescription="Could not load user profile" />;
   }
