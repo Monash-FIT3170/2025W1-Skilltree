@@ -117,25 +117,6 @@ const SkillNode: React.FC<Props> = ({ id, data, selected }) => {
             {isCompleted ? "Completed" : isUnlocked ? "Unlocked" : "Locked"}
           </span>
         </div>
-
-        <button
-          type="button"
-          disabled={isCompleted || isLocked}
-          aria-disabled={isCompleted || isLocked}
-          onClick={() => {
-            if (!isUnlocked) return;
-            d.onComplete?.(nodeId);
-          }}
-          className={cn(
-            "rounded text-xs px-2 py-1 border",
-            isUnlocked &&
-              "bg-primary text-primary-foreground border-primary hover:opacity-90",
-            (isCompleted || isLocked) &&
-              "bg-muted text-muted-foreground cursor-not-allowed"
-          )}
-        >
-          Mark done
-        </button>
       </div>
 
       <Handle type="source" position={Position.Top} />
