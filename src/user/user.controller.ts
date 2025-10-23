@@ -27,7 +27,7 @@ export class UserController {
 
 	@UseGuards(JwtGuard)
 	@Get('stats/me')
-	async getMyStats(@GetUserId() userId: string): Promise<UserStatsDto> {
+	async getMyStats(@GetUserId() userId: string) {
 		return this.userService.getUserStats(userId);
 	}
 
@@ -49,7 +49,7 @@ export class UserController {
 
 	@Public()
 	@Get('stats/:id')
-	async getUserStats(@Param('id') id: string): Promise<UserStatsDto> {
+	async getUserStats(@Param('id') id: string) {
 		return this.userService.getUserStats(id);
 	}
 

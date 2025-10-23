@@ -83,7 +83,7 @@ export class UserService {
 		}
 	}
 
-	async getUserStats(userId: string): Promise<UserStatsDto> {
+	async getUserStats(userId: string) {
 		try {
 			const user = await this.prisma.user.findUnique({
 				where: { id: userId },
@@ -101,14 +101,9 @@ export class UserService {
 			}
 
 			return {
-				totalXP: user.xpPoint,
-				skillTreesJoined: user.skillTreeUser.length,
-				skillTreesCreated: user.skillTrees.length,
-				skillNodesCompleted: user.skillNodeUser.length,
-				postsCreated: user.post.length,
-				eventsWon: user.winnerOf.length,
-				joinDate: user.createdAt,
-				lastActive: user.updatedAt,
+				skillTreesJoined: user.skillTreeUser,
+				skillTreesCreated: user.skillTrees,
+				skillNodesCompleted: user.skillNodeUser,
 			};
 		} catch (error) {
 			if (error instanceof NotFoundException) {
