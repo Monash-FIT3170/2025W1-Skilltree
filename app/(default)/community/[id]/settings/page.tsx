@@ -8,17 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createEventAction } from "@/actions/create-event-action";
 import {
   DialogHeader,
   DialogFooter,
   Dialog,
   DialogContent,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { deleteCommunityAction } from "@/actions/delete-community-actions";
 import { TAuthSkillTree, TEvent } from "@/types";
 import { getCommunityAction } from "@/actions/get-community-action";
 import {
@@ -50,17 +49,23 @@ const TextEditor = ({
 export default function ManageCommunities() {
   const params = useParams();
   const router = useRouter();
-  // params.id can be undefined (ParamValue). Guard at runtime and coerce to string when calling server actions.
-  const communityId = params.id;
-
+  const communityId = params.id as string;
   const [community, setCommunity] = useState<TAuthSkillTree | null>(null);
 
   const [events, setEvents] = useState<TEvent[]>([]);
 
   useEffect(() => {
-    if (!communityId) return;
+    if (!communityId) {
+      console.log("No comm ID");
+
+      return;
+    }
 
     (async () => {
+      const comm = await getCommunityAction(communityId);
+      if (comm.ok && comm.message) {
+        setCommunity(comm.message as TAuthSkillTree);
+      }
       const event = await getEventsAction();
       if (event.ok && event.message) {
         setEvents(event.message as TEvent[]);
@@ -68,55 +73,117 @@ export default function ManageCommunities() {
     })();
   }, [communityId]);
 
-  const [event, setEvent] = useState<{
+  type EventState = {
     title: string;
-    date: Date;
-    description: string;
-  }>({
+    startDate: Date;
+    endDate: Date;
+    xpPayout: string;
+    errors: string | null;
+    isCreating: boolean;
+  };
+
+  const [eventState, setEventState] = useState<EventState>({
     title: "",
-    date: new Date(),
-    description: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    xpPayout: "",
+    errors: null,
+    isCreating: false,
   });
 
-  const [eventErrors, setEventErrors] = useState<string | null>(null);
+  type UiState = {
+    dialogOpen: boolean;
+    announcementDialogOpen: boolean;
+    announcement: string;
+    announcementPreview: boolean;
+    selectedRole: string;
+  };
 
-  const [announcement, setAnnouncement] = useState("");
-  const [announcementPreview, setAnnouncementPreview] = useState(false);
-
-  async function createEvent() {
-    return new Promise((resolve) => setTimeout(resolve, 500));
-  }
+  const [uiState, setUiState] = useState<UiState>({
+    dialogOpen: false,
+    announcementDialogOpen: false,
+    announcement: "",
+    announcementPreview: false,
+    selectedRole: "",
+  });
 
   const validateAndAddEvent = async () => {
-    setEventErrors(null);
+    setEventState((prev) => ({ ...prev, errors: null }));
 
-    if (!event.title.trim()) return setEventErrors("Event title is required");
-    if (!event.date) return setEventErrors("Event date is required");
+    if (!eventState.title.trim()) {
+      return setEventState((prev) => ({
+        ...prev,
+        errors: "Event title is required",
+      }));
+    }
+    if (!eventState.startDate) {
+      return setEventState((prev) => ({
+        ...prev,
+        errors: "Start date is required",
+      }));
+    }
+    if (!eventState.endDate) {
+      return setEventState((prev) => ({
+        ...prev,
+        errors: "End date is required",
+      }));
+    }
+
+    if (new Date(eventState.endDate) <= new Date(eventState.startDate)) {
+      return setEventState((prev) => ({
+        ...prev,
+        errors: "End date must be after start date",
+      }));
+    }
+
+    setEventState((prev) => ({ ...prev, isCreating: true }));
 
     try {
-      // const payload = {
-      //   name: event.title.trim(),
-      //   communityId: communityId,
-      //   experienceId: "default",
-      //   rankedStatus: true,
-      //   experiencePayout: 0,
-      // };
+      const payload = {
+        skillTreeId: communityId,
+        title: eventState.title.trim(),
+        xpPayout: eventState.xpPayout ? parseInt(eventState.xpPayout, 10) : 0,
+        startDate: eventState.startDate,
+        endDate: eventState.endDate,
+      };
 
-      await createEvent();
+      console.log("Sending payload:", payload);
 
-      // setEvents((prev) => [
-      //   ...prev,
-      //   {
-      //     id: Date.now(),
-      //     title: event.title.trim(),
-      //     date: event.date,
-      //     description: event.description.trim(),
-      //   },
-      // ]);
+      const result = await createEventAction(payload);
 
-      setEvent({ title: "", date: new Date(), description: "" });
-    } catch {
-      setEventErrors("Failed to create event.");
+      console.log("Result received:", result);
+
+      if (!result.ok) {
+        setEventState((prev) => ({
+          ...prev,
+          errors: result.message || "Failed to create event",
+        }));
+        return;
+      }
+
+      // The event was created successfully
+      console.log("Event data:", result.message);
+
+      // Reset form
+      setEventState({
+        title: "",
+        startDate: new Date(),
+        endDate: new Date(),
+        xpPayout: "",
+        errors: null,
+        isCreating: false,
+      });
+
+      toast.success("Event created successfully!");
+      // reload events
+      await loadExistingEvents();
+      // close dialog
+      setUiState((prev) => ({ ...prev, dialogOpen: false }));
+    } catch (err) {
+      console.error("Error creating event:", err);
+      setEventState((prev) => ({ ...prev, errors: "Failed to create event" }));
+    } finally {
+      setEventState((prev) => ({ ...prev, isCreating: false }));
     }
   };
 
@@ -124,40 +191,26 @@ export default function ManageCommunities() {
     alert("Community details saved for: " + communityId);
   };
 
-  const handleDeleteCommunity = async () => {
-    // Ensure we have a valid string id before calling the server action
-    if (!communityId || typeof communityId !== "string") {
-      toast.error("Invalid community id");
-      return;
-    }
-
-    if (!confirm("Permanently delete this community? This cannot be undone."))
-      return;
-
+  const loadExistingEvents = async () => {
     try {
-      // Coerce to string to satisfy the action's signature
-      const res = await deleteCommunityAction(communityId);
-      if (res.ok) {
-        toast.success("Community deleted");
-        router.push("/dashboard");
+      const existingEvents = await getEventsAction();
+      if (existingEvents.ok && existingEvents.message) {
+        setEvents(existingEvents.message as TEvent[]);
       } else {
-        toast.error(res.message || "Failed to delete community");
+        setEvents([]);
       }
     } catch (err) {
-      console.error(err);
-      toast.error("Error deleting community");
+      console.error("Failed to load events:", err);
     }
   };
 
   useEffect(() => {
-    if (!communityId) return;
+    if (!communityId) {
+      console.log("No community ID provided");
+      return;
+    }
 
-    (async () => {
-      const community = await getCommunityAction(communityId as string);
-      if (community.ok && community.message) {
-        setCommunity(community.message as TAuthSkillTree);
-      }
-    })();
+    loadExistingEvents();
   }, [communityId]);
 
   if (!community) return;
@@ -171,75 +224,15 @@ export default function ManageCommunities() {
           </h1>
         </div>
         <div className="flex items-center gap-2">
-          <Dialog>
-            <DialogTrigger>
-              <Button variant="outline">
-                <Plus />
-                Add Event
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Events & Competitions</DialogTitle>
-              </DialogHeader>
-              <div className="max-w-lg space-y-3 mb-4">
-                <Input
-                  placeholder="Event title"
-                  value={event.title}
-                  onChange={(e) =>
-                    setEvent({ ...event, title: e.target.value })
-                  }
-                />
-                <Popover>
-                  <PopoverTrigger className="w-full">
-                    <Input
-                      readOnly
-                      value={format(event.date, "PPP") || "Select your DOB"}
-                    />
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <DatePicker
-                      date={event.date}
-                      setDate={(date) => {
-                        if (date) {
-                          setEvent((prev) => ({ ...prev, date }));
-                        }
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Textarea
-                  placeholder="Event description"
-                  rows={3}
-                  value={event.description}
-                  onChange={(e) =>
-                    setEvent({ ...event, description: e.target.value })
-                  }
-                />
-                {eventErrors && (
-                  <p className="-600 font-semibold">{eventErrors}</p>
-                )}
-              </div>
-              <div>
-                {events.length === 0 && <p>No events created yet.</p>}
-                <ul className="space-y-2 max-w-lg">
-                  {events.map((event) => (
-                    <li key={event.id} className="border p-3 rounded">
-                      <p className="font-semibold">{event.title}</p>
-                      <p className=" -600">{event.startDate}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <DialogFooter>
-                <Button onClick={validateAndAddEvent}>
-                  <Plus size={16} className="mr-2" />
-                  Create Event
-                </Button>
-                <Button variant="ghost">Close</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button
+            variant="outline"
+            onClick={() =>
+              setUiState((prev) => ({ ...prev, dialogOpen: true }))
+            }
+          >
+            <Plus />
+            Add Event
+          </Button>
         </div>
       </header>
 
@@ -309,7 +302,147 @@ export default function ManageCommunities() {
         </div>
       </div>
 
-      <Dialog>
+      <Dialog
+        open={uiState.dialogOpen}
+        onOpenChange={(open) =>
+          setUiState((prev) => ({ ...prev, dialogOpen: open }))
+        }
+      >
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Events & Competitions</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="event-title">Event Title</Label>
+                <Input
+                  id="event-title"
+                  placeholder="Enter event title"
+                  value={eventState.title}
+                  onChange={(e) =>
+                    setEventState((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
+                  disabled={eventState.isCreating}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="event-start">Start Date</Label>
+                <Popover>
+                  <PopoverTrigger className="w-full">
+                    <Input
+                      readOnly
+                      value={
+                        format(eventState.startDate, "PPP") ||
+                        "Select your start date"
+                      }
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <DatePicker
+                      date={
+                        eventState.startDate ||
+                        new Date().toISOString().slice(0, 16)
+                      }
+                      setDate={(date) =>
+                        setEventState((prev) => ({
+                          ...prev,
+                          startDate: date!,
+                        }))
+                      }
+                      disabled={eventState.isCreating}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="event-end">End Date</Label>
+                <Popover>
+                  <PopoverTrigger className="w-full">
+                    <Input
+                      readOnly
+                      value={
+                        format(eventState.endDate, "PPP") ||
+                        "Select your end date"
+                      }
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <DatePicker
+                      date={
+                        eventState.endDate ||
+                        new Date().toISOString().slice(0, 16)
+                      }
+                      setDate={(date) =>
+                        setEventState((prev) => ({
+                          ...prev,
+                          endDate: date!,
+                        }))
+                      }
+                      disabled={eventState.isCreating}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="event-xp">XP Payout (Optional)</Label>
+                <Input
+                  id="event-xp"
+                  type="number"
+                  min="0"
+                  placeholder="Enter XP payout"
+                  value={eventState.xpPayout}
+                  onChange={(e) =>
+                    setEventState((prev) => ({
+                      ...prev,
+                      xpPayout: e.target.value,
+                    }))
+                  }
+                  disabled={eventState.isCreating}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={validateAndAddEvent}
+              disabled={eventState.isCreating}
+            >
+              {eventState.isCreating ? (
+                "Creating..."
+              ) : (
+                <>
+                  <Plus size={16} className="mr-2" />
+                  Create Event
+                </>
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                setUiState((prev) => ({ ...prev, dialogOpen: false }))
+              }
+              disabled={eventState.isCreating}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={uiState.announcementDialogOpen}
+        onOpenChange={(open) =>
+          setUiState((prev) => ({ ...prev, announcementDialogOpen: open }))
+        }
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Announcements</DialogTitle>
@@ -318,18 +451,28 @@ export default function ManageCommunities() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setAnnouncementPreview(!announcementPreview)}
+              onClick={() =>
+                setUiState((prev) => ({
+                  ...prev,
+                  announcementPreview: !prev.announcementPreview,
+                }))
+              }
             >
-              {announcementPreview ? "Edit" : "Preview"}
+              {uiState.announcementPreview ? "Edit" : "Preview"}
             </Button>
 
-            {!announcementPreview && (
-              <TextEditor value={announcement} onChange={setAnnouncement} />
+            {!uiState.announcementPreview && (
+              <TextEditor
+                value={uiState.announcement}
+                onChange={(val) =>
+                  setUiState((prev) => ({ ...prev, announcement: val }))
+                }
+              />
             )}
 
-            {announcementPreview && (
-              <div className="border p-4 rounded  whitespace-pre-wrap">
-                {announcement || <em>No announcement to preview</em>}
+            {uiState.announcementPreview && (
+              <div className="border p-4 rounded whitespace-pre-wrap">
+                {uiState.announcement || <em>No announcement to preview</em>}
               </div>
             )}
           </div>
@@ -338,7 +481,7 @@ export default function ManageCommunities() {
               onClick={() => {
                 alert("Announcement saved!");
               }}
-              disabled={!announcement.trim()}
+              disabled={!uiState.announcement.trim()}
             >
               Save Announcement
             </Button>
@@ -346,12 +489,6 @@ export default function ManageCommunities() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <div className="mt-4">
-        <Button variant="destructive" onClick={handleDeleteCommunity}>
-          Delete Community
-        </Button>
-      </div>
     </div>
   );
 }

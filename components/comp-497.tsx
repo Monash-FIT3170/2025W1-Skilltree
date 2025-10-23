@@ -14,9 +14,11 @@ import {
 export default function DatePicker({
   date,
   setDate,
+  disabled,
 }: {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
+  disabled?: boolean;
 }) {
   const handleCalendarChange = (
     _value: string | number,
@@ -32,6 +34,7 @@ export default function DatePicker({
 
   return (
     <Calendar
+      disabled={disabled}
       mode="single"
       selected={date}
       onSelect={setDate}
