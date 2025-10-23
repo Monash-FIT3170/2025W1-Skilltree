@@ -14,7 +14,6 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import { TSkillNode } from "@/types";
 
 const NODE_WIDTH = 180;
@@ -110,8 +109,6 @@ export default function CommunitySkillTree({
   const [searchTerm, setSearchTerm] = useState("");
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
-
-  const router = useRouter();
 
   // on node click, zoom into node
   // const filterNodes = async () => {

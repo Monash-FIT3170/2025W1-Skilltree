@@ -1,6 +1,6 @@
 import { getUserByIdAction } from "@/actions/get-user-action";
 import UserProfileClient from "./page-client";
-import { TFollowerFollowingResponse, TPublicUser, TUser } from "@/types";
+import { TPublicUser } from "@/types";
 import CommonError from "@/components/CommonError";
 import { getFollowerFollowing } from "@/actions/get-followers-following";
 

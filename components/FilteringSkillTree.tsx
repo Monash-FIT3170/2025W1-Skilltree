@@ -9,7 +9,6 @@ import {
   useEdgesState,
   Node,
   Edge,
-  Background,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
