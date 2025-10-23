@@ -1,4 +1,4 @@
-import { TAuthSkillTree, TAuthSkillTreeMember } from "@/types";
+import { TAuthSkillTreeMember } from "@/types";
 import CommunityMembersClient from "./page-client";
 import { getCommunityAction } from "@/actions/get-community-action";
 import { getCommunityMembersAction } from "@/actions/get-community-members";
@@ -27,11 +27,10 @@ export default async function ViewMembers({
     return (
       <CommunityMembersClient
         id={id}
-        community={community.message as TAuthSkillTree}
         members={members.message as TAuthSkillTreeMember[]}
       />
     );
-  } catch (error) {
+  } catch {
     return (
       <CommonError errorDescription="Could not load community or members" />
     );

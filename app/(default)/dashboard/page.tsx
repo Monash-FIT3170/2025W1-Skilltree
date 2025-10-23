@@ -24,7 +24,7 @@ export default async function DashboardPage() {
         events={events.message as TEvent[]}
       />
     );
-  } catch (error) {
+  } catch {
     return (
       <CommonError errorDescription="Could not load skill trees or events" />
     );

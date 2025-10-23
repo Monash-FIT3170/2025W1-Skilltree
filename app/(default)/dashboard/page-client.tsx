@@ -8,20 +8,7 @@ import {
   CardFooter,
   CardDescription,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Users,
-  MessageSquare,
-  GitGraphIcon,
-  UserIcon,
-  Clock1,
-  Clock12,
-  Clock6,
-  Plus,
-  Timer,
-  AlertCircle,
-} from "lucide-react";
+import { GitGraphIcon, UserIcon, Timer, AlertCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { TEvent, TAuthSkillTrees } from "@/types";
@@ -36,10 +23,6 @@ const DashboardPageClient = ({
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
   const router = useRouter();
-
-  const handleJoinEvent = (eventId: string) => {};
-
-  const handleAddEvent = () => {};
 
   const getTimeRemaining = (endDate: string) => {
     const now = new Date();
@@ -157,21 +140,6 @@ const DashboardPageClient = ({
                         <Timer className="w-3 h-3" />
                         <span>{getTimeRemaining(ev.endDate)}</span>
                       </div>
-                    </div>
-                    <div className="shrink-0 self-start sm:self-center">
-                      {(ev as any).userRank ? (
-                        <Badge className="bg-blue-100 text-blue-700">
-                          Rank #{(ev as any).userRank}
-                        </Badge>
-                      ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => handleJoinEvent(ev.id)}
-                          className="h-7 px-3 text-xs"
-                        >
-                          Join
-                        </Button>
-                      )}
                     </div>
                   </CardContent>
                 </Card>

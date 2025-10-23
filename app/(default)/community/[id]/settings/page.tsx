@@ -2,19 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Plus, MoreHorizontal } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DialogHeader,
   DialogFooter,
@@ -24,7 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { deleteCommunityAction } from "@/actions/delete-community actions";
+import { deleteCommunityAction } from "@/actions/delete-community-actions";
 import { TAuthSkillTree, TEvent } from "@/types";
 import { getCommunityAction } from "@/actions/get-community-action";
 import {
@@ -35,6 +29,7 @@ import {
 import { format } from "date-fns";
 import DatePicker from "@/components/comp-497";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getEventsAction } from "@/actions/get-events";
 
 const TextEditor = ({
   value,
@@ -58,14 +53,20 @@ export default function ManageCommunities() {
   // params.id can be undefined (ParamValue). Guard at runtime and coerce to string when calling server actions.
   const communityId = params.id;
 
-  const [availableRoles, setAvailableRoles] = useState<string[]>([
-    "admin",
-    "member",
-  ]);
-
   const [community, setCommunity] = useState<TAuthSkillTree | null>(null);
 
   const [events, setEvents] = useState<TEvent[]>([]);
+
+  useEffect(() => {
+    if (!communityId) return;
+
+    (async () => {
+      const event = await getEventsAction();
+      if (event.ok && event.message) {
+        setEvents(event.message as TEvent[]);
+      }
+    })();
+  }, [communityId]);
 
   const [event, setEvent] = useState<{
     title: string;
@@ -78,18 +79,11 @@ export default function ManageCommunities() {
   });
 
   const [eventErrors, setEventErrors] = useState<string | null>(null);
-  const [selectedRole, setSelectedRole] = useState("");
 
   const [announcement, setAnnouncement] = useState("");
   const [announcementPreview, setAnnouncementPreview] = useState(false);
 
-  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-    }
-  };
-
-  async function createEvent(payload: any) {
+  async function createEvent() {
     return new Promise((resolve) => setTimeout(resolve, 500));
   }
 
@@ -100,15 +94,15 @@ export default function ManageCommunities() {
     if (!event.date) return setEventErrors("Event date is required");
 
     try {
-      const payload = {
-        name: event.title.trim(),
-        communityId: String(communityId),
-        experienceId: "default",
-        rankedStatus: true,
-        experiencePayout: 0,
-      };
+      // const payload = {
+      //   name: event.title.trim(),
+      //   communityId: communityId,
+      //   experienceId: "default",
+      //   rankedStatus: true,
+      //   experiencePayout: 0,
+      // };
 
-      await createEvent(payload);
+      await createEvent();
 
       // setEvents((prev) => [
       //   ...prev,
@@ -121,7 +115,7 @@ export default function ManageCommunities() {
       // ]);
 
       setEvent({ title: "", date: new Date(), description: "" });
-    } catch (err) {
+    } catch {
       setEventErrors("Failed to create event.");
     }
   };
@@ -142,7 +136,7 @@ export default function ManageCommunities() {
 
     try {
       // Coerce to string to satisfy the action's signature
-      const res = await deleteCommunityAction(String(communityId));
+      const res = await deleteCommunityAction(communityId);
       if (res.ok) {
         toast.success("Community deleted");
         router.push("/dashboard");
@@ -260,13 +254,6 @@ export default function ManageCommunities() {
                     : "C"}
                 </AvatarFallback>
               </Avatar>
-              <input
-                id="icon-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleIconChange}
-              />
             </label>
           </div>
 

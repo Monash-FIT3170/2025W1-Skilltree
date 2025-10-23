@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import FilteringSkillTree from "@/components/FilteringSkillTree";
+// FilteringSkillTree import removed (unused)
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
@@ -29,13 +29,13 @@ import { useRouter } from "next/navigation";
 import { leaveSkillTreeAction } from "@/actions/leave-skilltree-action";
 import { joinSkillTreeAction } from "@/actions/join-skilltree-action";
 import { toast } from "sonner";
-import { TAuthSkillTreeMember, TEvent, TPost, TSkillNode } from "@/types";
+import { TEvent, TPost, TSkillNode } from "@/types";
 import {
+  ThumbsUp,
+  AlertCircle,
+  Plus,
   Clock12,
   MessagesSquareIcon,
-  ThumbsUp,
-  Plus,
-  AlertCircle,
 } from "lucide-react";
 import {
   Card,
@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getMembership } from "@/actions/get-membership";
-import { set } from "mongoose";
+// mongoose 'set' import removed (unused)
 import { createProofOfPracticeAction } from "@/actions/create-proof-of-practice-action";
 import { createVerificationAction } from "@/actions/create-feedback";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -96,14 +96,14 @@ const ViewCommunityClient = ({
     multiplier: 1,
   });
 
-  const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  // selectedSkill removed (unused)
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 
   const [membership, setMembership] = useState({
     admin: false,
     member: false,
   });
-  const [isMember, setIsMember] = useState(false);
+  // isMember state removed (unused)
   const [preview, setPreview] = useState<string | null>(null);
   const [popModalOpen, setPopModalOpen] = useState(false);
 
@@ -119,8 +119,6 @@ const ViewCommunityClient = ({
       });
     })();
   }, [community.id, posts.length, membership.admin, membership.member]);
-
-  const handleCommentSubmit = () => {};
 
   const handleLeave = async () => {
     setLoadingStates((prev) => ({ ...prev, joinLeave: true }));
@@ -216,7 +214,7 @@ const ViewCommunityClient = ({
       setLoadingStates((prev) => ({ ...prev, submittingFeedback: true }));
     }
     try {
-      const response = await createVerificationAction({
+      await createVerificationAction({
         postId: openPostId,
         feedbackText: addFeedbackForm.feedbackText,
         multiplier: noXp ? 1 : membership.admin ? 3 : 2,
@@ -456,8 +454,6 @@ const ViewCommunityClient = ({
             </div>
           ) : (
             posts.map((post: TPost) => {
-              const skillNodes = community.skillNodes as TSkillNode[];
-
               return (
                 <Card key={post.id} className="w-full my-8">
                   <CardHeader className="flex items-center w-full gap-4 pb-4 border-b">

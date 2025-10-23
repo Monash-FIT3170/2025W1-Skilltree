@@ -32,5 +32,3 @@ export async function getMembership(skillTreeId: string) {
     admin: boolean;
   }>;
 }
-
-import type { TAuthSkillTreeMember } from "@/types";

@@ -1,37 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { ArrowLeft } from "lucide-react";
+// dropdown and ArrowLeft imports removed — not used in this file
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TAuthSkillTreeMember } from "@/types";
 import { toast } from "sonner";
-import { TAuthSkillTree } from "@/types";
 import { userStore } from "@/stores";
 import { removeUserFromSkillTree } from "@/actions/remove-user-from-skilltree";
 import { getMembership } from "@/actions/get-membership";
 
-const roles = ["ADMIN", "MEMBER"];
-
+// roles constant removed (unused)
 const CommunityMembersClient = ({
   id,
-  community,
   members,
 }: {
   id: string;
-  community: TAuthSkillTree;
   members: TAuthSkillTreeMember[];
 }) => {
-  const router = useRouter();
   const user = userStore.getState();
   const [membership, setMembership] = useState({
     admin: false,

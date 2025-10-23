@@ -9,17 +9,9 @@ import {
   useEdgesState,
   Node,
   Edge,
-  Background,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { TSkillNode } from "@/types";
-
-type SkillNode = {
-  id: string;
-  label: string;
-  unlocked: boolean;
-  children?: SkillNode[];
-};
 
 type SkillTreeFilterProps = {
   rootSkill: TSkillNode;

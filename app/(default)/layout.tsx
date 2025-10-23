@@ -1,15 +1,7 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
 import "@xyflow/react/dist/style.css";
 import "@/app/globals.css";
 import { Providers } from "@/components/shared/providers";
-import { Suspense } from "react";
-import Loading from "@/app/loading";
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Skill Tree",

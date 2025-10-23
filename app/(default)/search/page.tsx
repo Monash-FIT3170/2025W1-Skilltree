@@ -38,7 +38,7 @@ export default async function SearchPage({
         title={`Search results for "${q || ""}"`}
       />
     );
-  } catch (error) {
+  } catch {
     return <CommonError errorDescription="Could not load communities" />;
   }
 }

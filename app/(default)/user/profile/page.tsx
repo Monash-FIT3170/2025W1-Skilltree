@@ -13,7 +13,7 @@ const UserSettingsPage = async () => {
     }
 
     return <UserProfileClient user={user.message as TUser} />;
-  } catch (error) {
+  } catch {
     return <CommonError errorDescription="Could not load user profile" />;
   }
 };

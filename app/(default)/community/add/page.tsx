@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -92,7 +92,7 @@ export default function CreateCommunityPage() {
 
       // Navigate to skill tree creation
       router.push("/community/add/skilltree");
-    } catch (error) {
+    } catch {
       setMessage("Error saving community details");
     } finally {
       setLoading(false);

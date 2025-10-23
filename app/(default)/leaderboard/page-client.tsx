@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
@@ -102,7 +101,6 @@ export default function Leaderboard() {
     const end = start + Number(pageSize);
     return all.slice(start, end);
   }, [all, pageSize, currentPage]);
-  const isCompact = rows.length <= 10; // when "Show 10"
 
   const handlePageSizeChange = (v: "10" | "25" | "50") => {
     setPageSize(v);

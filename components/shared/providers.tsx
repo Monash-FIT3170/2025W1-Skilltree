@@ -3,7 +3,6 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarInset,
@@ -15,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Input } from "../ui/input";
 import {
@@ -41,14 +40,11 @@ import {
   Settings,
   Loader2,
   SearchIcon,
-  CogIcon,
-  SlidersHorizontalIcon,
   User,
   TrophyIcon,
 } from "lucide-react";
 import { userStore } from "@/stores";
 import { Button } from "../ui/button";
-import Loading from "../../app/loading";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 

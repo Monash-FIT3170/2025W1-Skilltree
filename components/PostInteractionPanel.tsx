@@ -27,7 +27,8 @@ const comments = [
 
 export function PostInteractionPanel({ userRole }: PostInteractionPanelProps) {
   const iconSize = 20;
-  const [likes, setLikes] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [feedbackClicked, setFeedbackClicked] = useState(false);
   const [commentsClicked, setCommentClicked] = useState(false);

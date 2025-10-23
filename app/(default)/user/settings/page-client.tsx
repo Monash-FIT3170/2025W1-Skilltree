@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { KeyRound } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,7 +11,6 @@ import { format } from "date-fns";
 import { updateUserAction } from "@/actions/update-user-action";
 import { toast } from "sonner";
 import { userStore } from "@/stores";
-import { getUserAction } from "@/actions/get-user-action";
 import { useRouter } from "next/navigation";
 import { initials } from "@/lib/utils";
 

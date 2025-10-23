@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import CommunitySkillTree from "@/components/CommunitySkillTree";
 import { Button } from "@/components/ui/button";
-import ViewCommunityButton from "@/components/ViewCommunityButton";
 import { getCommunityAction } from "@/actions/get-community-action";
 import { useParams } from "next/navigation";
 import { TAuthSkillTree } from "@/types";

@@ -27,5 +27,8 @@ export async function deleteCommunityAction(communityId: string) {
   revalidatePath("/dashboard");
   revalidatePath("/community");
 
-  return { ok: true, message: data.message || "Community deleted successfully" };
+  return {
+    ok: true,
+    message: data.message || "Community deleted successfully",
+  };
 }

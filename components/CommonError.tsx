@@ -1,4 +1,4 @@
-import { InfoIcon, Loader2 } from "lucide-react";
+import { InfoIcon } from "lucide-react";
 import React from "react";
 
 const CommonError = ({ errorDescription }: { errorDescription?: string }) => {

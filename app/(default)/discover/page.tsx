@@ -16,7 +16,7 @@ export default async function CommunitiesPage() {
         communities={communities.message as TAuthSkillTree[]}
       />
     );
-  } catch (error) {
+  } catch {
     return <CommonError errorDescription="Could not load communities" />;
   }
 }

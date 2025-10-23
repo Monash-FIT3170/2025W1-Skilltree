@@ -16,9 +16,6 @@ import {
   useNodesState,
   useEdgesState,
   Position,
-  applyNodeChanges,
-  type NodeChange,
-  type Connection,
 } from "@xyflow/react";
 import type { Edge, Node, NodeTypes } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -28,11 +25,8 @@ import {
   computeStatuses,
   layoutTopDown,
   buildChildrenMap,
-  buildParentMap,
 } from "@/components/skilltree/graph";
 import type { SkillNodeData, SkillTreeDTO } from "@/components/skilltree/types";
-
-const MIN_CHILD_GAP_Y = 100;
 
 const nodeTypes = { skill: SkillNode } satisfies NodeTypes;
 
@@ -392,12 +386,6 @@ export default function SkillTree({
     setNodes(relayout(nextNodes, nextEdges));
     setSelectedIds([rootId]);
   }, [completedIds, edges, nodes, relayout, selectedIds, rootId]);
-
-  // for dragging
-  const [draggingNodes, setDraggingNodes, onDraggingNodesChange] =
-    useNodesState<Node>([]);
-  const [draggingEdges, setDraggingEdges, onDraggingEdgesChange] =
-    useEdgesState<Edge>([]);
 
   // derive completed ids for export
   const derivedCompletedIds = React.useMemo(

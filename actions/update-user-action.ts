@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { APIResponse } from "@/types";
 import { TGetUserProfileResponse } from "./types";
 import { revalidatePath } from "next/cache";
-import { getUserAction } from "./get-user-action";
 
 export async function updateUserAction({
   name,

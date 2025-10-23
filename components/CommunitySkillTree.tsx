@@ -123,6 +123,7 @@ export default function CommunitySkillTree({
     (
       skill: TSkillNode,
       parentId: string | null,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       parentUnlocked: boolean = true,
       depth = 0,
       index = 0,

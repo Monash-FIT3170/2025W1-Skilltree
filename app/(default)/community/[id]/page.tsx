@@ -30,7 +30,9 @@ export default async function ViewCommunity({
         posts={posts.message as TPost[]}
       />
     );
-  } catch (error) {
-    return <CommonError errorDescription="Could not load community or posts" />;
+  } catch {
+    return (
+      <CommonError errorDescription="Could not load community or members" />
+    );
   }
 }

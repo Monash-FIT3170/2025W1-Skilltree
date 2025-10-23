@@ -7,15 +7,6 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogHeader,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { userStore } from "@/stores";
@@ -61,7 +52,7 @@ export default function LogInPage() {
       }));
 
       router.push("/dashboard");
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong");
       setIsPending(false);
     }
