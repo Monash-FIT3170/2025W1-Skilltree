@@ -50,7 +50,6 @@ export async function createEventAction(data: CreateEventData) {
       let errorMessage = "Something went wrong";
       try {
         const text = await response.text();
-        console.log("Error response:", text);
         if (text) {
           const errorData = JSON.parse(text);
           errorMessage = errorData.message || errorMessage;
