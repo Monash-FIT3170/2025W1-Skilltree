@@ -7,11 +7,12 @@ import {
 	Param,
 	HttpCode,
 	HttpStatus,
+	Post,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UserService } from './user.service';
 import { UpdateUserDto, UserStatsDto } from './dto';
-import { GetUserId, Public } from '../_utils/decorator';
+import { GetUser, GetUserId, Public } from '../_utils/decorator';
 import { JwtGuard } from '../_utils/guards';
 
 @Controller('user')
@@ -74,5 +75,23 @@ export class UserController {
 		@Param('id') id: string,
 	): Promise<Omit<User, 'hash' | 'email'>[]> {
 		return this.userService.getUserFollowers(id);
+	}
+
+	@UseGuards(JwtGuard)
+	@Post(':id/follow')
+	async followUser(
+		@Param('id') id: string,
+		@GetUser() user: User,
+	): Promise<void> {
+		return this.userService.followUser(id, user);
+	}
+
+	@UseGuards(JwtGuard)
+	@Post(':id/unfollow')
+	async unfollowUser(
+		@Param('id') id: string,
+		@GetUser() user: User,
+	): Promise<void> {
+		return this.userService.unfollowUser(id, user);
 	}
 }

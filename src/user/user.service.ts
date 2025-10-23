@@ -172,4 +172,38 @@ export class UserService {
 			throw new InternalServerErrorException('Failed to fetch followers');
 		}
 	}
+
+	async followUser(id: string, user: User) {
+		try {
+			await this.prisma.userFollow.create({
+				data: {
+					followerId: user.id,
+					followingId: id,
+				},
+			});
+		} catch (error) {
+			if (error.code === 'P2025') {
+				throw new NotFoundException('User not found');
+			}
+			throw new InternalServerErrorException('Failed to follow user');
+		}
+	}
+
+	async unfollowUser(id: string, user: User) {
+		try {
+			await this.prisma.userFollow.delete({
+				where: {
+					followerId_followingId: {
+						followerId: user.id,
+						followingId: id,
+					},
+				},
+			});
+		} catch (error) {
+			if (error.code === 'P2025') {
+				throw new NotFoundException('User not found');
+			}
+			throw new InternalServerErrorException('Failed to unfollow user');
+		}
+	}
 }
