@@ -395,7 +395,6 @@ const ViewCommunityClient = ({
                 rootSkill={displayedRoot}
                 onSelect={(nodeId) => setSelectedSkill(nodeId)}
               />
-              {/* <CommunitySkillTree inRoot rootSkill={community!.skillNodes[0]} /> */}
             </div>
             <section className="w-full">
               <div className="w-full text-center">

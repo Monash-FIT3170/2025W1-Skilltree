@@ -33,8 +33,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { TFollowerFollowingResponse, TUser } from "@/types";
-import { TAuthSkillTrees } from "@/types";
+import { TAuthSkillTree, TFollowerFollowingResponse, TUser } from "@/types";
 import { format } from "date-fns";
 import { initials } from "@/lib/utils";
 
@@ -57,10 +56,10 @@ export default function UserProfileClient({
   isOwnProfile = true,
 }: {
   user: TUser;
-  skilltrees?: TAuthSkillTrees[];
-  completedSkilltrees?: TAuthSkillTrees[];
-  joinedSkilltrees?: TAuthSkillTrees[];
-  ownedSkilltrees?: TAuthSkillTrees[];
+  skilltrees?: TAuthSkillTree[];
+  completedSkilltrees?: TAuthSkillTree[];
+  joinedSkilltrees?: TAuthSkillTree[];
+  ownedSkilltrees?: TAuthSkillTree[];
   followers?: TFollowerFollowingResponse["followers"];
   following?: TFollowerFollowingResponse["following"];
   profileStats?: TProfileStats;
@@ -85,8 +84,6 @@ export default function UserProfileClient({
       ownedSkilltrees.length,
     totalXP: user.xpPoint,
   };
-
-  const actualJoined = (joinedSkilltrees ?? skilltrees) as TAuthSkillTrees[];
 
   const handleFollowToggle = () => {
     setCurrentlyFollowing(!currentlyFollowing);
@@ -206,7 +203,9 @@ export default function UserProfileClient({
           <Card>
             <CardContent className="flex flex-col items-center p-6">
               <GitGraphIcon className="mb-2 h-8 w-8 text-purple-500" />
-              <div className="text-2xl font-bold">{actualJoined.length}</div>
+              <div className="text-2xl font-bold">
+                {user.skillTreeUser?.length}
+              </div>
               <p className="text-sm text-muted-foreground">Communities</p>
             </CardContent>
           </Card>
@@ -215,10 +214,9 @@ export default function UserProfileClient({
 
       {/* Tabs: Communities Completed / Joined / Owned */}
       <Tabs defaultValue="completed" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="w-full flex items-center">
           <TabsTrigger value="owned">Communities Owned</TabsTrigger>
           <TabsTrigger value="joined">Communities Joined</TabsTrigger>
-          <TabsTrigger value="completed">Communities Completed</TabsTrigger>
         </TabsList>
         {/* Owned */}
         <TabsContent value="owned" className="mt-6">
@@ -227,12 +225,7 @@ export default function UserProfileClient({
 
         {/* Joined */}
         <TabsContent value="joined" className="mt-6">
-          <CommunityGrid trees={actualJoined} />
-        </TabsContent>
-
-        {/* Completed */}
-        <TabsContent value="completed" className="mt-6">
-          <CommunityGrid trees={completedSkilltrees} />
+          <CommunityGrid trees={joinedSkilltrees || []} />
         </TabsContent>
       </Tabs>
 
@@ -340,7 +333,7 @@ export default function UserProfileClient({
 }
 
 /** Grid section reused for the three community tabs */
-function CommunityGrid({ trees }: { trees: TAuthSkillTrees[] }) {
+function CommunityGrid({ trees }: { trees: TAuthSkillTree[] }) {
   const router = useRouter();
 
   if (!trees || trees.length === 0) {
@@ -357,25 +350,25 @@ function CommunityGrid({ trees }: { trees: TAuthSkillTrees[] }) {
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {trees.map((tree) => (
         <Card
-          key={tree.skillTree.id}
+          key={tree.id}
           className="cursor-pointer transition-colors hover:bg-primary/10"
-          onClick={() => router.push(`/community/${tree.skillTree.id}`)}
+          onClick={() => router.push(`/community/${tree.id}`)}
         >
           <CardHeader>
-            <CardTitle className="text-lg">{tree.skillTree.name}</CardTitle>
+            <CardTitle className="text-lg">{tree.name}</CardTitle>
             <CardDescription className="line-clamp-2">
-              {tree.skillTree.description}
+              {tree.description}
             </CardDescription>
           </CardHeader>
           <CardFooter>
             <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <GitGraphIcon className="h-4 w-4" />
-                {tree.skillTree._count!.skillNodes} nodes
+                {tree.skillNodes.length} nodes
               </span>
               <span className="inline-flex items-center gap-1">
                 <UserIcon className="h-4 w-4" />
-                {tree.skillTree._count!.skillTreeUser} members
+                {tree.skillTreeUser?.length} members
               </span>
             </div>
           </CardFooter>

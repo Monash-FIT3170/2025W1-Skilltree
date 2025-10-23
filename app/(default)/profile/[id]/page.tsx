@@ -13,12 +13,6 @@ const UserSettingsPage = async ({
 
   try {
     const user = await getUserByIdAction(id);
-    const followerFollowing = await getFollowerFollowing(user.message.id);
-
-    console.log({
-      followerFollowing,
-      user,
-    });
 
     if (!user.ok) {
       return <CommonError errorDescription="Could not load user profile" />;

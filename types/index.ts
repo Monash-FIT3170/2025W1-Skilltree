@@ -172,6 +172,12 @@ export type TPublicUser = {
   updatedAt: Date;
 };
 
+export type TGetUserStatsResponse = {
+  totalXp: number;
+  skillTreesJoined: TAuthSkillTree[];
+  skillTreesCreated: TAuthSkillTree[];
+};
+
 export type TGetUserProfileResponse = TUser;
 
 export type TGeTAuthSkillTreesResponse = TAuthSkillTree[];

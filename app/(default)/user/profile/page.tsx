@@ -1,16 +1,18 @@
 import { getUserAction } from "@/actions/get-user-action";
 import React from "react";
 import UserProfileClient from "./page-client";
-import { TFollowerFollowingResponse, TUser } from "@/types";
+import { TAuthSkillTree, TFollowerFollowingResponse, TUser } from "@/types";
 import CommonError from "@/components/CommonError";
 import { getFollowerFollowing } from "@/actions/get-followers-following";
+import { getUserStatsAction } from "@/actions/get-user-communities";
 
 const UserSettingsPage = async () => {
   try {
     const user = await getUserAction();
     const followerFollowing = await getFollowerFollowing(user.message.id);
+    const userStats = await getUserStatsAction();
 
-    console.log({ user });
+    console.log(JSON.stringify({ userStats }, null, 2));
 
     if (!user.ok) {
       return <CommonError errorDescription="Could not load user profile" />;
@@ -21,6 +23,8 @@ const UserSettingsPage = async () => {
         followers={
           (followerFollowing.message as TFollowerFollowingResponse).followers
         }
+        ownedSkilltrees={userStats.message.skillTreesCreated}
+        joinedSkilltrees={userStats.message.skillTreesJoined}
         user={user.message as TUser}
       />
     );
