@@ -16,8 +16,8 @@ import "@xyflow/react/dist/style.css";
 import { Button } from "./ui/button";
 import { TSkillNode } from "@/types";
 
-const NODE_WIDTH = 180;
-const NODE_HEIGHT = 90;
+const NODE_WIDTH = 140;
+const NODE_HEIGHT = 70;
 const H_SPACING = NODE_WIDTH * 1.4;
 const V_SPACING = NODE_HEIGHT * 1.8;
 
@@ -62,36 +62,51 @@ const Legend = () => {
 };
 
 const SkillNodeComponent = ({ data }: any) => {
-  // TODO: change these colours later
   const bgColor = data.unlocked
     ? data.main
       ? "#064e3b"
       : "#34d399"
     : "#d1d5db";
-  const textColor = data.unlocked ? "white" : "#6b7280";
+  const textColor = data.unlocked ? "white" : "#374151";
+  const borderColor = data.unlockable
+    ? "#10b981"
+    : data.unlocked
+      ? "transparent"
+      : "#9ca3af";
 
   return (
     <div
-      className="px-4 py-2 rounded font-semibold text-center shadow-md border"
+      className="px-3 py-1 rounded font-medium text-center"
       style={{
         backgroundColor: bgColor,
         color: textColor,
-        borderColor: data.unlockable
-          ? "#10b981"
-          : data.unlocked
-            ? "transparent"
-            : "#9ca3af",
-        borderWidth: data.unlockable ? 3 : 1,
-        minWidth: 140,
-        maxWidth: 180,
+        border: `1px solid ${borderColor}`,
+        minWidth: 100,
+        maxWidth: 140,
+        userSelect: "none",
       }}
     >
-      {/* for the edges */}
-      <Handle type="target" position={Position.Top} isConnectable={false} />
-      <div style={{ padding: "6px 2px" }}>{data.label}</div>
-      <Handle type="source" position={Position.Bottom} isConnectable={false} />
+      <Handle
+        type="target"
+        position={Position.Top}
+        isConnectable={false}
+        style={{ pointerEvents: "none" }}
+      />
+      <div style={{ pointerEvents: "none" }}>{data.label}</div>
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        isConnectable={false}
+        style={{ pointerEvents: "none" }}
+      />
     </div>
   );
+};
+
+type CommunitySkillNode = {
+  id: string;
+  name: string;
+  childNode?: CommunitySkillNode[];
 };
 
 export default function CommunitySkillTree({
@@ -103,25 +118,17 @@ export default function CommunitySkillTree({
 }) {
   const nodeTypes = { skillNode: SkillNodeComponent };
 
-  // for dragging
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
 
-  // on node click, zoom into node
-  // const filterNodes = async () => {
-  //   router.push("/community/examplepage");
-  // };
-
   // flatten tree to nodes + edges and compute positions
   const generateElements = useCallback(
     (
-      skill: TSkillNode,
+      skill: CommunitySkillNode,
       parentId: string | null,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      parentUnlocked: boolean = true,
       depth = 0,
       index = 0,
       siblingCount = 1
@@ -141,6 +148,7 @@ export default function CommunitySkillTree({
           unlocked: true,
           unlockable: true,
         },
+        draggable: false,
       };
 
       const edgeList: Edge[] =
@@ -151,21 +159,19 @@ export default function CommunitySkillTree({
                 source: parentId,
                 target: id,
                 type: "smoothstep",
-                // if its unlocked, have an unlocked edge colour
-                // style: { stroke: skill.unlocked ? "#10b981" : "#9ca3af" },
+                style: { stroke: "#9ca3af" },
               },
             ]
           : [];
 
       let allNodes: Node[] = [node];
       let allEdges: Edge[] = [...edgeList];
-      // math
+
       if (skill.childNode && skill.childNode.length > 0) {
         skill.childNode.forEach((child, childIndex) => {
           const { nodes: cNodes, edges: cEdges } = generateElements(
             child,
             id,
-            true,
             depth + 1,
             childIndex,
             skill.childNode!.length
@@ -183,7 +189,7 @@ export default function CommunitySkillTree({
   // build nodes+edges
   useEffect(() => {
     const { nodes: flatNodes, edges: flatEdges } = generateElements(
-      rootSkill,
+      rootSkill as CommunitySkillNode,
       null
     );
     setNodes(flatNodes);
@@ -240,15 +246,16 @@ export default function CommunitySkillTree({
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
-          // onNodeClick={filterNodes}
           fitView
-          defaultEdgeOptions={{ type: "smoothstep", animated: false }}
-          // for user interaction -> do we want to keep this?
           nodesDraggable={false}
           nodesConnectable={false}
-          onInit={setReactFlowInstance}
+          elementsSelectable={false}
+          panOnDrag={true}
           zoomOnScroll={false}
-          panOnScroll={true}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+          selectionOnDrag={false}
+          onInit={setReactFlowInstance}
         >
           <Controls />
         </ReactFlow>
