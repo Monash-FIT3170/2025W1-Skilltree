@@ -28,10 +28,4 @@ jobs:
 
       - name: ESLint Report
         if: failure()
-        run: |
-          echo "❌ ESLint found issues!"
-          echo "Run 'npm run lint' locally to see and fix linting issues."
-          echo "Many issues can be auto-fixed by running 'npm run lint' as it includes the --fix flag."
-          exit 1
-          echo "Many issues can be auto-fixed by running 'pnpm run lint' as it includes the --fix flag."
-          exit 1
+        run: npm run lint --fix
