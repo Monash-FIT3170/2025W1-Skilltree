@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipInput } from "@/components/shared/chip-input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { createEventAction } from "@/actions/create-event-action";
 import {
   DialogHeader,
@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { TAuthSkillTree, TEvent } from "@/types";
+import { TAuthSkillTree } from "@/types";
 import { getCommunityAction } from "@/actions/get-community-action";
 import {
   Popover,
@@ -28,7 +28,6 @@ import {
 import { format } from "date-fns";
 import DatePicker from "@/components/comp-497";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getEventsAction } from "@/actions/get-events";
 
 const TextEditor = ({
   value,
@@ -52,8 +51,6 @@ export default function ManageCommunities() {
   const communityId = params.id as string;
   const [community, setCommunity] = useState<TAuthSkillTree | null>(null);
 
-  const [events, setEvents] = useState<TEvent[]>([]);
-
   useEffect(() => {
     if (!communityId) {
       console.log("No comm ID");
@@ -65,10 +62,6 @@ export default function ManageCommunities() {
       const comm = await getCommunityAction(communityId);
       if (comm.ok && comm.message) {
         setCommunity(comm.message as TAuthSkillTree);
-      }
-      const event = await getEventsAction();
-      if (event.ok && event.message) {
-        setEvents(event.message as TEvent[]);
       }
     })();
   }, [communityId]);
@@ -175,9 +168,6 @@ export default function ManageCommunities() {
       });
 
       toast.success("Event created successfully!");
-      // reload events
-      await loadExistingEvents();
-      // close dialog
       setUiState((prev) => ({ ...prev, dialogOpen: false }));
     } catch (err) {
       console.error("Error creating event:", err);
@@ -190,28 +180,6 @@ export default function ManageCommunities() {
   const handleSaveDetails = () => {
     alert("Community details saved for: " + communityId);
   };
-
-  const loadExistingEvents = async () => {
-    try {
-      const existingEvents = await getEventsAction();
-      if (existingEvents.ok && existingEvents.message) {
-        setEvents(existingEvents.message as TEvent[]);
-      } else {
-        setEvents([]);
-      }
-    } catch (err) {
-      console.error("Failed to load events:", err);
-    }
-  };
-
-  useEffect(() => {
-    if (!communityId) {
-      console.log("No community ID provided");
-      return;
-    }
-
-    loadExistingEvents();
-  }, [communityId]);
 
   if (!community) return;
 
