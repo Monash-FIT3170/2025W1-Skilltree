@@ -23,10 +23,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { getCommunityAction } from "@/actions/get-community-action";
+import { toast } from "sonner";
+import { deleteCommunityAction } from "@/actions/delete-community actions";
 import { TAuthSkillTree, TEvent } from "@/types";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "@/components/ui/calendar";
+import { getCommunityAction } from "@/actions/get-community-action";
 import {
   Popover,
   PopoverContent,
@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import DatePicker from "@/components/comp-497";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const TextEditor = ({
   value,
@@ -54,6 +55,7 @@ const TextEditor = ({
 export default function ManageCommunities() {
   const params = useParams();
   const router = useRouter();
+  // params.id can be undefined (ParamValue). Guard at runtime and coerce to string when calling server actions.
   const communityId = params.id;
 
   const [availableRoles, setAvailableRoles] = useState<string[]>([
@@ -126,6 +128,31 @@ export default function ManageCommunities() {
 
   const handleSaveDetails = () => {
     alert("Community details saved for: " + communityId);
+  };
+
+  const handleDeleteCommunity = async () => {
+    // Ensure we have a valid string id before calling the server action
+    if (!communityId || typeof communityId !== "string") {
+      toast.error("Invalid community id");
+      return;
+    }
+
+    if (!confirm("Permanently delete this community? This cannot be undone."))
+      return;
+
+    try {
+      // Coerce to string to satisfy the action's signature
+      const res = await deleteCommunityAction(String(communityId));
+      if (res.ok) {
+        toast.success("Community deleted");
+        router.push("/dashboard");
+      } else {
+        toast.error(res.message || "Failed to delete community");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting community");
+    }
   };
 
   useEffect(() => {
@@ -332,6 +359,12 @@ export default function ManageCommunities() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <div className="mt-4">
+        <Button variant="destructive" onClick={handleDeleteCommunity}>
+          Delete Community
+        </Button>
+      </div>
     </div>
   );
 }
