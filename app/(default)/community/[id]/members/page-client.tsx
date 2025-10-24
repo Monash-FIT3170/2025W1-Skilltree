@@ -49,9 +49,9 @@ const CommunityMembersClient = ({
           {members.map((member: TAuthSkillTreeMember) => (
             <div
               key={member.user.id}
-              className="flex items-center justify-between p-2 border rounded"
+              className="flex flex-col md:flex-row md:items-center md:justify-between p-2 border rounded"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 mb-2 md:mb-0">
                 <Avatar>
                   <AvatarFallback>{member.user.name[0]}</AvatarFallback>
                 </Avatar>
