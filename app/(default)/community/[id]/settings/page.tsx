@@ -71,7 +71,6 @@ export default function ManageCommunities() {
     startDate: Date;
     endDate: Date;
     xpPayout: string;
-    errors: string | null;
     isCreating: boolean;
   };
 
@@ -80,7 +79,6 @@ export default function ManageCommunities() {
     startDate: new Date(),
     endDate: new Date(),
     xpPayout: "",
-    errors: null,
     isCreating: false,
   });
 
@@ -104,29 +102,19 @@ export default function ManageCommunities() {
     setEventState((prev) => ({ ...prev, errors: null }));
 
     if (!eventState.title.trim()) {
-      return setEventState((prev) => ({
-        ...prev,
-        errors: "Event title is required",
-      }));
+      return toast.error("Event title is required");
     }
     if (!eventState.startDate) {
-      return setEventState((prev) => ({
-        ...prev,
-        errors: "Start date is required",
-      }));
+      return toast.error("Start date is required");
     }
     if (!eventState.endDate) {
-      return setEventState((prev) => ({
-        ...prev,
-        errors: "End date is required",
-      }));
+      return toast.error("End date is required");
     }
-
-    if (new Date(eventState.endDate) <= new Date(eventState.startDate)) {
-      return setEventState((prev) => ({
-        ...prev,
-        errors: "End date must be after start date",
-      }));
+    if (eventState.startDate < new Date(Date.now())) {
+      return toast.error("Start date cannot be in the past or today");
+    }
+    if (new Date(eventState.endDate) < new Date(eventState.startDate)) {
+      return toast.error("End date must be after start date or same as start date");
     }
 
     setEventState((prev) => ({ ...prev, isCreating: true }));
@@ -147,30 +135,31 @@ export default function ManageCommunities() {
       console.log("Result received:", result);
 
       if (!result.ok) {
-        setEventState((prev) => ({
-          ...prev,
-          errors: result.message || "Failed to create event",
-        }));
-        return;
+        return toast.error(
+          "Failed to create event",
+          {
+            description: result.message || "Please try again later.",
+          }
+        );
       }
 
-      // The event was created successfully
-      console.log("Event data:", result.message);
-
-      // Reset form
       setEventState({
         title: "",
         startDate: new Date(),
         endDate: new Date(),
         xpPayout: "",
-        errors: null,
         isCreating: false,
       });
 
       toast.success("Event created successfully!");
       setUiState((prev) => ({ ...prev, dialogOpen: false }));
     } catch (err) {
-      console.error("Error creating event:", err);
+      toast.error(
+        "An unexpected error occurred while creating the event.",
+        {
+          description: err instanceof Error ? err.message : String(err),
+        }
+      );
       setEventState((prev) => ({ ...prev, errors: "Failed to create event" }));
     } finally {
       setEventState((prev) => ({ ...prev, isCreating: false }));
