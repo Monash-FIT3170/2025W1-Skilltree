@@ -111,7 +111,7 @@ export default function UserProfileClient({
     <div className="container mx-auto flex h-full w-full flex-col">
       <header className="mb-8 flex flex-col gap-6">
         {/* Profile Header */}
-        <div className="flex flex-col items-center gap-6 md:flex-row md:items-start">
+        <div className="flex flex-col md:flex-row items-center md:justify-center gap-6">
           <Avatar className="h-32 w-32 md:h-40 md:w-40">
             <AvatarImage src={user.pfp ?? ""} alt={user.name || "User"} />
             <AvatarFallback className="text-2xl">
@@ -163,7 +163,7 @@ export default function UserProfileClient({
         </div>
 
         {/* Stats Cards (Followers & Following cards are clickable -> open Dialog) */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardContent className="flex flex-col items-center p-6">
               <Trophy className="mb-2 h-8 w-8 text-yellow-500" />
@@ -212,18 +212,14 @@ export default function UserProfileClient({
         </div>
       </header>
 
-      {/* Tabs: Communities Completed / Joined / Owned */}
-      <Tabs defaultValue="completed" className="w-full">
-        <TabsList className="w-full flex items-center">
+      <Tabs defaultValue="owned" className="w-full">
+        <TabsList className="bg-card w-full flex">
           <TabsTrigger value="owned">Communities Owned</TabsTrigger>
           <TabsTrigger value="joined">Communities Joined</TabsTrigger>
         </TabsList>
-        {/* Owned */}
         <TabsContent value="owned" className="mt-6">
           <CommunityGrid trees={ownedSkilltrees} />
         </TabsContent>
-
-        {/* Joined */}
         <TabsContent value="joined" className="mt-6">
           <CommunityGrid trees={joinedSkilltrees || []} />
         </TabsContent>
@@ -361,7 +357,7 @@ function CommunityGrid({ trees }: { trees: TAuthSkillTree[] }) {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
+            <div className="flex w-full flex-col gap-2 md:flex-row md:justify-between text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <GitGraphIcon className="h-4 w-4" />
                 {tree.skillNodes.length} nodes
