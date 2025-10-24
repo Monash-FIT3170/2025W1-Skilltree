@@ -35,7 +35,7 @@ import {
 
 import {
   AwardIcon,
-  LayoutDashboard,
+  Home,
   LogOut,
   Settings,
   Loader2,
@@ -191,6 +191,14 @@ function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+
+              <SidebarMenuButton asChild tooltip="Home">
+                  <Link href="/dashboard">
+                    <Home size={48} />
+                    <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Discover">
                   <Link href="/discover">
@@ -199,12 +207,7 @@ function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
 
-                <SidebarMenuButton asChild tooltip="Dashboard">
-                  <Link href="/dashboard">
-                    <LayoutDashboard size={48} />
-                    <span>Dashboard</span>
-                  </Link>
-                </SidebarMenuButton>
+                
 
                 <SidebarMenuButton asChild tooltip="Add a Community">
                   <Link href="/community/add">

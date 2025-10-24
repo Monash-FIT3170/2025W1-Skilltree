@@ -56,6 +56,7 @@ import { likePostAction } from "@/actions/like-post-action";
 import { unlikePostAction } from "@/actions/unlike-post-action";
 import { deletePostAction } from "@/actions/delete-post-action";
 import { cn } from "@/lib/utils";
+import EventCard from "@/components/shared/EventCard";
 
 const ViewCommunityClient = ({
   community,
@@ -402,30 +403,8 @@ const ViewCommunityClient = ({
               </div>
 
               <div className="flex flex-col items-stretch w-full gap-4 rounded">
-                {events.map((ev) => (
-                  <Card key={ev.id} className="w-full rounded">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <h3>{ev.title}</h3>
-
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            {format(new Date(ev.startDate), "PPP")} -{" "}
-                            {format(new Date(ev.endDate), "PPP")}
-                          </p>
-                        </div>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                      <CardDescription>{ev.description}</CardDescription>
-                    </CardContent>
-                    <CardFooter>
-                      <Badge>
-                        {ev.mode}{" "}
-                        {ev.mode === "RANKED" ? `- ${ev.xpPayout} XP` : ""}
-                      </Badge>
-                    </CardFooter>
-                  </Card>
+                {events.map((ev: TEvent) => (
+                  <EventCard key={ev.id} ev={ev} />
                 ))}
               </div>
             </section>

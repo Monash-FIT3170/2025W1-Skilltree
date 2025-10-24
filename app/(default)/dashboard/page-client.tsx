@@ -13,6 +13,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { TEvent, TAuthSkillTrees } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import EventCard from "@/components/shared/EventCard";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const DashboardPageClient = ({
   skilltrees,
@@ -23,38 +26,21 @@ const DashboardPageClient = ({
 }) => {
   const columnHeight = "calc(100vh-6.5rem)";
   const router = useRouter();
-
-  const getTimeRemaining = (endDate: string) => {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diff = end.getTime() - now.getTime();
-
-    if (diff <= 0) return "Ended";
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-    if (days > 0) return `${days}d left`;
-    if (hours > 0) return `${hours}h left`;
-    return "< 1h left";
-  };
+  const isMobile = useIsMobile();
 
   return (
     <div
-      className={`w-full h-full mt-0 grid gap-6 p lg:grid-cols-[minmax(0,1fr)_1px_360px]`}
+      className={`w-full h-full mt-0 grid gap-6 p md:grid-cols-[minmax(0,1fr)_1px_360px]`}
     >
       <ScrollArea
-        className={`!w-full flex-1 h-full max-h-[${columnHeight}] flex flex-col pr-5`}
+        className={cn(`!w-full flex-1 h-full flex flex-col`, isMobile ? "max-h-full" : `max-h-[${columnHeight}]`)}
       >
         <header className="flex flex-col items-baseline justify-between pb-5">
-          <h2 className="text-2xl font-bold tracking-tight">
+          <h2 className="font-bold tracking-tight">
             Subscribed Communities
           </h2>
-          <span className="text-sm text-muted-foreground">
-            {skilltrees.length} total
-          </span>
         </header>
-        <div className="flex-1 w-full pr-2 overflow-y-auto ">
+        <div className="flex-1 w-full overflow-y-auto ">
           {skilltrees.length === 0 ? (
             <div className="w-full flex flex-col items-center justify-center">
               <div className="w-full flex flex-col items-center justify-center">
@@ -107,12 +93,12 @@ const DashboardPageClient = ({
         </div>
       </ScrollArea>
 
-      <div className="hidden lg:block bg-border h-[${calc(100vh-6.5rem)}]" />
+      <div className="hidden md:block bg-border h-[${calc(100vh-6.5rem)}]" />
 
       <ScrollArea
-        className={`h-full max-h-[${columnHeight}] w-full flex flex-col`}
+        className={cn(`h-full w-full flex flex-col`, isMobile ? "max-h-full" : `max-h-[${columnHeight}]`)}
       >
-        <h2 className="mb-4 w-full flex items-center justify-center relative text-lg font-semibold">
+        <h2 className="mb-4 w-full flex items-center justify-center relative font-semibold">
           <span>Upcoming Events</span>
         </h2>
 
@@ -127,22 +113,9 @@ const DashboardPageClient = ({
               </Skeleton>
             </div>
           ) : (
-            events.map((ev) => {
+            events.map((ev: TEvent) => {
               return (
-                <Card key={ev.id} className="rounded-xl">
-                  <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h3 className="font-semibold">{ev.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {ev.xpPayout ? ev.xpPayout : 0} XP
-                      </p>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                        <Timer className="w-3 h-3" />
-                        <span>{getTimeRemaining(ev.endDate)}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <EventCard key={ev.id} ev={ev} />
               );
             })
           )}

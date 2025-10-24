@@ -105,22 +105,16 @@ export default function Page() {
 
   return (
     <div className="max-h-[calc(100vh-6.5rem)] h-full mx-auto container w-full overflow-hidden flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
         <h1 className="text-2xl font-semibold">{communityName} — Skill Tree</h1>
-        <Button onClick={handleCreate} disabled={loading}>
-          {loading ? "Creating..." : "Create Community"}
-        </Button>
-        <Button onClick={handleCreate} disabled={loading}>
-          {loading ? "Creating..." : "Create Community"}
-        </Button>
+        <div className="flex gap-2 mt-2 md:mt-0">
+          <Button onClick={handleCreate} disabled={loading}>
+            {loading ? "Creating..." : "Create Community"}
+          </Button>
+        </div>
       </div>
 
       <div className="h-full">
-        <SkillTree
-          communityName={communityData?.name ?? communityName}
-          initial={initial}
-          onExport={handleExport} // stable handler
-        />
         <SkillTree
           communityName={communityData?.name ?? communityName}
           initial={initial}

@@ -93,12 +93,11 @@ export default function CommunityPage() {
 
   if (!skillTree || !rootSkill) return null;
 
-  // integrate events, skilltree, posts here
   return (
     <div className="w-full h-full">
-      <header className="flex justify-center gap-3 mb-5 ">
-        <h1 className="text-3xl font-bold">{skillTree.name}</h1>
-        <div className="ml-auto gap-3">
+      <header className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-3 mb-5">
+        <h1 className="text-2xl md:text-3xl font-bold">{skillTree.name}</h1>
+        <div className="gap-3">
           <Button onClick={() => router.push(`/community/${id}`)}>
             View Community
           </Button>

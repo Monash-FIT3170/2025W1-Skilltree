@@ -42,7 +42,7 @@ export default function CommunitiesPageClient({
   return (
     <>
       <div className="container h-full mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{title}</h1>
         {title === "Communities" ? (
           <p className="mb-5 text-muted-foreground">
             Discover and join communities that match your interests and skills.
@@ -67,7 +67,7 @@ export default function CommunitiesPageClient({
             <p className="mb-4 text-muted-foreground">
               There are no communities available at the moment.
             </p>
-            <Button onClick={() => router.push("/community/add")}>
+            <Button className="flex-1" onClick={() => router.push("/community/add")}>
               Create Community
             </Button>
           </div>
@@ -107,21 +107,19 @@ const CommunityCard = ({
       <CardContent className="flex-1">
         <div className="space-y-3">
           <div className="flex items-center text-sm text-muted-foreground">
-            <Users className="w-4 h-4 mr-2" />
+            <Users className="w-4 h-4 mr-2" /> {community._count?.skillTreeUser} Member(s)
           </div>
         </div>
       </CardContent>
 
       <CardFooter className="pt-0">
-        <div className="flex flex-col w-full gap-2 md:w-full md:flex-row">
+        <div className="flex flex-col w-full gap-2 md:flex-row">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button
+              <Button className="flex-1"
                 onClick={() => {
                   setPendingCommunity(community);
                 }}
-                className="flex-1 transition-transform duration-150 hover:scale-105"
-                size="sm"
                 disabled={isJoining}
               >
                 {isJoining ? "Joining..." : "Join Community"}
@@ -164,11 +162,9 @@ const CommunityCard = ({
             </AlertDialogContent>
           </AlertDialog>
 
-          <Button
+          <Button className="flex-1"
             onClick={() => router.push(`/community/${community.id}`)}
             variant="outline"
-            size="sm"
-            className="flex-1 transition-transform duration-150 hover:scale-105"
           >
             View Details
           </Button>

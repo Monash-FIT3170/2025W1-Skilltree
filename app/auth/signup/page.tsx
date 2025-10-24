@@ -97,12 +97,12 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="flex w-full min-h-screen">
+    <section className="flex w-full h-screen justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-card m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]"
+        className="bg-card m-auto h-fit w-full max-w-md md:max-w-lg rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]"
       >
-        <div className="p-8 pb-6">
+        <div className="p-5">
           <div className="flex flex-col items-center">
             <Link href="/" aria-label="go home">
               <Image
@@ -121,7 +121,7 @@ export default function LoginPage() {
           <hr className="my-4 border-dashed" />
 
           <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="firstname" className="block text-sm">
                   Firstname

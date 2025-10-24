@@ -142,20 +142,22 @@ export default function UserProfileClient({
   }, [following, followingQuery]);
 
   return (
-    <div className="container mx-auto flex h-full w-full flex-col">
+    <div className="container mx-auto flex h-full w-full flex-col px-4 md:px-0">
       <header className="mb-8 flex flex-col gap-6">
         {/* Profile Header */}
         <div className="flex flex-col items-center gap-6 md:flex-row md:items-start">
-          <Avatar className="h-32 w-32 md:h-40 md:w-40">
+          <Avatar className="h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40">
             <AvatarImage src={user.pfp ?? ""} alt={user.name || "User"} />
-            <AvatarFallback className="text-2xl">
+            <AvatarFallback className="text-xl md:text-2xl">
               {initials(user.name)}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-1 flex-col items-center gap-4 md:items-start">
             <div className="text-center md:text-left">
-              <h1 className="text-3xl font-bold tracking-tight">{user.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+                {user.name}
+              </h1>
               <div className="mt-1 flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span className="text-sm">
@@ -164,37 +166,41 @@ export default function UserProfileClient({
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button
-                onClick={handleFollowToggle}
-                variant={currentlyFollowing ? "outline" : "default"}
-                className="flex items-center gap-2"
-              >
-                {currentlyFollowing ? (
-                  <>
-                    <UserMinus className="h-4 w-4" />
-                    Unfollow
-                  </>
-                ) : (
-                  <>
-                    <UserPlus className="h-4 w-4" />
-                    Follow
-                  </>
-                )}
-              </Button>
-            </div>
+            {!isOwnProfile && (
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleFollowToggle}
+                  variant={currentlyFollowing ? "outline" : "default"}
+                  className="flex items-center gap-2"
+                >
+                  {currentlyFollowing ? (
+                    <>
+                      <UserMinus className="h-4 w-4" />
+                      Unfollow
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="h-4 w-4" />
+                      Follow
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Stats Cards (Followers & Following cards are clickable -> open Dialog) */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <Card>
-            <CardContent className="flex flex-col items-center p-6">
-              <Trophy className="mb-2 h-8 w-8 text-yellow-500" />
-              <div className="text-2xl font-bold">
+            <CardContent className="flex flex-col items-center p-4 md:p-6">
+              <Trophy className="mb-2 h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
+              <div className="text-xl md:text-2xl font-bold">
                 {stats.totalXP!.toLocaleString()}
               </div>
-              <p className="text-sm text-muted-foreground">Total XP</p>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                Total XP
+              </p>
             </CardContent>
           </Card>
 
@@ -204,10 +210,14 @@ export default function UserProfileClient({
             className="transition hover:bg-accent/40"
             title="View Followers"
           >
-            <CardContent className="flex flex-col items-center p-6">
-              <Users className="mb-2 h-8 w-8 text-blue-500" />
-              <div className="text-2xl font-bold">{stats.followersCount}</div>
-              <p className="text-sm text-muted-foreground">Followers</p>
+            <CardContent className="flex flex-col items-center p-4 md:p-6">
+              <Users className="mb-2 h-6 w-6 md:h-8 md:w-8 text-blue-500" />
+              <div className="text-xl md:text-2xl font-bold">
+                {stats.followersCount}
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                Followers
+              </p>
             </CardContent>
           </Card>
 
@@ -217,18 +227,26 @@ export default function UserProfileClient({
             className="transition hover:bg-accent/40"
             title="View Following"
           >
-            <CardContent className="flex flex-col items-center p-6">
-              <UserIcon className="mb-2 h-8 w-8 text-green-500" />
-              <div className="text-2xl font-bold">{stats.followingCount}</div>
-              <p className="text-sm text-muted-foreground">Following</p>
+            <CardContent className="flex flex-col items-center p-4 md:p-6">
+              <UserIcon className="mb-2 h-6 w-6 md:h-8 md:w-8 text-green-500" />
+              <div className="text-xl md:text-2xl font-bold">
+                {stats.followingCount}
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                Following
+              </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="flex flex-col items-center p-6">
-              <GitGraphIcon className="mb-2 h-8 w-8 text-purple-500" />
-              <div className="text-2xl font-bold">{actualJoined.length}</div>
-              <p className="text-sm text-muted-foreground">Communities</p>
+            <CardContent className="flex flex-col items-center p-4 md:p-6">
+              <GitGraphIcon className="mb-2 h-6 w-6 md:h-8 md:w-8 text-purple-500" />
+              <div className="text-xl md:text-2xl font-bold">
+                {actualJoined.length}
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                Communities
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -237,14 +255,18 @@ export default function UserProfileClient({
       {/* Tabs: Communities Completed / Joined / Owned */}
       <Tabs defaultValue="completed" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="completed">Communities Completed</TabsTrigger>
           <TabsTrigger value="owned">Communities Owned</TabsTrigger>
           <TabsTrigger value="joined">Communities Joined</TabsTrigger>
         </TabsList>
+        {/* Completed */}
+        <TabsContent value="completed" className="mt-6">
+          <CommunityGrid trees={completedSkilltrees} />
+        </TabsContent>
         {/* Owned */}
         <TabsContent value="owned" className="mt-6">
           <CommunityGrid trees={ownedSkilltrees} />
         </TabsContent>
-
         {/* Joined */}
         <TabsContent value="joined" className="mt-6">
           <CommunityGrid trees={actualJoined} />
@@ -253,7 +275,7 @@ export default function UserProfileClient({
 
       {/* Followers Dialog */}
       <Dialog open={followersOpen} onOpenChange={setFollowersOpen}>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-sm md:max-w-xl">
           <DialogHeader>
             <DialogTitle>Followers</DialogTitle>
             <DialogDescription>
@@ -271,7 +293,7 @@ export default function UserProfileClient({
             <div className="grid gap-3">
               {filteredFollowers.length === 0 ? (
                 <Card>
-                  <CardContent className="flex items-center justify-center p-8">
+                  <CardContent className="flex items-center justify-center p-6 md:p-8">
                     <p className="text-sm text-muted-foreground">
                       No followers found.
                     </p>
@@ -280,13 +302,15 @@ export default function UserProfileClient({
               ) : (
                 filteredFollowers.map((f) => (
                   <Card key={f.id} className="transition hover:bg-accent/40">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <Avatar className="h-10 w-10">
+                    <CardContent className="flex items-center gap-3 md:gap-4 p-3 md:p-4">
+                      <Avatar className="h-8 w-8 md:h-10 md:w-10">
                         <AvatarImage src={f.pfp ?? ""} alt={f.name} />
                         <AvatarFallback>{initials(f.name)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="font-medium leading-tight">{f.name}</p>
+                        <p className="font-medium leading-tight text-sm md:text-base">
+                          {f.name}
+                        </p>
                         <div className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
                           <Trophy className="h-3 w-3" />
                           {f.xpPoint.toLocaleString()} XP
@@ -303,7 +327,7 @@ export default function UserProfileClient({
 
       {/* Following Dialog */}
       <Dialog open={followingOpen} onOpenChange={setFollowingOpen}>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-sm md:max-w-xl">
           <DialogHeader>
             <DialogTitle>Following</DialogTitle>
             <DialogDescription>
@@ -321,7 +345,7 @@ export default function UserProfileClient({
             <div className="grid gap-3">
               {filteredFollowing.length === 0 ? (
                 <Card>
-                  <CardContent className="flex items-center justify-center p-8">
+                  <CardContent className="flex items-center justify-center p-6 md:p-8">
                     <p className="text-sm text-muted-foreground">
                       No users found.
                     </p>
@@ -330,13 +354,15 @@ export default function UserProfileClient({
               ) : (
                 filteredFollowing.map((u) => (
                   <Card key={u.id} className="transition hover:bg-accent/40">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <Avatar className="h-10 w-10">
+                    <CardContent className="flex items-center gap-3 md:gap-4 p-3 md:p-4">
+                      <Avatar className="h-8 w-8 md:h-10 md:w-10">
                         <AvatarImage src={u.pfp ?? ""} alt={u.name} />
                         <AvatarFallback>{initials(u.name)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="font-medium leading-tight">{u.name}</p>
+                        <p className="font-medium leading-tight text-sm md:text-base">
+                          {u.name}
+                        </p>
                         <div className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
                           <Trophy className="h-3 w-3" />
                           {u.xpPoint.toLocaleString()} XP
@@ -361,7 +387,7 @@ function CommunityGrid({ trees }: { trees: TAuthSkillTrees[] }) {
   if (!trees || trees.length === 0) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center p-8">
+        <CardContent className="flex items-center justify-center p-6 md:p-8">
           <p className="text-muted-foreground">No communities to show.</p>
         </CardContent>
       </Card>
@@ -377,19 +403,21 @@ function CommunityGrid({ trees }: { trees: TAuthSkillTrees[] }) {
           onClick={() => router.push(`/community/${tree.skillTree.id}`)}
         >
           <CardHeader>
-            <CardTitle className="text-lg">{tree.skillTree.name}</CardTitle>
-            <CardDescription className="line-clamp-2">
+            <CardTitle className="text-base md:text-lg">
+              {tree.skillTree.name}
+            </CardTitle>
+            <CardDescription className="line-clamp-2 text-sm md:text-base">
               {tree.skillTree.description}
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
+            <div className="flex w-full items-center justify-between text-xs md:text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
-                <GitGraphIcon className="h-4 w-4" />
+                <GitGraphIcon className="h-3 w-3 md:h-4 md:w-4" />
                 {tree.skillTree._count!.skillNodes} nodes
               </span>
               <span className="inline-flex items-center gap-1">
-                <UserIcon className="h-4 w-4" />
+                <UserIcon className="h-3 w-3 md:h-4 md:w-4" />
                 {tree.skillTree._count!.skillTreeUser} members
               </span>
             </div>

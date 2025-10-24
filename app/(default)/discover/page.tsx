@@ -7,6 +7,8 @@ export default async function CommunitiesPage() {
   try {
     const communities = await getCommunityByMembershipAction();
 
+    console.log(communities.message)
+
     if (!communities.ok) {
       return <CommonError errorDescription="Could not load communities" />;
     }
