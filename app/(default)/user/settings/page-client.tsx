@@ -98,7 +98,7 @@ export default function UserSettingsClient({ user }: { user: TUser }) {
 
           <div
             ref={editRef}
-            className="flex flex-col items-center w-full gap-5 px-2 justify-stretch md:px-0"
+            className="flex flex-col items-center w-full gap-5 px-2 md:px-0 md:items-start"
           >
             <div className="flex flex-col w-full gap-2">
               <Label className="text-muted-foreground">Name</Label>

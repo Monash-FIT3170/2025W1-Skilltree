@@ -8499,6 +8499,7 @@ snapshots:
   frontend@file:(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(use-sync-external-store@1.5.0(react@19.1.0)):
     dependencies:
       '@hookform/resolvers': 5.0.1(react-hook-form@7.56.4(react@19.1.0))
+      '@internationalized/date': 3.10.0
       '@radix-ui/react-accordion': 1.2.10(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-alert-dialog': 1.1.13(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-aspect-ratio': 1.1.6(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -8545,6 +8546,7 @@ snapshots:
       pnpm: 10.11.0
       radix-ui: 1.4.3(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
+      react-aria-components: 1.13.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-day-picker: 9.9.0(react@19.1.0)
       react-dom: 19.1.0(react@19.1.0)
       react-hook-form: 7.56.4(react@19.1.0)

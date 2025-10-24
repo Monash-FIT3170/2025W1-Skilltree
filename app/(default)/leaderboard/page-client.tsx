@@ -109,7 +109,7 @@ export default function Leaderboard() {
 
   return (
     <div className={"flex w-full flex-col min-h-screen"}>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col">
           <h1 className="text-3xl font-bold tracking-tight">Leaderboard</h1>
           <p className="mb-5 text-muted-foreground">
@@ -129,93 +129,95 @@ export default function Leaderboard() {
         </Select>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="font-bold w-[80px]">Rank</TableHead>
-            <TableHead className="font-bold">User</TableHead>
-            <TableHead className="font-bold text-center w-[180px]">
-              Communities
-            </TableHead>
-            <TableHead className="font-bold text-right">Total XP</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((user) => (
-            <TableRow key={user.rank}>
-              <TableCell className="tabular-nums">{user.rank}.</TableCell>
-              <TableCell>
-                <div className="flex min-w-0 items-center gap-3">
-                  <Avatar className="h-8 w-8 shrink-0">
-                    {user.pfp ? (
-                      <AvatarImage src={user.pfp} alt={user.name} />
-                    ) : (
-                      <AvatarFallback>
-                        {user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
-                      </AvatarFallback>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="font-bold w-[80px]">Rank</TableHead>
+              <TableHead className="font-bold">User</TableHead>
+              <TableHead className="font-bold text-center w-[180px] hidden md:table-cell">
+                Communities
+              </TableHead>
+              <TableHead className="font-bold text-right">Total XP</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((user) => (
+              <TableRow key={user.rank}>
+                <TableCell className="tabular-nums">{user.rank}.</TableCell>
+                <TableCell>
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      {user.pfp ? (
+                        <AvatarImage src={user.pfp} alt={user.name} />
+                      ) : (
+                        <AvatarFallback>
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                    <span className="truncate">{user.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-center tabular-nums hidden md:table-cell">
+                  {user.communities.toLocaleString()}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <span className="tabular-nums">
+                      {user.xp.toLocaleString()}
+                    </span>
+                    {user.trend === "up" && (
+                      <ChevronUp className="h-4 w-4 text-green-500" />
                     )}
-                  </Avatar>
-                  <span className="truncate">{user.name}</span>
-                </div>
-              </TableCell>
-              <TableCell className="text-center tabular-nums">
-                {user.communities.toLocaleString()}
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex items-center justify-end gap-1">
-                  <span className="tabular-nums">
-                    {user.xp.toLocaleString()}
+                    {user.trend === "down" && (
+                      <ChevronDown className="h-4 w-4 text-red-500" />
+                    )}
+                    {user.trend === "neutral" && (
+                      <Minus className="text-yellow-500 h-4 w-4" />
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={4}>
+                <div className="flex items-center justify-between text-sm">
+                  <span>
+                    Page {currentPage} of {totalPages}
                   </span>
-                  {user.trend === "up" && (
-                    <ChevronUp className="h-4 w-4 text-green-500" />
-                  )}
-                  {user.trend === "down" && (
-                    <ChevronDown className="h-4 w-4 text-red-500" />
-                  )}
-                  {user.trend === "neutral" && (
-                    <Minus className="text-yellow-500 h-4 w-4" />
-                  )}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === totalPages}
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </div>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={4}>
-              <div className="flex items-center justify-between text-sm">
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={currentPage === totalPages}
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+          </TableFooter>
+        </Table>
+      </div>
     </div>
   );
 }

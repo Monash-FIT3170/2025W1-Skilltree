@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function CreateCommunityPage() {
   const [form, setForm] = useState({
@@ -101,7 +102,7 @@ export default function CreateCommunityPage() {
 
   return (
     <div className="container flex flex-col w-full h-full mx-auto">
-      <header className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
+      <header className="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Create Community</h1>
       </header>
       <div>
@@ -138,7 +139,7 @@ export default function CreateCommunityPage() {
             )}
           </div>
 
-          <div className="flex flex-col items-center w-full gap-5 px-2 justify-stretch md:px-0">
+          <div className="flex flex-col items-center w-full gap-5 px-2 md:px-0 md:items-start">
             <div className="flex flex-col w-full gap-2">
               <Label className="text-muted-foreground">Community Name</Label>
               <Input
@@ -176,11 +177,10 @@ export default function CreateCommunityPage() {
             </div>
 
             <div className="flex w-full gap-2">
-              <Input
-                type="checkbox"
+              <Checkbox
                 name="isAdultOnly"
                 checked={form.isAdultOnly}
-                onChange={handleChange}
+                onCheckedChange={(checked) => setForm((prev) => ({ ...prev, isAdultOnly: checked as boolean }))}
                 className="w-5 h-5"
               />
               <Label className="text-muted-foreground">
@@ -189,10 +189,10 @@ export default function CreateCommunityPage() {
             </div>
 
             <div className="flex flex-wrap justify-end w-full gap-3">
-              <Button type="submit" disabled={loading}>
+              <Button className="flex-1" type="submit" disabled={loading}>
                 {loading ? "Creating…" : "Next: Create Skill Tree"}
               </Button>
-              <Button variant="outline" type="button" onClick={handleClear}>
+              <Button className="flex-1" variant="outline" type="button" onClick={handleClear}>
                 Cancel
               </Button>
             </div>
