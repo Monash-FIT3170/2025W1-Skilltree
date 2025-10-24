@@ -152,9 +152,6 @@ export type TEvent = {
   xpPayout: number;
   startDate: string;
   endDate: string;
-  winnerId: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 export type TFollowerFollowingResponse = {
